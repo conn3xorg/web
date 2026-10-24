@@ -1,0 +1,50 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm exec wrangler dev --port 8787 --ip 127.0.0.1",
+      "startServerReadyPattern": "Ready on",
+      "url": [
+        "http://127.0.0.1:8787/"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "formFactor": "mobile",
+        "skipAudits": [
+          "canonical"
+        ]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 1
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 1
+          }
+        ],
+        "categories:best-practices": [
+          "error",
+          {
+            "minScore": 1
+          }
+        ],
+        "categories:seo": [
+          "error",
+          {
+            "minScore": 1
+          }
+        ]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

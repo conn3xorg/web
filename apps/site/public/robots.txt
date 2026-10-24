@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://conn3x.org/sitemap-index.xml

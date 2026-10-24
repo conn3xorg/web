@@ -1,0 +1,8 @@
+# Conn3x
+
+> Conn3x is an open-source tool, in early development, that aims to provision cloud infrastructure and configure the servers it creates from a single binary and a single plan. It is built on OpenTofu and licensed under MPL-2.0.
+
+## Links
+
+- [Source code on GitHub](https://github.com/conn3xorg/conn3x)
+- [Contributing guide](https://github.com/conn3xorg/conn3x/blob/main/CONTRIBUTING.md)

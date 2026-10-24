@@ -1,0 +1,26 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Seo from "../components/Seo.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+}
+
+const props = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Seo {...props} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
