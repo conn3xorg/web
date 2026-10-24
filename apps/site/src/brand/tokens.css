@@ -1,0 +1,61 @@
+/* Conn3x brand tokens: direction "Junction". */
+
+:root {
+  color-scheme: light;
+  --c-bg: #f3f5f7;
+  --c-surface: #ffffff;
+  --c-grid: #dfe5ec;
+  --c-border: #cfd7e1;
+  --c-text: #13233a;
+  --c-text-muted: #4a5a70;
+  --c-link: #b8430b;
+  --c-accent: #e85d0c;
+  --c-accent-contrast: #13233a;
+  --c-code-bg: #13233a;
+  --c-code-text: #dbe4ef;
+  --c-code-add: #7fd3a7;
+  --c-code-change: #ff8a3d;
+  --c-code-dim: #8ea0b6;
+
+  --font-display: var(--font-schibsted, system-ui, sans-serif);
+  --font-body: var(--font-display);
+  --font-mono: var(--font-jetbrains, ui-monospace, monospace);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg: #0f1a2b;
+  --c-surface: #16243a;
+  --c-grid: #1b2a42;
+  --c-border: #2a3b55;
+  --c-text: #e6ecf3;
+  --c-text-muted: #9fb0c5;
+  --c-link: #ff9a5c;
+  --c-accent: #ff7a2e;
+  --c-accent-contrast: #0f1a2b;
+  --c-code-bg: #0a1220;
+  --c-code-text: #dbe4ef;
+  --c-code-add: #7fd3a7;
+  --c-code-change: #ff9a5c;
+  --c-code-dim: #8ea0b6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --c-bg: #0f1a2b;
+    --c-surface: #16243a;
+    --c-grid: #1b2a42;
+    --c-border: #2a3b55;
+    --c-text: #e6ecf3;
+    --c-text-muted: #9fb0c5;
+    --c-link: #ff9a5c;
+    --c-accent: #ff7a2e;
+    --c-accent-contrast: #0f1a2b;
+    --c-code-bg: #0a1220;
+    --c-code-text: #dbe4ef;
+    --c-code-add: #7fd3a7;
+    --c-code-change: #ff9a5c;
+    --c-code-dim: #8ea0b6;
+  }
+}

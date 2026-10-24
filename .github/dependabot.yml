@@ -6,6 +6,10 @@ updates:
       interval: weekly
     commit-message:
       prefix: build
+    ignore:
+      # astro check does not support TypeScript 7 yet.
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
     groups:
       minor-patch:
         update-types: [minor, patch]
