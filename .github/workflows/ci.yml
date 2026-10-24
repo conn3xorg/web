@@ -49,6 +49,12 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm test
       - run: bash scripts/dco-check_test.sh
+      - run: pnpm build
+      - name: Browser tests
+        working-directory: apps/site
+        run: |
+          pnpm exec playwright install --with-deps chromium
+          pnpm exec playwright test
 
   lighthouse:
     runs-on: ubuntu-24.04
