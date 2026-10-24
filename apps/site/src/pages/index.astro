@@ -1,6 +1,233 @@
 ---
 import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+const repo = "https://github.com/conn3xorg/conn3x";
 ---
-<Base title="Conn3x" description="One binary to provision and configure your infrastructure." path="/">
-  <main><h1>Conn3x</h1></main>
+<Base
+  title="Conn3x: one plan for your cloud and the servers it creates"
+  description="Conn3x is an open-source tool, in development, that will provision cloud infrastructure and configure the servers it creates from one binary and one plan."
+  path="/"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="pitch">
+          <h1><span>Provision it.</span> <span>Configure it.</span> <span>One plan.</span></h1>
+          <p class="lede">
+            Today that takes Terraform, Ansible, and a drawer of glue scripts holding them
+            together. We're building Conn3x to do both jobs: one binary, one plan, one state,
+            for your cloud and every server it creates.
+          </p>
+          <div class="cta">
+            <a class="button" href={repo}>Star Conn3x on GitHub</a>
+            <p class="cta-note">Then hit <strong>Watch</strong> to follow along. We're building it in public.</p>
+          </div>
+        </div>
+
+        <figure class="plan">
+          <pre aria-describedby="plan-caption"><code><span class="l dim">$ conn3x plan</span>
+<span class="l add">+ digitalocean_droplet.web</span>
+<span class="l add">+ web: package nginx</span>
+<span class="l chg">~ web: /etc/nginx/nginx.conf</span>
+<span class="l dim">    server_name ← droplet.web.ipv4</span>
+<span class="l dim">Plan: 3 to add, 1 to change.</span></code></pre>
+          <figcaption id="plan-caption">
+            A sketch of where we're headed: the droplet, the package and the config file that
+            depends on its IP, all in one plan.
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="coming wrap" aria-labelledby="coming-title">
+      <h2 id="coming-title">What we're building</h2>
+      <div class="points">
+        <div>
+          <h3>See everything before it runs</h3>
+          <p>
+            One plan will show the server you're about to create and the exact file changes
+            that will land on it, linked by an IP address that doesn't exist yet.
+          </p>
+        </div>
+        <div>
+          <h3>Keep your providers</h3>
+          <p>
+            Conn3x is built on OpenTofu, so every Terraform and OpenTofu provider will work
+            as it is, and so will the modules you already have.
+          </p>
+        </div>
+        <div>
+          <h3>Install nothing on your servers</h3>
+          <p>
+            No Python to manage on your hosts. Conn3x will push a small helper over SSH and
+            clean up after itself, or stick to plain shell commands where that's all you allow.
+          </p>
+        </div>
+      </div>
+      <p class="status">
+        It's early. The engine is being built right now, Linux first, starting with Rocky,
+        RHEL, Debian and Ubuntu.
+      </p>
+    </section>
+  </main>
+
+  <SiteFooter />
 </Base>
+
+<style>
+  .hero {
+    background-image:
+      linear-gradient(var(--c-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    border-block: 1px solid var(--c-border);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+    padding-block: clamp(3.5rem, 9vw, 7rem);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2.6rem, 6.2vw, 4.75rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin: 0 0 1.5rem;
+  }
+  h1 span {
+    display: block;
+  }
+  .lede {
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: var(--c-text-muted);
+    max-width: 38rem;
+    margin: 0 0 2rem;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+  .button {
+    display: inline-block;
+    background: var(--c-accent);
+    color: var(--c-accent-contrast);
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.85rem 1.35rem;
+    border-radius: 8px;
+    transition: transform 0.15s ease;
+  }
+  .button:hover {
+    transform: translateY(-1px);
+  }
+  .button:active {
+    transform: translateY(0);
+  }
+  .cta-note {
+    margin: 0;
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+    max-width: 22rem;
+  }
+  .cta-note strong {
+    color: var(--c-text);
+  }
+
+  .plan {
+    margin: 0;
+  }
+  .plan pre {
+    margin: 0;
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: clamp(0.8125rem, 1.2vw, 0.9375rem);
+    line-height: 1.75;
+    overflow-x: auto;
+  }
+  .plan code {
+    font-family: inherit;
+  }
+  .add {
+    color: var(--c-code-add);
+  }
+  .chg {
+    color: var(--c-code-change);
+  }
+  .dim {
+    color: var(--c-code-dim);
+  }
+  .plan figcaption {
+    margin-top: 0.85rem;
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+  }
+
+  /* The one moment of motion: the plan prints line by line, once. */
+  @media (prefers-reduced-motion: no-preference) {
+    .l {
+      opacity: 0;
+      animation: print 0.35s ease-out forwards;
+    }
+    .l:nth-child(2) { animation-delay: 0.45s; }
+    .l:nth-child(3) { animation-delay: 0.7s; }
+    .l:nth-child(4) { animation-delay: 0.95s; }
+    .l:nth-child(5) { animation-delay: 1.2s; }
+    .l:nth-child(6) { animation-delay: 1.6s; }
+  }
+  @keyframes print {
+    from { opacity: 0; transform: translateX(-4px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .coming {
+    padding-block: clamp(3.5rem, 8vw, 6rem);
+  }
+  .coming h2 {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0 0 2.5rem;
+  }
+  .points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+    border-top: 2px solid var(--c-text);
+    padding-top: 2rem;
+  }
+  .points h3 {
+    font-size: 1.1875rem;
+    line-height: 1.25;
+    margin: 0 0 0.6rem;
+  }
+  .points p {
+    margin: 0;
+    color: var(--c-text-muted);
+  }
+  .status {
+    margin: 3rem 0 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--c-accent);
+    max-width: 42rem;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid,
+    .points {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

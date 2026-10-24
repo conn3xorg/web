@@ -1,0 +1,48 @@
+---
+import logo from "../brand/logo.svg?raw";
+import logoDark from "../brand/logo-dark.svg?raw";
+---
+<header class="site-header wrap">
+  <a class="brand" href="/" aria-label="Conn3x home">
+    <span class="logo logo-light" set:html={logo} />
+    <span class="logo logo-dark" set:html={logoDark} />
+  </a>
+  <a class="gh" href="https://github.com/conn3xorg/conn3x">GitHub</a>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 1.5rem;
+  }
+  .brand {
+    display: block;
+    width: 11rem;
+  }
+  .logo :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+  .logo-dark {
+    display: none;
+  }
+  .gh {
+    color: var(--c-text);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.4rem 0.2rem;
+  }
+  .gh:hover {
+    text-decoration: underline;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme="light"])) .logo-light {
+      display: none;
+    }
+    :global(:root:not([data-theme="light"])) .logo-dark {
+      display: block;
+    }
+  }
+</style>

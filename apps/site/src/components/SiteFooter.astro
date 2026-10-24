@@ -1,0 +1,45 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap row">
+    <p>© {year} The Conn3x Authors. Licensed under <span class="nowrap">MPL-2.0</span>.</p>
+    <nav aria-label="Project links">
+      <a href="https://github.com/conn3xorg/conn3x">Source</a>
+      <a href="https://github.com/conn3xorg/conn3x/blob/main/CONTRIBUTING.md">Contribute</a>
+      <a href="https://github.com/conn3xorg/conn3x/blob/main/SECURITY.md">Security</a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--c-border);
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 2rem;
+  }
+  p {
+    margin: 0;
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  a {
+    color: var(--c-text-muted);
+  }
+  a:hover {
+    color: var(--c-text);
+  }
+</style>
