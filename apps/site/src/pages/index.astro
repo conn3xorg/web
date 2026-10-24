@@ -1,4 +1,6 @@
 ---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
@@ -125,7 +127,6 @@ const repo = "https://github.com/conn3xorg/conn3x";
     text-decoration: none;
     padding: 0.85rem 1.35rem;
     border-radius: 8px;
-    transition: transform 0.15s ease;
   }
   .button:hover {
     transform: translateY(-1px);
@@ -177,6 +178,9 @@ const repo = "https://github.com/conn3xorg/conn3x";
 
   /* The one moment of motion: the plan prints line by line, once. */
   @media (prefers-reduced-motion: no-preference) {
+    .button {
+      transition: transform 0.15s ease;
+    }
     .l {
       opacity: 0;
       animation: print 0.35s ease-out forwards;

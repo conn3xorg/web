@@ -1,4 +1,6 @@
 // @ts-check
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
 import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 

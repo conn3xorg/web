@@ -1,4 +1,6 @@
 ---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
 import logo from "../brand/logo.svg?raw";
 import logoDark from "../brand/logo-dark.svg?raw";
 ---
@@ -36,6 +38,12 @@ import logoDark from "../brand/logo-dark.svg?raw";
   }
   .gh:hover {
     text-decoration: underline;
+  }
+  :global(:root[data-theme="dark"]) .logo-light {
+    display: none;
+  }
+  :global(:root[data-theme="dark"]) .logo-dark {
+    display: block;
   }
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme="light"])) .logo-light {

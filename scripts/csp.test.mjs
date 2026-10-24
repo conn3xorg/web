@@ -87,3 +87,15 @@ test("line length guard", () => {
   assert.equal(r.code, 1);
   assert.match(r.stderr, /longer than 2000 characters/);
 });
+
+test("sees inline code inside noscript", () => {
+  const r = run({ "index.html": page('<noscript><img src="x" onerror="a()"></noscript>') });
+  assert.equal(r.code, 1);
+  assert.match(r.stderr, /inline event handler onerror in index\.html/);
+});
+
+test("hashes styles inside noscript", () => {
+  const r = run({ "index.html": page("<noscript><style>y{}</style></noscript>") });
+  assert.equal(r.code, 0, r.stderr);
+  assert.ok(r.headers.includes(sha("y{}")));
+});

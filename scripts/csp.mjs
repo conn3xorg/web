@@ -40,7 +40,8 @@ function scan(dist) {
   const errors = [];
   for (const file of htmlFiles(dist)) {
     const name = relative(dist, file);
-    for (const el of elements(parse(readFileSync(file, "utf8")))) {
+    // Parse as if scripting were off so <noscript> content is real markup.
+    for (const el of elements(parse(readFileSync(file, "utf8"), { scriptingEnabled: false }))) {
       for (const { name: a } of el.attrs) {
         if (a === "style") errors.push(`inline style attribute in ${name} <${el.tagName}>`);
         else if (a.startsWith("on")) errors.push(`inline event handler ${a} in ${name} <${el.tagName}>`);

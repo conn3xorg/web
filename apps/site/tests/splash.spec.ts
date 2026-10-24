@@ -1,3 +1,6 @@
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
 import { test, expect } from "@playwright/test";
 
 const REPO = "https://github.com/conn3xorg/conn3x";
@@ -74,4 +77,36 @@ test("has complete SEO metadata", async ({ page, request }) => {
   for (const path of ["/sitemap-index.xml", "/robots.txt", "/llms.txt", "/favicon.ico", "/apple-touch-icon.png"]) {
     expect((await request.get(path)).status(), path).toBe(200);
   }
+});
+
+test.describe("reduced motion on interaction", () => {
+  test.use({ reducedMotion: "reduce" });
+
+  test("the button has no hover transition", async ({ page }) => {
+    await page.goto("/");
+    const duration = await page.locator("main .button").first().evaluate((el) => getComputedStyle(el).transitionDuration);
+    expect(duration).toBe("0s");
+  });
+});
+
+test("an explicit dark theme shows the dark logo", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("/");
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
+  await expect(page.locator(".logo-dark")).toBeVisible();
+  await expect(page.locator(".logo-light")).toBeHidden();
+});
+
+test("an explicit light theme shows the light logo in a dark system", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
+  await expect(page.locator(".logo-light")).toBeVisible();
+  await expect(page.locator(".logo-dark")).toBeHidden();
+});
+
+test("the 404 page has a skip link", async ({ page }) => {
+  await page.goto("/nope");
+  await expect(page.locator('a.skip[href="#main"]')).toHaveCount(1);
+  await expect(page.locator("main#main")).toHaveCount(1);
 });

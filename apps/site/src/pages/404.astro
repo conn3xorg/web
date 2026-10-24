@@ -1,11 +1,14 @@
 ---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 ---
 <Base title="Page not found · Conn3x" description="This page doesn't exist." path="/404">
+  <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
-  <main class="wrap missing">
+  <main id="main" class="wrap missing">
     <h1>Page not found</h1>
     <p>There's nothing at this address. The site is small for now, so the home page has everything.</p>
     <p><a href="/">Go to the home page</a></p>
