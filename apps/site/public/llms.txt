@@ -1,8 +1,21 @@
 # Conn3x
 
-> Conn3x is an open-source tool, in early development, that aims to provision cloud infrastructure and configure the servers it creates from a single binary and a single plan. It is built on OpenTofu and licensed under MPL-2.0.
+> Conn3x is an open-source tool that creates cloud infrastructure and configures the servers it creates, from one binary, one plan and one state. It is built on OpenTofu, so every Terraform and OpenTofu provider works, and it is licensed under MPL-2.0. Servers are configured over SSH with no agent or Python: circuits are playbooks written in HCL.
+
+Conn3x configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu. Features include a plan that diffs both cloud resources and hosts, drift detection across both layers (conn3x drift), steps that repeat with for_each, write-only secrets kept out of state, jump hosts and SSH config aliases, and an Ansible converter (conn3x convert ansible).
+
+## Docs
+
+- [Documentation](https://docs.conn3x.org): install, get started, concepts, guides, the circuit language and every module.
+- [Get started](https://docs.conn3x.org/get-started)
+- [Circuit language reference](https://docs.conn3x.org/reference/circuits)
+- [Migrate from Ansible](https://docs.conn3x.org/guides/migrate-from-ansible)
+- [Use with Terraform or OpenTofu configuration](https://docs.conn3x.org/guides/migrate-from-terraform)
 
 ## Links
 
 - [Source code on GitHub](https://github.com/conn3xorg/conn3x)
+- [Releases](https://github.com/conn3xorg/conn3x/releases)
+- [Examples](https://github.com/conn3xorg/conn3x/tree/main/examples)
+- [Blog](https://conn3x.org/blog)
 - [Contributing guide](https://github.com/conn3xorg/conn3x/blob/main/CONTRIBUTING.md)
