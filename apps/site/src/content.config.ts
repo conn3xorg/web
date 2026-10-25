@@ -9,6 +9,9 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
+    author: z.string().default("James Conway"),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
   }),
 });
 

@@ -6,9 +6,10 @@ interface Props {
   description: string;
   path: string;
   image?: string;
+  imageAlt?: string;
 }
 
-const { title, description, path, image = "/og.png" } = Astro.props;
+const { title, description, path, image = "/og.png", imageAlt } = Astro.props;
 const site = "https://conn3x.org";
 const url = new URL(path, site).href;
 const imageUrl = new URL(image, site).href;
@@ -41,11 +42,13 @@ const jsonLd = [
 <meta property="og:image" content={imageUrl} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+{imageAlt && <meta property="og:image:alt" content={imageAlt} />}
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@conn3xone" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={imageUrl} />
+{imageAlt && <meta name="twitter:image:alt" content={imageAlt} />}
 <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM-friendly summary" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
