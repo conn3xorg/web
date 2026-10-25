@@ -9,7 +9,6 @@
 // the social card into apps/site. With --readme, also renders the animated
 // README header GIFs (needs gifski) into <dir>.
 
-import opentype from "opentype.js";
 import { optimize } from "svgo";
 import { chromium } from "@playwright/test";
 import { execFileSync } from "node:child_process";
@@ -17,7 +16,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
-import { COLORS, LINE, lockup, markPaths, markSvg } from "./brand.mjs";
+import { COLORS, LINE, loadFont, lockup, markPaths, markSvg } from "./brand.mjs";
 
 const require = createRequire(import.meta.url);
 const root = new URL("../../", import.meta.url).pathname;
@@ -106,7 +105,7 @@ async function rasters(browser, svgs) {
 async function readmeHeaders(browser, outDir) {
   const W = 1280, H = 300, SCALE = 2, FPS = 30, DURATION = 3.4;
   const L = lockup(BOLD, 112);
-  const medium = opentype.loadSync(MEDIUM);
+  const medium = loadFont(MEDIUM);
   const tag = "One plan for your cloud and the servers it creates.";
   const tb = medium.getPath(tag, 0, 0, 30).getBoundingBox();
   const tagD = medium.getPath(tag, (W - (tb.x2 - tb.x1)) / 2 - tb.x1, 222 - tb.y1, 30).toPathData(2);
