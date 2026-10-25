@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Conn3x loop: diagram</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 84px; line-height: 1; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1180px; }
+  .loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 64px; position: relative; }
+  .step { background: var(--paper-2); border: 2px solid var(--paper-line); border-top: 8px solid var(--navy); padding: 30px 28px; margin-right: 32px; position: relative; min-height: 360px; }
+  .step:last-child { margin-right: 0; border-top-color: var(--accent); }
+  .step:not(:last-child)::after { content: "→"; position: absolute; right: -32px; top: 40px; width: 32px; text-align: center; font-family: var(--mono); font-size: 34px; color: var(--rust); }
+  .n { font-family: var(--mono); font-size: 22px; color: var(--navy-muted); letter-spacing: 0.1em; }
+  .step h2 { font-size: 46px; letter-spacing: -0.03em; font-weight: 800; margin: 10px 0 14px; }
+  .step p { font-size: 25px; line-height: 1.4; color: var(--navy-muted); }
+  .step code { display: block; white-space: nowrap; margin-top: 18px; font-family: var(--mono); font-size: 22px; background: var(--ink); color: var(--text); padding: 10px 14px; }
+  .back { margin-top: 36px; border: 3px dashed var(--accent); padding: 30px 36px; display: grid; grid-template-columns: 300px 1fr; gap: 32px; align-items: center; background: #fff7f1; }
+  .back h3 { font-size: 40px; letter-spacing: -0.02em; font-weight: 800; color: var(--rust); }
+  .back p { font-size: 26px; line-height: 1.45; color: var(--navy); }
+  .back code { font-family: var(--mono); font-size: 0.9em; }
+  .layers { margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .layer { border-left: 6px solid var(--navy); padding: 6px 0 6px 24px; }
+  .layer h4 { font-family: var(--mono); font-size: 22px; letter-spacing: 0.12em; color: var(--navy-muted); }
+  .layer p { font-size: 28px; margin-top: 8px; }
+  .layer code { font-family: var(--mono); font-size: 0.85em; }
+  .bottom { margin-top: 56px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CHOOSING YOUR FIRST STACK</span>
+  <h1>The loop you learn once</h1>
+  <p class="lede">Four moves cover everything, from a cloud server to the file on it. Learn them on a throwaway container in five minutes.</p>
+  <div class="loop">
+    <div class="step"><span class="n">01</span><h2>Write</h2><p>Say what you want, in HCL: servers, packages, files, users.</p><code>step "motd" {...}</code></div>
+    <div class="step"><span class="n">02</span><h2>Plan</h2><p>Conn3x reads what's really there and shows the difference.</p><code>conn3x plan</code></div>
+    <div class="step"><span class="n">03</span><h2>Apply</h2><p>It makes exactly those changes, and records them in state.</p><code>conn3x apply</code></div>
+    <div class="step"><span class="n">04</span><h2>Plan again</h2><p>Nothing left to do. That's how you know it worked.</p><code>No changes.</code></div>
+  </div>
+  <div class="back">
+    <h3>When someone edits by hand</h3>
+    <p><code>conn3x drift</code> reports it and exits 2. The next plan shows the exact line, and apply puts it back. Same loop.</p>
+  </div>
+  <div class="layers">
+    <div class="layer"><h4>THE CLOUD</h4><p>Any Terraform or OpenTofu provider: droplets, instances, DNS, buckets.</p></div>
+    <div class="layer"><h4>THE SERVERS</h4><p>Circuits: <code>package</code>, <code>file</code>, <code>user</code>, <code>service</code> and more, over SSH.</p></div>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>Try it: github.com/conn3xorg/conn3x/tree/main/examples/try-it-locally</span>
+  </div>
+</div>
+</body>
+</html>
