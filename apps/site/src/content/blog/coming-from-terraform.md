@@ -1,7 +1,7 @@
 ---
 title: "Coming from Terraform"
 description: "Keep your providers, modules and state. Conn3x adds one block for what happens after the server boots, and puts it in the same plan."
-date: 2026-11-10
+date: 2026-11-08
 author: James Conway
 image: /media/blog/coming-from-terraform/card.png
 imageAlt: "A Terraform resource and a Conn3x circuit in one file, and the single plan that covers both."
