@@ -7,6 +7,20 @@ import SiteFooter from "../components/SiteFooter.astro";
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
+const playbook = `- name: Ship the nginx config
+  copy:
+    src: nginx.conf
+    dest: /etc/nginx/nginx.conf
+    mode: "0644"
+  notify: Reload nginx`;
+const circuit = `step "ship_the_nginx_config" {
+  file {
+    path    = "/etc/nginx/nginx.conf"
+    content = file("\${path.module}/files/nginx.conf")
+    mode    = "0644"
+  }
+  notify = [handler.reload_nginx]
+}`;
 ---
 <Base
   title="Conn3x: one plan for your cloud and the servers it creates"
@@ -77,9 +91,56 @@ const docs = "https://docs.conn3x.org";
       </div>
       <p class="status">
         It's early, and Linux first: Rocky, RHEL, AlmaLinux, Fedora, Debian and Ubuntu.
-        Got playbooks? <code>conn3x convert ansible</code> turns them into circuits and marks
-        what's left for you. <a href={docs}>Read the docs</a>.
       </p>
+    </section>
+
+    <section class="convert" aria-labelledby="convert-title">
+      <div class="wrap">
+        <h2 id="convert-title">Bring your playbooks</h2>
+        <p class="section-lede">
+          <code>conn3x convert ansible -i inventory site.yml</code> rewrites each task it can prove
+          means the same thing. What it can't, a loop or a Jinja filter, stays in the file with the
+          reason, so nothing gets guessed.
+        </p>
+        <div class="pair">
+          <figure>
+            <figcaption>site.yml</figcaption>
+            <pre><code>{playbook}</code></pre>
+          </figure>
+          <span class="junction" aria-hidden="true"></span>
+          <figure>
+            <figcaption>site.tf</figcaption>
+            <pre><code>{circuit}</code></pre>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="compare wrap" aria-labelledby="compare-title">
+      <h2 id="compare-title">Two tools, or one</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col"></th><th scope="col">Terraform or OpenTofu, plus Ansible</th><th scope="col">Conn3x</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">To install</th><td>Two tools, and Python on the controller and every host</td><td>One binary</td></tr>
+            <tr><th scope="row">State</th><td>Terraform state for the cloud, none for the hosts</td><td>One state for both</td></tr>
+            <tr><th scope="row">Seeing host changes</th><td>A separate <code>--check --diff</code> run</td><td>In the same plan as the cloud</td></tr>
+            <tr><th scope="row">Cloud addresses in host config</th><td>Inventory scripts or plugins</td><td>An expression</td></tr>
+            <tr><th scope="row">Finding drift on hosts</th><td>Run the playbook in check mode</td><td><code>conn3x drift</code>, both layers</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="closing wrap" aria-labelledby="closing-title">
+      <h2 id="closing-title">Fifteen minutes to your first circuit</h2>
+      <p>All you need is one Linux server you can reach over SSH.</p>
+      <div class="cta">
+        <a class="button" href={`${docs}/get-started`}>Get started</a>
+        <a class="secondary" href={docs}>Read the docs</a>
+      </div>
     </section>
   </main>
 
@@ -244,6 +305,124 @@ const docs = "https://docs.conn3x.org";
     .hero-grid,
     .points {
       grid-template-columns: 1fr;
+    }
+  }
+
+  .section-lede {
+    color: var(--c-text-muted);
+    max-width: 44rem;
+    margin: 0 0 2rem;
+  }
+  .convert {
+    border-block: 1px solid var(--c-border);
+    background: var(--c-surface);
+    margin-top: clamp(3rem, 7vw, 5rem);
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .convert h2,
+  .compare h2,
+  .closing h2 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    letter-spacing: -0.025em;
+    margin: 0 0 1rem;
+  }
+  .pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1.25fr);
+    align-items: start;
+  }
+  .pair figure {
+    margin: 0;
+  }
+  .pair figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .pair pre {
+    margin: 0;
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .pair code {
+    font-family: var(--font-mono);
+  }
+  /* The brand's junction: a line with a node, joining the two halves. */
+  .junction {
+    height: 2px;
+    background: var(--c-accent);
+    position: relative;
+    margin-top: 4.5rem;
+  }
+  .junction::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: var(--c-accent);
+    transform: translate(-50%, -50%);
+  }
+  .compare {
+    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+  th,
+  td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.85rem 1rem 0.85rem 0;
+    border-bottom: 1px solid var(--c-border);
+  }
+  thead th {
+    font-weight: 700;
+    color: var(--c-text-muted);
+  }
+  tbody th {
+    font-weight: 600;
+    width: 24%;
+  }
+  td:last-child,
+  thead th:last-child {
+    color: var(--c-text);
+    font-weight: 700;
+    border-left: 3px solid var(--c-accent);
+    padding-left: 1rem;
+  }
+  td:nth-child(2) {
+    color: var(--c-text-muted);
+  }
+  .closing {
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .closing p {
+    color: var(--c-text-muted);
+    margin: 0 0 1.5rem;
+  }
+  @media (max-width: 760px) {
+    .pair {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.5rem;
+    }
+    .junction {
+      width: 2px;
+      height: 2rem;
+      margin: 0.25rem auto;
     }
   }
 </style>
