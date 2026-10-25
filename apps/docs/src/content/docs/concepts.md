@@ -70,18 +70,30 @@ Cloud resources and host steps share one state file, so `conn3x plan` sees both 
 
 ### Secrets in files
 
-A file's content normally goes into state, so the next plan can show a diff. For a password or a key, use `content_wo` on a file, or `write_only = true` on a template, and the content never reaches the plan or the state:
+A file's content normally goes into state, so the next plan can show a diff. For a password or a key, use `content_wo` on a file, or `write_only = true` on a template. The content reaches the host but not the state or the plan:
 
 ```hcl
-step "db_password" {
-  file {
-    path       = "/etc/app/db-password"
-    content_wo = var.db_password
-    mode       = "0600"
+variable "db_password" {
+  type      = string
+  ephemeral = true
+}
+
+circuit "db" {
+  # hosts and ssh as usual
+
+  step "db_password" {
+    file {
+      path       = "/etc/app/db-password"
+      content_wo = var.db_password
+    }
   }
 }
 ```
 
-State keeps `content_hmac` instead: an HMAC-SHA256 of what's on the host. If someone edits the file, the next plan shows `content_hmac` changing, without showing either value, and apply writes yours back.
+Pass the value in when you run Conn3x, with `TF_VAR_db_password` or `-var`, and mark the variable `ephemeral` so it isn't saved either. A secret written into the configuration itself, as a literal or a variable's `default`, is part of the configuration, so it also ends up in saved plan files.
 
-The HMAC key never goes into state either. Conn3x reads it from `CONN3X_HMAC_KEY`, which must be at least 32 bytes, or creates `~/.config/conn3x/hmac.key` the first time it needs one. Everyone and everything that runs `conn3x` against the same state needs the same key, so put it in your CI secrets. With a different key, Conn3x stops and says which key the state expects, instead of rewriting every secret.
+State keeps `content_hmac` instead: an HMAC-SHA256 of the file's path and what's in it. If someone edits the file on the host, the next plan shows `content_hmac` changing, without showing either value, and apply writes yours back. Write-only files default to mode `0600`.
+
+The HMAC key never goes into state either. Conn3x reads it from `CONN3X_HMAC_KEY`, or creates `~/.config/conn3x/hmac.key` (under `$XDG_CONFIG_HOME` if that's set) the first time it writes a secret. To make your own, use `openssl rand -hex 32`. The key file's content works as `CONN3X_HMAC_KEY` too, so you can copy a laptop's key into your CI secrets. Everything that runs `conn3x` against the same state needs the same key. With a different one, Conn3x stops and names the key the state expects. If that key is gone for good, `conn3x state rm` the file's resource and apply again to rewrite it with the new key.
+
+If a secret used to sit in plain `content`, older state versions and backups still hold it, so rotate it when you switch to `content_wo`.
