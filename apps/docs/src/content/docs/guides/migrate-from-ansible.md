@@ -47,7 +47,7 @@ step "write_the_home_page" {
 
 Each of these stays as commented YAML under a `# TODO(convert)` line:
 
-- **Control flow:** `loop` and `with_*`, `when`, `register`, `ignore_errors`, `until` and similar. Circuits express repetition with HCL (`for_each`, `for` expressions) and decisions at plan time, so these need a person.
+- **Control flow:** `loop` and `with_*`, `when`, `register`, `ignore_errors`, `until` and similar. A step doesn't repeat yet, so a loop becomes one step per item, and a `when` becomes a choice of which hosts the circuit covers, made at plan time. These need a person.
 - **Jinja templates and filters.** Rewrite templates in `templatefile` syntax (`${var}`, `%{ if }`) and use a [template](/modules/template) step.
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when.
 - **`get_url` without a sha256 checksum.** Conn3x only downloads what it can verify.
