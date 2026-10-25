@@ -67,3 +67,21 @@ Conn3x uses SSH and nothing else. There's no agent, and nothing to install on th
 ## State
 
 Cloud resources and host steps share one state file, so `conn3x plan` sees both layers at once. OpenTofu's state encryption works as it does there.
+
+### Secrets in files
+
+A file's content normally goes into state, so the next plan can show a diff. For a password or a key, use `content_wo` on a file, or `write_only = true` on a template, and the content never reaches the plan or the state:
+
+```hcl
+step "db_password" {
+  file {
+    path       = "/etc/app/db-password"
+    content_wo = var.db_password
+    mode       = "0600"
+  }
+}
+```
+
+State keeps `content_hmac` instead: an HMAC-SHA256 of what's on the host. If someone edits the file, the next plan shows `content_hmac` changing, without showing either value, and apply writes yours back.
+
+The HMAC key never goes into state either. Conn3x reads it from `CONN3X_HMAC_KEY`, which must be at least 32 bytes, or creates `~/.config/conn3x/hmac.key` the first time it needs one. Everyone and everything that runs `conn3x` against the same state needs the same key, so put it in your CI secrets. With a different key, Conn3x stops and says which key the state expects, instead of rewriting every secret.

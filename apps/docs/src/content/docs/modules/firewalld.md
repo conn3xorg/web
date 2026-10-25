@@ -7,6 +7,14 @@ description: "A service or port allowed through firewalld, now and after reboots
 
 A service or port allowed through firewalld, now and after reboots.
 
+```hcl
+step "example" {
+  firewalld {
+    port = "..."
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |

@@ -7,6 +7,14 @@ description: "Waits until a path exists or a TCP port is listening on the host. 
 
 Waits until a path exists or a TCP port is listening on the host. Refresh checks again, so a later apply waits again if it stopped.
 
+```hcl
+step "example" {
+  wait_for {
+    path = "..."
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
