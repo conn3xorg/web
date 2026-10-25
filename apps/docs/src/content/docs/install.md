@@ -7,10 +7,10 @@ Conn3x is a single binary. Download it from the [latest release](https://github.
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.1.0` with the version you want.
+Pick the archive for your system. Replace `0.1.1` with the version you want.
 
 ```sh
-VERSION=0.1.0
+VERSION=0.1.1
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"

@@ -9,17 +9,21 @@ export const COLORS = {
   dark: { bg: "#0f1a2b", grid: "#1b2a42", text: "#e6ecf3", muted: "#9fb0c5", accent: "#ff7a2e" },
 };
 
-// Mark on a unit grid: traces at y = -1 and +1, junction at (J, 0).
-// Horizontal tangents at both ends of each curve keep the joins smooth.
+// Mark on a unit grid: traces at y = -1 and +1, junction at (J, 0). The
+// lines are regular hexagon edges, all one length, meeting at 120 degrees:
+// the two traces outline half a honeycomb cell, the node sits on its corner,
+// and the output line leaves as the next cell's edge.
 export function markPaths(u, stroke) {
-  const lead = 1.1 * u, bend = 1.15 * u, out = 1.25 * u;
-  const x0 = stroke / 2, xJ = x0 + lead + bend, xEnd = xJ + out;
-  const c1 = x0 + lead + bend * 0.55;
-  const top = `M${x0} ${-u}H${x0 + lead}C${c1} ${-u} ${c1} 0 ${xJ} 0`;
-  const bottom = `M${x0} ${u}H${x0 + lead}C${c1} ${u} ${c1} 0 ${xJ} 0`;
+  const e = u / Math.sin(Math.PI / 3);
+  const x0 = stroke / 2, xJ = x0 + 1.5 * e, xEnd = xJ + e;
+  const top = `M${x0} ${-u}H${x0 + e}L${xJ} 0`;
+  const bottom = `M${x0} ${u}H${x0 + e}L${xJ} 0`;
   const outLine = `M${xJ} 0H${xEnd}`;
   return { top, bottom, outLine, xJ, width: xEnd + stroke / 2, height: 2 * u + stroke, nodeR: stroke * 0.82 };
 }
+
+// Square ends and sharp corners keep the lines honeycomb-straight.
+export const LINE = 'stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4"';
 
 export function wordmark(fontFile, size) {
   const font = opentype.loadSync(fontFile);
@@ -53,6 +57,6 @@ export function lockup(fontFile, size) {
 }
 
 export function markSvg(m, stroke, colors, extra = "") {
-  const s = `stroke="${colors.text}" stroke-width="${stroke.toFixed(3)}" stroke-linecap="round" fill="none"`;
+  const s = `stroke="${colors.text}" stroke-width="${stroke.toFixed(3)}" ${LINE} fill="none"`;
   return `<path class="trace" pathLength="1" d="${m.top}" ${s}/><path class="trace" pathLength="1" d="${m.bottom}" ${s}/><path class="out" pathLength="1" d="${m.outLine}" ${s}/><circle class="node" cx="${m.xJ}" cy="0" r="${m.nodeR.toFixed(3)}" fill="${colors.accent}"/>${extra}`;
 }
