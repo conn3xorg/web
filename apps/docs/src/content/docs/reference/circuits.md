@@ -26,7 +26,7 @@ The circuit name, like step and handler names, must be a valid identifier withou
 
 | Argument | Description |
 | --- | --- |
-| `user` | Required. User to log in as. |
+| `user` | User to log in as. Required unless `ssh_config_file` sets one. |
 | `port` | SSH port. Defaults to 22. |
 | `private_key_file` | Path to a private key. Defaults to the SSH agent. |
 | `known_hosts_file` | known_hosts file to check host keys against. Defaults to `~/.ssh/known_hosts`. |
@@ -34,6 +34,8 @@ The circuit name, like step and handler names, must be a valid identifier withou
 | `become` | Run commands as root through sudo. |
 | `become_password_file` | File holding the sudo password, when sudo needs one. |
 | `timeout` | How long to keep trying while a host isn't answering yet, such as a server still booting. Defaults to `"3m"`. |
+| `jump_hosts` | Hosts to connect through first, in order, like `ssh -J`: `["deploy@bastion.example.com", "10.0.0.5:2222"]`. Each is checked against known_hosts and uses the same key. |
+| `ssh_config_file` | An OpenSSH config, such as `"~/.ssh/config"`, to look each host up in as a `Host` alias. See [Reach hosts behind a bastion](/guides/bastions). |
 
 The host's address comes from `hosts`; `ssh` has no `host` argument.
 
