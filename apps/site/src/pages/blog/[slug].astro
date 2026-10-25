@@ -1,0 +1,74 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+export async function getStaticPaths() {
+  return (await getCollection("blog")).map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+---
+<Base title={post.data.title} description={post.data.description} path={`/blog/${post.id}`}>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+  <main id="main" class="wrap">
+    <article class="post">
+      <p class="meta"><a href="/blog">Blog</a>, <time datetime={post.data.date.toISOString().slice(0, 10)}>{date}</time></p>
+      <h1>{post.data.title}</h1>
+      <Content />
+    </article>
+  </main>
+  <SiteFooter />
+</Base>
+<style>
+  .post {
+    max-width: 44rem;
+    padding-block: 3rem 5rem;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .meta {
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+    margin: 0;
+  }
+  .meta a {
+    color: inherit;
+  }
+  h1 {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin: 0.75rem 0 2rem;
+  }
+  .post :global(h2) {
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin: 2.5rem 0 0.75rem;
+  }
+  .post :global(pre) {
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .post :global(pre code) {
+    font-family: var(--font-mono);
+  }
+  .post :global(:not(pre) > code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+  .post :global(a) {
+    color: var(--c-link);
+  }
+</style>

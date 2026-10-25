@@ -14,6 +14,8 @@ export default defineConfig({
     inlineStylesheets: "never",
   },
   integrations: [sitemap()],
+  // Highlighting writes inline styles, which the CSP doesn't allow.
+  markdown: { syntaxHighlight: false },
   fonts: [
     {
       provider: fontProviders.local(),

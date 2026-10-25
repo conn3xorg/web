@@ -1,0 +1,72 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+
+const posts = (await getCollection("blog")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const date = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+---
+<Base title="Blog: Conn3x" description="Releases and notes from building Conn3x in public." path="/blog">
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+  <main id="main" class="wrap blog">
+    <h1>Blog</h1>
+    <p class="lede">Releases, and what we learned building them. <a href="/rss.xml">RSS</a></p>
+    <ol class="posts">
+      {posts.map((p) => (
+        <li>
+          <time datetime={p.data.date.toISOString().slice(0, 10)}>{date(p.data.date)}</time>
+          <h2><a href={`/blog/${p.id}`}>{p.data.title}</a></h2>
+          <p>{p.data.description}</p>
+        </li>
+      ))}
+    </ol>
+  </main>
+  <SiteFooter />
+</Base>
+<style>
+  .blog {
+    padding-block: 3rem 5rem;
+    max-width: 46rem;
+  }
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.5rem;
+  }
+  .lede {
+    color: var(--c-text-muted);
+    margin: 0 0 3rem;
+  }
+  .posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .posts li {
+    border-top: 1px solid var(--c-border);
+    padding-block: 1.5rem;
+  }
+  time {
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+  }
+  h2 {
+    font-size: 1.375rem;
+    margin: 0.25rem 0 0.5rem;
+  }
+  h2 a {
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  h2 a:hover {
+    text-decoration: underline;
+  }
+  .posts p {
+    margin: 0;
+    color: var(--c-text-muted);
+  }
+</style>

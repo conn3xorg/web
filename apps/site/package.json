@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "astro": "7.4.2",
-    "@astrojs/sitemap": "3.7.4"
+    "@astrojs/sitemap": "3.7.4",
+    "@astrojs/rss": "4.0.19"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
