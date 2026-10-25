@@ -38,6 +38,8 @@ const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month:
     video.addEventListener("play", label);
     video.addEventListener("pause", label);
     toggle.addEventListener("click", () => (video.paused ? video.play() : video.pause()));
+    // Without JavaScript the browser's own controls stay; with it, one button.
+    video.controls = false;
     toggle.hidden = false;
     if (!still) video.play().catch(label);
     label();

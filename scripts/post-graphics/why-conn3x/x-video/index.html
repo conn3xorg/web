@@ -85,11 +85,13 @@
   count = 3
   name  = <span class="s">"app-${count.index}"</span>
   image = <span class="s">"rockylinux-10-x64"</span>
+  size  = <span class="s">"s-1vcpu-1gb"</span>
 }
 
 <span class="k">circuit</span> <span class="s">"app"</span> {
   hosts = { for d in digitalocean_droplet.app :
             d.name =&gt; d.ipv4_address }
+  <span class="c"># abridged: pin each host key, see the docs</span>
   ssh { user = <span class="s">"root"</span> }
 
   <span class="k">step</span> <span class="s">"deploy_user"</span> {

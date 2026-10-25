@@ -48,3 +48,18 @@ test("a clip can be paused", async ({ page }) => {
   expect(await video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
   await expect(toggle).toHaveText("Play");
 });
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("a clip can still be played", async ({ page }) => {
+    await page.goto(POST);
+    await expect(page.locator("[data-clip] video").first()).toHaveAttribute("controls", "");
+  });
+});
+
+test("the clip's button sits outside its caption", async ({ page }) => {
+  await page.goto(POST);
+  await expect(page.locator("figcaption [data-clip-toggle]")).toHaveCount(0);
+  expect(await page.locator("[data-clip] video").first().evaluate((v: HTMLVideoElement) => v.controls)).toBe(false);
+});

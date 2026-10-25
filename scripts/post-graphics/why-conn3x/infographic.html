@@ -73,7 +73,7 @@
   <div class="row">
     <div class="moment"><span class="n">02</span><h3>Wait for SSH</h3></div>
     <div class="cell two hand" data-mark="A">A sleep or a retry loop, tuned by hand until it mostly works.</div>
-    <div class="cell one">The circuit keeps trying a host that isn't answering yet, for 3 minutes by default (<code>timeout</code>).</div>
+    <div class="cell one">The <code>ssh</code> block's <code>timeout</code> keeps trying a host that isn't answering yet, 3 minutes by default.</div>
   </div>
   <div class="row">
     <div class="moment"><span class="n">03</span><h3>Pass the addresses</h3></div>
@@ -97,12 +97,12 @@
   </div>
   <div class="row">
     <div class="moment"><span class="n">07</span><h3>Scale 3 to 2</h3></div>
-    <div class="cell two hand" data-mark="D">Terraform removes <code>app-2</code>. A static inventory keeps listing it until someone edits it.</div>
-    <div class="cell one">The same plan removes <code>app-2</code> and drops its steps from state.</div>
+    <div class="cell two hand" data-mark="D">Terraform removes <code>app-3</code>. A static inventory keeps listing it until someone edits it.</div>
+    <div class="cell one">The same plan removes <code>app-3</code>, deleting its keys from the server first.</div>
   </div>
   <div class="row">
     <div class="moment"><span class="n">08</span><h3>Catch hand edits</h3></div>
-    <div class="cell two">Run the playbook again in check mode.</div>
+    <div class="cell two"><code>terraform plan</code> for the cloud, then the playbook in check mode for the hosts.</div>
     <div class="cell one"><code>conn3x drift</code> checks both layers and exits 2 when something changed.</div>
   </div>
 </div>
@@ -115,8 +115,8 @@
   </div>
   <div class="term">
     <div><span class="p">$</span> brew install conn3xorg/tap/conn3x</div>
-    <div><span class="p">$</span> conn3x init &amp;&amp; conn3x apply</div>
-    <div class="ok">Apply complete! Resources: 9 added</div>
+    <div><span class="p">$</span> conn3x apply -auto-approve</div>
+    <div class="ok">Apply complete! Resources: 12 added</div>
   </div>
 </div>
 <div class="bottom">
