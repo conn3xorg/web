@@ -17,7 +17,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createRequire } from "node:module";
-import { COLORS, lockup, markPaths, markSvg } from "./brand.mjs";
+import { COLORS, LINE, lockup, markPaths, markSvg } from "./brand.mjs";
 
 const require = createRequire(import.meta.url);
 const root = new URL("../../", import.meta.url).pathname;
@@ -41,7 +41,7 @@ function vectors() {
 
   // Heavier stroke so the favicon holds up at 16px; follows the browser theme.
   const fu = 9, fs = 6.4, fm = markPaths(fu, fs), side = fm.width + 4;
-  const line = (d) => `<path class="t" d="${d}" stroke-width="${fs}" stroke-linecap="round" fill="none"/>`;
+  const line = (d) => `<path class="t" d="${d}" stroke-width="${fs}" ${LINE} fill="none"/>`;
   const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${f(side)} ${f(side)}"><style>.t{stroke:${COLORS.light.text}}@media (prefers-color-scheme:dark){.t{stroke:${COLORS.dark.text}}}</style><g transform="translate(2 ${f(side / 2)})">${line(fm.top)}${line(fm.bottom)}${line(fm.outLine)}<circle cx="${fm.xJ}" cy="0" r="${f(fm.nodeR)}" fill="${COLORS.light.accent}"/></g></svg>`;
 
   const out = {
@@ -99,7 +99,7 @@ async function rasters(browser, svgs) {
   const og = `<div style="width:1200px;height:630px;background:${COLORS.light.bg};${grid};padding:72px 80px;display:flex;flex-direction:column;justify-content:space-between;font-family:S;color:${COLORS.light.text}">
   <div style="width:420px">${fill(svgs["src/brand/logo.svg"])}</div>
   <div style="font-weight:800;font-size:76px;line-height:1.02;letter-spacing:-0.03em;max-width:16ch">One plan for your cloud and the servers it creates.</div>
-  <div style="display:flex;justify-content:space-between;font-family:M;font-size:24px;color:${COLORS.light.muted}"><span>Open source, in development</span><span>github.com/conn3xorg/conn3x</span></div></div>`;
+  <div style="display:flex;justify-content:space-between;font-family:M;font-size:24px;color:${COLORS.light.muted}"><span>Open source, MPL-2.0</span><span>conn3x.org</span></div></div>`;
   writeFileSync(join(site, "public/og.png"), await render(og, 1200, 630));
 }
 
