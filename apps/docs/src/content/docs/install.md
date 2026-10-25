@@ -5,12 +5,22 @@ description: Install the conn3x binary on Linux or macOS.
 
 Conn3x is a single binary. Download it from the [latest release](https://github.com/conn3xorg/conn3x/releases/latest), or build it from source.
 
-## Download a release
+## Homebrew
 
-Pick the archive for your system. Replace `0.1.1` with the version you want.
+On macOS:
 
 ```sh
-VERSION=0.1.1
+brew install conn3xorg/tap/conn3x
+```
+
+Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up new releases.
+
+## Download a release
+
+Pick the archive for your system. Replace `0.2.2` with the version you want.
+
+```sh
+VERSION=0.2.2
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
