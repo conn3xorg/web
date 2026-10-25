@@ -17,7 +17,7 @@ circuit "NAME" {
 
 | Argument | Description |
 | --- | --- |
-| `hosts` | Required. A map of host name to address. Any expression that produces a map works, including one built from resources in the same plan. |
+| `hosts` | Required. A map of host name to address, or to an object with an `address` and any of `user`, `port`, `private_key_file`, `host_key` and `jump_hosts`, which override the `ssh` block for that host. Any expression that produces a map works, including one built from resources in the same plan. |
 | `ssh` | Required block. How to reach every host in the circuit. |
 
 The circuit name, like step and handler names, must be a valid identifier without a double underscore.
@@ -26,7 +26,7 @@ The circuit name, like step and handler names, must be a valid identifier withou
 
 | Argument | Description |
 | --- | --- |
-| `user` | Required. User to log in as. |
+| `user` | User to log in as. Required unless `ssh_config_file` sets one. |
 | `port` | SSH port. Defaults to 22. |
 | `private_key_file` | Path to a private key. Defaults to the SSH agent. |
 | `known_hosts_file` | known_hosts file to check host keys against. Defaults to `~/.ssh/known_hosts`. |
@@ -34,8 +34,21 @@ The circuit name, like step and handler names, must be a valid identifier withou
 | `become` | Run commands as root through sudo. |
 | `become_password_file` | File holding the sudo password, when sudo needs one. |
 | `timeout` | How long to keep trying while a host isn't answering yet, such as a server still booting. Defaults to `"3m"`. |
+| `jump_hosts` | Hosts to connect through first, in order, like `ssh -J`: `["deploy@bastion.example.com", "10.0.0.5:2222"]`. Each is checked against known_hosts and uses the same key. |
+| `ssh_config_file` | An OpenSSH config, such as `"~/.ssh/config"`, to look each host up in as a `Host` alias. See [Reach hosts behind a bastion](/guides/bastions). |
 
 The host's address comes from `hosts`; `ssh` has no `host` argument.
+
+Hosts that log in differently can share a circuit:
+
+```hcl
+hosts = {
+  web1 = "10.0.0.4"
+  db1  = { address = "10.0.0.5", user = "admin", port = 2222 }
+}
+```
+
+An inventory is then an ordinary variable or local, and a group is a map you `merge()`.
 
 ## step
 
@@ -54,7 +67,7 @@ A step holds exactly one module block; the [modules reference](/modules/file) li
 | `depends_on` | Other resources or steps this step waits for, beyond the one before it. |
 | `notify` | Handlers to run when this step changes something. |
 
-Inside a step, `each.key` is the host's name and `each.value` its address.
+Inside a step, `each.key` is the host's name and `each.value` its entry in `hosts`: the address, or the host's object.
 
 A step `NAME` in circuit `CIRCUIT` becomes the resource `conn3x_MODULE.CIRCUIT__NAME`, with one instance per host. Use that address to read a step's computed attributes, or in another step's `depends_on`.
 

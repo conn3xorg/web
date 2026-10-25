@@ -35,7 +35,7 @@ export default defineConfig({
         { label: "Start here", items: ["install", "get-started", "concepts"] },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         { label: "Circuit language", items: ["reference/circuits", "reference/cli"] },
         { label: "Modules", collapsed: true, items: [{ autogenerate: { directory: "modules" } }] },
