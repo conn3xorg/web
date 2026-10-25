@@ -1,0 +1,64 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Why Conn3x is one tool: social card</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  body { width: 1200px; height: 630px; overflow: hidden; color: var(--text); }
+  .frame { position: relative; width: 1200px; height: 630px; padding: 64px 72px; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .top img { height: 44px; }
+  .label { font-family: var(--mono); font-size: 20px; letter-spacing: 0.14em; color: var(--muted); }
+  .label b { color: var(--accent); font-weight: 600; }
+  h1 { font-size: 64px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 800; margin-top: 44px; }
+  h1 span { color: var(--accent); }
+  .diagram { position: absolute; left: 72px; right: 72px; bottom: 64px; height: 220px; display: grid; grid-template-columns: 470px 1fr 400px; align-items: center; }
+  .two { display: grid; gap: 12px; }
+  .box { font-family: var(--mono); font-size: 22px; border: 2px solid var(--line); background: var(--ink-2); padding: 14px 20px; display: flex; justify-content: space-between; }
+  .box em { font-style: normal; color: var(--dim); }
+  .glue { border-style: dashed; border-color: #8a4a2a; color: #ffb48a; background: transparent; }
+  .wires { width: 100%; height: 100%; }
+  .one { background: var(--accent); color: var(--ink); height: 100%; padding: 26px 30px; display: flex; flex-direction: column; justify-content: space-between; }
+  .one .mono { font-size: 20px; letter-spacing: 0.14em; font-weight: 600; }
+  /* card.html?preview: the 1280x640 GitHub social preview, with the project's tagline. */
+  .preview body, body.preview { width: 1280px; height: 640px; }
+  body.preview .frame { width: 1280px; height: 640px; }
+  body.preview .diagram { grid-template-columns: 500px 1fr 420px; }
+  .one strong { font-family: var(--mono); font-size: 46px; font-weight: 700; letter-spacing: -0.02em; }
+</style>
+</head>
+<body class="grid-dark">
+<script>
+  if (location.search.includes("preview")) {
+    document.body.classList.add("preview");
+    addEventListener("DOMContentLoaded", () => {
+      document.querySelector(".label").innerHTML = "<b>MPL-2.0</b> · GITHUB.COM/CONN3XORG";
+      document.querySelector("h1").innerHTML = "One plan for your cloud<br><span>and the servers it creates.</span>";
+    });
+  }
+</script>
+<div class="frame">
+  <div class="top">
+    <img src="../../../apps/site/src/brand/logo-dark.svg" alt="">
+    <span class="label"><b>WHY CONN3X</b> · OPEN SOURCE</span>
+  </div>
+  <h1>Two tools, two states.<br><span>Or one plan.</span></h1>
+  <div class="diagram">
+    <div class="two">
+      <div class="box">terraform apply <em>state</em></div>
+      <div class="box glue">inventory · sleep 60</div>
+      <div class="box">ansible-playbook <em>no state</em></div>
+    </div>
+    <svg class="wires" viewBox="0 0 100 220" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 37 H45 V183 H0 M45 110 H100" fill="none" stroke="#2a3b55" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <div class="one">
+      <span class="mono">ONE PLAN · ONE STATE</span>
+      <strong>conn3x apply</strong>
+    </div>
+  </div>
+</div>
+</body>
+</html>

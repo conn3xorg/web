@@ -85,17 +85,25 @@ It's easier, and the reasons are boring in the best way. There's one binary to i
 It's also better, because one tool can see the whole picture. A plan is a diff against what's on the servers right now, line by line for files, next to the cloud changes that cause it. `conn3x drift` checks both layers and exits 2 when something changed by hand, so a scheduled job hears about a hand edit the morning after, not the next time someone applies. And there's nothing to install on the servers: no agent and no Python. Conn3x connects over SSH and runs plain shell commands, as root or through sudo.
 
 <figure>
-  <picture>
-    <source srcset="/media/blog/why-conn3x/infographic.webp" type="image/webp" />
-    <img src="/media/blog/why-conn3x/infographic.png" width="1600" height="INFOGRAPHIC_HEIGHT" loading="lazy" decoding="async" alt="Infographic: the same deploy done with Terraform plus Ansible, with four hand-off points marked, and done with one Conn3x plan." />
-  </picture>
+  <img src="/media/blog/why-conn3x/infographic.png" width="1600" height="2534" loading="lazy" decoding="async" alt="Infographic: the same deploy done with Terraform plus Ansible, with four hand-off points marked, and done with one Conn3x plan." />
   <figcaption>The same deploy, two ways. Every detail comes from the v0.2.2 README and docs.</figcaption>
 </figure>
 
 <details>
 <summary>Read the infographic as text</summary>
 
-INFOGRAPHIC_TEXT
+- **The setup:** three Rocky Linux servers, a `deploy` user and its SSH key, done with Terraform and Ansible and then with one Conn3x plan.
+- **Tools to install:** two tools plus Python, or one binary.
+- **State files:** Terraform state plus none for the hosts, or one for both.
+- **Hand-offs to maintain:** four, or none.
+- **Create the servers:** `terraform apply`, or `conn3x apply` with the same providers.
+- **Wait for SSH (hand-off A):** a sleep or retry loop tuned by hand, or the circuit's `timeout`, three minutes by default.
+- **Pass the addresses (hand-off B):** `local-exec` or an inventory script writes `inventory.ini`, or `hosts` is an expression over the droplets.
+- **Configure:** `ansible-playbook -i inventory.ini site.yml` with Python on both sides, or the same apply over SSH with host keys checked and no agent.
+- **Preview (hand-off C):** `terraform plan` plus a separate `--check --diff` run, or one `conn3x plan`.
+- **Remember:** Terraform state for the cloud and none for the hosts, or one state file.
+- **Scale 3 to 2 (hand-off D):** a static inventory keeps listing the removed server, or the same plan drops its steps from state.
+- **Catch hand edits:** run the playbook again in check mode, or `conn3x drift`, which exits 2 when something changed.
 
 </details>
 

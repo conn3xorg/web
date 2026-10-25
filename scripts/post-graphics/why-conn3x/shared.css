@@ -1,0 +1,52 @@
+/* Copyright (c) The Conn3x Authors
+ * SPDX-License-Identifier: MPL-2.0 */
+
+/* Shared look for the why-Conn3x graphics: the site's fonts and Junction tokens. */
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("../../../apps/site/src/fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 900;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../../../apps/site/src/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+}
+:root {
+  --ink: #0f1a2b;
+  --ink-2: #16243a;
+  --ink-3: #0a1220;
+  --line: #2a3b55;
+  --grid: #1b2a42;
+  --text: #e6ecf3;
+  --muted: #9fb0c5;
+  --dim: #6f8299;
+  --accent: #ff7a2e;
+  --add: #7fd3a7;
+  --paper: #f3f5f7;
+  --paper-2: #ffffff;
+  --paper-line: #cfd7e1;
+  --paper-grid: #dfe5ec;
+  --navy: #13233a;
+  --navy-muted: #4a5a70;
+  --rust: #b8430b;
+  --display: "Schibsted Grotesk", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--display); -webkit-font-smoothing: antialiased; }
+.mono { font-family: var(--mono); }
+.grid-dark {
+  background-color: var(--ink);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.grid-light {
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--paper-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+}

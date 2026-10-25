@@ -1,0 +1,127 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One deploy, two ways: infographic</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); }
+  .page { padding: 88px 96px 0; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 84px; line-height: 1; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1180px; }
+  .lede code { font-family: var(--mono); font-size: 0.85em; color: var(--navy); }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 56px 0 72px; }
+  .stat { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 28px 32px; }
+  .stat .mono { font-size: 20px; letter-spacing: 0.12em; color: var(--navy-muted); }
+  .stat .was { font-size: 26px; color: var(--navy-muted); margin-top: 18px; }
+  .stat .was s { text-decoration-thickness: 2px; }
+  .stat .now { font-size: 56px; font-weight: 800; letter-spacing: -0.03em; color: var(--rust); line-height: 1.1; }
+
+  .head, .row { display: grid; grid-template-columns: 300px minmax(0, 1fr) minmax(0, 1fr); gap: 0 24px; }
+  .head { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; padding-bottom: 18px; border-bottom: 3px solid var(--navy); }
+  .head .one { color: var(--rust); font-weight: 600; }
+  .row { padding: 30px 0; border-bottom: 2px solid var(--paper-line); align-items: start; }
+  .moment { display: flex; gap: 18px; align-items: baseline; }
+  .moment .n { font-family: var(--mono); font-size: 24px; color: var(--navy-muted); }
+  .moment h3 { font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; }
+  .cell { font-size: 27px; line-height: 1.4; position: relative; }
+  .cell code { white-space: nowrap; font-family: var(--mono); font-size: 0.86em; background: #e8edf3; padding: 2px 8px; }
+  .two { color: var(--navy); }
+  .two.hand { padding-left: 64px; }
+  .two.hand::before {
+    content: attr(data-mark); position: absolute; left: 0; top: 2px;
+    width: 44px; height: 44px; border-radius: 50%; background: var(--rust); color: #fff;
+    font-family: var(--mono); font-size: 22px; font-weight: 700; display: grid; place-items: center;
+  }
+  .one { background: var(--paper-2); border-left: 6px solid var(--accent); padding: 4px 0 4px 26px; }
+
+
+  .foot { margin-top: 88px; background: var(--ink); color: var(--text); padding: 64px 96px 72px; display: grid; grid-template-columns: 1fr 600px; gap: 48px; align-items: center; }
+  .foot .mono.k { font-size: 20px; letter-spacing: 0.14em; color: var(--accent); }
+  .foot h2 { font-size: 50px; letter-spacing: -0.03em; font-weight: 800; margin-top: 14px; line-height: 1.05; }
+  .foot p { font-size: 26px; color: var(--muted); margin-top: 16px; line-height: 1.4; }
+  .term { border: 2px solid var(--accent); background: var(--ink-3); padding: 28px 32px; font-family: var(--mono); font-size: 25px; line-height: 1.8; }
+  .term .p { color: var(--dim); }
+  .term .ok { color: var(--add); }
+  .bottom { background: var(--ink); color: var(--dim); font-family: var(--mono); font-size: 20px; display: flex; justify-content: space-between; padding: 0 96px 48px; }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X V0.2.2</b> · WHY ONE TOOL</span>
+  <h1>One deploy, two ways</h1>
+  <p class="lede">Three Rocky Linux servers, a <code>deploy</code> user and its SSH key. First with Terraform and Ansible, then with one Conn3x plan. The orange marks are where the two tools hand work to each other.</p>
+
+  <div class="stats">
+    <div class="stat"><span class="mono">TOOLS TO INSTALL</span><p class="was">Two tools: <s>2 + Python</s></p><p class="now">1 binary</p></div>
+    <div class="stat"><span class="mono">STATE FILES</span><p class="was">Two tools: <s>1 + none</s></p><p class="now">1 for both</p></div>
+    <div class="stat"><span class="mono">HAND-OFFS TO MAINTAIN</span><p class="was">Two tools: <s>4, marked A to D</s></p><p class="now">0</p></div>
+  </div>
+
+  <div class="head"><span>MOMENT</span><span>TERRAFORM + ANSIBLE</span><span class="one">CONN3X</span></div>
+
+  <div class="row">
+    <div class="moment"><span class="n">01</span><h3>Create the servers</h3></div>
+    <div class="cell two"><code>terraform apply</code> creates three droplets and records them in Terraform state.</div>
+    <div class="cell one"><code>conn3x apply</code> creates them with the same providers, built on OpenTofu.</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">02</span><h3>Wait for SSH</h3></div>
+    <div class="cell two hand" data-mark="A">A sleep or a retry loop, tuned by hand until it mostly works.</div>
+    <div class="cell one">The circuit keeps trying a host that isn't answering yet, for 3 minutes by default (<code>timeout</code>).</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">03</span><h3>Pass the addresses</h3></div>
+    <div class="cell two hand" data-mark="B"><code>local-exec</code> or an inventory script writes <code>inventory.ini</code>.</div>
+    <div class="cell one"><code>hosts</code> is an expression over the droplets. Nothing to write.</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">04</span><h3>Configure</h3></div>
+    <div class="cell two"><code>ansible-playbook</code> <code>-i inventory.ini</code> <code>site.yml</code>, with Python on the controller and the hosts.</div>
+    <div class="cell one">Same apply. Each step runs on every host over SSH, after its host key is checked. No agent, no Python.</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">05</span><h3>Preview</h3></div>
+    <div class="cell two hand" data-mark="C"><code>terraform plan</code>, then a separate <code>--check --diff</code> run for the hosts.</div>
+    <div class="cell one">One <code>conn3x plan</code>: the droplets and the changes headed for each one.</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">06</span><h3>Remember</h3></div>
+    <div class="cell two">Terraform state for the cloud. None for the hosts.</div>
+    <div class="cell one">One state file for both layers.</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">07</span><h3>Scale 3 to 2</h3></div>
+    <div class="cell two hand" data-mark="D">Terraform removes <code>app-2</code>. A static inventory keeps listing it until someone edits it.</div>
+    <div class="cell one">The same plan removes <code>app-2</code> and drops its steps from state.</div>
+  </div>
+  <div class="row">
+    <div class="moment"><span class="n">08</span><h3>Catch hand edits</h3></div>
+    <div class="cell two">Run the playbook again in check mode.</div>
+    <div class="cell one"><code>conn3x drift</code> checks both layers and exits 2 when something changed.</div>
+  </div>
+</div>
+
+<div class="foot">
+  <div>
+    <span class="mono k">OPEN SOURCE · MPL-2.0</span>
+    <h2>One binary, one plan, one state.</h2>
+    <p>Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu today. Every Terraform and OpenTofu provider works.</p>
+  </div>
+  <div class="term">
+    <div><span class="p">$</span> brew install conn3xorg/tap/conn3x</div>
+    <div><span class="p">$</span> conn3x init &amp;&amp; conn3x apply</div>
+    <div class="ok">Apply complete! Resources: 9 added</div>
+  </div>
+</div>
+<div class="bottom">
+  <img src="../../../apps/site/src/brand/logo-dark.svg" alt="">
+  <span>conn3x.org · github.com/conn3xorg/conn3x · values from the v0.2.2 README and docs</span>
+</div>
+</body>
+</html>
