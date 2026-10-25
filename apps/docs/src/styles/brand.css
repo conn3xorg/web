@@ -1,0 +1,49 @@
+/* Copyright (c) The Conn3x Authors
+ * SPDX-License-Identifier: MPL-2.0 */
+
+/* The Junction brand on Starlight's theme variables. */
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("/fonts/schibsted-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+:root {
+  --sl-font: "Schibsted Grotesk", system-ui, sans-serif;
+  --sl-font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* Dark */
+  --sl-color-accent-low: #3a1c08;
+  --sl-color-accent: #ff7a2e;
+  --sl-color-accent-high: #ffd2b5;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #e6ecf3;
+  --sl-color-gray-2: #c3cfdd;
+  --sl-color-gray-3: #9fb0c5;
+  --sl-color-gray-4: #5d6f87;
+  --sl-color-gray-5: #2a3b55;
+  --sl-color-gray-6: #16243a;
+  --sl-color-black: #0f1a2b;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #fde3d2;
+  --sl-color-accent: #b8430b;
+  --sl-color-accent-high: #5c2205;
+  --sl-color-white: #13233a;
+  --sl-color-gray-1: #1d2e47;
+  --sl-color-gray-2: #33445d;
+  --sl-color-gray-3: #4a5a70;
+  --sl-color-gray-4: #8494a8;
+  --sl-color-gray-5: #cfd7e1;
+  --sl-color-gray-6: #e8edf2;
+  --sl-color-gray-7: #f3f5f7;
+  --sl-color-black: #ffffff;
+}

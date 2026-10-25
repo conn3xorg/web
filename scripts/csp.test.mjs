@@ -99,3 +99,24 @@ test("hashes styles inside noscript", () => {
   assert.equal(r.code, 0, r.stderr);
   assert.ok(r.headers.includes(sha("y{}")));
 });
+
+test("--wasm lets WebAssembly compile, for search", () => {
+  const { dist, baseFile } = site({ "index.html": "<html><body><p>hi</p></body></html>" });
+  for (const [args, want] of [[[], false], [["--wasm"], true]]) {
+    const r = spawnSync(process.execPath, [script, dist, baseFile, ...args], { encoding: "utf8" });
+    assert.equal(r.status, 0, r.stderr);
+    const headers = readFileSync(join(dist, "_headers"), "utf8");
+    assert.equal(/script-src 'self' 'wasm-unsafe-eval'/.test(headers), want, headers);
+  }
+});
+
+test("--style-attrs allows style attributes, and nothing else inline", () => {
+  const { dist, baseFile } = site({ "index.html": '<html><body><svg style="--size: 1em"></svg><p onclick="x()">hi</p></body></html>' });
+  const r = spawnSync(process.execPath, [script, dist, baseFile, "--style-attrs"], { encoding: "utf8" });
+  assert.notEqual(r.status, 0, "an event handler must still fail the build");
+  assert.doesNotMatch(r.stderr, /inline style attribute/);
+  const ok = site({ "index.html": '<html><body><svg style="--size: 1em"></svg></body></html>' });
+  const r2 = spawnSync(process.execPath, [script, ok.dist, ok.baseFile, "--style-attrs"], { encoding: "utf8" });
+  assert.equal(r2.status, 0, r2.stderr);
+  assert.match(readFileSync(join(ok.dist, "_headers"), "utf8"), /style-src-attr 'unsafe-inline'/);
+});
