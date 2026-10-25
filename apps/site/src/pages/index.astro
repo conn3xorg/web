@@ -6,10 +6,11 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 
 const repo = "https://github.com/conn3xorg/conn3x";
+const docs = "https://docs.conn3x.org";
 ---
 <Base
   title="Conn3x: one plan for your cloud and the servers it creates"
-  description="Conn3x is an open-source tool, in development, that will provision cloud infrastructure and configure the servers it creates from one binary and one plan."
+  description="Conn3x is an open-source tool that creates cloud infrastructure and configures the servers on it, from one binary and one plan."
   path="/"
 >
   <a class="skip" href="#main">Skip to content</a>
@@ -21,59 +22,63 @@ const repo = "https://github.com/conn3xorg/conn3x";
         <div class="pitch">
           <h1><span>Provision it.</span> <span>Configure it.</span> <span>One plan.</span></h1>
           <p class="lede">
-            Today that takes Terraform, Ansible, and a drawer of glue scripts holding them
-            together. We're building Conn3x to do both jobs: one binary, one plan, one state,
-            for your cloud and every server it creates.
+            Today that's Terraform, Ansible, and a drawer of glue scripts holding them
+            together. Conn3x does both jobs: one binary, one plan, one state, for your cloud
+            and every server it creates.
           </p>
           <div class="cta">
-            <a class="button" href={repo}>Star Conn3x on GitHub</a>
-            <p class="cta-note">Then hit <strong>Watch</strong> to follow along. We're building it in public.</p>
+            <a class="button" href={`${docs}/get-started`}>Get started</a>
+            <a class="secondary" href={repo}>Star it on GitHub</a>
+            <p class="cta-note">v0.1 is out. Open source, MPL-2.0, built in public.</p>
           </div>
         </div>
 
         <figure class="plan">
           <pre aria-describedby="plan-caption"><code><span class="l dim">$ conn3x plan</span>
 <span class="l add">+ digitalocean_droplet.web</span>
-<span class="l add">+ web: package nginx</span>
-<span class="l chg">~ web: /etc/nginx/nginx.conf</span>
-<span class="l dim">    server_name ← droplet.web.ipv4</span>
-<span class="l dim">Plan: 3 to add, 1 to change.</span></code></pre>
+<span class="l add">+ conn3x_package.web__nginx["web1"]</span>
+<span class="l add">+ conn3x_file.web__page["web1"]</span>
+<span class="l dim">    host = (known after apply)</span>
+<span class="l add">+ conn3x_service.web__running["web1"]</span>
+<span class="l dim">Plan: 4 to add, 0 to change, 0 to destroy.</span></code></pre>
           <figcaption id="plan-caption">
-            A sketch of where we're headed: the droplet, the package and the config file that
-            depends on its IP, all in one plan.
+            Summarised from a real plan: the droplet, and the steps that set it up, waiting
+            on an address that doesn't exist yet.
           </figcaption>
         </figure>
       </div>
     </section>
 
     <section class="coming wrap" aria-labelledby="coming-title">
-      <h2 id="coming-title">What we're building</h2>
+      <h2 id="coming-title">What it does</h2>
       <div class="points">
         <div>
           <h3>See everything before it runs</h3>
           <p>
-            One plan will show the server you're about to create and the exact file changes
-            that will land on it, linked by an IP address that doesn't exist yet.
+            One plan shows the server you're about to create and the exact changes headed
+            for it, line by line. Run it again later and it tells you what someone changed by
+            hand.
           </p>
         </div>
         <div>
           <h3>Keep your providers</h3>
           <p>
-            Conn3x is built on OpenTofu, so every Terraform and OpenTofu provider will work
-            as it is, and so will the modules you already have.
+            Conn3x is built on OpenTofu, so every Terraform and OpenTofu provider works as it
+            is, and so do the modules and state you already have.
           </p>
         </div>
         <div>
           <h3>Install nothing on your servers</h3>
           <p>
-            No Python to manage on your hosts. Conn3x will push a small helper over SSH and
-            clean up after itself, or stick to plain shell commands where that's all you allow.
+            No Python, no agent. Conn3x connects over SSH, checks the host key every time, and
+            runs plain shell commands, as root or through sudo.
           </p>
         </div>
       </div>
       <p class="status">
-        It's early. The engine is being built right now, Linux first, starting with Rocky,
-        RHEL, Debian and Ubuntu.
+        It's early, and Linux first: Rocky, RHEL, AlmaLinux, Fedora, Debian and Ubuntu.
+        Got playbooks? <code>conn3x convert ansible</code> turns them into circuits and marks
+        what's left for you. <a href={docs}>Read the docs</a>.
       </p>
     </section>
   </main>
@@ -134,7 +139,13 @@ const repo = "https://github.com/conn3xorg/conn3x";
   .button:active {
     transform: translateY(0);
   }
+  .secondary {
+    color: var(--c-text);
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+  }
   .cta-note {
+    flex-basis: 100%;
     margin: 0;
     color: var(--c-text-muted);
     font-size: 0.9375rem;
@@ -189,7 +200,8 @@ const repo = "https://github.com/conn3xorg/conn3x";
     .l:nth-child(3) { animation-delay: 0.7s; }
     .l:nth-child(4) { animation-delay: 0.95s; }
     .l:nth-child(5) { animation-delay: 1.2s; }
-    .l:nth-child(6) { animation-delay: 1.6s; }
+    .l:nth-child(6) { animation-delay: 1.45s; }
+    .l:nth-child(7) { animation-delay: 1.85s; }
   }
   @keyframes print {
     from { opacity: 0; transform: translateX(-4px); }

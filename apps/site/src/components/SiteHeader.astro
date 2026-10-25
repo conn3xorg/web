@@ -9,7 +9,10 @@ import logoDark from "../brand/logo-dark.svg?raw";
     <span class="logo logo-light" set:html={logo} />
     <span class="logo logo-dark" set:html={logoDark} />
   </a>
-  <a class="gh" href="https://github.com/conn3xorg/conn3x">GitHub</a>
+  <nav class="links" aria-label="Main">
+    <a class="gh" href="https://docs.conn3x.org">Docs</a>
+    <a class="gh" href="https://github.com/conn3xorg/conn3x">GitHub</a>
+  </nav>
 </header>
 
 <style>
@@ -29,6 +32,10 @@ import logoDark from "../brand/logo-dark.svg?raw";
   }
   .logo-dark {
     display: none;
+  }
+  .links {
+    display: flex;
+    gap: 1.25rem;
   }
   .gh {
     color: var(--c-text);
