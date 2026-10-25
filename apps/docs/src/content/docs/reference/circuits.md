@@ -54,6 +54,7 @@ An inventory is then an ordinary variable or local, and a group is a map you `me
 
 ```hcl
 step "NAME" {
+  for_each   = [ ... ]  # optional
   MODULE { ... }
   depends_on = [ ... ]
   notify     = [handler.NAME, ...]
@@ -64,12 +65,39 @@ A step holds exactly one module block; the [modules reference](/modules/file) li
 
 | Argument | Description |
 | --- | --- |
+| `for_each` | Repeat the step for each item, on every host: a map, or a list or set of strings. See [repeating a step](#repeating-a-step). |
 | `depends_on` | Other resources or steps this step waits for, beyond the one before it. |
 | `notify` | Handlers to run when this step changes something. |
 
 Inside a step, `each.key` is the host's name and `each.value` its entry in `hosts`: the address, or the host's object.
 
 A step `NAME` in circuit `CIRCUIT` becomes the resource `conn3x_MODULE.CIRCUIT__NAME`, with one instance per host. Use that address to read a step's computed attributes, or in another step's `depends_on`.
+
+### Repeating a step
+
+`for_each` repeats a step for each item, on every host. Inside the step, `item.key` and `item.value` are the current item, and `each.key` and `each.value` are still the host:
+
+```hcl
+step "tools" {
+  for_each = ["git", "jq", "tree"]
+  package {
+    name = item.value
+  }
+}
+
+step "sites" {
+  for_each = { api = 8080, admin = 8081 }
+  file {
+    path    = "/etc/nginx/conf.d/${item.key}.conf"
+    content = "server { listen ${item.value}; server_name ${item.key}.${each.key}; }\n"
+  }
+  notify = [handler.reload]
+}
+```
+
+A list or set of strings uses each string as its key, so `item.key` and `item.value` are the same. A map uses its keys. Keys must be unique.
+
+A repeated step has one instance per host and item, keyed `"HOST/ITEM"`, such as `conn3x_package.web__tools["web1/git"]`. Remove an item and the next plan removes that item's instances from every host, and leaves the rest alone. A handler notified by a repeated step runs on a host when any of that host's items changed.
 
 ## handler
 
