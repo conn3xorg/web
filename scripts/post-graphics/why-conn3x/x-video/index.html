@@ -1,0 +1,169 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Why Conn3x is one tool: X video</title>
+<link rel="stylesheet" href="../shared.css">
+<style>
+  body { width: 1920px; height: 1080px; overflow: hidden; color: var(--text); font-variant-ligatures: none; }
+  .bar, .foot { position: absolute; left: 96px; right: 96px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--muted); }
+  .bar { top: 56px; }
+  .bar b { color: var(--accent); font-weight: 600; }
+  .foot { bottom: 52px; }
+  .foot img { height: 36px; }
+  .progress { position: absolute; left: 96px; right: 96px; bottom: 112px; height: 4px; background: var(--grid); }
+  .progress i { display: block; height: 100%; background: var(--accent); width: 0; }
+  .scene { position: absolute; inset: 130px 96px 150px; opacity: 0; display: flex; flex-direction: column; justify-content: center; }
+  .kicker { font-family: var(--mono); font-size: 28px; letter-spacing: 0.14em; color: var(--accent); }
+  h1 { font-size: 100px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin-top: 22px; max-width: 1500px; }
+  h1 span { color: var(--accent); }
+  .cap { font-size: 40px; line-height: 1.35; color: var(--muted); margin-top: 28px; max-width: 1400px; }
+  [data-in] { opacity: 0; }
+
+  .tools { display: flex; align-items: center; gap: 0; margin-top: 80px; }
+  .tool { font-family: var(--mono); font-size: 50px; border: 3px solid var(--line); background: var(--ink-2); padding: 38px 48px; }
+  .tool em { display: block; font-style: normal; font-size: 26px; color: var(--dim); margin-top: 8px; letter-spacing: 0.08em; }
+  .gap { width: 200px; height: 3px; background: var(--line); position: relative; }
+
+  .handoffs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; margin-top: 64px; }
+  .ho { display: flex; gap: 30px; align-items: center; border: 3px dashed #8a4a2a; padding: 36px 36px; font-size: 44px; }
+  .ho b { flex: none; width: 76px; height: 76px; border-radius: 50%; background: var(--accent); color: var(--ink); font-family: var(--mono); font-size: 32px; display: grid; place-items: center; }
+  .ho code { font-family: var(--mono); color: #ffb48a; font-size: 0.9em; }
+
+  .split { display: grid; grid-template-columns: 1fr 940px; gap: 64px; align-items: center; }
+  pre { font-family: var(--mono); font-size: 30px; line-height: 1.5; background: var(--ink-3); border: 3px solid var(--line); padding: 36px 40px; white-space: pre; color: var(--text); min-height: 700px; }
+  .split h1 { font-size: 84px; }
+  pre .k { color: var(--accent); }
+  pre .s { color: var(--add); }
+  pre .c { color: var(--dim); }
+  .term { font-size: 26px; min-height: 640px; }
+  .term .add { color: var(--add); }
+  .term .p { color: var(--dim); }
+  .term .ok { color: var(--add); font-weight: 700; }
+
+  .cta { text-align: left; }
+  .cta .logo { height: 96px; align-self: flex-start; }
+  .cmd { align-self: flex-start; margin-top: 56px; font-family: var(--mono); font-size: 50px; border: 3px solid var(--accent); background: var(--ink-3); padding: 26px 36px; }
+  .cmd .p { color: var(--dim); }
+  .links { margin-top: 44px; font-family: var(--mono); font-size: 38px; color: var(--muted); }
+  .links b { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body class="grid-dark">
+<div class="bar"><span><b>CONN3X</b> · V0.2.2 · OPEN SOURCE</span><span id="count">01 / 05</span></div>
+
+<section class="scene" data-scene="0" data-from="0" data-to="5.5">
+  <span class="kicker" data-in="0.3">THE USUAL WAY</span>
+  <h1 data-in="0.6">Creating a server takes one tool.<br><span>Setting it up takes another.</span></h1>
+  <div class="tools">
+    <div class="tool" data-in="1.8">terraform apply<em>STATE FOR THE CLOUD</em></div>
+    <div class="gap" data-in="2.4"></div>
+    <div class="tool" data-in="2.8">ansible-playbook<em>NO STATE FOR THE HOSTS</em></div>
+  </div>
+</section>
+
+<section class="scene" data-scene="1" data-from="5.5" data-to="12.5">
+  <span class="kicker" data-in="5.8">WHERE THE HAND-OFF HURTS</span>
+  <h1 data-in="6.0">The trouble lives between them.</h1>
+  <div class="handoffs">
+    <div class="ho" data-in="7.0"><b>A</b><span>A <code>sleep 60</code> until SSH answers</span></div>
+    <div class="ho" data-in="7.8"><b>B</b><span>Addresses copied into <code>inventory.ini</code></span></div>
+    <div class="ho" data-in="8.6"><b>C</b><span>Two previews to read and compare</span></div>
+    <div class="ho" data-in="9.4"><b>D</b><span>A removed server still in the inventory</span></div>
+  </div>
+</section>
+
+<section class="scene" data-scene="2" data-from="12.5" data-to="19">
+  <div class="split">
+    <div>
+      <span class="kicker" data-in="12.8">ONE PLAN</span>
+      <h1 data-in="13.0">The servers and their setup, <span>side by side.</span></h1>
+      <p class="cap" data-in="14.0">A circuit is a playbook in HCL. Its hosts are an expression, so there's no inventory to keep in sync.</p>
+    </div>
+    <pre data-type="13.4" data-in="13.2"><span class="k">resource</span> <span class="s">"digitalocean_droplet"</span> <span class="s">"app"</span> {
+  count = 3
+  name  = <span class="s">"app-${count.index}"</span>
+  image = <span class="s">"rockylinux-10-x64"</span>
+}
+
+<span class="k">circuit</span> <span class="s">"app"</span> {
+  hosts = { for d in digitalocean_droplet.app :
+            d.name =&gt; d.ipv4_address }
+  ssh { user = <span class="s">"root"</span> }
+
+  <span class="k">step</span> <span class="s">"deploy_user"</span> {
+    user { name = <span class="s">"deploy"</span> }
+  }
+}</pre>
+  </div>
+</section>
+
+<section class="scene" data-scene="3" data-from="19" data-to="25.5">
+  <div class="split">
+    <div>
+      <span class="kicker" data-in="19.3">ONE APPLY</span>
+      <h1 data-in="19.5">Create, wait, check the host key, <span>configure.</span></h1>
+      <p class="cap" data-in="20.5">One run. One state file. The next plan has nothing to do.</p>
+    </div>
+    <pre class="term" data-in="19.6"><span class="p">$</span> conn3x apply
+<span data-in="20.2"><span class="add">+</span> digitalocean_droplet.app[0]</span>
+<span data-in="20.4"><span class="add">+</span> digitalocean_droplet.app[1]</span>
+<span data-in="20.6"><span class="add">+</span> digitalocean_droplet.app[2]</span>
+<span data-in="20.9"><span class="add">+</span> conn3x_user.app__deploy_user["app-0"]</span>
+<span data-in="21.1"><span class="add">+</span> conn3x_user.app__deploy_user["app-1"]</span>
+<span data-in="21.3"><span class="add">+</span> conn3x_user.app__deploy_user["app-2"]</span>
+<span data-in="21.8">Plan: 6 to add, 0 to change, 0 to destroy.</span>
+<span class="ok" data-in="22.6">Apply complete! Resources: 6 added, 0 changed, 0 destroyed.</span>
+
+<span data-in="23.4"><span class="p">$</span> conn3x plan</span>
+<span class="ok" data-in="24.0">No changes.</span></pre>
+  </div>
+</section>
+
+<section class="scene cta" data-scene="4" data-from="25.5" data-to="31">
+  <img class="logo" src="../../../../apps/site/src/brand/logo-dark.svg" alt="" data-in="25.8">
+  <h1 data-in="26.1">One tool, as long as it <span>gets it right every time.</span></h1>
+  <div class="cmd" data-in="27.0"><span class="p">$</span> brew install conn3xorg/tap/conn3x</div>
+  <div class="links" data-in="27.6"><b>conn3x.org</b> · star it at <b>github.com/conn3xorg/conn3x</b></div>
+</section>
+
+<div class="progress"><i id="prog"></i></div>
+<div class="foot"><img src="../../../../apps/site/src/brand/logo-dark.svg" alt=""><span>conn3x.org</span></div>
+
+<script>
+  const DUR = 31;
+  const ease = (x) => 1 - Math.pow(1 - Math.min(Math.max(x, 0), 1), 3);
+  const scenes = [...document.querySelectorAll(".scene")];
+  // Typed text: remember the full HTML, reveal it character by character.
+  const typed = [...document.querySelectorAll("[data-type]")].map((el) => ({ el, html: el.innerHTML, at: +el.dataset.type }));
+  function typeHTML(html, n) {
+    let out = "", shown = 0, i = 0;
+    while (i < html.length && shown < n) {
+      if (html[i] === "<") { const j = html.indexOf(">", i); out += html.slice(i, j + 1); i = j + 1; continue; }
+      if (html[i] === "&") { const j = html.indexOf(";", i); out += html.slice(i, j + 1); i = j + 1; shown++; continue; }
+      out += html[i++]; shown++;
+    }
+    // Close any open spans.
+    const open = (out.match(/<span/g) || []).length - (out.match(/<\/span>/g) || []).length;
+    return out + "</span>".repeat(Math.max(open, 0));
+  }
+  window.seek = (t) => {
+    for (const s of scenes) {
+      const from = +s.dataset.from, to = +s.dataset.to;
+      const a = Math.min(ease((t - from) / 0.4), 1 - ease((t - (to - 0.4)) / 0.4));
+      s.style.opacity = t >= from && t < to ? a : 0;
+      if (t >= from && t < to) document.getElementById("count").textContent = `0${+s.dataset.scene + 1} / 05`;
+    }
+    for (const el of document.querySelectorAll("[data-in]")) {
+      const k = ease((t - +el.dataset.in) / 0.5);
+      el.style.opacity = k;
+      el.style.transform = `translateY(${(1 - k) * 16}px)`;
+    }
+    for (const { el, html, at } of typed) el.innerHTML = typeHTML(html, Math.floor(Math.max(t - at, 0) * 150));
+    document.getElementById("prog").style.width = `${Math.min(t / DUR, 1) * 100}%`;
+  };
+  seek(0);
+</script>
+</body>
+</html>
