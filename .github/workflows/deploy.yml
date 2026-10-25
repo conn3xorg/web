@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuild daily so posts dated for today appear (apps/site/src/lib/published.js).
+  schedule:
+    - cron: "0 7 * * *"
 
 permissions:
   contents: read

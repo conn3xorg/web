@@ -1,12 +1,13 @@
 ---
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
+import { isPublished } from "../../lib/published.js";
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
 
-const posts = (await getCollection("blog")).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = (await getCollection("blog", (p) => isPublished(p))).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const date = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 ---
 <Base title="Blog: Conn3x" description="Releases and notes from building Conn3x in public." path="/blog">
