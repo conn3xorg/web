@@ -6,7 +6,12 @@
 // styles the build produced, by hash. Inline style attributes and event
 // handler attributes can't be hashed into a header, so they fail the build.
 //
-//   node scripts/csp.mjs <distDir> <headersBaseFile>
+//   node scripts/csp.mjs <distDir> <headersBaseFile> [--wasm]
+//
+// --wasm adds 'wasm-unsafe-eval' to script-src, which search needs to
+// compile its WebAssembly index reader. It doesn't allow eval().
+// --style-attrs allows style="" attributes (style-src-attr), which the docs
+// theme puts on icons; <style> elements and scripts stay hash-only.
 
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -34,7 +39,7 @@ const attr = (el, name) => el.attrs.find((a) => a.name === name)?.value;
 const text = (el) => el.childNodes.map((c) => c.value ?? "").join("");
 const hash = (s) => `'sha256-${createHash("sha256").update(s).digest("base64")}'`;
 
-function scan(dist) {
+function scan(dist, { styleAttrs = false } = {}) {
   const scripts = new Set();
   const styles = new Set();
   const errors = [];
@@ -43,7 +48,7 @@ function scan(dist) {
     // Parse as if scripting were off so <noscript> content is real markup.
     for (const el of elements(parse(readFileSync(file, "utf8"), { scriptingEnabled: false }))) {
       for (const { name: a } of el.attrs) {
-        if (a === "style") errors.push(`inline style attribute in ${name} <${el.tagName}>`);
+        if (a === "style" && !styleAttrs) errors.push(`inline style attribute in ${name} <${el.tagName}>`);
         else if (a.startsWith("on")) errors.push(`inline event handler ${a} in ${name} <${el.tagName}>`);
       }
       if (el.tagName === "script" && attr(el, "src") === undefined) {
@@ -58,12 +63,13 @@ function scan(dist) {
   return { scripts: [...scripts].sort(), styles: [...styles].sort(), errors };
 }
 
-export function policy({ scripts, styles }) {
+export function policy({ scripts, styles }, { wasm = false, styleAttrs = false } = {}) {
   const src = (list) => ["'self'", ...list].join(" ");
   return [
     "default-src 'self'",
-    `script-src ${src(scripts)}`,
+    `script-src ${src(wasm ? ["'wasm-unsafe-eval'", ...scripts] : scripts)}`,
     `style-src ${src(styles)}`,
+    ...(styleAttrs ? ["style-src-attr 'unsafe-inline'"] : []),
     "img-src 'self' data:",
     "font-src 'self'",
     "connect-src 'self'",
@@ -75,17 +81,18 @@ export function policy({ scripts, styles }) {
   ].join("; ");
 }
 
-function main([dist, baseFile]) {
+function main([dist, baseFile, ...flags]) {
   if (!dist || !baseFile) {
     console.error("usage: node scripts/csp.mjs <distDir> <headersBaseFile>");
     return 2;
   }
-  const found = scan(dist);
+  const opts = { wasm: flags.includes("--wasm"), styleAttrs: flags.includes("--style-attrs") };
+  const found = scan(dist, opts);
   if (found.errors.length) {
     for (const e of found.errors) console.error(`csp: ${e}`);
     return 1;
   }
-  const line = `  Content-Security-Policy: ${policy(found)}`;
+  const line = `  Content-Security-Policy: ${policy(found, opts)}`;
   if (line.length > MAX_LINE) {
     console.error(`csp: policy line is ${line.length} chars, longer than ${MAX_LINE} characters (Cloudflare _headers limit). Move inline code into files.`);
     return 1;
