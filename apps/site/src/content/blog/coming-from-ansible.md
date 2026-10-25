@@ -1,7 +1,7 @@
 ---
 title: "Coming from Ansible"
 description: "Your playbooks already describe how your servers should look. Here's how they carry over to Conn3x, what the converter does for you, and what's left."
-date: 2026-10-26
+date: 2026-10-25
 author: James Conway
 image: /media/blog/coming-from-ansible/card.png
 imageAlt: "An Ansible task with a loop on the left and the Conn3x step it converts to on the right."
