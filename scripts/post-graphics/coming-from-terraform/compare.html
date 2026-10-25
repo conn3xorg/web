@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Configuring servers from Terraform: comparison</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 0; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 56px; table-layout: fixed; }
+  th, td { text-align: left; vertical-align: top; padding: 26px 20px; border-bottom: 2px solid var(--paper-line); }
+  thead th { font-family: var(--mono); font-size: 21px; letter-spacing: 0.1em; font-weight: 600; border-bottom: 3px solid var(--navy); padding-top: 0; }
+  thead th.c3 { color: var(--rust); }
+  tbody th { font-size: 28px; font-weight: 700; width: 300px; padding-left: 0; }
+  td { font-size: 25px; line-height: 1.4; color: var(--navy-muted); }
+  td.c3 { background: var(--paper-2); border-left: 6px solid var(--accent); color: var(--navy); }
+  .no { color: #a33a12; font-weight: 700; }
+  .yes { color: #1d6b45; font-weight: 700; }
+  code { font-family: var(--mono); font-size: 0.86em; white-space: nowrap; }
+  .foot { margin-top: 88px; background: var(--ink); color: var(--text); padding: 64px 96px 72px; display: grid; grid-template-columns: 1fr 600px; gap: 48px; align-items: center; }
+  .foot .k { font-family: var(--mono); font-size: 20px; letter-spacing: 0.14em; color: var(--accent); }
+  .foot h2 { font-size: 50px; letter-spacing: -0.03em; font-weight: 800; margin-top: 14px; line-height: 1.05; }
+  .foot p { font-size: 26px; color: var(--muted); margin-top: 16px; line-height: 1.4; }
+  .term { border: 2px solid var(--accent); background: var(--ink-3); padding: 28px 32px; font-family: var(--mono); font-size: 24px; line-height: 1.8; white-space: pre; }
+  .term .p { color: var(--dim); }
+  .bottom { background: var(--ink); color: var(--dim); font-family: var(--mono); font-size: 20px; display: flex; justify-content: space-between; padding: 0 96px 48px; }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X V0.4.0</b> · COMING FROM TERRAFORM</span>
+  <h1>Four ways to set up a server from Terraform</h1>
+  <p class="lede">What happens after the machine boots, compared on the questions that matter once it's running.</p>
+  <table>
+    <thead>
+      <tr><th></th><th><code>user_data</code></th><th>Provisioners</th><th><code>local-exec</code> into Ansible</th><th class="c3">Conn3x circuit</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>When it runs</th><td>Once, at first boot</td><td>When the resource is created</td><td>When the resource is created, or by hand</td><td class="c3">On every apply, when a step is out of date</td></tr>
+      <tr><th>In the plan</th><td><span class="no">No.</span> A blob of script</td><td><span class="no">No</span></td><td><span class="no">No.</span> A separate <code>--check --diff</code></td><td class="c3"><span class="yes">Yes.</span> A diff per host, line by line for files</td></tr>
+      <tr><th>Change it later</th><td>Usually means a new server, or a hand edit</td><td>Doesn't rerun</td><td>Run the playbook again</td><td class="c3">Change the step; the next plan shows it</td></tr>
+      <tr><th>Hand edits on the host</th><td><span class="no">Invisible</span></td><td><span class="no">Invisible</span></td><td>Seen when the playbook runs in check mode</td><td class="c3"><code>conn3x drift</code>, exits 2</td></tr>
+      <tr><th>What you install</th><td>Nothing more</td><td>Nothing more</td><td>Ansible, and Python on the hosts</td><td class="c3">One binary. Nothing on the hosts</td></tr>
+      <tr><th>State</th><td>None for what it did</td><td>None for what it did</td><td>None for the hosts</td><td class="c3">Same state as your resources</td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="foot">
+  <div>
+    <span class="k">KEEP EVERYTHING YOU HAVE</span>
+    <h2>Same providers, modules and state. One more block.</h2>
+    <p>Conn3x is built on OpenTofu, so your configuration runs unchanged.</p>
+  </div>
+  <div class="term"><span class="p">$</span> brew install conn3xorg/tap/conn3x
+<span class="p">$</span> conn3x init && conn3x plan</div>
+</div>
+<div class="bottom">
+  <img src="../../../apps/site/src/brand/logo-dark.svg" alt="">
+  <span>conn3x.org · docs.conn3x.org/guides/migrate-from-terraform</span>
+</div>
+</body>
+</html>
