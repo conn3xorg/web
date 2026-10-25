@@ -23,6 +23,11 @@ export default defineConfig({
       editLink: { baseUrl: "https://github.com/conn3xorg/web/edit/main/apps/docs/" },
       customCss: ["./src/styles/brand.css"],
       lastUpdated: false,
+      head: [
+        { tag: "meta", attrs: { property: "og:image", content: "https://docs.conn3x.org/og.png" } },
+        { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
+        { tag: "meta", attrs: { name: "twitter:image", content: "https://docs.conn3x.org/og.png" } },
+      ],
       sidebar: [
         { label: "Start here", items: ["install", "get-started", "concepts"] },
         {
