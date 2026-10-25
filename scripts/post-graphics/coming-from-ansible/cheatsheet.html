@@ -1,0 +1,119 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ansible to Conn3x: cheat sheet</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 0; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 84px; line-height: 1; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  .legend { display: flex; gap: 40px; margin: 40px 0 56px; font-size: 26px; color: var(--navy-muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 14px; }
+  .tag { font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: 0.08em; padding: 6px 12px; border-radius: 4px; }
+  .auto { background: #dff3e8; color: #1d6b45; }
+  .you { background: #fde6d6; color: var(--rust); }
+  .head, .row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) 170px; gap: 0 32px; align-items: start; }
+  .head { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; padding-bottom: 18px; border-bottom: 3px solid var(--navy); }
+  .head .c { color: var(--rust); font-weight: 600; }
+  .row { padding: 26px 0; border-bottom: 2px solid var(--paper-line); }
+  .row h3 { font-size: 30px; font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; }
+  .row p { font-size: 24px; color: var(--navy-muted); margin-top: 6px; line-height: 1.4; }
+  pre { font-family: var(--mono); font-size: 24px; line-height: 1.5; background: var(--paper-2); border-left: 6px solid var(--accent); padding: 12px 20px; margin: 0; white-space: pre; overflow: hidden; }
+  .row .tag { justify-self: end; margin-top: 8px; }
+  .foot { margin-top: 88px; background: var(--ink); color: var(--text); padding: 64px 96px 72px; display: grid; grid-template-columns: 1fr 640px; gap: 48px; align-items: center; }
+  .foot .k { font-family: var(--mono); font-size: 20px; letter-spacing: 0.14em; color: var(--accent); }
+  .foot h2 { font-size: 50px; letter-spacing: -0.03em; font-weight: 800; margin-top: 14px; line-height: 1.05; }
+  .foot p { font-size: 26px; color: var(--muted); margin-top: 16px; line-height: 1.4; }
+  .term { border: 2px solid var(--accent); background: var(--ink-3); padding: 28px 32px; font-family: var(--mono); font-size: 23px; line-height: 1.8; white-space: pre; }
+  .term .p { color: var(--dim); }
+  .bottom { background: var(--ink); color: var(--dim); font-family: var(--mono); font-size: 20px; display: flex; justify-content: space-between; padding: 0 96px 48px; }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X V0.4.0</b> · COMING FROM ANSIBLE</span>
+  <h1>Ansible to Conn3x</h1>
+  <p class="lede">What each part of a playbook becomes in a circuit, and which of them <code style="font-family: var(--mono); font-size: 0.85em;">conn3x convert ansible</code> writes for you.</p>
+  <div class="legend">
+    <span><i class="tag auto">CONVERTS</i> written for you</span>
+    <span><i class="tag you">BY HAND</i> marked TODO(convert), with the reason</span>
+  </div>
+
+  <div class="head"><span>ANSIBLE</span><span class="c">CONN3X</span><span></span></div>
+
+  <div class="row"><div><h3>Play, hosts and inventory</h3><p>Groups, ansible_host, ansible_user</p></div>
+<pre>circuit "app" {
+  hosts = { app1 = "203.0.113.21" }
+  ssh { user = "deploy" }
+}</pre><i class="tag auto">CONVERTS</i></div>
+
+  <div class="row"><div><h3>Tasks, in order</h3><p>package, service, user, copy, lineinfile and more</p></div>
+<pre>step "nginx" {
+  package { name = "nginx" }
+}</pre><i class="tag auto">CONVERTS</i></div>
+
+  <div class="row"><div><h3>notify and handlers</h3><p>Service restarts and reloads</p></div>
+<pre>notify = [handler.reload]
+handler "reload" {
+  service {
+    name   = "nginx"
+    action = "reload"
+  }
+}</pre><i class="tag auto">CONVERTS</i></div>
+
+  <div class="row"><div><h3>become: true</h3><p>sudo for every step</p></div>
+<pre>ssh { become = true }</pre><i class="tag auto">CONVERTS</i></div>
+
+  <div class="row"><div><h3>loop over a plain list</h3><p>with {{ item }}</p></div>
+<pre>for_each = ["git", "jq"]
+package { name = item.value }</pre><i class="tag auto">CONVERTS</i></div>
+
+  <div class="row"><div><h3>--check --diff</h3><p>A separate dry run</p></div>
+<pre># reads the hosts, every time
+conn3x plan</pre><i class="tag auto">BUILT IN</i></div>
+
+  <div class="row"><div><h3>Jinja templates</h3><p>{{ var }} and {% if %}</p></div>
+<pre># rewrite as ${var} and %{ if }
+template {
+  source      = "app.env.tftpl"
+  destination = "/etc/app/app.env"
+}</pre><i class="tag you">BY HAND</i></div>
+
+  <div class="row"><div><h3>when and register</h3><p>Decisions while it runs</p></div>
+<pre># decide at plan time, often by
+# which hosts a circuit covers</pre><i class="tag you">BY HAND</i></div>
+
+  <div class="row"><div><h3>Loops over variables or dicts</h3><p>loop: "{{ users }}", item.name</p></div>
+<pre>for_each = { alice = "wheel" }
+user { name = item.key }</pre><i class="tag you">BY HAND</i></div>
+
+  <div class="row"><div><h3>command on every run</h3><p>No creates or removes</p></div>
+<pre>command {
+  command = "make -C /srv/site"
+  creates = "/srv/site/public"
+}</pre><i class="tag you">BY HAND</i></div>
+</div>
+
+<div class="foot">
+  <div>
+    <span class="k">TRY IT ON YOUR PLAYBOOK</span>
+    <h2>It converts what it can prove, and tells you the rest.</h2>
+    <p>Exits 3 while anything is left, so CI can count it down to zero.</p>
+  </div>
+  <div class="term"><span class="p">$</span> brew install conn3xorg/tap/conn3x
+<span class="p">$</span> conn3x convert ansible \
+    -i inventory.ini \
+    -out site.tf site.yml</div>
+</div>
+<div class="bottom">
+  <img src="../../../apps/site/src/brand/logo-dark.svg" alt="">
+  <span>conn3x.org · docs.conn3x.org/guides/migrate-from-ansible</span>
+</div>
+</body>
+</html>

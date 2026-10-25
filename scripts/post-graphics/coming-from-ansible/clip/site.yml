@@ -1,0 +1,43 @@
+- name: App servers
+  hosts: app
+  become: true
+  tasks:
+    - name: Install the basics
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      loop: [chrony, git, jq]
+
+    - name: Keep time in sync
+      ansible.builtin.service:
+        name: chronyd
+        state: started
+        enabled: true
+
+    - name: Add the app user
+      ansible.builtin.user:
+        name: app
+        shell: /bin/bash
+
+    - name: Raise the open file limit
+      ansible.posix.sysctl:
+        name: fs.file-max
+        value: "200000"
+
+    - name: Ship the app config
+      ansible.builtin.copy:
+        src: app.conf
+        dest: /etc/app/app.conf
+        mode: "0644"
+      notify: Restart app
+
+    - name: Write the environment file
+      ansible.builtin.template:
+        src: app.env.j2
+        dest: /etc/app/app.env
+
+  handlers:
+    - name: Restart app
+      ansible.builtin.service:
+        name: app
+        state: restarted
