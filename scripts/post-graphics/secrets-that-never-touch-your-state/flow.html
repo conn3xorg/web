@@ -1,0 +1,64 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Where the secret goes: diagram</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  .flow { display: grid; grid-template-columns: 1fr 120px 1fr 120px 1fr; align-items: stretch; margin-top: 64px; }
+  .box { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 28px 30px; }
+  .box .k { font-family: var(--mono); font-size: 20px; letter-spacing: 0.12em; color: var(--navy-muted); }
+  .box h2 { font-size: 40px; letter-spacing: -0.02em; font-weight: 800; margin: 10px 0 12px; }
+  .box p { font-size: 25px; line-height: 1.4; color: var(--navy-muted); }
+  .box code, .no code { font-family: var(--mono); font-size: 0.86em; }
+  .box.host { border-top: 8px solid var(--accent); }
+  .box.state { border-top: 8px solid var(--navy); }
+  .arrow { display: grid; place-items: center; font-family: var(--mono); font-size: 22px; color: var(--rust); text-align: center; line-height: 1.3; }
+  .arrow b { font-size: 44px; display: block; }
+  .nos { margin-top: 44px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .no { border: 3px dashed #c9a08a; padding: 22px 26px; background: #fff7f1; }
+  .no h3 { font-size: 28px; font-weight: 700; color: var(--rust); }
+  .no p { font-size: 23px; line-height: 1.4; color: var(--navy-muted); margin-top: 6px; }
+  .key { margin-top: 44px; background: var(--ink); color: var(--text); padding: 34px 40px; display: grid; grid-template-columns: 360px 1fr; gap: 36px; align-items: center; }
+  .key h3 { font-size: 40px; letter-spacing: -0.02em; font-weight: 800; color: var(--accent); }
+  .key p { font-size: 25px; line-height: 1.45; color: var(--muted); }
+  .key code { font-family: var(--mono); color: var(--text); font-size: 0.88em; }
+  .bottom { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X V0.3.0+</b> · WRITE-ONLY CONTENT</span>
+  <h1>Where the secret goes</h1>
+  <p class="lede">A password with <code style="font-family: var(--mono); font-size: 0.85em;">content_wo</code> reaches the server and nowhere else Conn3x writes. State keeps a keyed fingerprint so drift still shows.</p>
+  <div class="flow">
+    <div class="box"><span class="k">YOU</span><h2>Ephemeral variable</h2><p>Passed at run time with <code>TF_VAR_</code> or <code>-var</code>. Not saved.</p></div>
+    <div class="arrow"><div><b>→</b>over SSH</div></div>
+    <div class="box host"><span class="k">THE HOST</span><h2>The file</h2><p>Holds the password, mode <code>0600</code> by default.</p></div>
+    <div class="arrow"><div><b>→</b>HMAC with<br>your key</div></div>
+    <div class="box state"><span class="k">STATE</span><h2>content_hmac</h2><p><code>hmac-sha256:&lt;key id&gt;:&lt;mac&gt;</code> of the path and contents.</p></div>
+  </div>
+  <div class="nos">
+    <div class="no"><h3>Not in the plan</h3><p>The diff shows <code>content_hmac</code>, never the value.</p></div>
+    <div class="no"><h3>Not in saved plans</h3><p>As long as the value comes from an ephemeral variable, not the config.</p></div>
+    <div class="no"><h3>Not in state</h3><p><code>grep -c</code> for it finds 0.</p></div>
+  </div>
+  <div class="key">
+    <h3>The key stays out too</h3>
+    <p><code>CONN3X_HMAC_KEY</code>, or <code>~/.config/conn3x/hmac.key</code>, created on first use. Share it with CI. With a different key, Conn3x stops and names the one state expects.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>docs.conn3x.org/concepts#secrets-in-files</span>
+  </div>
+</div>
+</body>
+</html>
