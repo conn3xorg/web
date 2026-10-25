@@ -17,10 +17,10 @@ Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up n
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.3.0` with the version you want.
+Pick the archive for your system. Replace `0.4.0` with the version you want.
 
 ```sh
-VERSION=0.3.0
+VERSION=0.4.0
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
