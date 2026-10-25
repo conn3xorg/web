@@ -3,7 +3,7 @@ title: Install
 description: Install the conn3x binary on Linux or macOS.
 ---
 
-Conn3x is a single binary. Download it from the [latest release](https://github.com/conn3xorg/conn3x/releases/latest), or run the container image.
+Conn3x is a single binary. Download it from the [latest release](https://github.com/conn3xorg/conn3x/releases/latest), or build it from source.
 
 ## Download a release
 
@@ -43,20 +43,6 @@ The archives also carry GitHub build provenance, which `gh attestation verify` c
 
 ```sh
 gh attestation verify "conn3x_${VERSION}_${OS}_${ARCH}.tar.gz" --repo conn3xorg/conn3x
-```
-
-## Run the container image
-
-```sh
-docker run --rm ghcr.io/conn3xorg/conn3x:v0.1.0 version
-```
-
-To use it on a project, mount the directory and your SSH key:
-
-```sh
-docker run --rm -it -v "$PWD:/work" -w /work \
-  -v "$HOME/.ssh:/home/nonroot/.ssh:ro" \
-  ghcr.io/conn3xorg/conn3x:v0.1.0 plan
 ```
 
 ## Build from source
