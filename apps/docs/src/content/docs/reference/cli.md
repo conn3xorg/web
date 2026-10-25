@@ -22,10 +22,10 @@ Reads every resource and host step again and reports what no longer matches the 
 ## conn3x convert ansible
 
 ```sh
-conn3x convert ansible [-out FILE] PLAYBOOK
+conn3x convert ansible [-i INVENTORY] [-out FILE] PLAYBOOK
 ```
 
-Converts an Ansible playbook into circuits and writes them to standard output, or to `FILE`. Tasks it can't show mean the same thing stay in the output, commented out under a `TODO(convert)` line that gives the reason. A summary goes to standard error. See [Migrate from Ansible](/guides/migrate-from-ansible).
+Converts an Ansible playbook into circuits and writes them to standard output, or to `FILE`. With `-i`, hosts and logins come from an INI or YAML inventory. Tasks it can't show mean the same thing stay in the output, commented out under a `TODO(convert)` line that gives the reason. A summary goes to standard error. See [Migrate from Ansible](/guides/migrate-from-ansible).
 
 | Exit code | Meaning |
 | --- | --- |

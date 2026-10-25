@@ -6,11 +6,11 @@ description: Convert a playbook into circuits with conn3x convert ansible, and f
 `conn3x convert ansible` reads a playbook and writes circuits. It converts the tasks it can show mean the same thing in Conn3x, and leaves every other task in the output, commented out, with the reason, so nothing is lost in translation.
 
 ```sh
-conn3x convert ansible -out site.tf site.yml
+conn3x convert ansible -i inventory.ini -out site.tf site.yml
 ```
 
 ```text
-Converted 9 of 11 tasks. 2 need you; each is marked TODO(convert):
+Converted 9 tasks. 2 things need you; each is marked TODO(convert):
   line 64, Users from a list: uses loop, which the converter can't translate yet
   line 69, Say hello: uses the debug module, which has no Conn3x equivalent yet
 ```
@@ -20,8 +20,9 @@ Write the output next to the playbook: when a task copies a file from `files/`, 
 ## What you get
 
 - One circuit per play, with `become` carried over.
-- A `variable "<group>_hosts"` for each `hosts:` group. Set it to a map of host name to address, for example in `terraform.tfvars`, until inventory conversion arrives.
-- `ssh_user` and `ssh_private_key_file` variables for the `ssh` block.
+- Each circuit's `hosts`, read from the inventory you pass with `-i`: the play's group and its children, at `ansible_host` where it's set. INI and YAML inventories both work.
+- The `ssh` block's `user` and `port`, from `ansible_user` and `ansible_port`, when every host in the group agrees on them. If they don't, the circuit says so under a `TODO(convert)` line, because a circuit logs in to all its hosts the same way.
+- Without `-i`, a `variable "<group>_hosts"` for each group instead, for you to set in `terraform.tfvars`, and an `ssh_user` variable. There's always an `ssh_private_key_file` variable.
 - A step per task, named after the task, and handlers for the service restarts and reloads your tasks notify.
 - Simple `{{ var }}` references to the play's `vars` filled in.
 
