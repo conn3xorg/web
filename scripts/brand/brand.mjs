@@ -3,6 +3,10 @@
 
 // Conn3x "Junction" brand geometry. One source of truth for every asset.
 import opentype from "opentype.js";
+import { readFileSync } from "node:fs";
+
+// opentype.js 2 reads fonts from bytes; it no longer opens files.
+export const loadFont = (file) => opentype.parse(readFileSync(file));
 
 export const COLORS = {
   light: { bg: "#f3f5f7", grid: "#dfe5ec", text: "#13233a", muted: "#4a5a70", accent: "#e85d0c" },
@@ -26,7 +30,7 @@ export function markPaths(u, stroke) {
 export const LINE = 'stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4"';
 
 export function wordmark(fontFile, size) {
-  const font = opentype.loadSync(fontFile);
+  const font = loadFont(fontFile);
   const word = font.getPath("conn3x", 0, 0, size).getBoundingBox();
   const c = font.getPath("c", 0, 0, size).getBoundingBox();
   const xHeight = c.y2 - c.y1;
