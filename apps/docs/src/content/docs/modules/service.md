@@ -31,6 +31,7 @@ Conn3x sets these; reference them as `conn3x_service.<circuit>__<step>["<host>"]
 | Name | Type | Description |
 | --- | --- | --- |
 | `is_enabled` | bool | Whether the unit starts at boot. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 | `running` | bool | Whether the unit is running. |
 
 A step lowers to the `conn3x_service` resource, one instance per host, and connects with its circuit's `ssh` block.

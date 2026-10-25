@@ -35,5 +35,6 @@ Conn3x sets these; reference them as `conn3x_block.<circuit>__<step>["<host>"].<
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether the file already matches. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_block` resource, one instance per host, and connects with its circuit's `ssh` block.

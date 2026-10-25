@@ -35,6 +35,7 @@ Conn3x sets these; reference them as `conn3x_file.<circuit>__<step>["<host>"].<n
 | Name | Type | Description |
 | --- | --- | --- |
 | `content_hmac` | string | HMAC-SHA256 of content_wo, keyed by CONN3X_HMAC_KEY or ~/.config/conn3x/hmac.key. Null when content is used. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 | `sha256` | string | SHA-256 of the content, hex encoded. |
 
 A step lowers to the `conn3x_file` resource, one instance per host, and connects with its circuit's `ssh` block.

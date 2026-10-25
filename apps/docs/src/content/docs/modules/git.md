@@ -32,5 +32,6 @@ Conn3x sets these; reference them as `conn3x_git.<circuit>__<step>["<host>"].<na
 | --- | --- | --- |
 | `commit` | string | The commit checked out. |
 | `in_sync` | bool | Whether the checkout is at the commit ref points to. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_git` resource, one instance per host, and connects with its circuit's `ssh` block.

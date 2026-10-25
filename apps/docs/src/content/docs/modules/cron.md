@@ -34,5 +34,6 @@ Conn3x sets these; reference them as `conn3x_cron.<circuit>__<step>["<host>"].<n
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether the job on the host matches. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_cron` resource, one instance per host, and connects with its circuit's `ssh` block.

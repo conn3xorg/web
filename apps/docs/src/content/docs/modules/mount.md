@@ -34,5 +34,6 @@ Conn3x sets these; reference them as `conn3x_mount.<circuit>__<step>["<host>"].<
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether the fstab entry matches and it is mounted. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_mount` resource, one instance per host, and connects with its circuit's `ssh` block.

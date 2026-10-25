@@ -31,6 +31,7 @@ Conn3x sets these; reference them as `conn3x_command.<circuit>__<step>["<host>"]
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 | `satisfied` | bool | Whether the guards hold on the host. |
 | `stderr` | string | Error output of the last run, truncated to 4 KiB. |
 | `stdout` | string | Output of the last run, truncated to 4 KiB. |

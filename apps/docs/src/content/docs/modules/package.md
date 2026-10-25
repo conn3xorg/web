@@ -32,5 +32,6 @@ Conn3x sets these; reference them as `conn3x_package.<circuit>__<step>["<host>"]
 | --- | --- | --- |
 | `installed_version` | string | Version installed on the host, or null when it isn't installed. |
 | `latest_version` | string | Newest available version, read when state is "latest". |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_package` resource, one instance per host, and connects with its circuit's `ssh` block.

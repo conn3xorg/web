@@ -30,5 +30,6 @@ Conn3x sets these; reference them as `conn3x_wait_for.<circuit>__<step>["<host>"
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether it was ready at the last refresh. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_wait_for` resource, one instance per host, and connects with its circuit's `ssh` block.

@@ -24,4 +24,12 @@ step "example" {
 | `on_remove` | string | No | "forget" (default) leaves the group, "delete" removes it. |
 | `system` | bool | No | Create as a system group. |
 
+## Read-only attributes
+
+Conn3x sets these; reference them as `conn3x_group.<circuit>__<step>["<host>"].<name>`.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
+
 A step lowers to the `conn3x_group` resource, one instance per host, and connects with its circuit's `ssh` block.

@@ -32,5 +32,6 @@ Conn3x sets these; reference them as `conn3x_ufw_rule.<circuit>__<step>["<host>"
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether ufw has the rule. |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_ufw_rule` resource, one instance per host, and connects with its circuit's `ssh` block.

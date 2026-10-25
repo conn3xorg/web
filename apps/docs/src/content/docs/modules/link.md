@@ -24,4 +24,12 @@ step "example" {
 | `path` | string | Yes | Absolute path of the link. |
 | `target` | string | Yes | What the link points to, absolute or relative to the link. |
 
+## Read-only attributes
+
+Conn3x sets these; reference them as `conn3x_link.<circuit>__<step>["<host>"].<name>`.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
+
 A step lowers to the `conn3x_link` resource, one instance per host, and connects with its circuit's `ssh` block.

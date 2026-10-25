@@ -25,4 +25,12 @@ step "example" {
 | `owner` | string | No | Owning user. Left as is when unset. |
 | `path` | string | Yes | Absolute path. |
 
+## Read-only attributes
+
+Conn3x sets these; reference them as `conn3x_directory.<circuit>__<step>["<host>"].<name>`.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
+
 A step lowers to the `conn3x_directory` resource, one instance per host, and connects with its circuit's `ssh` block.

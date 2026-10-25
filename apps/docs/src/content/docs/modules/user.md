@@ -28,4 +28,12 @@ step "example" {
 | `system` | bool | No | Create as a system account. |
 | `uid` | number | No | User ID. |
 
+## Read-only attributes
+
+Conn3x sets these; reference them as `conn3x_user.<circuit>__<step>["<host>"].<name>`.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
+
 A step lowers to the `conn3x_user` resource, one instance per host, and connects with its circuit's `ssh` block.
