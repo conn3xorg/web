@@ -19,7 +19,10 @@ export default defineConfig({
       description: "Docs for Conn3x: one plan for your cloud and the servers it creates.",
       logo: { light: "./src/logo.svg", dark: "./src/logo-dark.svg", replacesTitle: true },
       favicon: "/favicon.svg",
-      social: [{ icon: "github", label: "GitHub", href: "https://github.com/conn3xorg/conn3x" }],
+      social: [
+        { icon: "github", label: "GitHub", href: "https://github.com/conn3xorg/conn3x" },
+        { icon: "x.com", label: "X", href: "https://x.com/conn3xone" },
+      ],
       editLink: { baseUrl: "https://github.com/conn3xorg/web/edit/main/apps/docs/" },
       customCss: ["./src/styles/brand.css"],
       lastUpdated: false,
