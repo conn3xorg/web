@@ -110,7 +110,7 @@ handler "NAME" {
 }
 ```
 
-A handler runs after the steps that notify it, and only on the hosts where one of them changed something. A handler that nothing notifies is a warning.
+A handler runs after the steps that notify it, and only on the hosts where one of them changed something, including putting back a change someone made by hand. A handler that nothing notifies is a warning.
 
 ## Warnings
 
