@@ -14,5 +14,5 @@ local Rocky Linux 10 containers (the e2e image from `conn3xorg/conn3x`,
 
 ```sh
 ffmpeg -i apply.mp4 -an -c:v libx264 -pix_fmt yuv420p -crf 24 -preset slow -movflags +faststart out.mp4
-ffmpeg -ss 9.6 -i apply.mp4 -frames:v 1 poster.png && cwebp -q 85 poster.png -o apply.webp
+ffmpeg -i apply.mp4 -vf "select=eq(n\\,185)" -frames:v 1 poster.png && cwebp -q 85 poster.png -o apply.webp
 ```
