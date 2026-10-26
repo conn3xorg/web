@@ -27,7 +27,7 @@ You shouldn't have to find that out on your servers. So before any change to Con
 
 </details>
 
-## Every pull request: four real hosts
+## Every pull request: four distributions
 
 The end-to-end tests don't mock a server. Each one starts a container with systemd running as PID 1 and sshd listening, then drives the real `conn3x` binary against it over SSH, exactly as you would. The images are built from Containerfiles in the repository:
 
