@@ -60,7 +60,7 @@ conn3x init
 conn3x plan
 ```
 
-Conn3x connects, reads what's on the server, and shows what it would change:
+Conn3x shows what it would change. Nothing in the circuit is in state yet, so every step is new:
 
 ```text
 Conn3x will perform the following actions:
@@ -70,7 +70,7 @@ Conn3x will perform the following actions:
   # conn3x_service.web__running["web1"] will be created
 ```
 
-Nothing has changed on the server yet.
+Nothing has changed on the server yet. From the next plan on, Conn3x logs in and reads each step back from the server, which is how it notices a hand edit.
 
 ## Apply
 
