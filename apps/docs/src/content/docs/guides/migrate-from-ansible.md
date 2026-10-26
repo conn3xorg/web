@@ -62,6 +62,7 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Jinja templates and filters.** Rewrite templates in `templatefile` syntax (`${var}`, `%{ if }`) and use a [template](/modules/template) step.
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when.
 - **`get_url` without a sha256 checksum.** Conn3x only downloads what it can verify.
+- **A `file` link that sets `owner`, `group` or `mode`.** A Conn3x [link](/modules/link) step doesn't manage those, so the converter won't quietly drop them.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
 
 The command exits 3 while anything is left, so you can keep running it in CI until the count reaches zero.

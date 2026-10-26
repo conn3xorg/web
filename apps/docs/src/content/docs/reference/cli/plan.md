@@ -21,7 +21,7 @@ Before it compares, `plan` refreshes state: it reads every resource again, the w
 - A refresh connects with the `ssh` settings recorded in state, from the last apply.
 - If what a step manages is gone from the host, such as a deleted file, the plan creates it again.
 - [`conn3x_host`](/reference/host-facts) data sources connect during every plan to read facts.
-- A host that doesn't answer is retried for the `ssh` block's `timeout`, 3 minutes by default. After that, the plan fails.
+- A host that doesn't answer is retried for the `ssh` block's `timeout`, 3 minutes by default. After that, the plan fails. A host name that DNS says doesn't exist fails at once.
 - If state holds [write-only content](/concepts#secrets-in-files), reading it needs the same HMAC key that wrote it, from `CONN3X_HMAC_KEY` or `~/.config/conn3x/hmac.key`.
 
 Host reads count against `-parallelism`, like any other resource operation.

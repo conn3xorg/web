@@ -71,7 +71,7 @@ Errors are printed after the drift list, each starting with `Error:`.
 | `-lock=false` | Don't lock state while reading it. |
 | `-lock-timeout=DURATION` | How long to retry a state lock. |
 
-`-json` has no effect: the output is always the summary above. `-destroy` is an error, because a refresh-only plan can't also destroy.
+`-json` is an error. For the same reads as JSON lines, run `conn3x plan -refresh-only -json`, which is what `drift` runs underneath. `-destroy` is an error too, because a refresh-only plan can't also destroy.
 
 ## Examples
 
@@ -85,6 +85,12 @@ Check one circuit's file step on every host:
 
 ```sh
 conn3x drift -target=conn3x_file.web__page
+```
+
+Check a configuration that lives in a subdirectory:
+
+```sh
+conn3x -chdir=infra drift
 ```
 
 Run it on a schedule, and fail the job when anything drifted:
@@ -101,7 +107,6 @@ conn3x drift -var-file=prod.tfvars -no-color
 | 1 | An error. Any drift found before the error is still listed. |
 | 2 | Something drifted, or only output values changed. |
 
-## Limitations in v0.5.0
+## Limitations
 
-- `drift` runs the plan as a new `conn3x` process with the original command line. A relative `-chdir` is applied twice and fails, so use an absolute path, `conn3x -chdir="$PWD/infra" drift`, or `cd` into the directory first.
-- `TF_CLI_ARGS_drift` is ignored. `TF_CLI_ARGS_plan` and `TF_CLI_ARGS` apply instead.
+`TF_CLI_ARGS_drift` is ignored. `drift` runs its plan as a new `conn3x plan` process, so `TF_CLI_ARGS_plan` and `TF_CLI_ARGS` apply instead.

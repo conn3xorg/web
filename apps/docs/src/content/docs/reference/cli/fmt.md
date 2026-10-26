@@ -1,6 +1,6 @@
 ---
 title: conn3x fmt
-description: Rewrite configuration files in the standard style, and how to format .circuit.hcl files.
+description: Rewrite configuration files, circuits included, in the standard style.
 ---
 
 `conn3x fmt` rewrites configuration files in the standard layout: consistent indentation, aligned `=` signs, and spacing. It changes layout only, never meaning.
@@ -15,23 +15,13 @@ With no `PATH`, it formats the current directory. A directory formats the files 
 
 ## What Conn3x changes
 
-In v0.5.0, `fmt` formats `.tf`, `.tofu`, `.tfvars`, `.tftest.hcl` and `.tofutest.hcl` files. It skips `.circuit.hcl` files when it scans a directory, and refuses one named directly:
-
-```text
-$ conn3x fmt web.circuit.hcl
-Error: Invalid file extension
-
-Only .tf, .tofu, .tfvars, .tftest.hcl, and .tofutest.hcl files can be
-processed with conn3x fmt
-```
-
-To format a `.circuit.hcl` file, pass it through standard input:
+`fmt` formats `.circuit.hcl` files along with `.tf`, `.tofu`, `.tfvars`, `.tftest.hcl` and `.tofutest.hcl` files. A directory scan picks them up, and you can name one directly:
 
 ```sh
-conn3x fmt - < web.circuit.hcl > web.tmp && mv web.tmp web.circuit.hcl
+conn3x fmt web.circuit.hcl
 ```
 
-Circuits written in `.tf` files are formatted as usual.
+So `conn3x fmt -check -recursive` in CI covers your circuits as well.
 
 ## Options
 

@@ -229,8 +229,8 @@ Inside a step with `for_each`:
 | --- | --- |
 | `item.key` | The item's key: the map key, or the string. |
 | `item.value` | The item's value: the map value, or the string. |
-| `each.key` | The host's name, as in any step. |
-| `each.value` | The host's entry in `hosts`, as in any step. |
+| `each.key` | The host's name, as in any step. The circuit's `ssh` block sees the same value. |
+| `each.value` | The host's entry in `hosts`, as in any step. The circuit's `ssh` block sees the same value. |
 
 `item` is only available in a step with `for_each`. Using it in another step is an error. `item.key` and `item.value` are the only attributes of `item`.
 

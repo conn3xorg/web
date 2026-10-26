@@ -5,7 +5,7 @@ description: What a circuit is, which files circuits go in, and how Conn3x turns
 
 Conn3x configuration is OpenTofu configuration with one more block type, `circuit`. A circuit configures a group of Linux hosts over SSH: it names the hosts, says how to log in to them, and lists the steps to apply to each one, in order.
 
-This section documents the circuit language in Conn3x v0.5.0. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
+This section documents the circuit language in Conn3x v0.6.0. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
 
 ```hcl
 circuit "web" {

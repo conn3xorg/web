@@ -126,13 +126,32 @@ For a complete example with DigitalOcean droplets and host keys pinned at creati
 | `host_key` | string | Overrides the `ssh` block's `host_key`. Use it to pin each host's own key. |
 | `jump_hosts` | list of strings | Overrides the `ssh` block's `jump_hosts`. An empty list connects to this host directly. |
 
-Only these five settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host. A host object can hold other fields as well. Conn3x doesn't use them to connect, and steps can read them as `each.value.FIELD`:
+Only these five settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host.
+
+Any other field is an error. Without that check, `become = true` in a host object would pass and do nothing, and you'd find out on the server. `validate` reports it when `hosts` is known, and `plan` reports it otherwise:
+
+```text
+Error: Unsupported field in host object
+
+Host "web1" sets "become", which a host object doesn't take. A host object
+takes address, user, port, private_key_file, host_key and jump_hosts. Other
+ssh settings, such as become, go in the circuit's ssh block.
+```
+
+Per-host data that isn't a connection setting, such as a role, goes in a map of its own, keyed by host name. Steps look it up with `each.key`:
 
 ```hcl
+locals {
+  roles = {
+    app1 = "primary"
+    app2 = "replica"
+  }
+}
+
 circuit "app" {
   hosts = {
-    app1 = { address = "10.0.1.5", role = "primary" }
-    app2 = { address = "10.0.1.6", role = "replica" }
+    app1 = "10.0.1.5"
+    app2 = "10.0.1.6"
   }
 
   ssh {
@@ -142,7 +161,7 @@ circuit "app" {
   step "role" {
     file {
       path    = "/etc/app/role"
-      content = "${each.value.role}\n"
+      content = "${local.roles[each.key]}\n"
     }
   }
 }

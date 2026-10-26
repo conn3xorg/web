@@ -46,7 +46,30 @@ Every argument takes an expression, such as a variable. `conn3x validate` reject
 
 ### each in the ssh block
 
-In a step without `for_each`, and in a handler, the `ssh` block can use `each.key` and `each.value` to mean the host. In a step with `for_each`, `each` in the `ssh` block refers to the step's own instance instead, and `each.key` is `"HOST/ITEM"`. Set per-host connection settings with [host objects](/reference/circuits/hosts#host-object-fields) rather than with `each` in the `ssh` block.
+In the `ssh` block, `each.key` and `each.value` always mean the host. That holds in a step with its own `for_each` too: the instance is keyed `"HOST/ITEM"`, but `each.key` in the `ssh` block is still the host's name. So a per-host setting written once in the block reaches the right host in every step:
+
+```hcl
+circuit "app" {
+  hosts = {
+    app1 = "10.0.1.5"
+    app2 = "10.0.1.6"
+  }
+
+  ssh {
+    user             = "deploy"
+    private_key_file = "~/.ssh/${each.key}"
+  }
+
+  step "tools" {
+    for_each = ["git", "jq"]
+    package {
+      name = item.value
+    }
+  }
+}
+```
+
+Both of `app1`'s instances log in with `~/.ssh/app1`. For the five settings a [host object](/reference/circuits/hosts#host-object-fields) can override, a host object is usually easier to read.
 
 ## Precedence
 
@@ -71,7 +94,7 @@ With `ssh_config_file` set, Conn3x looks each host up in that file, using the ho
 | `Port` | `port`, when no host object or `ssh` block sets it. |
 | `IdentityFile` | `private_key_file`, when no host object or `ssh` block sets it. |
 | `UserKnownHostsFile` | `known_hosts_file`, when the `ssh` block doesn't set it. Only the first file listed is used. |
-| `ProxyJump` | `jump_hosts`, when no host object or `ssh` block sets it. `ProxyJump none` is ignored. |
+| `ProxyJump` | `jump_hosts`, when no host object or `ssh` block sets it. Each hop is looked up in the same file; see [ProxyJump](#proxyjump). `ProxyJump none` is ignored. |
 
 Conn3x ignores every other keyword in the file.
 
@@ -90,6 +113,25 @@ circuit "app" {
 ```
 
 Conn3x doesn't read `~/.ssh/config` by default, so a `Host *` entry in someone's personal config can't change where a plan connects. For a walkthrough, see [Reach hosts behind a bastion](/guides/bastions).
+
+### ProxyJump
+
+A `ProxyJump` hop can name another `Host` entry in the same file, the way you'd write it for `ssh`:
+
+```sshconfig
+Host bastion
+  HostName bastion.example.com
+  User admin
+  IdentityFile ~/.ssh/bastion_ed25519
+
+Host app*
+  User deploy
+  ProxyJump bastion
+```
+
+Conn3x looks each hop up as OpenSSH does. It takes the hop's `HostName`, `User`, `Port` and `IdentityFile` from its entry, and if that entry has a `ProxyJump` of its own, those hops come first. A user or port written in the hop itself, as in `ProxyJump ops@bastion:2222`, wins over the entry. A hop whose entry sets `IdentityFile` logs in with that key; the others use the target's. A `ProxyJump` loop is an error.
+
+`jump_hosts` in the `ssh` block or a host object still wins over `ProxyJump`, and its entries are used as written, without looking them up in the file.
 
 ## Jump hosts
 
@@ -111,7 +153,7 @@ circuit "app" {
 
 - An entry without a user logs in as the target's `user`.
 - An entry without a port uses port 22.
-- Every hop authenticates with the same key as the target: `private_key_file`, or the SSH agent.
+- Every hop authenticates with the same key as the target: `private_key_file`, or the SSH agent. The one exception is a `ProxyJump` hop whose entry in `ssh_config_file` sets its own `IdentityFile`; see [ProxyJump](#proxyjump).
 - Every hop's host key is checked against `known_hosts_file`. A pinned `host_key` applies only to the target, not to the hops.
 
 A host object's `jump_hosts` replaces the `ssh` block's list for that host. Set it to `[]` to connect to that host directly, without the circuit's jump hosts or a `ProxyJump` from the SSH config file.
@@ -170,7 +212,7 @@ circuit "db" {
 
 ## Connecting and retries
 
-When a host doesn't answer, because it refuses or resets the connection, is unreachable, or times out, Conn3x keeps trying until `timeout` has passed. This covers servers that are still booting. Each attempt waits up to 15 seconds. A host key that doesn't match and a login that the server rejects fail at once, without retrying.
+When a host doesn't answer, because it refuses or resets the connection, is unreachable, or times out, Conn3x keeps trying until `timeout` has passed. This covers servers that are still booting. Each attempt waits up to 15 seconds. A host key that doesn't match and a login that the server rejects fail at once, without retrying. So does a name that DNS says doesn't exist, for the target or a jump host, so a typo costs you seconds rather than the whole `timeout`. A DNS lookup that times out is still retried.
 
 Conn3x opens one SSH connection per host and login, and every step in the run shares it. Hosts reached through different jump hosts get separate connections.
 
@@ -179,3 +221,5 @@ Commands run with `/bin/sh` in the C locale (`LC_ALL=C`), so the output Conn3x r
 ## Where the ssh settings are stored
 
 Each step instance records the `ssh` settings it used in state, and `conn3x state show` displays them. When a plan refreshes an instance, it connects with the settings in state. Changes are applied with the settings in the configuration. When you remove a step or a host, Conn3x uses the settings in state to reach the host and carry out [`on_remove`](/reference/circuits/removal).
+
+Changing how Conn3x logs in isn't a change on the host. When only `user`, `private_key_file`, `host_key`, `known_hosts_file`, `jump_hosts`, `become`, `become_password_file` or `timeout` changes, each step keeps its [`revision`](/reference/circuits/handlers#the-revision-attribute), so handlers don't run. The host's address, `port` and `ssh_config_file` decide which machine Conn3x reaches, so changing one of those does count.
