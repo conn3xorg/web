@@ -9,7 +9,7 @@ In this tutorial you'll convert a short Ansible playbook into a circuit. The con
 
 ## Prerequisites
 
-- Conn3x v0.6.2 [installed](/install). You don't need Ansible.
+- Conn3x v0.6.3 [installed](/install). You don't need Ansible.
 - To apply the result: a Rocky Linux, RHEL, AlmaLinux or Fedora server with firewalld running, and a user with passwordless `sudo`, as in [Configure your first real server](/tutorials/first-server). You can convert and validate without one.
 
 ## The playbook

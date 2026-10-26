@@ -5,7 +5,7 @@ description: What a circuit is, which files circuits go in, and how Conn3x turns
 
 Conn3x configuration is OpenTofu configuration with one more block type, `circuit`. A circuit configures a group of Linux hosts over SSH: it names the hosts, says how to log in to them, and lists the steps to apply to each one, in order.
 
-This section documents the circuit language in Conn3x v0.6.2. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
+This section documents the circuit language in Conn3x v0.6.3. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
 
 ```hcl
 circuit "web" {
@@ -91,7 +91,7 @@ A circuit with no steps is valid and does nothing.
 
 Circuit, step and handler names must be valid identifiers: letters, digits, underscores and hyphens, not starting with a digit. They can't contain a double underscore (`__`), because Conn3x uses it to join circuit and step names.
 
-Step names must be unique within a circuit, and so must handler names. Two circuits can use the same step and handler names. Circuit names must be unique within a module.
+Step names must be unique within a circuit, and so must handler names. Two circuits can use the same step and handler names. Circuit names must be unique within a module, across all its files: a circuit declared in two files is an error that names both.
 
 ## Files
 

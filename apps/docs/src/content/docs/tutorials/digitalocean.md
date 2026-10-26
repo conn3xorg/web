@@ -13,7 +13,7 @@ It creates three real droplets. Each `s-1vcpu-1gb` droplet costs $0.00893 an hou
 
 ## Prerequisites
 
-- Conn3x v0.6.2 [installed](/install).
+- Conn3x v0.6.3 [installed](/install).
 - A DigitalOcean account and a [personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/) with write access.
 - An SSH key added to your DigitalOcean account, with its private half at `~/.ssh/id_ed25519`. Conn3x logs in to the droplets as `root` with it.
 - Its ID or fingerprint, from **Settings > Security** in the DigitalOcean control panel, or from `doctl compute ssh-key list`.
@@ -24,7 +24,7 @@ It creates three real droplets. Each `s-1vcpu-1gb` droplet costs $0.00893 an hou
 The configuration is the `digitalocean` example in the Conn3x repository:
 
 ```sh
-git clone --depth 1 --branch v0.6.2 https://github.com/conn3xorg/conn3x
+git clone --depth 1 --branch v0.6.3 https://github.com/conn3xorg/conn3x
 cd conn3x/examples/digitalocean
 ```
 

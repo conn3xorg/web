@@ -3,7 +3,7 @@ title: Tutorials
 description: Hands-on tutorials that take you from a local test host to cloud servers, bastions, secrets, drift checks in CI and a converted Ansible playbook.
 ---
 
-These tutorials walk you through Conn3x one task at a time. Each page lists what you need, how long it takes, and how to clean up afterwards. They're written for Conn3x v0.6.2.
+These tutorials walk you through Conn3x one task at a time. Each page lists what you need, how long it takes, and how to clean up afterwards. They're written for Conn3x v0.6.3.
 
 Work through them in order if you're new. Each one builds on the ones before it, but you can start anywhere if you already have the prerequisites.
 

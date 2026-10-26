@@ -223,3 +223,15 @@ Commands run with `/bin/sh` in the C locale (`LC_ALL=C`), so the output Conn3x r
 Each step instance records the `ssh` settings it used in state, and `conn3x state show` displays them. When a plan refreshes an instance, it connects with the settings in state. Changes are applied with the settings in the configuration. When you remove a step or a host, Conn3x uses the settings in state to reach the host and carry out [`on_remove`](/reference/circuits/removal).
 
 Changing how Conn3x logs in isn't a change on the host. When only `user`, `private_key_file`, `host_key`, `known_hosts_file`, `jump_hosts`, `become`, `become_password_file` or `timeout` changes, each step keeps its [`revision`](/reference/circuits/handlers#the-revision-attribute), so handlers don't run. The host's address, `port` and `ssh_config_file` decide which machine Conn3x reaches, so changing one of those does count.
+
+### Moving a host to another address or port
+
+Changing a host's address replaces its steps: Conn3x removes each one from the old machine, following its [`on_remove`](/reference/circuits/removal), and applies it on the new one.
+
+A new `port`, or an `ssh_config_file` that gives the host a new port or `HostName`, might reach the same machine or a different one. To tell which, Conn3x compares the host keys recorded for the old and new addresses, in `host_key` or the known_hosts file:
+
+- **They share a key.** It's the same machine, such as sshd moving to another port, so the steps stay as they are.
+- **They share none.** It's another machine behind the same address, so the plan replaces the steps, and `on_remove` runs on the old one.
+- **Either address has no recorded key.** Conn3x can't tell, so the steps stay as they are. Connecting still checks the new address's key.
+
+A plan refreshes each step with the settings in state, so it connects to the old port first. If sshd no longer listens there, plan with `-refresh=false` once to move the steps to the new port.
