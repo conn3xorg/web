@@ -34,6 +34,13 @@ export default defineConfig({
       sidebar: [
         { label: "Start here", items: ["install", "get-started", "concepts"] },
         {
+          label: "Tutorials",
+          items: [
+            { slug: "tutorials", label: "Overview" },
+            ...["try-locally", "first-server", "digitalocean", "bastion", "secrets", "drift-in-ci", "migrate-ansible"].map((page) => `tutorials/${page}`),
+          ],
+        },
+        {
           label: "Guides",
           items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
