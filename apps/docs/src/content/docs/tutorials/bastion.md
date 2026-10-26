@@ -9,7 +9,7 @@ In this tutorial you'll configure two servers that you can only reach through a 
 
 ## Prerequisites
 
-- Conn3x v0.6.0 [installed](/install), and [Configure your first real server](/tutorials/first-server) done, or the same knowledge of circuits and the `ssh` block.
+- Conn3x v0.6.1 [installed](/install), and [Configure your first real server](/tutorials/first-server) done, or the same knowledge of circuits and the `ssh` block.
 - A bastion you can reach over SSH. This tutorial uses `bastion.example.com`.
 - Two Linux servers that the bastion can reach on port 22. This tutorial uses `10.0.1.5` and `10.0.1.6`.
 - A user called `admin` on all three machines, with passwordless `sudo` and your key `~/.ssh/id_ed25519` in its `authorized_keys`. Every hop uses the same key.
@@ -83,24 +83,16 @@ Conn3x opens one connection through the bastion for each host and reuses it for 
 
 ## Add the bastion with host objects
 
-The bastion needs configuring too, but it can't jump through itself. A value in `hosts` can be a host object instead of an address, and its connection fields override the `ssh` block for that host. While you're here, give each machine a role for the message of the day.
+The bastion needs configuring too, but it can't jump through itself. A value in `hosts` can be a host object instead of an address. Its connection fields override the `ssh` block for that host, and any other fields are yours to use in steps.
 
 Replace `main.circuit.hcl`:
 
 ```hcl
-locals {
-  roles = {
-    bastion = "bastion"
-    app1    = "primary"
-    app2    = "replica"
-  }
-}
-
 circuit "app" {
   hosts = {
-    bastion = { address = "bastion.example.com", jump_hosts = [] }
-    app1    = "10.0.1.5"
-    app2    = "10.0.1.6"
+    bastion = { address = "bastion.example.com", jump_hosts = [], role = "bastion" }
+    app1    = { address = "10.0.1.5", role = "primary" }
+    app2    = { address = "10.0.1.6", role = "replica" }
   }
 
   ssh {
@@ -113,14 +105,14 @@ circuit "app" {
   step "motd" {
     file {
       path    = "/etc/motd"
-      content = "${each.key} (${local.roles[each.key]}), managed by Conn3x.\n"
+      content = "${each.key} (${each.value.role}), managed by Conn3x.\n"
     }
   }
 }
 ```
 
 - `jump_hosts = []` on the bastion connects to it directly. The other two still go through it.
-- The roles live in `local.roles`, and the step looks each one up with `each.key`. They can't go in the host objects: a host object takes connection settings only, and `validate` rejects any other field.
+- `role` isn't a connection setting. Steps read it as `each.value.role`.
 
 [Host object fields](/reference/circuits/hosts#host-object-fields) lists the five settings a host object can override: `user`, `port`, `private_key_file`, `host_key` and `jump_hosts`.
 

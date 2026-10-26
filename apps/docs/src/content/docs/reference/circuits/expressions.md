@@ -3,7 +3,7 @@ title: Expressions and functions
 description: The expressions and functions circuits inherit from OpenTofu, and the names that only exist inside a circuit.
 ---
 
-Circuits use OpenTofu's expression language and built-in functions, unchanged. Conn3x v0.6.0 is built on OpenTofu 1.13.2, so OpenTofu's [expressions](https://opentofu.org/docs/language/expressions/) and [functions](https://opentofu.org/docs/language/functions/) documentation applies to every argument in a circuit.
+Circuits use OpenTofu's expression language and built-in functions, unchanged. Conn3x v0.6.1 is built on OpenTofu 1.13.2, so OpenTofu's [expressions](https://opentofu.org/docs/language/expressions/) and [functions](https://opentofu.org/docs/language/functions/) documentation applies to every argument in a circuit.
 
 ## What circuits inherit
 

@@ -128,30 +128,13 @@ For a complete example with DigitalOcean droplets and host keys pinned at creati
 
 Only these five settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host.
 
-Any other field is an error. Without that check, `become = true` in a host object would pass and do nothing, and you'd find out on the server. `validate` reports it when `hosts` is known, and `plan` reports it otherwise:
-
-```text
-Error: Unsupported field in host object
-
-Host "web1" sets "become", which a host object doesn't take. A host object
-takes address, user, port, private_key_file, host_key and jump_hosts. Other
-ssh settings, such as become, go in the circuit's ssh block.
-```
-
-Per-host data that isn't a connection setting, such as a role, goes in a map of its own, keyed by host name. Steps look it up with `each.key`:
+A host object can hold fields of your own as well. Conn3x doesn't use them to connect, and steps can read them as `each.value.FIELD`:
 
 ```hcl
-locals {
-  roles = {
-    app1 = "primary"
-    app2 = "replica"
-  }
-}
-
 circuit "app" {
   hosts = {
-    app1 = "10.0.1.5"
-    app2 = "10.0.1.6"
+    app1 = { address = "10.0.1.5", role = "primary" }
+    app2 = { address = "10.0.1.6", role = "replica" }
   }
 
   ssh {
@@ -161,10 +144,20 @@ circuit "app" {
   step "role" {
     file {
       path    = "/etc/app/role"
-      content = "${local.roles[each.key]}\n"
+      content = "${each.value.role}\n"
     }
   }
 }
+```
+
+What a host object can't hold is an ssh setting that only the `ssh` block takes: ssh settings such as `become`, `timeout` and `known_hosts_file` belong in the ssh block. Naming one in a host object is an error, not a setting that quietly does nothing. `validate` reports it when `hosts` is known, and `plan` reports it otherwise:
+
+```text
+Error: Unsupported field in host object
+
+Host "web1" sets "become", which only the circuit's ssh block takes. A host
+object can set address, user, port, private_key_file, host_key and
+jump_hosts, plus any fields of your own to read with each.value.
 ```
 
 See [The ssh block](/reference/circuits/ssh#precedence) for how host objects, the `ssh` block and an SSH config file combine.
