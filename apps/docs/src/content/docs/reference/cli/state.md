@@ -16,7 +16,7 @@ conn3x_file.web__page["web1"]
 conn3x_service.web__running["web1"]
 ```
 
-A [repeated step](/reference/circuits#repeating-a-step) has one instance per host and item, keyed `"HOST/ITEM"`.
+A [repeated step](/reference/circuits/steps#for_each) has one instance per host and item, keyed `"HOST/ITEM"`.
 
 Each instance records what Conn3x last read from or wrote to the host, and the `ssh` settings it used. The next refresh connects with those settings.
 

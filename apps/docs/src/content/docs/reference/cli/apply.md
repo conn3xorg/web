@@ -16,7 +16,7 @@ conn3x apply [options] [PLAN]
 Host steps are applied over SSH, alongside cloud resources, in one run:
 
 - Within a circuit, steps run in the order you write them. A circuit whose `hosts` refers to a resource, such as a server's address, waits for that resource.
-- A [handler](/reference/circuits#handler) runs after the steps that notify it, and only on the hosts where one of them changed something.
+- A [handler](/reference/circuits/handlers) runs after the steps that notify it, and only on the hosts where one of them changed something.
 - The first time Conn3x writes [write-only content](/concepts#secrets-in-files) without `CONN3X_HMAC_KEY` set, it creates `~/.config/conn3x/hmac.key`.
 
 If a step fails on one host, `apply` reports the error and exits 1. State keeps everything that finished, so the next plan picks up where it stopped.

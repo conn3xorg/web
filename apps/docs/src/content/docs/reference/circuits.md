@@ -1,117 +1,154 @@
 ---
 title: Circuit language
-description: Every block and argument a circuit takes.
+description: What a circuit is, which files circuits go in, and how Conn3x turns each step into a resource with one instance per host.
 ---
 
-## circuit
+Conn3x configuration is OpenTofu configuration with one more block type, `circuit`. A circuit configures a group of Linux hosts over SSH: it names the hosts, says how to log in to them, and lists the steps to apply to each one, in order.
+
+This section documents the circuit language in Conn3x v0.5.0. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
 
 ```hcl
+circuit "web" {
+  hosts = {
+    web1 = "203.0.113.10"
+    web2 = "203.0.113.11"
+  }
+
+  ssh {
+    user   = "deploy"
+    become = true
+  }
+
+  step "nginx" {
+    package {
+      name = "nginx"
+    }
+  }
+
+  step "config" {
+    file {
+      path    = "/etc/nginx/conf.d/site.conf"
+      content = "server { listen 80; server_name ${each.key}.example.com; }\n"
+    }
+    notify = [handler.reload]
+  }
+
+  step "running" {
+    service {
+      name    = "nginx"
+      state   = "started"
+      enabled = true
+    }
+  }
+
+  handler "reload" {
+    service {
+      name   = "nginx"
+      action = "reload"
+    }
+  }
+}
+```
+
+## Syntax
+
+```text
 circuit "NAME" {
-  hosts = { NAME = "ADDRESS", ... }
-  ssh { ... }
+  hosts = EXPRESSION
 
-  step "NAME" { ... }
-  handler "NAME" { ... }
-}
-```
-
-| Argument | Description |
-| --- | --- |
-| `hosts` | Required. A map of host name to address, or to an object with an `address` and any of `user`, `port`, `private_key_file`, `host_key` and `jump_hosts`, which override the `ssh` block for that host. Any expression that produces a map works, including one built from resources in the same plan. |
-| `ssh` | Required block. How to reach every host in the circuit. |
-
-The circuit name, like step and handler names, must be a valid identifier without a double underscore.
-
-## ssh
-
-| Argument | Description |
-| --- | --- |
-| `user` | User to log in as. Required unless `ssh_config_file` sets one. |
-| `port` | SSH port. Defaults to 22. |
-| `private_key_file` | Path to a private key. Defaults to the SSH agent. |
-| `known_hosts_file` | known_hosts file to check host keys against. Defaults to `~/.ssh/known_hosts`. |
-| `host_key` | A pinned host public key, in authorized_keys format, instead of known_hosts. Useful for a server created in the same plan. |
-| `become` | Run commands as root through sudo. |
-| `become_password_file` | File holding the sudo password, when sudo needs one. |
-| `timeout` | How long to keep trying while a host isn't answering yet, such as a server still booting. Defaults to `"3m"`. |
-| `jump_hosts` | Hosts to connect through first, in order, like `ssh -J`: `["deploy@bastion.example.com", "10.0.0.5:2222"]`. Each is checked against known_hosts and uses the same key. |
-| `ssh_config_file` | An OpenSSH config, such as `"~/.ssh/config"`, to look each host up in as a `Host` alias. See [Reach hosts behind a bastion](/guides/bastions). |
-
-The host's address comes from `hosts`; `ssh` has no `host` argument.
-
-Hosts that log in differently can share a circuit:
-
-```hcl
-hosts = {
-  web1 = "10.0.0.4"
-  db1  = { address = "10.0.0.5", user = "admin", port = 2222 }
-}
-```
-
-An inventory is then an ordinary variable or local, and a group is a map you `merge()`.
-
-## step
-
-```hcl
-step "NAME" {
-  for_each   = [ ... ]  # optional
-  MODULE { ... }
-  depends_on = [ ... ]
-  notify     = [handler.NAME, ...]
-}
-```
-
-A step holds exactly one module block; the [modules reference](/modules/file) lists them all. Steps run in the order written: each waits until the step before it has finished on every host.
-
-| Argument | Description |
-| --- | --- |
-| `for_each` | Repeat the step for each item, on every host: a map, or a list or set of strings. See [repeating a step](#repeating-a-step). |
-| `depends_on` | Other resources or steps this step waits for, beyond the one before it. |
-| `notify` | Handlers to run when this step changes something. |
-
-Inside a step, `each.key` is the host's name and `each.value` its entry in `hosts`: the address, or the host's object.
-
-A step `NAME` in circuit `CIRCUIT` becomes the resource `conn3x_MODULE.CIRCUIT__NAME`, with one instance per host. Use that address to read a step's computed attributes, or in another step's `depends_on`.
-
-### Repeating a step
-
-`for_each` repeats a step for each item, on every host. Inside the step, `item.key` and `item.value` are the current item, and `each.key` and `each.value` are still the host:
-
-```hcl
-step "tools" {
-  for_each = ["git", "jq", "tree"]
-  package {
-    name = item.value
+  ssh {
+    ARGUMENT = EXPRESSION
+    ...
   }
-}
 
-step "sites" {
-  for_each = { api = 8080, admin = 8081 }
-  file {
-    path    = "/etc/nginx/conf.d/${item.key}.conf"
-    content = "server { listen ${item.value}; server_name ${item.key}.${each.key}; }\n"
+  step "NAME" {
+    MODULE {
+      ARGUMENT = EXPRESSION
+      ...
+    }
   }
-  notify = [handler.reload]
-}
-```
 
-A list or set of strings uses each string as its key, so `item.key` and `item.value` are the same. A map uses its keys. Keys must be unique.
-
-A repeated step has one instance per host and item, keyed `"HOST/ITEM"`, such as `conn3x_package.web__tools["web1/git"]`. Remove an item and the next plan removes that item's instances from every host, and leaves the rest alone. A handler notified by a repeated step runs on a host when any of that host's items changed.
-
-## handler
-
-```hcl
-handler "NAME" {
-  service {
-    name   = "SERVICE"
-    action = "reload"  # or "restart"
+  handler "NAME" {
+    service {
+      name = EXPRESSION
+    }
   }
 }
 ```
 
-A handler runs after the steps that notify it, and only on the hosts where one of them changed something, including putting back a change someone made by hand. A handler that nothing notifies is a warning.
+A circuit block takes one label, the circuit's name, and these arguments and blocks:
 
-## Warnings
+| Name | Required | Description |
+| --- | --- | --- |
+| `hosts` | Yes | The hosts to configure. A map of host names to addresses or host objects, or a set of addresses. See [Hosts](/reference/circuits/hosts). |
+| `ssh` | Yes | Exactly one block. How to log in to every host. See [The ssh block](/reference/circuits/ssh). |
+| `step` | No | Any number of blocks. Each holds one module and runs on every host, in the order written. See [Steps](/reference/circuits/steps). |
+| `handler` | No | Any number of blocks. Each restarts or reloads a service on the hosts where a step that notifies it changed something. See [Handlers](/reference/circuits/handlers). |
 
-Conn3x warns when one step writes a whole file and another step edits part of the same file, because each apply would undo the other. Put the edit in the file's content instead.
+A circuit with no steps is valid and does nothing.
+
+## Names
+
+Circuit, step and handler names must be valid identifiers: letters, digits, underscores and hyphens, not starting with a digit. They can't contain a double underscore (`__`), because Conn3x uses it to join circuit and step names.
+
+Step names must be unique within a circuit, and so must handler names. Two circuits can use the same step and handler names. Circuit names must be unique within a module.
+
+## Files
+
+Circuits can go in two kinds of file:
+
+- `.circuit.hcl` files. Conn3x reads them like `.tf` files, so a `.circuit.hcl` file can also hold variables, resources, outputs and any other block.
+- `.tf` and `.tofu` files, next to your resources.
+
+Use whichever suits the project. A common layout keeps the cloud in `main.tf` and the hosts in `web.circuit.hcl`. Circuits must be written in native HCL syntax. JSON configuration files (`.tf.json`) can't contain circuits.
+
+Circuits can go in child modules as well as the root module. Their resources then have a `module.NAME.` prefix. See [Resource addresses](/reference/circuits/addresses).
+
+## How a circuit becomes resources
+
+Conn3x doesn't add a new kind of object to the plan. When it reads the configuration, it turns every step and every handler into an ordinary managed resource of its built-in `conn3x` provider:
+
+| In the circuit | Resource |
+| --- | --- |
+| `step "NAME"` using module `MODULE` in circuit `CIRCUIT` | `conn3x_MODULE.CIRCUIT__NAME` |
+| `step "NAME"` using `template` | `conn3x_file.CIRCUIT__NAME` |
+| `step "NAME"` using `ufw` | `conn3x_ufw_rule.CIRCUIT__NAME` |
+| `handler "NAME"` | `conn3x_service_action.CIRCUIT__NAME` |
+
+Each resource has `for_each` set to the circuit's `hosts`, so it has one instance per host, keyed by the host's name. A step with its own [`for_each`](/reference/circuits/steps#for_each) has one instance per host and item instead, keyed `"HOST/ITEM"`.
+
+Each instance gets the circuit's `ssh` block, with the host's address filled in. Each step depends on the step before it, and each handler depends on the last step and watches the steps that notify it.
+
+For the circuit above, a plan shows these instances:
+
+```text
+conn3x_package.web__nginx["web1"]
+conn3x_package.web__nginx["web2"]
+conn3x_file.web__config["web1"]
+conn3x_file.web__config["web2"]
+conn3x_service.web__running["web1"]
+conn3x_service.web__running["web2"]
+conn3x_service_action.web__reload["web1"]
+conn3x_service_action.web__reload["web2"]
+```
+
+Because steps are resources, everything that works with resources works with them: `plan` and `apply`, state, references from other resources and outputs, `-target`, `moved` and `removed` blocks, and the `state` commands. The names above are what you use for all of these.
+
+## Validation warnings
+
+`conn3x validate` and `conn3x plan` warn about two things in a circuit:
+
+- A handler that no step notifies. It never runs, and Conn3x creates no resource for it.
+- A file that one step writes whole, with `file` or `template`, while another step in the same circuit edits it with `line` or `block`. Each apply would undo the other. Put the edit in the file's content instead. Conn3x can only compare paths written as literal strings.
+
+## In this section
+
+- [Hosts](/reference/circuits/hosts): the `hosts` argument, host objects and instance keys.
+- [The ssh block](/reference/circuits/ssh): every connection setting, jump hosts, host keys and sudo.
+- [Steps](/reference/circuits/steps): ordering, dependencies and `for_each`.
+- [Handlers](/reference/circuits/handlers): `notify`, when handlers run, and the `revision` attribute.
+- [Removal](/reference/circuits/removal): what `on_remove` does for each module.
+- [Secrets](/reference/circuits/secrets): write-only content and ephemeral variables.
+- [Resource addresses](/reference/circuits/addresses): targeting steps and hosts, and using the state commands.
+- [Expressions and functions](/reference/circuits/expressions): what circuits inherit from OpenTofu.
+- [Host facts](/reference/host-facts): reading a host's operating system and hardware at plan time.

@@ -37,7 +37,14 @@ export default defineConfig({
           label: "Guides",
           items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
-        { label: "Circuit language", items: ["reference/circuits", "reference/host-facts"] },
+        {
+          label: "Circuit language",
+          items: [
+            { slug: "reference/circuits", label: "Overview" },
+            ...["hosts", "ssh", "steps", "handlers", "removal", "secrets", "addresses", "expressions"].map((page) => `reference/circuits/${page}`),
+            "reference/host-facts",
+          ],
+        },
         {
           label: "CLI",
           collapsed: true,
