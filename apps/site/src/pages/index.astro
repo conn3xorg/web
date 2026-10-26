@@ -9,7 +9,6 @@ import { isPublished } from "../lib/published.js";
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
-const examples = `${repo}/tree/main/examples`;
 const posts = (await getCollection("blog", (p) => isPublished(p)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
@@ -96,7 +95,8 @@ const circuit = `step "install_the_basics" {
           <h3>Repeat a step for every item</h3>
           <p>
             <code>for_each</code> runs a step once per package, user or file, on every host. Drop
-            an item and the next plan removes just that item, everywhere.
+            an item and the next plan stops managing just that item, everywhere, or removes it
+            from the hosts if you ask.
           </p>
         </div>
         <div>
@@ -116,8 +116,8 @@ const circuit = `step "install_the_basics" {
       </div>
       <p class="status">
         <a href={`${docs}/modules/package`}>Twenty-nine modules</a> so far, from packages and
-        services to firewalld and SELinux. It's early, and Linux first: Rocky, RHEL, AlmaLinux,
-        Fedora, Debian and Ubuntu.
+        services to firewalld and SELinux. It's early, and Linux first: every change is tested
+        on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.
       </p>
     </section>
 
@@ -214,7 +214,7 @@ const circuit = `step "install_the_basics" {
       </p>
       <div class="cta">
         <a class="button" href={`${docs}/get-started`}>Get started</a>
-        <a class="secondary" href={`${examples}/try-it-locally`}>Try it locally</a>
+        <a class="secondary" href={`${docs}/tutorials/try-locally`}>Try it locally</a>
         <a class="secondary" href={docs}>Read the docs</a>
       </div>
     </section>
