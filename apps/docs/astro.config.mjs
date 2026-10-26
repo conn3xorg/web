@@ -37,7 +37,17 @@ export default defineConfig({
           label: "Guides",
           items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
-        { label: "Circuit language", items: ["reference/circuits", "reference/host-facts", "reference/cli"] },
+        { label: "Circuit language", items: ["reference/circuits", "reference/host-facts"] },
+        {
+          label: "CLI",
+          collapsed: true,
+          items: [
+            { slug: "reference/cli", label: "Overview" },
+            ...["init", "validate", "plan", "apply", "destroy", "drift", "convert-ansible", "show", "state", "output", "fmt", "providers", "version"].map(
+              (cmd) => `reference/cli/${cmd}`,
+            ),
+          ],
+        },
         { label: "Modules", collapsed: true, items: [{ autogenerate: { directory: "modules" } }] },
       ],
     }),

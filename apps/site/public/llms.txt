@@ -6,9 +6,10 @@ Conn3x configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu. Featu
 
 ## Docs
 
-- [Documentation](https://docs.conn3x.org): install, get started, concepts, guides, the circuit language and every module.
+- [Documentation](https://docs.conn3x.org): install, get started, concepts, guides, the circuit language, every module and the CLI.
 - [Get started](https://docs.conn3x.org/get-started)
 - [Circuit language reference](https://docs.conn3x.org/reference/circuits)
+- [CLI reference](https://docs.conn3x.org/reference/cli)
 - [Migrate from Ansible](https://docs.conn3x.org/guides/migrate-from-ansible)
 - [Use with Terraform or OpenTofu configuration](https://docs.conn3x.org/guides/migrate-from-terraform)
 
