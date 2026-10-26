@@ -53,8 +53,8 @@ In a real configuration, set `content_wo` from a variable with `ephemeral = true
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `content` | string | No | Exact content of the file. Set this or content_wo. |
-| `content_wo` | string | No | Exact content of the file, kept out of state: state records only content_hmac. Use it for secrets. Set this or content. |
+| `content` | string | One of | Exact content of the file. Set this or content_wo. |
+| `content_wo` | string | One of | Exact content of the file, kept out of state: state records only content_hmac. Use it for secrets. Set this or content. |
 | `group` | string | No | Owning group. Left as is when unset. |
 | `mode` | string | No | Octal permissions. Defaults to "0644", or "0600" with content_wo. |
 | `on_remove` | string | No | What happens on the host when this resource is removed: "forget" (default) leaves the file, "delete" removes it. |

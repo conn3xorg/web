@@ -7,10 +7,27 @@ description: "Waits until a path exists or a TCP port is listening on the host. 
 
 Waits until a path exists or a TCP port is listening on the host. Refresh checks again, so a later apply waits again if it stopped.
 
+Use `wait_for` to pause a circuit until a path exists or a TCP port is listening on the host, such as a service's socket after it starts. The step after it runs only once the wait is over.
+
+## Example usage
+
+Wait for a service to listen on a port:
+
 ```hcl
-step "example" {
+step "postgres_up" {
   wait_for {
-    path = "..."
+    port = 5432
+  }
+}
+```
+
+Wait for a file, for up to a minute:
+
+```hcl
+step "app_ready" {
+  wait_for {
+    path    = "/run/app/ready"
+    timeout = "1m"
   }
 }
 ```
@@ -19,8 +36,8 @@ step "example" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `path` | string | No | Path to wait for. Set this or port. |
-| `port` | number | No | TCP port to wait for a listener on. Set this or path. |
+| `path` | string | One of | Path to wait for. Set this or port. |
+| `port` | number | One of | TCP port to wait for a listener on. Set this or path. |
 | `timeout` | string | No | How long to wait. Defaults to "5m". |
 
 ## Read-only attributes
@@ -33,3 +50,21 @@ Conn3x sets these; reference them as `conn3x_wait_for.<circuit>__<step>["<host>"
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_wait_for` resource, one instance per host, and connects with its circuit's `ssh` block.
+
+## How it works
+
+**Waiting.** Conn3x checks on the host once a second until the path exists or something listens on the port, and fails the step if that takes longer than `timeout`. `timeout` takes a duration such as `"90s"` or `"10m"`, and defaults to `"5m"`.
+
+**Ports.** A port counts as ready when any process listens on it over TCP, on IPv4 or IPv6, on any address. Conn3x reads `/proc/net/tcp` and `/proc/net/tcp6`, so the host needs neither `ss` nor `netstat`.
+
+**Reading.** Every plan checks again. If the path is gone or nothing listens on the port any more, the plan shows the step out of sync and the next apply waits again.
+
+**Validation.** Set exactly one of `path` and `port`. `path` must be absolute, and `port` must be between 1 and 65535.
+
+## Removal
+
+Deleting a `wait_for` step does nothing on the host.
+
+## From Ansible
+
+`conn3x convert ansible` turns `wait_for` tasks on the host itself into `wait_for` steps, carrying over `path` and `port`, and turning `timeout` in seconds into a duration such as `"300s"`. `delay` is dropped. A task that waits for another host, or for a state other than `started` or `present`, stays a TODO.
