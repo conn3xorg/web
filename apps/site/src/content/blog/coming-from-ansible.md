@@ -91,7 +91,9 @@ Expect to finish these by hand:
 The command exits 3 while anything is left, so you can run it in CI until the count reaches zero.
 
 <figure>
-  <img src="/media/blog/coming-from-ansible/cheatsheet.png" width="1600" height="3011" loading="lazy" decoding="async" alt="Cheat sheet: Ansible concepts on the left and their Conn3x equivalents on the right, with what the converter translates and what it leaves for you." />
+  <a href="/media/blog/coming-from-ansible/cheatsheet.png">
+    <img src="/media/blog/coming-from-ansible/cheatsheet.png" width="1600" height="3011" loading="lazy" decoding="async" alt="Cheat sheet: Ansible concepts on the left and their Conn3x equivalents on the right, with what the converter translates and what it leaves for you." />
+  </a>
   <figcaption>The cheat sheet, to keep next to your playbooks.</figcaption>
 </figure>
 

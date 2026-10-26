@@ -51,7 +51,9 @@ The password goes to the server over SSH and lands in the file with mode `0600`,
 If state doesn't hold the content, how does Conn3x know when someone changes the file? It keeps an HMAC instead: a keyed fingerprint of the file's path and contents, stored as `content_hmac`.
 
 <figure>
-  <img src="/media/blog/secrets-that-never-touch-your-state/flow.png" width="1600" height="1243" loading="lazy" decoding="async" alt="Where the secret goes: from the ephemeral variable to the file on the host over SSH, never into the plan or state. State holds content_hmac, made with a key that lives outside state." />
+  <a href="/media/blog/secrets-that-never-touch-your-state/flow.png">
+    <img src="/media/blog/secrets-that-never-touch-your-state/flow.png" width="1600" height="1243" loading="lazy" decoding="async" alt="Where the secret goes: from the ephemeral variable to the file on the host over SSH, never into the plan or state. State holds content_hmac, made with a key that lives outside state." />
+  </a>
   <figcaption>Where the value goes, and where it doesn't.</figcaption>
 </figure>
 

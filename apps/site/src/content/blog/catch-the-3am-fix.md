@@ -147,7 +147,9 @@ One thing specific to v0.5.0: if your configuration lives in a subdirectory, set
 ## When the issue opens
 
 <figure>
-  <img src="/media/blog/catch-the-3am-fix/loop.png" width="1600" height="1531" loading="lazy" decoding="async" alt="The nightly loop: a schedule runs conn3x drift. Exit 0 means nothing to do. Exit 2 opens an issue; you run conn3x plan, then either apply to put the server back or copy the change into the circuit to keep it. Either way the next morning's drift is clean." />
+  <a href="/media/blog/catch-the-3am-fix/loop.png">
+    <img src="/media/blog/catch-the-3am-fix/loop.png" width="1600" height="1531" loading="lazy" decoding="async" alt="The nightly loop: a schedule runs conn3x drift. Exit 0 means nothing to do. Exit 2 opens an issue; you run conn3x plan, then either apply to put the server back or copy the change into the circuit to keep it. Either way the next morning's drift is clean." />
+  </a>
   <figcaption>The nightly loop, and the two ways out of it.</figcaption>
 </figure>
 
