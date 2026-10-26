@@ -1,0 +1,76 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The nightly drift loop: diagram</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  code { font-family: var(--mono); font-size: 0.86em; }
+  .box { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 26px 30px; }
+  .box .k { font-family: var(--mono); font-size: 20px; letter-spacing: 0.12em; color: var(--navy-muted); }
+  .box h2 { font-size: 38px; letter-spacing: -0.02em; font-weight: 800; margin: 8px 0 10px; }
+  .box p { font-size: 25px; line-height: 1.4; color: var(--navy-muted); }
+  .arrow { display: grid; place-items: center; font-family: var(--mono); font-size: 22px; color: var(--rust); text-align: center; line-height: 1.3; }
+  .arrow b { font-size: 44px; display: block; }
+  .row1 { display: grid; grid-template-columns: 1fr 110px 1fr; margin-top: 60px; }
+  .run { border-top: 8px solid var(--navy); }
+  .exits { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 18px; }
+  .down { text-align: center; font-family: var(--mono); color: var(--rust); font-size: 40px; line-height: 1; margin-top: 18px; }
+  .ok { border-top: 8px solid var(--add); }
+  .err { border-top: 8px solid var(--paper-line); }
+  .hot { border-top: 8px solid var(--accent); }
+  .then { margin-top: 18px; }
+  .choices { margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .choice { background: var(--ink); color: var(--text); padding: 30px 34px; }
+  .choice h3 { font-size: 38px; letter-spacing: -0.02em; font-weight: 800; color: var(--accent); }
+  .choice p { font-size: 25px; line-height: 1.45; color: var(--muted); margin-top: 8px; }
+  .choice code { color: var(--text); }
+  .next { margin-top: 24px; border: 3px dashed #9cc7b0; background: #f1faf5; padding: 22px 30px; font-size: 27px; color: var(--navy); }
+  .next b { font-weight: 800; }
+  .bottom { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X V0.5.0</b> · DRIFT IN CI</span>
+  <h1>The nightly loop</h1>
+  <p class="lede">A scheduled job runs <code>conn3x drift</code> every morning. Its exit code decides what happens next.</p>
+
+  <div class="row1">
+    <div class="box"><span class="k">06:17 UTC</span><h2>The schedule</h2><p>A GitHub Actions <code>cron</code> starts the job.</p></div>
+    <div class="arrow"><div><b>→</b>runs</div></div>
+    <div class="box run"><span class="k">BOTH LAYERS</span><h2>conn3x drift</h2><p>Reads the cloud and every host step again. Changes nothing.</p></div>
+  </div>
+
+  <div class="exits">
+    <div class="box ok"><span class="k">EXIT 0</span><h2>No drift</h2><p>The cloud and the hosts match the last apply. Nothing to do.</p></div>
+    <div class="box err"><span class="k">EXIT 1</span><h2>The check broke</h2><p>A host didn't answer, say. The job fails, no issue.</p></div>
+    <div class="box hot"><span class="k">EXIT 2</span><h2>Drift found</h2><p>The job fails and opens an issue with the report.</p></div>
+  </div>
+
+  <div class="then">
+    <div class="box plan"><span class="k">AFTER EXIT 2 · YOU, NEXT MORNING</span><h2>conn3x plan</h2><p>Shows exactly what changed, line by line for a file.</p></div>
+  </div>
+
+  <div class="choices">
+    <div class="choice"><h3>Put it back</h3><p>The hand edit was wrong, or a stopgap. <code>conn3x apply</code> restores what the circuit says.</p></div>
+    <div class="choice"><h3>Keep it</h3><p>The hand edit was right. Copy it into the circuit, plan until <code>No changes.</code>, then apply to record it.</p></div>
+  </div>
+
+  <div class="next"><b>Next morning:</b> drift comes back clean, and exits 0.</div>
+
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>docs.conn3x.org/guides/drift</span>
+  </div>
+</div>
+</body>
+</html>
