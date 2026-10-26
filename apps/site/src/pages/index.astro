@@ -4,10 +4,15 @@
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import { getCollection } from "astro:content";
+import { isPublished } from "../lib/published.js";
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
-const examples = `${repo}/tree/main/examples`;
+const posts = (await getCollection("blog", (p) => isPublished(p)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+const date = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 const playbook = `- name: Install the basics
   ansible.builtin.package:
     name: "{{ item }}"
@@ -90,7 +95,8 @@ const circuit = `step "install_the_basics" {
           <h3>Repeat a step for every item</h3>
           <p>
             <code>for_each</code> runs a step once per package, user or file, on every host. Drop
-            an item and the next plan removes just that item, everywhere.
+            an item and the next plan stops managing just that item, everywhere, or removes it
+            from the hosts if you ask.
           </p>
         </div>
         <div>
@@ -109,7 +115,9 @@ const circuit = `step "install_the_basics" {
         </div>
       </div>
       <p class="status">
-        It's early, and Linux first: Rocky, RHEL, AlmaLinux, Fedora, Debian and Ubuntu.
+        <a href={`${docs}/modules/package`}>Twenty-nine modules</a> so far, from packages and
+        services to firewalld and SELinux. It's early, and Linux first: every change is tested
+        on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.
       </p>
     </section>
 
@@ -153,6 +161,51 @@ const circuit = `step "install_the_basics" {
       </div>
     </section>
 
+    <section class="open" aria-labelledby="open-title">
+      <div class="wrap">
+        <h2 id="open-title">Built in the open, and not by one person</h2>
+        <p class="section-lede">
+          A clearer error, a permission check, a fix to the module reference: people outside
+          the project wrote those, and they shipped in the next release with thanks in the notes.
+          Small pull requests are how most of us started, and they're welcome here.
+        </p>
+        <div class="ways">
+          <a href={`${repo}/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22help+wanted%22`}>
+            <strong>Pick up an issue</strong>
+            <span>Ones marked good first issue come with the files to touch and how to test.</span>
+          </a>
+          <a href="https://github.com/conn3xorg/web">
+            <strong>Fix the docs</strong>
+            <span>Every page has an edit link. Spotted something wrong? That's a pull request.</span>
+          </a>
+          <a href={`${repo}/issues/new/choose`}>
+            <strong>Tell us what broke</strong>
+            <span>A plan that surprised you is a bug report we want, with the output.</span>
+          </a>
+        </div>
+        <p class="fine">
+          Start with the <a href={`${repo}/blob/main/CONTRIBUTING.md`}>contributing guide</a>. It
+          lists every check CI runs, so you can run them before you push.
+        </p>
+      </div>
+    </section>
+
+    {posts.length > 0 && (
+      <section class="latest wrap" aria-labelledby="latest-title">
+        <h2 id="latest-title">From the blog</h2>
+        <ol>
+          {posts.map((p) => (
+            <li>
+              <time datetime={p.data.date.toISOString().slice(0, 10)}>{date(p.data.date)}</time>
+              <a href={`/blog/${p.id}`}>{p.data.title}</a>
+              <p>{p.data.description}</p>
+            </li>
+          ))}
+        </ol>
+        <p class="fine"><a href="/blog">All posts</a></p>
+      </section>
+    )}
+
     <section class="closing wrap" aria-labelledby="closing-title">
       <h2 id="closing-title">Fifteen minutes to your first circuit</h2>
       <p>
@@ -161,7 +214,7 @@ const circuit = `step "install_the_basics" {
       </p>
       <div class="cta">
         <a class="button" href={`${docs}/get-started`}>Get started</a>
-        <a class="secondary" href={`${examples}/try-it-locally`}>Try it locally</a>
+        <a class="secondary" href={`${docs}/tutorials/try-locally`}>Try it locally</a>
         <a class="secondary" href={docs}>Read the docs</a>
       </div>
     </section>
@@ -327,7 +380,7 @@ const circuit = `step "install_the_basics" {
   @media (max-width: 900px) {
     .hero-grid,
     .points {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
@@ -429,6 +482,85 @@ const circuit = `step "install_the_basics" {
   }
   td:nth-child(2) {
     color: var(--c-text-muted);
+  }
+  .open {
+    border-block: 1px solid var(--c-border);
+    background: var(--c-surface);
+    margin-top: clamp(3rem, 7vw, 5rem);
+    padding-block: clamp(3rem, 7vw, 5rem);
+  }
+  .open h2,
+  .latest h2 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    letter-spacing: -0.025em;
+    margin: 0 0 1rem;
+  }
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .ways a {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--c-border);
+    border-top: 3px solid var(--c-accent);
+    border-radius: 8px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  .ways a:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .ways strong {
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  .ways span {
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+  }
+  .fine {
+    margin: 1.5rem 0 0;
+    color: var(--c-text-muted);
+  }
+  .latest {
+    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  }
+  .latest ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    border-top: 2px solid var(--c-text);
+    padding-top: 1.5rem;
+  }
+  .latest time {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+    margin-bottom: 0.35rem;
+  }
+  .latest li > a {
+    font-weight: 700;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    color: var(--c-text);
+  }
+  .latest li p {
+    margin: 0.5rem 0 0;
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+  }
+  @media (max-width: 900px) {
+    .ways,
+    .latest ol {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
   .closing {
     padding-block: clamp(3rem, 7vw, 5rem);
