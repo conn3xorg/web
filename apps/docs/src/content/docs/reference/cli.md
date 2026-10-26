@@ -3,7 +3,7 @@ title: CLI overview
 description: How to run conn3x commands, the global options, the environment variables Conn3x reads, and its exit codes.
 ---
 
-The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.6.1.
+The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.6.2.
 
 ## Usage
 
@@ -71,6 +71,7 @@ The other OpenTofu commands are there too and behave as OpenTofu documents them:
 | Variable | Description |
 | --- | --- |
 | `CONN3X_HMAC_KEY` | The key for the HMACs that state keeps instead of write-only file content. It must be at least 32 bytes; `openssl rand -hex 32` makes one. Without it, Conn3x uses `~/.config/conn3x/hmac.key`, and creates that file the first time it writes a write-only secret. Every machine that runs against the same state needs the same key. See [Secrets in files](/concepts#secrets-in-files). |
+| `CONN3X_SSH_MAX_SESSIONS` | The most SSH sessions Conn3x opens at once on one connection to a host. Defaults to `8`, below OpenSSH's default `MaxSessions` of 10. Commands beyond it wait for a free session. If a server allows fewer, Conn3x finds that out on its own and opens fewer, so you only need this to go higher on a server that allows more. Accepts 1 to 1000. |
 | `XDG_CONFIG_HOME` | When set, the key file is `$XDG_CONFIG_HOME/conn3x/hmac.key` instead. |
 | `SSH_AUTH_SOCK` | The SSH agent Conn3x logs in with when an `ssh` block has no `private_key_file`. |
 

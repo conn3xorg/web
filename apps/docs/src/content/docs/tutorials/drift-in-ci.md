@@ -55,7 +55,7 @@ jobs:
 
       - name: Install Conn3x
         env:
-          VERSION: 0.6.1
+          VERSION: 0.6.2
         run: |
           curl -fsSL "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_linux_amd64.tar.gz" | tar -xz conn3x
           sudo install conn3x /usr/local/bin/

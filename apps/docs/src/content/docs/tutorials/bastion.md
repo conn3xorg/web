@@ -9,7 +9,7 @@ In this tutorial you'll configure two servers that you can only reach through a 
 
 ## Prerequisites
 
-- Conn3x v0.6.1 [installed](/install), and [Configure your first real server](/tutorials/first-server) done, or the same knowledge of circuits and the `ssh` block.
+- Conn3x v0.6.2 [installed](/install), and [Configure your first real server](/tutorials/first-server) done, or the same knowledge of circuits and the `ssh` block.
 - A bastion you can reach over SSH. This tutorial uses `bastion.example.com`.
 - Two Linux servers that the bastion can reach on port 22. This tutorial uses `10.0.1.5` and `10.0.1.6`.
 - A user called `admin` on all three machines, with passwordless `sudo` and your key `~/.ssh/id_ed25519` in its `authorized_keys`. Every hop uses the same key.

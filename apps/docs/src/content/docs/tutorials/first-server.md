@@ -9,7 +9,7 @@ In this tutorial you'll write a circuit from scratch for a server you already ru
 
 ## Prerequisites
 
-- Conn3x v0.6.1 [installed](/install). [Try Conn3x locally](/tutorials/try-locally) is a good first step but not required.
+- Conn3x v0.6.2 [installed](/install). [Try Conn3x locally](/tutorials/try-locally) is a good first step but not required.
 - A Linux server running Rocky Linux, RHEL, AlmaLinux, Fedora, Debian or Ubuntu. Use one you can afford to change, such as a fresh cloud server or a VM. This tutorial uses `203.0.113.10`; use your server's address instead.
 - A user on the server that can run `sudo` without a password, and whose `~/.ssh/authorized_keys` has your public key. This tutorial calls the user `admin` and the key `~/.ssh/id_ed25519`.
 - Nothing else listening on port 8080 on the server.
