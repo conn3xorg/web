@@ -234,4 +234,4 @@ A new `port`, or an `ssh_config_file` that gives the host a new port or `HostNam
 - **They share none.** It's another machine behind the same address, so the plan replaces the steps, and `on_remove` runs on the old one.
 - **Either address has no recorded key.** Conn3x can't tell, so the steps stay as they are. Connecting still checks the new address's key.
 
-A plan refreshes each step with the settings in state, so it connects to the old port first. If sshd no longer listens there, plan with `-refresh=false` once to move the steps to the new port.
+A plan refreshes each step with the settings in state, so it tries the old port first. If sshd no longer listens there, the refresh gives up after 10 seconds with a `Host not reachable during refresh` warning, the steps keep what the last apply recorded, and the plan moves them to the new port.
