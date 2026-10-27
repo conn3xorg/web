@@ -251,6 +251,10 @@ pre {
   font-family: var(--font-mono);
 }
 
+pre code {
+  font-size: inherit;
+}
+
 /* Diagrams. src/scripts/play.ts adds .armed, then .on to each piece with
  * data-at at its time in the cycle. Resting styles are the final frame, so
  * without JavaScript, or with reduced motion, the finished picture shows. */
