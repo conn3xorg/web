@@ -67,6 +67,11 @@ export default defineConfig({
           ],
         },
         { label: "Modules", collapsed: true, items: [{ autogenerate: { directory: "modules" } }] },
+        {
+          label: "Internals",
+          collapsed: true,
+          items: ["plan-reads", "state", "revision-and-handlers", "connections"].map((page) => `internals/${page}`),
+        },
       ],
     }),
   ],
