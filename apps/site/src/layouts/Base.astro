@@ -34,23 +34,8 @@ const props = Astro.props;
   <body>
     <slot />
     <script>
-      // Diagrams marked data-play start when they scroll into view. Their
-      // resting styles are the final frame, so nothing depends on this.
-      const els = document.querySelectorAll("[data-play]");
-      if (els.length && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        const io = new IntersectionObserver(
-          (entries) => {
-            for (const e of entries) {
-              if (e.isIntersecting) {
-                e.target.classList.add("play");
-                io.unobserve(e.target);
-              }
-            }
-          },
-          { threshold: 0.35 },
-        );
-        els.forEach((el) => io.observe(el));
-      }
+      import { play } from "../scripts/play";
+      play();
     </script>
   </body>
 </html>

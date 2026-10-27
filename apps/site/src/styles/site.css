@@ -56,6 +56,11 @@ svg {
   margin-inline: auto;
 }
 
+/* The home page ends on its own closing band. */
+main.home + .site-footer {
+  margin-top: 0;
+}
+
 .skip {
   position: absolute;
   left: 1rem;
@@ -218,6 +223,23 @@ svg {
   margin-right: 1.6rem;
 }
 
+/* A panel that holds code or a terminal: dark in both themes. */
+.panel.code {
+  background: var(--c-code-bg);
+  border-color: var(--c-code-border);
+  color: var(--c-code-text);
+}
+
+.panel.code .panel-bar {
+  color: var(--c-code-dim);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.panel.code .panel-bar::before {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0.8rem 0 0 rgba(255, 255, 255, 0.14), 1.6rem 0 0 rgba(255, 255, 255, 0.14);
+}
+
 /* Code that isn't inside a panel. */
 code {
   font-family: var(--font-mono);
@@ -229,9 +251,37 @@ pre {
   font-family: var(--font-mono);
 }
 
-/* Diagrams start when they come into view: a script adds .play.
- * Their resting styles are the final frame, so without JavaScript, or
- * with reduced motion, the finished picture shows. */
+/* Diagrams. src/scripts/play.ts adds .armed, then .on to each piece with
+ * data-at at its time in the cycle. Resting styles are the final frame, so
+ * without JavaScript, or with reduced motion, the finished picture shows. */
+[data-at] {
+  transition:
+    opacity 0.5s var(--ease-out),
+    transform 0.5s var(--ease-out),
+    stroke-dashoffset 0.9s var(--ease-out);
+}
+
+.armed [data-at]:not(.on) {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.armed .draw[data-at]:not(.on) {
+  opacity: 1;
+  transform: none;
+  stroke-dashoffset: 1;
+}
+
+.rewind [data-at] {
+  opacity: 0 !important;
+  transition: opacity 0.4s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

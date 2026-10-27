@@ -1,0 +1,229 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// Section 02: a hand edit at 3 a.m., caught by the nightly drift check,
+// put back by the next apply. The finished frame is the whole story.
+
+const events = [
+  { at: 0, time: "18:00", what: "conn3x apply", note: "Servers match the code.", tone: "ok" },
+  { at: 1600, time: "03:12", what: "A hand edit on web1", note: "worker_connections, 1024 to 4096.", tone: "change" },
+  { at: 4200, time: "06:00", what: "Nightly conn3x drift", note: "Finds it, exits 2, the job fails.", tone: "bad" },
+  { at: 8200, time: "09:30", what: "conn3x apply", note: "Put back. Or keep it, in code.", tone: "ok" },
+];
+---
+<div class="drift" data-play="13000">
+  <i class="m m-edit" data-at="1600"></i>
+  <i class="m m-fail" data-at="5200"></i>
+  <i class="m m-fix" data-at="8200"></i>
+
+  <ol class="timeline">
+    {events.map((e) => (
+      <li class={e.tone} data-at={e.at}>
+        <span class="dot" aria-hidden="true"></span>
+        <time>{e.time}</time>
+        <strong>{e.what}</strong>
+        <span class="note">{e.note}</span>
+      </li>
+    ))}
+  </ol>
+
+  <div class="cards">
+    <div class="panel code file">
+      <div class="panel-bar">web1:/etc/nginx/nginx.conf</div>
+      <pre><span class="ln dim">user nginx;</span>
+<span class="ln dim">worker_processes auto;</span>
+<span class="ln dim">events {'{'}</span>
+<span class="ln hot">  worker_connections <span class="val-ok">1024</span><span class="val-bad">4096</span>;<span class="flag" aria-hidden="true">edited by hand</span></span>
+<span class="ln dim">{'}'}</span></pre>
+    </div>
+
+    <div class="panel code ci">
+      <div class="panel-bar">
+        <span>nightly drift · GitHub Actions</span>
+        <span class="badge" data-at="5200"><span class="b-ok">passing</span><span class="b-bad">exit code 2</span></span>
+      </div>
+      <pre><span class="ln dim" data-at="4200">$ conn3x drift</span>
+<span class="ln" data-at="4700">Drift found in 1 resource.</span>
+<span class="ln" data-at="4700"> </span>
+<span class="ln dim" data-at="4700">Hosts</span>
+<span class="ln chg" data-at="4900">  ~ conn3x_file.web__nginx_conf["web1"]  changed</span>
+<span class="ln dim" data-at="8200">$ conn3x apply</span>
+<span class="ln chg" data-at="8700">conn3x_file.web__nginx_conf["web1"]: Modifying...</span>
+<span class="ln add" data-at="9300">conn3x_file.web__nginx_conf["web1"]: Modifications complete after 1s</span></pre>
+    </div>
+  </div>
+</div>
+
+<style>
+  .drift {
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .m {
+    display: none;
+  }
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 0.45rem;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--c-border-strong), var(--c-border-strong) 85%, transparent);
+  }
+  .timeline li {
+    position: relative;
+    display: grid;
+    gap: 0.15rem;
+    padding-top: 1.6rem;
+  }
+  .dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    border: 2px solid var(--c-bg);
+    background: var(--c-add);
+    box-shadow: 0 0 0 1px var(--c-add);
+  }
+  .change .dot {
+    background: var(--c-change);
+    box-shadow: 0 0 0 1px var(--c-change);
+  }
+  .bad .dot {
+    background: var(--c-destroy);
+    box-shadow: 0 0 0 1px var(--c-destroy);
+  }
+  .play .change.on .dot,
+  .play .bad.on .dot {
+    animation: ping 1.6s var(--ease-out) 2;
+  }
+  @keyframes ping {
+    0% {
+      box-shadow: 0 0 0 1px currentColor, 0 0 0 0 var(--c-glow);
+    }
+    100% {
+      box-shadow: 0 0 0 1px currentColor, 0 0 0 14px transparent;
+    }
+  }
+  time {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+  .timeline strong {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .note {
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .cards pre {
+    padding: 1rem 1.1rem;
+    font-size: 0.75rem;
+    line-height: 1.8;
+    color: var(--c-code-text);
+    background: var(--c-code-bg);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    min-height: 100%;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+  }
+  .panel pre {
+    flex: 1;
+  }
+  .ci .panel-bar {
+    justify-content: space-between;
+  }
+  .ci .panel-bar::before {
+    display: none;
+  }
+  .ln {
+    display: inline;
+  }
+  .ln.dim {
+    color: var(--c-code-dim);
+  }
+  .ln.chg {
+    color: var(--c-code-change);
+  }
+  .ln.add {
+    color: var(--c-code-add);
+  }
+  .hot {
+    transition: background 0.4s;
+  }
+  .val-bad,
+  .flag {
+    display: none;
+  }
+  .flag {
+    margin-left: 0.75rem;
+    padding: 0.05rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    background: color-mix(in srgb, var(--c-change) 22%, transparent);
+    color: var(--c-code-change);
+  }
+  /* Between the hand edit and the fix, the file shows the edit. */
+  .armed:has(.m-edit.on):not(:has(.m-fix.on)) .val-bad,
+  .armed:has(.m-edit.on):not(:has(.m-fix.on)) .flag {
+    display: inline;
+  }
+  .armed:has(.m-edit.on):not(:has(.m-fix.on)) .val-ok {
+    display: none;
+  }
+  .armed:has(.m-edit.on):not(:has(.m-fix.on)) .hot {
+    background: color-mix(in srgb, var(--c-change) 12%, transparent);
+  }
+  .badge span {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+  }
+  .b-ok {
+    color: var(--c-add);
+    border: 1px solid color-mix(in srgb, var(--c-add) 50%, transparent);
+  }
+  .b-bad {
+    display: none;
+    color: var(--c-destroy);
+    border: 1px solid color-mix(in srgb, var(--c-destroy) 50%, transparent);
+  }
+  .armed:has(.m-fail.on):not(:has(.m-fix.on)) .b-bad {
+    display: inline;
+  }
+  .armed:has(.m-fail.on):not(:has(.m-fix.on)) .b-ok {
+    display: none;
+  }
+  @media (max-width: 860px) {
+    .timeline {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 2rem;
+    }
+    .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
