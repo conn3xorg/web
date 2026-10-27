@@ -1,0 +1,89 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Infra engineer lifecycle</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { background: #444; padding: 40px; }
+  .m { width: 1080px; height: 1350px; background: #fbf8f2; color: #111; position: relative; overflow: hidden; padding: 44px 40px 0; }
+  h1 { text-align: center; font-size: 60px; font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
+  .sub { text-align: center; font-size: 24px; font-weight: 600; color: #6a6258; margin-top: 6px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 22px; margin-top: 18px; }
+  .p .yr { font-size: 26px; font-weight: 900; text-align: center; }
+  .p .br { height: 9px; border: 4px solid #111; border-bottom: 0; margin: 2px 18px 4px; }
+  .p .q { text-align: center; font-size: 21px; font-weight: 600; line-height: 1.18; height: 52px; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; }
+  .p svg { display: block; width: 100%; border: 4px solid #111; border-radius: 6px; }
+  .ft { position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font-family: var(--mono); font-size: 22px; color: #8a8278; }
+  .ft b { color: var(--rust); }
+</style>
+<script src="art.js"></script>
+</head>
+<body>
+<section class="m" id="lifecycle">
+  <h1>The Infra Engineer Lifecycle</h1>
+  <div class="sub">Terraform + Ansible edition</div>
+  <div class="grid" id="grid"></div>
+  <div class="ft"><b>conn3x</b>.org · one plan for your cloud and the servers it creates</div>
+</section>
+<script>
+const W = 500, H = 270;
+const panels = [
+  ["Year 1", "“Terraform is so clean!”", () =>
+    `<rect width="${W}" height="${H}" fill="#4f86c6"/>
+     <rect x="330" y="26" width="130" height="90" fill="#fff" stroke="#1d1d1f" stroke-width="4"/>
+     <text x="395" y="62" text-anchor="middle" font-family="JetBrains Mono" font-weight="800" font-size="20">terraform</text>
+     <text x="395" y="92" text-anchor="middle" font-family="JetBrains Mono" font-weight="800" font-size="20" fill="#1f8a55">apply ✓</text>
+     ${dev(118, 40, 0.78, { mood: "happy", arms: "up", shirt: "#f2b632" })}
+     ${desk(W, 214)}
+     ${books(14, 254, [["Terraform", "#7b42bc"], ["OpenTofu", "#c9a300"], ["Linux", "#2e3a59"], ["Bash", "#1f8a55"]])}
+     ${laptop(312, 110, 170, "", [["main.tf", "#7b42bc"], ["tofu", "#ffda18", "#111"]])}`],
+  ["Year 2", "“I’ll add a bit of Ansible<br>for the packages.”", () =>
+    `<rect width="${W}" height="${H}" fill="#7aa6a1"/>
+     ${sticky(350, 24, ["inventory.ini ✓", "site.yml ✓", "roles/ ✓"], 4)}
+     ${dev(140, 40, 0.78, { mood: "grin", arms: "thumb", glasses: true, shirt: "#3d4f7c" })}
+     ${desk(W, 214)}
+     ${laptop(20, 116, 170, "", [["YAML", "#cc2b2b"], ["main.tf", "#7b42bc"]])}
+     ${mug(380, 150, ["YAML", "IS FINE"], "#fff", -3)}`],
+  ["Year 3", "“Why does the inventory still<br>have last week’s IP?”", () =>
+    `<rect width="${W}" height="${H}" fill="#6b5b7b"/>
+     ${monitor(300, 26, 180, 104, term([["fatal: [web1]:", "#ff6b6b"], ["UNREACHABLE!", "#ff6b6b"], ["ssh: connect to", "#9fb0c5"], ["10.0.1.12 port 22", "#9fb0c5"]], 14, 21))}
+     ${dev(90, 40, 0.78, { mood: "worried", arms: "headhold", shirt: "#3d4f7c", bags: true })}
+     ${desk(W, 214)}
+     <g transform="translate(30 228) rotate(-6)"><rect width="128" height="30" fill="#fff" stroke="#1d1d1f" stroke-width="3"/><text x="8" y="21" font-family="JetBrains Mono" font-size="13" font-weight="700">ips.json (old)</text></g>
+     <g transform="translate(330 218) rotate(5)"><rect width="148" height="34" fill="#fff" stroke="#1d1d1f" stroke-width="3"/><text x="8" y="23" font-family="JetBrains Mono" font-size="13" font-weight="700">gen_inventory.py</text></g>`],
+  ["Year 4", "“3 a.m. Someone hand-edited<br>nginx.conf. Again.”", () =>
+    `<rect width="${W}" height="${H}" fill="#1b2340"/>
+     <circle cx="70" cy="60" r="26" fill="#f5efc8"/><circle cx="82" cy="52" r="24" fill="#1b2340"/>
+     <rect x="20" y="170" width="460" height="110" rx="20" fill="#f1f1f6" stroke="#1d1d1f" stroke-width="4"/>
+     ${dev(150, 70, 0.62, { mood: "tired", shirt: "#7a6fb0" })}
+     <path d="M20 200 Q250 170 480 200 V280 H20 Z" fill="#8f86c9" stroke="#1d1d1f" stroke-width="4"/>
+     <g transform="translate(250 150) rotate(-10)"><rect width="50" height="86" rx="8" fill="#111" stroke="#1d1d1f" stroke-width="3"/><rect x="5" y="8" width="40" height="66" rx="3" fill="#ff6b6b"/><text x="25" y="38" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="800" fill="#fff">502</text><text x="25" y="54" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="800" fill="#fff">BAD GW</text></g>
+     <rect x="360" y="40" width="120" height="58" rx="8" fill="#111" stroke="#333" stroke-width="4"/>
+     <text x="420" y="82" text-anchor="middle" font-family="JetBrains Mono" font-weight="800" font-size="32" fill="#ff3b3b">3:00</text>`],
+  ["Year 5", "“sleep 60 # wait for ssh”<br>“…make it 90.”", () =>
+    `<rect width="${W}" height="${H}" fill="#8b9a6b"/>
+     ${monitor(286, 22, 196, 108, term([["$ make step2-fixed", "#d6e2f0"], ["terraform apply ✓", "#7fd3a7"], ["python gen_inv.py ✓", "#7fd3a7"], ["sleep 90 …", "#e5c07b"]], 13, 21))}
+     ${sticky(20, 22, ["step2", "step2-fixed", "step2-final2"], 4, "#ffb3c7")}
+     ${dev(120, 40, 0.78, { mood: "tired", shirt: "#55606e" })}
+     ${desk(W, 214)}
+     ${mug(372, 148, ["IT WORKS.", "DON’T", "TOUCH IT."], "#fff", 0)}`],
+  ["Year 6+", "“conn3x apply.”<br>“Yeah, the config too.”", () =>
+    `<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ec3ff"/><stop offset="1" stop-color="#bfe9ff"/></linearGradient></defs>
+     <rect width="${W}" height="${H}" fill="url(#sky)"/>
+     <circle cx="430" cy="50" r="30" fill="#ffd84d"/>
+     <rect y="150" width="${W}" height="40" fill="#2fa5d6"/>
+     <rect y="186" width="${W}" height="100" fill="#f3d9a4"/>
+     <path d="M54 270 Q64 170 44 90" fill="none" stroke="#8a5a2b" stroke-width="14"/>
+     <g fill="#2f9e5a" stroke="#1d1d1f" stroke-width="3"><path d="M44 90 q-40 -10 -50 20 q30 -14 50 -20Z"/><path d="M44 90 q40 -20 60 6 q-30 -10 -60 -6Z"/><path d="M44 90 q-10 -40 20 -54 q-14 30 -20 54Z"/><path d="M44 90 q-44 10 -40 46 q14 -32 40 -46Z"/></g>
+     ${dev(100, 44, 0.76, { mood: "cool", arms: "thumb", shirt: "#ff7a2e" })}
+     <rect x="40" y="222" width="440" height="16" rx="6" fill="#c98a4b" stroke="#1d1d1f" stroke-width="3"/>
+     ${laptop(318, 114, 170, "", [["conn3x", "#ff7a2e"], ["tofu", "#ffda18", "#111"]])}
+     <g transform="translate(70 172)"><path d="M0 10 L40 10 L34 54 L6 54Z" fill="#8a5a2b" stroke="#1d1d1f" stroke-width="3"/><path d="M28 10 L40 -24" stroke="#ff5aa5" stroke-width="5"/></g>`],
+];
+document.getElementById("grid").innerHTML = panels.map(([yr, q, svg]) =>
+  `<div class="p"><div class="yr">${yr}</div><div class="br"></div><div class="q">${q}</div><svg viewBox="0 14 ${W} 256" xmlns="http://www.w3.org/2000/svg">${svg()}</svg></div>`).join("");
+</script>
+</body>
+</html>

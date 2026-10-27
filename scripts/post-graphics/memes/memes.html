@@ -1,0 +1,190 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conn3x memes</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { background: #444; display: flex; flex-direction: column; gap: 40px; padding: 40px; font-variant-ligatures: none; }
+  .m { width: 1080px; height: 1080px; position: relative; overflow: hidden; background: #fff; color: #111; }
+  .m.dark { background-color: var(--ink); }
+  .wm { position: absolute; right: 22px; bottom: 18px; padding: 4px 10px; background: rgba(255,255,255,.92); border-radius: 6px; font-family: var(--mono); font-size: 22px; color: #8a96a6; letter-spacing: 0.04em; }
+  .wm b { color: var(--rust); font-weight: 700; }
+  .dark .wm { color: var(--dim); background: var(--ink-3); }
+  .dark .wm b { color: var(--accent); }
+  code, .code { font-family: var(--mono); }
+
+  /* 1: nope / yes */
+  .ny { display: grid; grid-template-rows: 1fr 1fr; height: 100%; }
+  .ny > div { display: grid; grid-template-columns: 300px 1fr; border-bottom: 4px solid #111; }
+  .ny .face { display: grid; place-items: center; font-size: 210px; font-weight: 900; color: #fff; }
+  .ny .no .face { background: #c73a2b; }
+  .ny .yes .face { background: #1f8a55; }
+  .ny .txt { padding: 40px 48px; display: flex; flex-direction: column; justify-content: center; gap: 14px; font-size: 34px; line-height: 1.25; font-weight: 600; }
+  .ny .no .txt code { font-size: 25px; color: #333; font-weight: 500; }
+  .ny .yes .txt code { font-size: 92px; font-weight: 800; letter-spacing: -0.03em; }
+  .ny .yes .txt small { font-size: 28px; color: #555; font-weight: 500; }
+
+  /* 2: nobody / ansible */
+  .tw { padding: 90px 80px; font-size: 44px; line-height: 1.3; font-weight: 500; }
+  .tw p + p { margin-top: 44px; }
+  .tw .out { margin-top: 22px; font-family: var(--mono); font-size: 30px; background: #0f1a2b; color: #e6ecf3; padding: 26px 30px; border-radius: 10px; line-height: 1.45; }
+  .tw .y { color: #e5c07b; } .tw .g { color: #7fd3a7; }
+  .tw .aside { font-size: 30px; color: #666; margin-top: 24px; }
+  .tw { padding: 70px 80px; font-size: 42px; }
+  .tw p + p { margin-top: 34px; }
+  .tw .punch { margin-top: 60px; font-weight: 700; }
+
+  /* 3: expanding brain */
+  .br { display: grid; grid-template-rows: repeat(4, 1fr); height: 100%; }
+  .br > div { display: grid; grid-template-columns: 1fr 380px; border-bottom: 3px solid #111; }
+  .br .t { padding: 22px 34px; display: flex; align-items: center; font-size: 34px; line-height: 1.22; font-weight: 600; }
+  .br .g { display: grid; place-items: center; }
+  .br svg { display: block; }
+  .br .l1 .g { background: #f1f1f1; } .br .l1 svg { width: 90px; color: #b9a99a; }
+  .br .l2 .g { background: #dfe9f5; } .br .l2 svg { width: 150px; color: #8fb2d9; filter: drop-shadow(0 0 14px #8fb2d9); }
+  .br .l3 .g { background: #1c2a40; } .br .l3 svg { width: 210px; color: #ffc89e; filter: drop-shadow(0 0 26px #ff9a5c); }
+  .br .l4 .g { background: radial-gradient(circle, #fff6d8 0%, #ff7a2e 45%, #2a0e00 100%); } .br .l4 svg { width: 270px; color: #fffdf3; filter: drop-shadow(0 0 30px #fff) drop-shadow(0 0 70px #ffe08a); }
+  .br .l4 .t { font-weight: 800; }
+  .br code { font-size: 0.85em; }
+
+  /* 4: starter pack */
+  .sp { padding: 50px 56px; height: 100%; display: grid; grid-template-rows: auto 1fr; gap: 26px; }
+  .sp h2 { font-size: 50px; line-height: 1.08; letter-spacing: -0.02em; font-weight: 800; text-align: center; }
+  .sp .items { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-auto-rows: 1fr; gap: 18px; padding-bottom: 40px; }
+  .sp .it { border: 3px solid #111; padding: 18px; display: flex; flex-direction: column; justify-content: center; gap: 10px; text-align: center; font-size: 25px; line-height: 1.25; }
+  .sp .it code { font-size: 26px; font-weight: 700; color: #13233a; word-break: break-all; }
+  .sp .it small { font-size: 21px; color: #555; }
+  .sp .it:nth-child(3n+1) { transform: rotate(-1.2deg); } .sp .it:nth-child(3n) { transform: rotate(1deg); }
+
+  /* 5: no changes */
+  .nc { display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 70px 72px 80px; gap: 34px; color: var(--text); }
+  .nc .lbl { font-size: 36px; font-weight: 600; color: var(--muted); }
+  .nc .lbl b { color: var(--text); }
+  .nc pre { font-family: var(--mono); font-size: 27px; line-height: 1.5; background: var(--ink-3); border: 2px solid var(--line); padding: 24px 30px; white-space: pre-wrap; }
+  .nc .g { color: var(--add); } .nc .k { color: var(--accent); } .nc .d { color: var(--dim); }
+  .nc .big { font-size: 58px; margin-top: 10px; line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; align-self: center; }
+  .nc .big span { color: var(--accent); }
+
+  /* 6: how it started */
+  .hs { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
+  .hs > div { padding: 60px 44px; display: flex; flex-direction: column; gap: 26px; }
+  .hs > div + div { border-left: 4px solid #111; background: #f6f2ec; }
+  .hs h3 { font-size: 46px; font-weight: 800; letter-spacing: -0.02em; }
+  .hs ul { list-style: none; font-family: var(--mono); font-size: 26px; line-height: 1.55; }
+  .hs .big { font-size: 56px; font-weight: 700; }
+  .hs .ft2 { margin-top: auto; margin-bottom: 40px; font-size: 30px; line-height: 1.3; font-weight: 700; color: var(--rust); }
+  .hs .c { color: #777; font-size: 22px; }
+  .hs .ft { font-size: 30px; line-height: 1.3; color: #444; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<section class="m" id="nope-yes">
+  <div class="ny">
+    <div class="no"><div class="face">✗</div><div class="txt">
+      <div>Provisioning one server:</div>
+      <code>terraform apply<br>terraform output -json &gt; ips.json<br>python make_inventory.py<br>sleep 60  # wait for ssh<br>ansible-playbook -i inventory.ini site.yml</code>
+    </div></div>
+    <div class="yes"><div class="face">✓</div><div class="txt">
+      <code>conn3x apply</code>
+      <small>The cloud and the config. One plan, one state.</small>
+    </div></div>
+  </div>
+  <div class="wm"><b>conn3x</b>.org</div>
+</section>
+
+<section class="m" id="nobody-ansible">
+  <div class="tw">
+    <p>Nobody:</p>
+    <p>Absolutely nobody:</p>
+    <p>A shell task that did nothing, every single run:
+      <div class="out"><span class="y">changed: [web1]</span><br><span class="y">changed: [web2]</span><br><span class="y">changed: [web3]</span><br>web1 : ok=12 <span class="y">changed=1</span></div>
+    </p>
+    <p class="aside">(yes, <code>changed_when</code> exists. no, it's not on that task.)</p>
+    <p class="punch">Conn3x reads the server before it says anything:
+      <div class="out"><span class="g">No changes.</span> Your infrastructure matches the configuration.</div>
+    </p>
+  </div>
+  <div class="wm"><b>conn3x</b>.org</div>
+</section>
+
+<section class="m" id="expanding-brain">
+  <div class="br">
+    <div class="l1"><div class="t">SSH in and edit nginx.conf by hand</div><div class="g"><svg viewBox="0 0 120 90" fill="currentColor"><g><circle cx="35" cy="35" r="24"/><circle cx="60" cy="25" r="22"/><circle cx="85" cy="35" r="24"/><circle cx="30" cy="55" r="20"/><circle cx="58" cy="55" r="24"/><circle cx="90" cy="56" r="19"/><circle cx="72" cy="72" r="12"/></g><g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="3" stroke-linecap="round"><path d="M60 8 C56 30 64 48 58 80"/><path d="M22 38 q10 -8 20 0 t18 -4"/><path d="M68 34 q10 -10 22 -2 t14 4"/><path d="M24 60 q12 6 22 -2"/><path d="M70 58 q10 8 22 -2"/></g></svg></div></div>
+    <div class="l2"><div class="t">Write an Ansible playbook for it</div><div class="g"><svg viewBox="0 0 120 90" fill="currentColor"><g><circle cx="35" cy="35" r="24"/><circle cx="60" cy="25" r="22"/><circle cx="85" cy="35" r="24"/><circle cx="30" cy="55" r="20"/><circle cx="58" cy="55" r="24"/><circle cx="90" cy="56" r="19"/><circle cx="72" cy="72" r="12"/></g><g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="3" stroke-linecap="round"><path d="M60 8 C56 30 64 48 58 80"/><path d="M22 38 q10 -8 20 0 t18 -4"/><path d="M68 34 q10 -10 22 -2 t14 4"/><path d="M24 60 q12 6 22 -2"/><path d="M70 58 q10 8 22 -2"/></g></svg></div></div>
+    <div class="l3"><div class="t">Terraform makes the box, Ansible fills it, a bash script carries the IP between them</div><div class="g"><svg viewBox="0 0 120 90" fill="currentColor"><g><circle cx="35" cy="35" r="24"/><circle cx="60" cy="25" r="22"/><circle cx="85" cy="35" r="24"/><circle cx="30" cy="55" r="20"/><circle cx="58" cy="55" r="24"/><circle cx="90" cy="56" r="19"/><circle cx="72" cy="72" r="12"/></g><g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="3" stroke-linecap="round"><path d="M60 8 C56 30 64 48 58 80"/><path d="M22 38 q10 -8 20 0 t18 -4"/><path d="M68 34 q10 -10 22 -2 t14 4"/><path d="M24 60 q12 6 22 -2"/><path d="M70 58 q10 8 22 -2"/></g></svg></div></div>
+    <div class="l4"><div class="t">One plan for the cloud and what goes on the servers it creates</div><div class="g"><svg viewBox="0 0 120 90" fill="currentColor"><g><circle cx="35" cy="35" r="24"/><circle cx="60" cy="25" r="22"/><circle cx="85" cy="35" r="24"/><circle cx="30" cy="55" r="20"/><circle cx="58" cy="55" r="24"/><circle cx="90" cy="56" r="19"/><circle cx="72" cy="72" r="12"/></g><g fill="none" stroke="rgba(0,0,0,.28)" stroke-width="3" stroke-linecap="round"><path d="M60 8 C56 30 64 48 58 80"/><path d="M22 38 q10 -8 20 0 t18 -4"/><path d="M68 34 q10 -10 22 -2 t14 4"/><path d="M24 60 q12 6 22 -2"/><path d="M70 58 q10 8 22 -2"/></g></svg></div></div>
+  </div>
+  <div class="wm"><b>conn3x</b>.org</div>
+</section>
+
+<section class="m" id="starter-pack">
+  <div class="sp">
+    <h2>The "it's just one server"<br>starter pack</h2>
+    <div class="items">
+      <div class="it"><code>main.tf</code><small>the easy part</small></div>
+      <div class="it"><code>terraform.tfstate</code><small>knows the IP</small></div>
+      <div class="it"><code>inventory.ini</code><small>also knows the IP, copied by hand, last Tuesday</small></div>
+      <div class="it"><code>sleep 60</code><small># wait for ssh<br>(sometimes 90)</small></div>
+      <div class="it"><code>.venv/</code><small>Python 3.9, do not upgrade, nobody knows why</small></div>
+      <div class="it"><code>requirements.yml</code><small>pinned to a role whose author left in 2021</small></div>
+      <div class="it"><code>{{ }}</code><small>Jinja inside YAML inside a heredoc inside HCL</small></div>
+      <div class="it"><code>Makefile</code><small>target names: <br>step1, step2, step2-fixed</small></div>
+      <div class="it"><code>README.md</code><small>"run the second one twice if it fails"</small></div>
+    </div>
+  </div>
+  <div class="wm">or: one binary. <b>conn3x</b>.org</div>
+</section>
+
+<section class="m dark grid-dark" id="no-changes">
+  <div class="nc">
+    <div class="lbl"><b>terraform plan</b>, looking at a server someone fixed by hand at 3 a.m.:</div>
+<pre>No changes. Your infrastructure matches
+the configuration.
+
+<span class="d"># the VM is fine. the VM was always fine.
+# nobody asked about /etc/nginx/nginx.conf.</span></pre>
+<pre><span class="d">$</span> conn3x drift
+Drift found in 1 resource.
+
+  <span class="k">~ conn3x_file.web__nginx_conf["web1"]  changed</span></pre>
+    <div class="big">Your cloud tool checks the box.<br><span>Conn3x also checks inside it.</span></div>
+  </div>
+  <div class="wm"><b>conn3x</b>.org</div>
+</section>
+
+<section class="m" id="how-it-started">
+  <div class="hs">
+    <div>
+      <h3>How it started</h3>
+      <ul class="big"><li>main.tf</li></ul>
+      <div class="ft">"I'll add a bit of Ansible for the packages."</div>
+      <div class="ft2">With Conn3x, it's main.tf and a circuit beside it. Same plan, same state.</div>
+    </div>
+    <div>
+      <h3>How it's going</h3>
+      <ul>
+        <li>main.tf</li>
+        <li>outputs.tf</li>
+        <li>inventory.tpl</li>
+        <li>gen_inventory.py</li>
+        <li>ansible.cfg</li>
+        <li>site.yml</li>
+        <li>roles/ <span class="c"># 14 of them</span></li>
+        <li>group_vars/</li>
+        <li>host_vars/</li>
+        <li>requirements.yml</li>
+        <li>Makefile</li>
+        <li>wait-for-ssh.sh</li>
+        <li>terraform.tfstate</li>
+        <li>a second state <span class="c"># in your head</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wm"><b>conn3x</b>.org</div>
+</section>
+
+</body>
+</html>
