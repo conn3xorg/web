@@ -52,7 +52,7 @@ So a job can tell "your servers changed" apart from "the check itself broke", an
 
 ## The workflow
 
-Put this in `.github/workflows/drift.yml`, in the repository that holds your configuration. Every morning it installs the v0.6.2 release after checking its checksum, loads the SSH key, runs `conn3x drift` and, on exit 2, opens an issue with the report. If a drift issue is already open, it comments there instead, so a week of ignored drift is one issue, not seven.
+Put this in `.github/workflows/drift.yml`, in the repository that holds your configuration. Every morning it installs the v0.6.3 release after checking its checksum, loads the SSH key, runs `conn3x drift` and, on exit 2, opens an issue with the report. If a drift issue is already open, it comments there instead, so a week of ignored drift is one issue, not seven.
 
 ```yaml
 name: drift
@@ -70,7 +70,7 @@ jobs:
   drift:
     runs-on: ubuntu-latest
     env:
-      CONN3X_VERSION: 0.6.2
+      CONN3X_VERSION: 0.6.3
       CONN3X_HMAC_KEY: ${{ secrets.CONN3X_HMAC_KEY }}
       # Plus whatever your backend and cloud providers need, for example:
       DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}

@@ -35,6 +35,16 @@ On macOS, the binary isn't notarised by Apple yet. If macOS refuses to open it, 
 xattr -d com.apple.quarantine /usr/local/bin/conn3x
 ```
 
+## Container image
+
+Every release is also published as a container image, tagged with its version and with `latest`:
+
+```sh
+docker run --rm ghcr.io/conn3xorg/conn3x:v0.6.3 version
+```
+
+The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root user. Podman takes the same command.
+
 ## Check the download
 
 Each release ships a `checksums.txt`, signed with [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) by the release workflow, and an SBOM for every archive.

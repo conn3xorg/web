@@ -57,7 +57,11 @@ jobs:
         env:
           VERSION: 0.6.3
         run: |
-          curl -fsSL "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_linux_amd64.tar.gz" | tar -xz conn3x
+          BASE="https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}"
+          curl -fsSLO "$BASE/conn3x_${VERSION}_linux_amd64.tar.gz"
+          curl -fsSLO "$BASE/checksums.txt"
+          sha256sum --check --ignore-missing checksums.txt
+          tar -xzf "conn3x_${VERSION}_linux_amd64.tar.gz" conn3x
           sudo install conn3x /usr/local/bin/
           conn3x version
 

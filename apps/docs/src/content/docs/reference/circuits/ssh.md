@@ -21,7 +21,7 @@ circuit "web" {
 }
 ```
 
-Conn3x uses SSH and nothing else. It installs nothing on the hosts. Each host needs an SSH server, `/bin/sh`, and `sudo` if you set `become`.
+Conn3x uses SSH and nothing else. By default, it installs nothing on the hosts. Each host needs an SSH server, `/bin/sh`, and `sudo` if you set `become`.
 
 ## Arguments
 
@@ -215,6 +215,10 @@ circuit "db" {
 When a host doesn't answer, because it refuses or resets the connection, is unreachable, or times out, Conn3x keeps trying until `timeout` has passed. This covers servers that are still booting. Each attempt waits up to 15 seconds. A host key that doesn't match and a login that the server rejects fail at once, without retrying. So does a name that DNS says doesn't exist, for the target or a jump host, so a typo costs you seconds rather than the whole `timeout`. A DNS lookup that times out is still retried.
 
 Conn3x opens one SSH connection per host and login, and every step in the run shares it. Hosts reached through different jump hosts get separate connections.
+
+Each command opens a session on that connection, and Conn3x runs up to 10 resources at once. OpenSSH allows 10 sessions per connection by default, so commands queue for a session, at most 8 at a time per connection. If the server allows fewer, through `MaxSessions` in `sshd_config`, Conn3x notices and lowers its limit to match. To set the limit yourself, use [`CONN3X_SSH_MAX_SESSIONS`](/reference/cli#environment-variables), from 1 to 1000. If an apply fails with `ssh: rejected: connect failed ("open failed")`, lower it.
+
+Package installs on one host run one at a time, and so do service changes, because the package manager and systemd don't take kindly to two changes at once. Other kinds of step, and other hosts, still run in parallel.
 
 Commands run with `/bin/sh` in the C locale (`LC_ALL=C`), so the output Conn3x reads is the same on every host.
 

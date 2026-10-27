@@ -54,6 +54,6 @@ circuit "app" {
 }
 ```
 
-Conn3x reads `HostName`, `User`, `Port`, `IdentityFile`, `ProxyJump` and `UserKnownHostsFile` for each alias. `ProxyJump bastion` names another entry, and Conn3x looks that one up in the same file, just as `ssh` would, so the bastion's address lives in one place. Anything you set in the `ssh` block wins over the file.
+Conn3x reads `HostName`, `User`, `Port`, `IdentityFile`, `ProxyJump` and `UserKnownHostsFile` for each alias. `ProxyJump bastion` names another entry, and Conn3x looks that one up in the same file, just as `ssh` would, so the bastion's address lives in one place. If a hop's entry sets `IdentityFile`, that hop logs in with its own key, and a `ProxyJump` name with no entry and no DNS record fails at once instead of waiting out `timeout`. Anything you set in the `ssh` block wins over the file.
 
 Conn3x only reads an SSH config when you set `ssh_config_file`. That's deliberate: a `Host *` entry in your personal config shouldn't quietly change where a plan connects, on your machine or anyone else's.

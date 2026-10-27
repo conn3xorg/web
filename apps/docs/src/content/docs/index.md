@@ -17,6 +17,6 @@ Every plan shows the exact change headed for each host, line by line, before any
 
 ## What it runs on
 
-Conn3x itself runs on Linux and macOS. It configures hosts running Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu.
+Conn3x itself runs on Linux and macOS. It configures hosts running Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu, and every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.
 
 Conn3x is early. It's built in the open at [github.com/conn3xorg/conn3x](https://github.com/conn3xorg/conn3x), on top of OpenTofu.

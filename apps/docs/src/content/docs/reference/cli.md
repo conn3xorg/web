@@ -99,6 +99,6 @@ OpenTofu documents the rest in [Environment variables](https://opentofu.org/docs
 | --- | --- |
 | 0 | Success. |
 | 1 | An error, an unknown command, or an option that isn't valid. |
-| 2 | `plan -detailed-exitcode` and `drift`: success, with changes. |
+| 2 | `plan -detailed-exitcode` and `drift`: success, with changes. `fmt`: an error. |
 | 3 | `fmt -check`: some files need formatting. `convert ansible`: some tasks need you. |
 | 127 | A command that only groups subcommands, such as `conn3x state`, run without one. |
