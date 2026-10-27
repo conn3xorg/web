@@ -1,0 +1,17 @@
+{
+  "name": "node-exporter",
+  "repo": "conn3xorg/circuit-node-exporter",
+  "description": "Runs Prometheus node_exporter at a pinned, checksummed version as its own system user.",
+  "version": "v0.1.0",
+  "tags": [
+    "monitoring",
+    "prometheus"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}

@@ -4,7 +4,8 @@
       "startServerCommand": "pnpm exec wrangler dev --port 8787 --ip 127.0.0.1",
       "startServerReadyPattern": "Ready on",
       "url": [
-        "http://127.0.0.1:8787/"
+        "http://127.0.0.1:8787/",
+        "http://127.0.0.1:8787/circuits"
       ],
       "numberOfRuns": 3,
       "settings": {
