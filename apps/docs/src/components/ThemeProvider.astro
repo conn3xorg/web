@@ -1,0 +1,17 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// Starlight's provider, except the docs are dark unless you've picked
+// light, to match conn3x.org. Inlined to avoid a flash of the wrong theme.
+---
+<script is:inline>
+  window.StarlightThemeProvider = (() => {
+    let stored = null;
+    try {
+      stored = localStorage.getItem("starlight-theme");
+    } catch {}
+    document.documentElement.dataset.theme = stored === "light" ? "light" : "dark";
+    return { updatePickers() {} };
+  })();
+</script>
