@@ -88,6 +88,8 @@ Before you tag a version, apply your circuit to a fresh host and run `conn3x pla
 
 The [try-it-locally example](https://github.com/conn3xorg/conn3x/tree/main/examples/try-it-locally) starts a Rocky Linux 10 container with SSH that you can point an `examples/local` configuration at. The official circuits do the same in CI on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with `conn3x plan -detailed-exitcode` failing the job when the second plan isn't empty. Copy their workflow if you like.
 
+A container isn't a whole server, so some steps need more from it. firewalld and ufw need the `NET_ADMIN` and `NET_RAW` capabilities, so start the container with `--cap-add NET_ADMIN,NET_RAW`. `sysctl` writes to `/proc/sys`, which a container can only change when it runs with `--privileged`. Minimal images may also leave out `tzdata`, which `timezone` needs; install it in an earlier step.
+
 ## Version it with tags
 
 Callers pin a tag with `?ref=`, so each release is a git tag, such as `v0.1.0`. Never move a tag once people use it. Make a new one: someone who pinned `v0.1.0` should get exactly what they read and tested. Say what changed in the release notes, and note anything that replaces or removes something on the host.
