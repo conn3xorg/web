@@ -78,7 +78,9 @@ The droplets and what goes on them, in one review. Once the servers exist, the h
 ## Where it replaces what you use today
 
 <figure>
-  <img src="/media/blog/coming-from-terraform/compare.png" width="1600" height="1950" loading="lazy" decoding="async" alt="A comparison of user_data, remote-exec provisioners, local-exec into Ansible, and a Conn3x circuit, on when each runs, whether the plan shows it, and whether drift shows up." />
+  <a href="/media/blog/coming-from-terraform/compare.png">
+    <img src="/media/blog/coming-from-terraform/compare.png" width="1600" height="1950" loading="lazy" decoding="async" alt="A comparison of user_data, remote-exec provisioners, local-exec into Ansible, and a Conn3x circuit, on when each runs, whether the plan shows it, and whether drift shows up." />
+  </a>
   <figcaption>Four ways to configure a server from Terraform, side by side.</figcaption>
 </figure>
 

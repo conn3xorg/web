@@ -194,6 +194,15 @@ const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month:
   .post :global(figure) {
     margin: 2rem 0;
   }
+  .post :global(figure > a) {
+    display: block;
+    border-radius: 8px;
+    cursor: zoom-in;
+  }
+  .post :global(figure > a:focus-visible) {
+    outline: 3px solid var(--c-link);
+    outline-offset: 4px;
+  }
   .post :global(figure img),
   .post :global(figure video) {
     display: block;

@@ -21,7 +21,9 @@ Everything in Conn3x follows the same four moves, whether you're creating a serv
 4. **Plan again.** It should say `No changes.` That's how you know it worked.
 
 <figure>
-  <img src="/media/blog/choosing-your-first-stack/loop.png" width="1600" height="1294" loading="lazy" decoding="async" alt="The loop: write, plan, apply, plan again, with drift feeding back into plan when something changes by hand." />
+  <a href="/media/blog/choosing-your-first-stack/loop.png">
+    <img src="/media/blog/choosing-your-first-stack/loop.png" width="1600" height="1294" loading="lazy" decoding="async" alt="The loop: write, plan, apply, plan again, with drift feeding back into plan when something changes by hand." />
+  </a>
   <figcaption>The loop you learn once. The same four moves cover cloud resources and the servers they create.</figcaption>
 </figure>
 
