@@ -13,6 +13,9 @@ export default defineConfig({
     // Every stylesheet ships as a file so the CSP needs no style hashes.
     inlineStylesheets: "never",
   },
+  // Scope component styles with a short class rather than a data attribute
+  // on every element: same specificity, noticeably smaller pages.
+  scopedStyleStrategy: "class",
   integrations: [sitemap()],
   // Highlighting writes inline styles, which the CSP doesn't allow.
   markdown: { syntaxHighlight: false },

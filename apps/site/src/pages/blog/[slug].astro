@@ -31,7 +31,7 @@ const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month:
         <p class="meta"><time datetime={post.data.date.toISOString().slice(0, 10)}>{date}</time><span aria-hidden="true">·</span>{post.data.author}<span aria-hidden="true">·</span>{minutes} min read</p>
       </header>
       {post.data.image && (
-        <img class="cover" src={post.data.image} alt={post.data.imageAlt ?? ""} width="1200" height="630" decoding="async" />
+        <img class="cover" src={post.data.image} alt={post.data.imageAlt ?? ""} width="1200" height="630" decoding="async" fetchpriority="high" />
       )}
       <div class="layout">
         <div class="body"><Content /></div>

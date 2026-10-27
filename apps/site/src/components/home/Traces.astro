@@ -11,32 +11,6 @@ const e = 26; // edge length
 const h = Math.sqrt(3) * e;
 const W = 1600, H = 560;
 
-// A seeded walk to the right along the honeycomb: a diagonal, then a flat
-// edge, again and again, the same moves the mark makes.
-function walk(seed: number, x0: number, y0: number, steps: number) {
-  let s = seed;
-  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
-  let x = x0, y = y0;
-  let d = `M${x} ${y}`;
-  for (let i = 0; i < steps; i++) {
-    const up = y - h / 2 < 40 ? false : y + h / 2 > H - 40 ? true : rnd() < 0.5;
-    x += e / 2;
-    y += up ? -h / 2 : h / 2;
-    d += `L${x.toFixed(1)} ${y.toFixed(1)}`;
-    x += e;
-    d += `H${x.toFixed(1)}`;
-  }
-  return { d, end: [x, y] as const };
-}
-
-const traces = [
-  walk(7, 3 * e * 4, h / 2 + h * 1, 14),
-  walk(19, 3 * e * 9, h / 2 + h * 3, 12),
-  walk(42, 3 * e * 15, h / 2 + h * 0, 16),
-  walk(77, 3 * e * 20, h / 2 + h * 4, 10),
-  walk(5, 3 * e * 1, h / 2 + h * 5, 12),
-  walk(91, 3 * e * 12, h / 2 + h * 6, 14),
-];
 const tile = `M0 ${h / 2}L${e / 2} 0H${1.5 * e}L${2 * e} ${h / 2}H${3 * e}M${2 * e} ${h / 2}L${1.5 * e} ${h}H${e / 2}L0 ${h / 2}`;
 ---
 <svg class="traces" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true">
@@ -46,34 +20,67 @@ const tile = `M0 ${h / 2}L${e / 2} 0H${1.5 * e}L${2 * e} ${h / 2}H${3 * e}M${2 *
     </pattern>
   </defs>
   <rect width={W} height={H} fill="url(#hex)" />
-  {traces.map((t) => (
-    <g class="trace">
-      <path d={t.d} class="lit" />
-      <path d={t.d} class="pulse" pathLength="1" />
-      <circle cx={t.end[0]} cy={t.end[1]} r="4.5" class="node" />
-    </g>
-  ))}
+  <g class="traces-lines" data-e={e} data-h={H}></g>
 </svg>
 
-<style>
+<script>
+  // The traces are drawn here rather than in the HTML: their coordinates
+  // don't compress, and keeping the page small keeps the first paint fast.
+  // Without JavaScript the honeycomb shows without its signals.
+  const NS = "http://www.w3.org/2000/svg";
+  for (const g of document.querySelectorAll<SVGGElement>(".traces-lines")) {
+    const e = Number(g.dataset.e), H = Number(g.dataset.h), h = Math.sqrt(3) * e;
+    // A seeded walk to the right: a diagonal, then a flat edge, the moves
+    // the mark makes.
+    const walk = (seed: number, col: number, row: number, steps: number) => {
+      let s = seed;
+      const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+      let x = 3 * e * col, y = h / 2 + h * row, d = `M${x} ${y}`;
+      for (let i = 0; i < steps; i++) {
+        const up = y - h / 2 < 40 ? false : y + h / 2 > H - 40 ? true : rnd() < 0.5;
+        x += e / 2;
+        y += up ? -h / 2 : h / 2;
+        d += `L${x.toFixed(1)} ${y.toFixed(1)}H${(x += e).toFixed(1)}`;
+      }
+      return { d, x, y };
+    };
+    const el = (tag: string, attrs: Record<string, string>) => {
+      const n = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+      return n;
+    };
+    for (const [seed, col, row, steps] of [[7, 4, 1, 14], [19, 9, 3, 12], [42, 15, 0, 16], [77, 20, 4, 10], [5, 1, 5, 12], [91, 12, 6, 14]]) {
+      const t = walk(seed, col, row, steps);
+      const trace = el("g", { class: "trace" });
+      trace.append(
+        el("path", { d: t.d, class: "lit" }),
+        el("path", { d: t.d, class: "pulse", pathLength: "1" }),
+        el("circle", { cx: String(t.x), cy: String(t.y), r: "4.5", class: "node" }),
+      );
+      g.append(trace);
+    }
+  }
+</script>
+
+<style is:global>
   .traces {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
   }
-  .cell {
+  .traces .cell {
     fill: none;
     stroke: var(--c-border);
     stroke-width: 1;
   }
-  .lit {
+  .traces .lit {
     fill: none;
     stroke: color-mix(in srgb, var(--c-accent) 28%, var(--c-border));
     stroke-width: 1.5;
     stroke-linejoin: round;
   }
-  .pulse {
+  .traces .pulse {
     fill: none;
     stroke: var(--c-accent);
     stroke-width: 2.5;
@@ -84,32 +91,32 @@ const tile = `M0 ${h / 2}L${e / 2} 0H${1.5 * e}L${2 * e} ${h / 2}H${3 * e}M${2 *
     filter: drop-shadow(0 0 5px var(--c-accent));
     opacity: 0;
   }
-  .node {
+  .traces .node {
     fill: var(--c-accent);
     opacity: 0.85;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .pulse {
+    .traces .pulse {
       opacity: 1;
       animation: run 5.5s linear infinite;
     }
-    .node {
+    .traces .node {
       animation: land 5.5s ease-out infinite;
       transform-box: fill-box;
       transform-origin: center;
     }
-    .trace:nth-child(3n) .pulse,
-    .trace:nth-child(3n) .node {
+    .traces .trace:nth-child(3n) .pulse,
+    .traces .trace:nth-child(3n) .node {
       animation-duration: 7s;
       animation-delay: -2.4s;
     }
-    .trace:nth-child(3n + 1) .pulse,
-    .trace:nth-child(3n + 1) .node {
+    .traces .trace:nth-child(3n + 1) .pulse,
+    .traces .trace:nth-child(3n + 1) .node {
       animation-duration: 6.2s;
       animation-delay: -4.1s;
     }
-    .trace:nth-child(2n) .pulse,
-    .trace:nth-child(2n) .node {
+    .traces .trace:nth-child(2n) .pulse,
+    .traces .trace:nth-child(2n) .node {
       animation-delay: -1.3s;
     }
   }

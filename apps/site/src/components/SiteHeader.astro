@@ -3,8 +3,15 @@
 // SPDX-License-Identifier: MPL-2.0
 import { getCollection } from "astro:content";
 import { isPublished } from "../lib/published.js";
-import logo from "../brand/logo.svg?raw";
-import logoDark from "../brand/logo-dark.svg?raw";
+import markDark from "../brand/mark-dark.svg?raw";
+
+// The lockup as the mark plus live text in the brand face: crisper than
+// glyph outlines at header size, and much lighter. The mark is drawn in the
+// text colour, so one copy serves both themes; the node keeps the accent.
+const mark = markDark
+  .replaceAll("#e6ecf3", "currentColor")
+  .replace('fill="#ff7a2e"', 'fill="var(--c-accent)"')
+  .replace(' aria-label="Conn3x"', ' aria-hidden="true"');
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const links = [
@@ -27,8 +34,7 @@ const [latest] = (await getCollection("blog", (p) => isPublished(p)))
 <header class="site-header">
   <div class="wrap bar">
     <a class="brand draw" href="/" aria-label="Conn3x home">
-      <span class="logo logo-dark" set:html={logoDark} />
-      <span class="logo logo-light" set:html={logo} />
+      <span class="logo"><span class="mk" set:html={mark} /><span class="word">conn3x</span></span>
     </a>
     <nav class="links" aria-label="Main">
       {links.map(([t, h]) => <a href={h}>{t}</a>)}
@@ -165,22 +171,28 @@ const [latest] = (await getCollection("blog", (p) => isPublished(p)))
   }
   .brand {
     display: block;
-    width: 8.5rem;
     flex: none;
+    text-decoration: none;
   }
-  .logo :global(svg) {
-    width: 100%;
+  .logo {
+    color: var(--c-text);
+    display: flex;
+    align-items: center;
+    gap: 0.42rem;
+  }
+  .mk :global(svg) {
+    display: block;
+    width: 1.75rem;
     height: auto;
   }
-  .logo-light {
-    display: none;
+  .word {
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-top: -0.12em;
   }
-  :global(:root[data-theme="light"]) .logo-light {
-    display: block;
-  }
-  :global(:root[data-theme="light"]) .logo-dark {
-    display: none;
-  }
+
   .links {
     display: flex;
     gap: 1.6rem;
@@ -267,8 +279,11 @@ const [latest] = (await getCollection("blog", (p) => isPublished(p)))
     }
   }
   @media (max-width: 380px) {
-    .brand {
-      width: 7rem;
+    .word {
+      font-size: 1.3rem;
+    }
+    .mk :global(svg) {
+      width: 1.35rem;
     }
   }
 </style>
