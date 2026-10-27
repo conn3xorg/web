@@ -71,8 +71,10 @@ const marks = [
     inset: 0 0 auto 0;
     height: 34rem;
     pointer-events: none;
-    -webkit-mask-image: radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
-    mask-image: radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
+    -webkit-mask-image: linear-gradient(transparent, #000 4rem), radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(transparent, #000 4rem), radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
+    mask-composite: intersect;
   }
   .layer {
     position: absolute;
@@ -191,11 +193,10 @@ const marks = [
     padding: 1.4rem 0;
   }
   .strip li {
-    padding-inline: 1.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    padding-inline: 2rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
     color: var(--c-text-muted);
     white-space: nowrap;
   }

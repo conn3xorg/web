@@ -100,14 +100,19 @@ main.home + .site-footer {
 /* A big outlined section number: 01 */
 .num {
   font-family: var(--font-mono);
-  font-size: clamp(3.5rem, 7vw, 6rem);
-  font-weight: 300;
+  font-size: clamp(4rem, 8vw, 6.5rem);
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: -0.04em;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--c-border-strong);
+  letter-spacing: -0.05em;
+  color: color-mix(in srgb, var(--c-text) 9%, transparent);
   margin: 0.4rem 0 0;
   user-select: none;
+  display: block;
+}
+
+/* Decoration, drawn by CSS so it isn't read or checked as text. */
+.num::before {
+  content: attr(data-n);
 }
 
 /* The house heading: a statement, then a muted continuation. */
@@ -121,6 +126,12 @@ main.home + .site-footer {
   text-wrap: balance;
 }
 
+.lead code {
+  white-space: nowrap;
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
 .lead strong {
   color: var(--c-text);
   font-weight: 500;
@@ -128,7 +139,7 @@ main.home + .site-footer {
 
 /* Section scaffold: label and number on the left, heading on the right. */
 .sec {
-  padding-block: clamp(5rem, 10vw, 9rem) 0;
+  padding-block: clamp(6rem, 11vw, 10rem) 0;
 }
 
 .sec-head {
