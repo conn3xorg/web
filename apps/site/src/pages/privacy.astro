@@ -1,0 +1,93 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import LegalPage from "../components/LegalPage.astro";
+
+const repo = "https://github.com/conn3xorg/conn3x";
+---
+<LegalPage
+  title="Privacy"
+  label="Privacy"
+  path="/privacy"
+  description="What conn3x.org, docs.conn3x.org and the Conn3x tool collect about you: almost nothing, and here's exactly what."
+  lead="The short version: no accounts, no cookies, no analytics, and nothing in the tool that phones home."
+  updated="27 October 2026"
+>
+  <div class="callout">
+    <p>
+      This policy covers conn3x.org, docs.conn3x.org and the Conn3x command-line tool. It
+      doesn't cover GitHub, X or any other service we link to; they have their own.
+    </p>
+  </div>
+
+  <h2 id="websites">The websites</h2>
+  <p>
+    conn3x.org and docs.conn3x.org are static pages. There are no accounts to sign up for,
+    no forms, no comments, no cookies, and no analytics or tracking scripts, ours or anyone
+    else's. Fonts, images, videos and scripts all come from our own domains; the sites'
+    security policy doesn't allow any other source to load.
+  </p>
+
+  <h3>What the host sees</h3>
+  <p>
+    Both sites are served by <a href="https://www.cloudflare.com/">Cloudflare</a>. Like any
+    web server, Cloudflare receives the details your browser sends with each request, such
+    as your IP address, the page asked for and your browser's user agent, and uses them to
+    deliver the page and protect the sites from abuse. We don't add any tracking on top, and
+    we don't use those details to identify you. Cloudflare's handling is described in its{" "}
+    <a href="https://www.cloudflare.com/privacypolicy/">privacy policy</a>.
+  </p>
+
+  <h3>What your browser keeps</h3>
+  <p>
+    If you switch between the dark and light themes, your browser remembers the choice in
+    its own local storage, under the key <code>theme</code> on conn3x.org and
+    <code>starlight-theme</code> on the docs. It never leaves your device, and clearing
+    your site data removes it. Search on the docs runs entirely in your browser.
+  </p>
+
+  <h3>Links and share buttons</h3>
+  <p>
+    Links to GitHub, X and other sites, and the share buttons on blog posts, are plain links.
+    Nothing is sent to those services until you click one, and then you're on their site,
+    under their policy.
+  </p>
+
+  <h2 id="tool">The Conn3x tool</h2>
+  <p>
+    Conn3x collects no telemetry and doesn't check for updates. It talks to the places your
+    configuration points it at, and nowhere else:
+  </p>
+  <ul>
+    <li>your servers, over SSH;</li>
+    <li>the cloud APIs of the providers you use;</li>
+    <li>the provider and module registries you use, when <code>conn3x init</code> downloads them;</li>
+    <li>the state backend you configure.</li>
+  </ul>
+  <p>
+    Conn3x inherits OpenTofu's optional OpenTelemetry tracing. It's off unless you set
+    <code>OTEL_TRACES_EXPORTER</code>, and then it sends traces to the collector you name,
+    not to us.
+  </p>
+
+  <h2 id="github">GitHub and community</h2>
+  <p>
+    The code, issues, pull requests and Discussions live on GitHub. Anything you post there
+    is public and handled under <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's privacy statement</a>.
+    Commits carry the name and email you sign them with, as every git project does.
+  </p>
+
+  <h2 id="email">If you email us</h2>
+  <p>
+    Messages to an address at conn3x.org reach the maintainers. We use what you send only to
+    reply and to handle what you wrote about, and we don't add you to any list. Security
+    reports follow the <a href={`${repo}/blob/main/SECURITY.md`}>security policy</a>.
+  </p>
+
+  <h2 id="changes">Changes and questions</h2>
+  <p>
+    If anything here changes, this page changes with it, the date at the top moves, and the
+    history is public in the <a href="https://github.com/conn3xorg/web">website's repository</a>.
+    Questions about privacy go to <a href="mailto:legal@conn3x.org">legal@conn3x.org</a>.
+  </p>
+</LegalPage>

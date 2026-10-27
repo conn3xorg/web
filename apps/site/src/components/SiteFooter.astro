@@ -12,7 +12,8 @@ const columns = [
   ["Product", [["Circuits", "/circuits"], ["Providers", "/providers"], ["FAQ", "/faq"], ["Releases", `${repo}/releases`]]],
   ["Docs", [["Get started", `${docs}/get-started`], ["Install", `${docs}/install`], ["Modules", `${docs}/modules/file`], ["CLI", `${docs}/reference/cli`]]],
   ["Community", [["GitHub", repo], ["Discussions", `${repo}/discussions`], ["X", "https://x.com/conn3xone"], ["Blog", "/blog"], ["RSS", "/rss.xml"]]],
-  ["Project", [["Contribute", `${repo}/blob/main/CONTRIBUTING.md`], ["Governance", `${repo}/blob/main/GOVERNANCE.md`], ["Security", `${repo}/blob/main/SECURITY.md`], ["License", `${repo}/blob/main/LICENSE`]]],
+  ["Project", [["Contribute", `${repo}/blob/main/CONTRIBUTING.md`], ["Governance", `${repo}/blob/main/GOVERNANCE.md`], ["Security", `${repo}/blob/main/SECURITY.md`], ["Code of conduct", `${repo}/blob/main/CODE_OF_CONDUCT.md`]]],
+  ["Legal", [["Privacy", "/privacy"], ["Trademark", "/trademark"], ["License", `${repo}/blob/main/LICENSE`]]],
 ] as const;
 ---
 <footer class="site-footer">
@@ -73,7 +74,7 @@ const columns = [
   }
   .top {
     display: grid;
-    grid-template-columns: 1.6fr repeat(4, minmax(0, 1fr));
+    grid-template-columns: 1.5fr repeat(5, minmax(0, 1fr));
     gap: 2rem;
     padding-block: 3.5rem 3rem;
   }
@@ -158,6 +159,14 @@ const columns = [
   }
   .nowrap {
     white-space: nowrap;
+  }
+  @media (max-width: 1000px) {
+    .top {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .about {
+      grid-column: 1 / -1;
+    }
   }
   @media (max-width: 860px) {
     .top {
