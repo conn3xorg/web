@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Three ways to write the route: diagram</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 56px; }
+  .box { background: var(--paper-2); border: 2px solid var(--paper-line); border-top: 8px solid var(--accent); padding: 26px 26px; }
+  .box .k { font-family: var(--mono); font-size: 20px; letter-spacing: 0.12em; color: var(--navy-muted); }
+  .box h2 { font-size: 38px; letter-spacing: -0.02em; font-weight: 800; margin: 10px 0 14px; }
+  .box p { font-size: 24px; line-height: 1.4; color: var(--navy-muted); }
+  pre { font-family: var(--mono); font-size: 18px; line-height: 1.5; background: var(--ink); color: var(--text); padding: 18px 20px; margin: 18px 0 0; white-space: pre; overflow: hidden; }
+  .c { color: var(--muted); }
+  .key { margin-top: 44px; background: var(--ink); color: var(--text); padding: 34px 40px; display: grid; grid-template-columns: 360px 1fr; gap: 36px; align-items: center; }
+  .key h3 { font-size: 40px; letter-spacing: -0.02em; font-weight: 800; color: var(--accent); }
+  .key p { font-size: 25px; line-height: 1.45; color: var(--muted); }
+  .key code { font-family: var(--mono); color: var(--text); font-size: 0.88em; }
+  .bottom { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · REACHING PRIVATE HOSTS</span>
+  <h1>Three ways to write the route</h1>
+  <p class="lede">Pick the one that matches where your team keeps it today. Settings in the circuit win over the file.</p>
+  <div class="cols">
+    <div class="box"><span class="k">1 · IN THE SSH BLOCK</span><h2>jump_hosts</h2><p>Every host goes through the same bastion, written like <code>ssh -J</code>.</p>
+<pre>ssh {
+  user       = "admin"
+  jump_hosts = [
+    "admin@bastion.example.com",
+  ]
+}</pre></div>
+    <div class="box"><span class="k">2 · PER HOST</span><h2>Host objects</h2><p>Override the route for one host, such as the bastion itself.</p>
+<pre>hosts = {
+  bastion = {
+    address    = "203.0.113.10"
+    jump_hosts = []  <span class="c"># direct</span>
+  }
+  app1 = "10.0.1.5"
+}</pre></div>
+    <div class="box"><span class="k">3 · FROM A FILE</span><h2>ssh_config_file</h2><p>Use the aliases you already have. Read only when you name the file.</p>
+<pre>Host app*
+  User admin
+  ProxyJump bastion
+
+ssh_config_file = "./ssh_config"</pre></div>
+  </div>
+  <div class="key">
+    <h3>Every hop is checked</h3>
+    <p>The bastion's host key and each server's are verified against your known_hosts file. There's no setting to skip it. One connection per host is opened through the bastion and shared by every step.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>docs.conn3x.org/tutorials/bastion</span>
+  </div>
+</div>
+</body>
+</html>
