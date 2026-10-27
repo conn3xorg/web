@@ -8,6 +8,7 @@ const year = new Date().getFullYear();
     <p>© {year} The Conn3x Authors. Licensed under <span class="nowrap">MPL-2.0</span>.</p>
     <nav aria-label="Project links">
       <a href="https://github.com/conn3xorg/conn3x">Source</a>
+      <a href="/providers">Providers</a>
       <a href="https://x.com/conn3xone">X</a>
       <a href="/rss.xml">RSS</a>
       <a href="https://github.com/conn3xorg/conn3x/blob/main/CONTRIBUTING.md">Contribute</a>
@@ -38,7 +39,8 @@ const year = new Date().getFullYear();
   }
   nav {
     display: flex;
-    gap: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
   }
   a {
     color: var(--c-text-muted);

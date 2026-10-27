@@ -1,0 +1,74 @@
+[
+  {
+    "source": "digitalocean/digitalocean",
+    "name": "DigitalOcean",
+    "description": "Droplets, VPCs, firewalls and DNS.",
+    "inDocs": true
+  },
+  {
+    "source": "hashicorp/aws",
+    "name": "AWS",
+    "description": "EC2 instances, VPCs, security groups and everything else in AWS.",
+    "inDocs": false
+  },
+  {
+    "source": "hetznercloud/hcloud",
+    "name": "Hetzner Cloud",
+    "description": "Servers, networks, firewalls and load balancers.",
+    "inDocs": false
+  },
+  {
+    "source": "hashicorp/google",
+    "name": "Google Cloud",
+    "description": "Compute Engine instances, networks and the rest of Google Cloud.",
+    "inDocs": false
+  },
+  {
+    "source": "hashicorp/azurerm",
+    "name": "Azure",
+    "description": "Virtual machines, networks and the rest of Azure.",
+    "inDocs": false
+  },
+  {
+    "source": "linode/linode",
+    "name": "Akamai (Linode)",
+    "description": "Linodes, VPCs, firewalls and DNS.",
+    "inDocs": false
+  },
+  {
+    "source": "vultr/vultr",
+    "name": "Vultr",
+    "description": "Instances, bare metal, VPCs and firewalls.",
+    "inDocs": false
+  },
+  {
+    "source": "scaleway/scaleway",
+    "name": "Scaleway",
+    "description": "Instances, private networks and security groups.",
+    "inDocs": false
+  },
+  {
+    "source": "oracle/oci",
+    "name": "Oracle Cloud",
+    "description": "Compute instances, VCNs and the rest of OCI.",
+    "inDocs": false
+  },
+  {
+    "source": "bpg/proxmox",
+    "name": "Proxmox VE",
+    "description": "Virtual machines and containers on your own Proxmox cluster.",
+    "inDocs": false
+  },
+  {
+    "source": "cloudflare/cloudflare",
+    "name": "Cloudflare",
+    "description": "DNS records for the servers you create, and the rest of Cloudflare.",
+    "inDocs": false
+  },
+  {
+    "source": "hashicorp/tls",
+    "name": "TLS",
+    "description": "Generate SSH keys and certificates as part of the plan.",
+    "inDocs": false
+  }
+]

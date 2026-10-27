@@ -42,7 +42,7 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         {
           label: "Circuit language",
