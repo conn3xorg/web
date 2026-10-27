@@ -1,0 +1,117 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Terraform + Ansible vs Conn3x</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { background: #444; padding: 40px; }
+  .m { width: 1080px; height: 1350px; position: relative; overflow: hidden; color: #e9eef6; padding: 40px 40px 0;
+       background: radial-gradient(900px 500px at 20% 0%, #1d2f55 0%, transparent 60%), radial-gradient(800px 600px at 100% 40%, #3a1d12 0%, transparent 60%), #0b1222; }
+  .title { display: flex; align-items: center; justify-content: center; gap: 22px; }
+  .pill { font-size: 54px; font-weight: 900; letter-spacing: -0.02em; padding: 8px 28px 12px; border-radius: 18px; line-height: 1; }
+  .pill.old { background: linear-gradient(180deg, #6b4fd6, #4a32a8); box-shadow: 0 10px 30px rgba(107,79,214,.45); }
+  .pill.new { background: linear-gradient(180deg, #ff8a3d, #e0570f); box-shadow: 0 10px 30px rgba(255,122,46,.5); }
+  .vs { font-size: 44px; font-weight: 900; color: #c8d3e4; }
+  .tag { text-align: center; margin-top: 14px; font-size: 26px; font-style: italic; color: #c8d3e4; }
+  .tag b { color: #fff; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 28px; }
+  .card { border-radius: 20px; padding: 22px 22px 18px; background: rgba(255,255,255,.04); }
+  .card.old { border: 2px solid #6b4fd6; box-shadow: inset 0 0 40px rgba(107,79,214,.18); }
+  .card.new { border: 2px solid #ff7a2e; box-shadow: inset 0 0 40px rgba(255,122,46,.16); }
+  .card h2 { font-size: 30px; font-weight: 800; }
+  .card .k { font-size: 19px; color: #aab7cb; margin-top: 4px; }
+  .flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 10px; margin-top: 18px; }
+  .st { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; position: relative; }
+  .ic { width: 68px; height: 68px; border-radius: 16px; display: grid; place-items: center; }
+  .old .ic { background: linear-gradient(180deg, #7a5fe6, #4a32a8); }
+  .new .ic { background: linear-gradient(180deg, #ff8a3d, #d9520c); }
+  .ic svg { width: 38px; height: 38px; }
+  .st code { font-family: var(--mono); font-size: 14.5px; color: #e9eef6; line-height: 1.25; }
+  .st .x { position: absolute; top: -6px; right: 22px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 15px; font-weight: 900; }
+  .old .st .x { background: #e0b43a; color: #111; }
+  .new .st .x { background: #2fbf71; color: #fff; }
+  .new .flow { grid-template-columns: 1fr; gap: 10px; }
+  .new .st { flex-direction: row; text-align: left; gap: 16px; }
+  .new .st code { font-size: 17px; }
+  .new .st small { display: block; font-family: var(--display); font-size: 16px; color: #aab7cb; margin-top: 2px; }
+  .sum { margin-top: 16px; padding: 12px 14px; border-radius: 12px; font-size: 19px; font-weight: 700; text-align: center; }
+  .old .sum { background: rgba(107,79,214,.22); }
+  .new .sum { background: rgba(255,122,46,.2); }
+  .tbl { margin-top: 24px; border: 2px solid #2f3e5c; border-radius: 18px; overflow: hidden; }
+  .tbl .hd { background: linear-gradient(90deg, #4a32a8, #2a3b55 50%, #d9520c); text-align: center; font-size: 22px; font-weight: 900; letter-spacing: 0.08em; padding: 10px; }
+  .row { display: grid; grid-template-columns: 250px 1fr 1fr; font-size: 20px; border-top: 1px solid #22304b; }
+  .row > div { padding: 12px 16px; }
+  .row > div:first-child { font-weight: 800; color: #c8d3e4; font-size: 16px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .row > div:nth-child(2) { color: #b9b3e8; }
+  .row > div:nth-child(3) { color: #ffd3b5; font-weight: 600; }
+  .row code { font-family: var(--mono); font-size: 16px; }
+  .row.h > div { font-size: 16px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+  .row.h > div:nth-child(3) { color: #ff9a5c; } .row.h > div:nth-child(2) { color: #a993ff; }
+  .why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+  .why div { border-radius: 14px; padding: 14px 16px; background: linear-gradient(180deg, rgba(47,191,113,.18), rgba(47,191,113,.06)); border: 2px solid rgba(47,191,113,.55); display: flex; flex-direction: column; gap: 4px; text-align: center; }
+  .why b { font-size: 22px; } .why code { font-family: var(--mono); font-size: 20px; color: #7fd3a7; }
+  .why span { font-size: 17px; color: #aab7cb; }
+  .foot { position: absolute; left: 40px; right: 40px; bottom: 28px; display: flex; align-items: center; gap: 18px; padding: 16px 22px; border-radius: 16px; background: rgba(255,255,255,.05); border: 2px solid #2f3e5c; }
+  .foot .t { font-size: 22px; font-weight: 700; flex: 1; line-height: 1.25; }
+  .foot .t span { color: #ff9a5c; }
+  .foot code { font-family: var(--mono); font-size: 17px; background: #050a14; border: 1px solid #2f3e5c; padding: 10px 14px; border-radius: 10px; color: #7fd3a7; }
+</style>
+</head>
+<body>
+<section class="m" id="infographic">
+  <div class="title"><span class="pill old">Terraform + Ansible</span><span class="vs">vs</span><span class="pill new">Conn3x</span></div>
+  <div class="tag">Same server. <b>One less handoff.</b></div>
+
+  <div class="cards">
+    <div class="card old">
+      <h2>The usual way</h2>
+      <div class="k">Two tools, and a script to pass notes between them.</div>
+      <div class="flow">
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/></svg></div><code>main.tf</code></div>
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 9l3 3-3 3M12 15h5"/></svg></div><code>terraform<br>apply</code></div>
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M8 3H6a2 2 0 0 0-2 2v4l-2 3 2 3v4a2 2 0 0 0 2 2h2M16 3h2a2 2 0 0 1 2 2v4l2 3-2 3v4a2 2 0 0 1-2 2h-2"/></svg></div><code>output -json<br>&gt; ips.json</code></div>
+        <div class="st"><span class="x">!</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6"/><text x="13" y="18" text-anchor="middle" font-family="JetBrains Mono" font-size="7" font-weight="800" fill="#fff" stroke="none">.py</text></svg></div><code>gen_inventory<br>.py</code></div>
+        <div class="st"><span class="x">!</span><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></div><code>sleep 60<br># wait for ssh</code></div>
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></div><code>ansible-<br>playbook</code></div>
+      </div>
+      <div class="sum">2 tools · 2 sources of truth · 1 glue script</div>
+    </div>
+
+    <div class="card new">
+      <h2>Conn3x</h2>
+      <div class="k">One binary. The server and what's on it, together.</div>
+      <div class="flow">
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></div><div><code>main.tf + a circuit</code><small>hosts = droplet.ipv4_address</small></div></div>
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div><code>conn3x plan</code><small>cloud and server changes, one diff</small></div></div>
+        <div class="st"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M5 12l5 5 9-10"/></svg></div><div><code>conn3x apply</code><small>creates it, waits for SSH, configures it</small></div></div>
+      </div>
+      <div class="sum">1 tool · 1 plan · 1 state</div>
+    </div>
+  </div>
+
+  <div class="tbl">
+    <div class="hd">AT A GLANCE</div>
+    <div class="row h"><div></div><div>Terraform + Ansible</div><div>Conn3x</div></div>
+    <div class="row"><div>Install</div><div>Terraform, Ansible, Python</div><div>One binary</div></div>
+    <div class="row"><div>Server IP handoff</div><div>Inventory script</div><div>A reference in HCL</div></div>
+    <div class="row"><div>Waiting for SSH</div><div><code>sleep 60</code>, then hope</div><div><code>timeout = "5m"</code></div></div>
+    <div class="row"><div>Preview server changes</div><div>A separate <code>--check</code> run</div><div>In the same plan</div></div>
+    <div class="row"><div>Drift on the server</div><div>Invisible to tfstate</div><div><code>conn3x drift</code>, exit 2 in CI</div></div>
+    <div class="row"><div>On every server</div><div>Python, for most modules</div><div>Nothing extra, just SSH</div></div>
+  </div>
+
+  <div class="why">
+    <div><b>No inventory</b><span>to forget to regenerate</span></div>
+    <div><b>No <code>sleep 60</code></b><span>Conn3x waits for SSH</span></div>
+    <div><b>Catch the 3 a.m. edit</b><span>before it bites</span></div>
+  </div>
+
+  <div class="foot">
+    <div class="t">Built on <span>OpenTofu</span>.<br>Your providers and modules come with you.</div>
+    <code>brew install conn3xorg/tap/conn3x</code>
+  </div>
+</section>
+</body>
+</html>
