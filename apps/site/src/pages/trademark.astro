@@ -1,0 +1,155 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import LegalPage from "../components/LegalPage.astro";
+import markDark from "../brand/mark-dark.svg?raw";
+import logoDark from "../brand/logo-dark.svg?raw";
+
+const repo = "https://github.com/conn3xorg/conn3x";
+const assets = [
+  { name: "Logo, for dark backgrounds", file: "/brand/conn3x-logo-dark-bg.svg", svg: logoDark, dark: true },
+  { name: "Logo, for light backgrounds", file: "/brand/conn3x-logo-light-bg.svg", svg: null, dark: false },
+  { name: "Mark, for dark backgrounds", file: "/brand/conn3x-mark-dark-bg.svg", svg: markDark, dark: true },
+  { name: "Mark, for light backgrounds", file: "/brand/conn3x-mark-light-bg.svg", svg: null, dark: false },
+];
+---
+<LegalPage
+  title="Trademark"
+  label="Trademark"
+  path="/trademark"
+  description="How to use the Conn3x name and logo: what's fine without asking, what needs permission, and the logo files."
+  lead="The code is yours to use, change and share. The name and logo work a little differently, so people can always tell what's the real Conn3x."
+  updated="27 October 2026"
+>
+  <p>
+    Conn3x is open source under the <a href={`${repo}/blob/main/LICENSE`}>Mozilla Public License 2.0</a>.
+    That licence covers the code. It doesn't cover the name or the logo, which tell people
+    where a piece of software comes from. This page explains how to use them. It follows the
+    same approach as the Linux Foundation's trademark policy, which OpenTofu and many other
+    projects use.
+  </p>
+
+  <h2 id="marks">The marks</h2>
+  <p>
+    "Conn3x" and the Conn3x logo and mark are trademarks of James Conway, held for the
+    project. As the <a href={`${repo}/blob/main/GOVERNANCE.md`}>governance document</a> sets
+    out, the plan is to move them to a neutral foundation once Conn3x has maintainers from more
+    than one organization.
+  </p>
+
+  <h2 id="fine">Fine without asking</h2>
+  <ul>
+    <li>Saying what's true: that your project, product or service works with, supports, is built for or is compatible with Conn3x.</li>
+    <li>Naming a shared circuit after what it does, such as <code>circuit-nginx</code>, and saying it's a circuit for Conn3x.</li>
+    <li>Writing, teaching or speaking about Conn3x: blog posts, videos, courses, books and talks.</li>
+    <li>Using the unmodified logo to link to conn3x.org or the repository, or to show that something works with Conn3x.</li>
+    <li>Running community groups and meetups about Conn3x, as long as the name shows they're community-run.</li>
+    <li>Distributing unmodified Conn3x releases, or packages built from an unmodified release, under the name Conn3x.</li>
+  </ul>
+
+  <h2 id="ask">Ask first</h2>
+  <ul>
+    <li>Using "Conn3x" in the name of a product, company, service, domain or social account.</li>
+    <li>Anything that suggests the project endorses, sponsors or certifies you when it doesn't.</li>
+    <li>Selling merchandise with the name or logo.</li>
+    <li>Using a modified, recoloured or combined version of the logo.</li>
+  </ul>
+
+  <h2 id="forks">Forks and modified versions</h2>
+  <p>
+    You're welcome to fork Conn3x and ship your own version; the licence allows it. If you
+    distribute a version with changes, give it a different name and logo, so nobody mistakes
+    it for the original. Saying it's "based on Conn3x" or "a fork of Conn3x" is fine.
+  </p>
+
+  <h2 id="guidelines">Using the name and logo well</h2>
+  <ul>
+    <li>Write it as <strong>Conn3x</strong>, with a capital C and a 3, or <code>conn3x</code> for the command.</li>
+    <li>Keep the logo's colours, proportions and the space around it. Don't add effects or put it inside another logo.</li>
+    <li>Use the version made for your background: light marks on dark, navy on light.</li>
+  </ul>
+
+  <h2 id="assets">Logo files</h2>
+  <ul class="assets">
+    {assets.map((a) => (
+      <li>
+        <a href={a.file} download>
+          <span class:list={["swatch", { dark: a.dark }]}>
+            {a.svg ? <Fragment set:html={a.svg} /> : <img src={a.file} alt="" />}
+          </span>
+          <span class="nm">{a.name}</span>
+          <span class="fmt">SVG</span>
+        </a>
+      </li>
+    ))}
+    <li>
+      <a href="/brand/conn3x-mark-512.png" download>
+        <span class="swatch"><img src="/brand/conn3x-mark-512.png" alt="" width="64" height="64" /></span>
+        <span class="nm">Mark, 512 px</span>
+        <span class="fmt">PNG</span>
+      </a>
+    </li>
+  </ul>
+  <p>The orange is <code>#ff7a2e</code> on dark and <code>#e85d0c</code> on light. The type is <a href="https://github.com/schibsted/schibsted-grotesk">Schibsted Grotesk</a>.</p>
+
+  <h2 id="contact">Questions and permission</h2>
+  <p>
+    Not sure if your use is fine? Ask at <a href="mailto:legal@conn3x.org">legal@conn3x.org</a>,
+    and tell us what you have in mind. We'd rather say yes than see Conn3x go unmentioned.
+  </p>
+</LegalPage>
+
+<style>
+  .assets {
+    list-style: none;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .assets li {
+    margin: 0 !important;
+  }
+  .assets a {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.75rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: var(--c-surface);
+    color: var(--c-text);
+    text-decoration: none;
+    transition: border-color 0.2s;
+  }
+  .assets a:hover {
+    border-color: var(--c-accent);
+  }
+  .swatch {
+    display: grid;
+    place-items: center;
+    height: 6rem;
+    border-radius: 6px;
+    background: #f6f4ef;
+    padding: 1rem;
+  }
+  .swatch.dark {
+    background: #07090d;
+  }
+  .swatch :global(svg),
+  .swatch img {
+    max-width: 100%;
+    max-height: 3rem;
+    width: auto;
+    height: auto;
+  }
+  .nm {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .fmt {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+</style>

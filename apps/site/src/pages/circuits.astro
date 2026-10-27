@@ -1,0 +1,343 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+
+type Circuit = {
+  name: string;
+  repo: string;
+  description: string;
+  version: string;
+  tags: string[];
+  tested: string[];
+  official: boolean;
+};
+
+const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", { eager: true });
+const circuits = Object.values(files)
+  .map((f) => f.default)
+  .sort((a, b) => Number(b.official) - Number(a.official) || a.name.localeCompare(b.name));
+
+const distro: Record<string, string> = {
+  rocky10: "Rocky 10",
+  fedora45: "Fedora 45",
+  ubuntu2404: "Ubuntu 24.04",
+  debian13: "Debian 13",
+};
+const guide = "https://docs.conn3x.org/guides/share-a-circuit";
+const form = "https://github.com/conn3xorg/web/issues/new?template=share-a-circuit.yml";
+const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"`;
+---
+<Base
+  title="Circuits: Conn3x"
+  description="Shared circuits for Conn3x: set up nginx, users, a hardened baseline and more on any server, with one module block."
+  path="/circuits"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero label="Directory" title="Circuits">
+      <p>
+        Somebody has already set up nginx, locked down SSH and added the deploy users. Here's
+        their circuit. Add one <code>module</code> block, point it at your hosts, and plan.
+      </p>
+      <div class="tools">
+        <label class="search">
+          <span class="visually-hidden">Search circuits</span>
+          <input id="q" type="search" placeholder="Search circuits" autocomplete="off" />
+        </label>
+        <a class="btn" href="#share">Share yours</a>
+      </div>
+    </PageHero>
+    <div class="wrap page">
+    <ol class="grid" id="list">
+      {circuits.map((c) => (
+        <li class="card" data-text={`${c.name} ${c.description} ${c.tags.join(" ")}`.toLowerCase()}>
+          <div class="top">
+            <h2><a href={`https://github.com/${c.repo}`}>{c.name}</a></h2>
+            {c.official && <span class="badge">Official</span>}
+          </div>
+          <p class="desc">{c.description}</p>
+          <p class="meta">
+            <span>{c.repo}</span> · <span>{c.version}</span>
+          </p>
+          <pre><code>{source(c)}</code></pre>
+          <button class="copy" type="button" data-copy={source(c)}>Copy</button>
+          <p class="tested">
+            Tested on {c.tested.map((t) => distro[t] ?? t).join(", ")}
+          </p>
+          <ul class="tags">
+            {c.tags.map((t) => <li>{t}</li>)}
+          </ul>
+        </li>
+      ))}
+    </ol>
+    <p id="none" class="none" hidden>Nothing matches yet. Maybe it's yours to write.</p>
+
+    <section class="how" aria-labelledby="how-title">
+      <h2 id="how-title">Use one</h2>
+      <p>
+        A circuit here is an ordinary module. Give it your hosts, run <code>conn3x init</code> to
+        fetch it, and the plan shows every step it will take on every host, like any circuit of
+        your own.
+      </p>
+      <pre><code>{`module "web" {
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.0"
+  hosts  = { web1 = "203.0.113.10" }
+}`}</code></pre>
+      <p>
+        Pin <code>ref</code> to a tag, read the circuit before you run it, and bump the tag when
+        you're ready for a new version. It's code that runs as root on your servers, so treat it
+        like any other dependency.
+      </p>
+    </section>
+
+    <section id="share" class="share" aria-labelledby="share-title">
+      <h2 id="share-title">Share yours</h2>
+      <p>
+        Wrote a circuit you'd use again? Somebody else would too. Put it in a public repo with a
+        tagged release and a README, then list it here, either way:
+      </p>
+      <div class="ways">
+        <a href={form}>
+          <strong>Fill in the form</strong>
+          <span>Tell us the repo and we'll check it and add it.</span>
+        </a>
+        <a href="https://github.com/conn3xorg/web/tree/main/apps/site/src/data/circuits">
+          <strong>Open a pull request</strong>
+          <span>Add one JSON file next to the others. That's the whole change.</span>
+        </a>
+      </div>
+      <p class="fine">
+        <a href={guide}>Share a circuit</a> in the docs covers writing one to share: variables
+        for hosts and SSH, versioning with tags, and testing it on a container first.
+      </p>
+    </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<script>
+  const q = document.getElementById("q") as HTMLInputElement;
+  const cards = [...document.querySelectorAll<HTMLElement>("#list > li")];
+  const none = document.getElementById("none")!;
+  q.addEventListener("input", () => {
+    const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const c of cards) {
+      const hit = words.every((w) => c.dataset.text!.includes(w));
+      c.hidden = !hit;
+      if (hit) shown++;
+    }
+    none.hidden = shown > 0;
+  });
+  for (const b of document.querySelectorAll<HTMLButtonElement>(".copy")) {
+    b.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy!);
+        b.textContent = "Copied";
+        setTimeout(() => (b.textContent = "Copy"), 1500);
+      } catch {
+        b.textContent = "Select and copy";
+      }
+    });
+  }
+</script>
+
+<style>
+  .page {
+    padding-block: 3rem 5rem;
+  }
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+  .lede {
+    color: var(--c-text-muted);
+    max-width: 42rem;
+    font-size: 1.125rem;
+    margin: 0 0 1.75rem;
+  }
+  .tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .search {
+    flex: 1 1 18rem;
+    max-width: 28rem;
+  }
+  .search input {
+    width: 100%;
+    font: inherit;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    background: var(--c-bg);
+    color: var(--c-text);
+  }
+  .button {
+    display: inline-block;
+    background: var(--c-accent);
+    color: var(--c-accent-contrast);
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .card {
+    position: relative;
+    border: 1px solid var(--c-border);
+    border-top: 3px solid var(--c-accent);
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: var(--c-surface);
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .card h2 {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+  .card h2 a {
+    color: var(--c-text);
+  }
+  .badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--c-accent-contrast);
+    background: var(--c-accent);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+  .desc {
+    margin: 0.5rem 0;
+  }
+  .meta,
+  .tested {
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+    margin: 0.25rem 0;
+  }
+  pre {
+    margin: 0.75rem 0 0;
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+  }
+  code {
+    font-family: var(--font-mono);
+  }
+  .copy {
+    margin: 0.5rem 0 0.25rem;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    cursor: pointer;
+  }
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tags li {
+    font-size: 0.8125rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--c-border);
+    border-radius: 999px;
+    color: var(--c-text-muted);
+  }
+  .none {
+    color: var(--c-text-muted);
+  }
+  .how,
+  .share {
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+    max-width: 46rem;
+  }
+  .how h2,
+  .share h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    margin: 0 0 0.75rem;
+  }
+  .how p,
+  .share p {
+    color: var(--c-text-muted);
+  }
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .ways a {
+    display: block;
+    padding: 1.1rem;
+    border: 1px solid var(--c-border);
+    border-top: 3px solid var(--c-accent);
+    border-radius: 8px;
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  .ways strong {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+  .ways span {
+    color: var(--c-text-muted);
+    font-size: 0.9375rem;
+  }
+  .fine {
+    margin-top: 1.25rem;
+  }
+  @media (max-width: 760px) {
+    .grid,
+    .ways {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

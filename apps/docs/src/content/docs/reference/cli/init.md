@@ -36,7 +36,7 @@ TF_ENCRYPTION:
 https://opentofu.org/docs/language/state/encryption/
 ```
 
-The warning doesn't change the exit code. To turn encryption on, add an `encryption` block with a `state` block inside `terraform`:
+The warning doesn't change the exit code, and `init -json` leaves it out, so the output stays JSON. To turn encryption on, add an `encryption` block with a `state` block inside `terraform`:
 
 ```hcl
 terraform {

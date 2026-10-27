@@ -9,17 +9,17 @@ In this tutorial you'll configure a Rocky Linux 10 container running on your own
 
 ## Prerequisites
 
-- Conn3x v0.5.0 [installed](/install).
+- Conn3x v0.6.3 [installed](/install).
 - [Podman](https://podman.io/docs/installation) or [Docker](https://docs.docker.com/get-docker/), running.
 - `git`, `ssh` and `ssh-keyscan`, which come with macOS and most Linux distributions.
 - Port 2222 free on `127.0.0.1`.
 
 ## Get the example
 
-The example lives in the Conn3x repository. Clone the v0.5.0 release and change into the example's directory:
+The example lives in the Conn3x repository. Clone the v0.6.3 release and change into the example's directory:
 
 ```sh
-git clone --depth 1 --branch v0.5.0 https://github.com/conn3xorg/conn3x
+git clone --depth 1 --branch v0.6.3 https://github.com/conn3xorg/conn3x
 cd conn3x/examples/try-it-locally
 ```
 

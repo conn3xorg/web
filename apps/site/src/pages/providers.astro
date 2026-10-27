@@ -1,0 +1,175 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+import providers from "../data/providers.json";
+
+const search = "https://search.opentofu.org/providers";
+const example = `resource "digitalocean_droplet" "web" {
+  name     = "web1"
+  image    = "rockylinux-10-x64"
+  region   = "nyc3"
+  size     = "s-1vcpu-1gb"
+  ssh_keys = [var.ssh_key_id]
+  # user_data installs a host key made in the plan; see the tutorial
+}
+
+module "web" {
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.0"
+  hosts = {
+    web1 = {
+      address  = digitalocean_droplet.web.ipv4_address
+      host_key = tls_private_key.host.public_key_openssh
+    }
+  }
+}`;
+---
+<Base
+  title="Providers: Conn3x"
+  description="Every OpenTofu and Terraform provider works with Conn3x, unchanged. Create servers with any of them and configure them in the same plan."
+  path="/providers"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero label="Works with" title="Providers">
+      <p>
+        Conn3x is built on OpenTofu, so every provider in the OpenTofu Registry works, as it is.
+        Create the server with whichever cloud you already use, and hand its address to a circuit
+        in the same plan.
+      </p>
+      <a class="btn" href={search}>Search every provider</a>
+    </PageHero>
+    <div class="wrap page">
+    <h2 class="sub">Where servers usually come from</h2>
+    <ul class="grid">
+      {providers.map((p) => (
+        <li>
+          <a href={`https://search.opentofu.org/provider/${p.source}/latest`}>
+            <strong>{p.name}</strong>
+            <span class="src">{p.source}</span>
+            <span class="desc">{p.description}</span>
+            {p.inDocs && <span class="note">Used in the Conn3x tutorials</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <section class="how" aria-labelledby="how-title">
+      <h2 id="how-title">One plan, from the cloud to the config</h2>
+      <p>
+        The server's address is an expression, not a file you copy it into. The plan creates the
+        server first, then shows every step headed for it, waiting on an address that doesn't
+        exist yet.
+      </p>
+      <pre><code>{example}</code></pre>
+      <p>
+        The <a href="https://docs.conn3x.org/tutorials/digitalocean">DigitalOcean tutorial</a> walks
+        through it end to end. Using a provider that isn't listed here? It works the same way, and
+        a <a href="https://github.com/conn3xorg/web/tree/main/apps/site/src/data/providers.json">pull request</a>
+        adding it is welcome.
+      </p>
+    </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .page {
+    padding-block: 3rem 5rem;
+  }
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+  .lede {
+    color: var(--c-text-muted);
+    max-width: 42rem;
+    font-size: 1.125rem;
+    margin: 0 0 1.75rem;
+  }
+  .btn {
+    margin-top: 1.75rem;
+  }
+  .sub,
+  .how h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    margin: 3rem 0 1.25rem;
+  }
+  .grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .grid a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    height: 100%;
+    padding: 1.1rem;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    background: var(--c-surface);
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  .grid a:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .src {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+  }
+  .desc {
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+  }
+  .note {
+    margin-top: auto;
+    padding-top: 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--c-link);
+  }
+  .how {
+    max-width: 46rem;
+  }
+  .how p {
+    color: var(--c-text-muted);
+  }
+  pre {
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  code {
+    font-family: var(--font-mono);
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

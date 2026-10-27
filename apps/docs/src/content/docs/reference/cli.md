@@ -3,7 +3,7 @@ title: CLI overview
 description: How to run conn3x commands, the global options, the environment variables Conn3x reads, and its exit codes.
 ---
 
-The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.5.0.
+The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.6.3.
 
 ## Usage
 
@@ -59,9 +59,10 @@ The other OpenTofu commands are there too and behave as OpenTofu documents them:
 - Configuration is read from `.circuit.hcl` files as well as `.tf` and `.tofu` files.
 - `init` warns when state isn't encrypted. See [init](/reference/cli/init).
 - `plan`, `apply`, `destroy`, `refresh` and `drift` connect to your hosts over SSH to read host steps. See [plan](/reference/cli/plan).
-- `fmt` doesn't format `.circuit.hcl` files. See [fmt](/reference/cli/fmt).
+- `fmt` formats `.circuit.hcl` files too. See [fmt](/reference/cli/fmt).
 - Host steps can't be imported with `conn3x import` or `import` blocks.
-- `version` prints the Conn3x version and the OpenTofu release it's built on.
+- `version` prints the Conn3x version and the OpenTofu release it's built on. With `-json`, it adds `conn3x_version` to OpenTofu's fields.
+- In `-json` output, the version message that starts the stream names the Conn3x release, and carries a `conn3x` field beside the `tofu` one.
 
 ## Environment variables
 
@@ -70,6 +71,7 @@ The other OpenTofu commands are there too and behave as OpenTofu documents them:
 | Variable | Description |
 | --- | --- |
 | `CONN3X_HMAC_KEY` | The key for the HMACs that state keeps instead of write-only file content. It must be at least 32 bytes; `openssl rand -hex 32` makes one. Without it, Conn3x uses `~/.config/conn3x/hmac.key`, and creates that file the first time it writes a write-only secret. Every machine that runs against the same state needs the same key. See [Secrets in files](/concepts#secrets-in-files). |
+| `CONN3X_SSH_MAX_SESSIONS` | The most SSH sessions Conn3x opens at once on one connection to a host. Defaults to `8`, below OpenSSH's default `MaxSessions` of 10. Commands beyond it wait for a free session. If a server allows fewer, Conn3x finds that out on its own and opens fewer, so you only need this to go higher on a server that allows more. Accepts 1 to 1000. |
 | `XDG_CONFIG_HOME` | When set, the key file is `$XDG_CONFIG_HOME/conn3x/hmac.key` instead. |
 | `SSH_AUTH_SOCK` | The SSH agent Conn3x logs in with when an `ssh` block has no `private_key_file`. |
 
@@ -97,6 +99,6 @@ OpenTofu documents the rest in [Environment variables](https://opentofu.org/docs
 | --- | --- |
 | 0 | Success. |
 | 1 | An error, an unknown command, or an option that isn't valid. |
-| 2 | `plan -detailed-exitcode` and `drift`: success, with changes. |
+| 2 | `plan -detailed-exitcode` and `drift`: success, with changes. `fmt`: an error. |
 | 3 | `fmt -check`: some files need formatting. `convert ansible`: some tasks need you. |
 | 127 | A command that only groups subcommands, such as `conn3x state`, run without one. |

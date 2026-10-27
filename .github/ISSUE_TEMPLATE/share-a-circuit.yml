@@ -1,0 +1,49 @@
+name: Share a circuit
+description: List your circuit on conn3x.org/circuits.
+title: "Circuit: "
+labels: ["circuit"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing. We check each circuit before it's listed: a public repo, an open-source licence, a tagged release, a README that shows how to use it, and `conn3x validate` passing. [Share a circuit](https://docs.conn3x.org/guides/share-a-circuit) covers all of it.
+  - type: input
+    id: repo
+    attributes:
+      label: Repository
+      description: The GitHub repository, as OWNER/NAME.
+      placeholder: you/circuit-postgres
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Release tag
+      placeholder: v0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What it does
+      description: One line, as it should appear on the card.
+    validations:
+      required: true
+  - type: checkboxes
+    id: tested
+    attributes:
+      label: Tested on
+      options:
+        - label: Rocky Linux 10
+        - label: Fedora 45
+        - label: Ubuntu 24.04
+        - label: Debian 13
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: The repository is public and has an open-source licence.
+          required: true
+        - label: "`conn3x validate` passes, and a second `conn3x plan` after apply shows no changes."
+          required: true

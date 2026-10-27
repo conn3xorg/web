@@ -48,6 +48,8 @@ Instead of the content, state records `content_hmac`: an HMAC-SHA256 of the file
 
 The key is never stored in state. Conn3x reads it from the `CONN3X_HMAC_KEY` environment variable, which must be at least 32 bytes long, or from `~/.config/conn3x/hmac.key` (under `$XDG_CONFIG_HOME` when that is set), which it creates the first time it needs one. Everything that runs `conn3x` against the same state needs the same key. For how to share it, and what to do if it is lost, see [Secrets in files](/concepts#secrets-in-files).
 
+The key file should be readable only by you. If your group or other users can read it, plans of `content_wo` files and refreshes of their steps warn once per run and print the `chmod 600` command that fixes it. A key in `CONN3X_HMAC_KEY` isn't checked.
+
 ## Ephemeral variables
 
 Declare a variable that holds a secret with `ephemeral = true`, and pass its value at run time with `-var` or a `TF_VAR_` environment variable. OpenTofu then keeps the value out of plan files and state. See OpenTofu's [ephemeral variables](https://opentofu.org/docs/language/values/variables/).

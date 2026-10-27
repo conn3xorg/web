@@ -39,7 +39,7 @@ step "write_the_home_page" {
 
 ## Modules it converts
 
-`copy`, `file` (directories and links), `lineinfile`, `blockinfile`, `package`, `dnf`, `yum`, `apt`, `service`, `systemd`, `user`, `group`, `authorized_key`, `cron`, `sysctl`, `hostname`, `timezone`, `firewalld`, `ufw`, `seboolean`, `sefcontext`, `get_url`, `unarchive`, `git`, `mount`, `command`, `shell` and `wait_for`, with or without their collection prefix.
+`copy`, `file` (directories and links), `lineinfile`, `blockinfile`, `package`, `dnf`, `yum`, `apt`, `service`, `systemd`, `systemd_service`, `user`, `group`, `authorized_key`, `cron`, `sysctl`, `hostname`, `timezone`, `firewalld`, `ufw`, `seboolean`, `sefcontext`, `get_url`, `unarchive`, `git`, `mount`, `command`, `shell` and `wait_for`, with or without their collection prefix.
 
 A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each):
 
@@ -62,6 +62,7 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Jinja templates and filters.** Rewrite templates in `templatefile` syntax (`${var}`, `%{ if }`) and use a [template](/modules/template) step.
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when.
 - **`get_url` without a sha256 checksum.** Conn3x only downloads what it can verify.
+- **A `file` link that sets `owner`, `group` or `mode`.** A Conn3x [link](/modules/link) step doesn't manage those, so the converter won't quietly drop them.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
 
 The command exits 3 while anything is left, so you can keep running it in CI until the count reaches zero.

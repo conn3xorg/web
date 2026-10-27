@@ -62,7 +62,7 @@ When you delete a step, Conn3x stops managing it. What happens on the host depen
 
 ## Connecting
 
-Conn3x uses SSH and nothing else. There's no agent, and nothing to install on the servers first. It always checks host keys, against `~/.ssh/known_hosts` or a key you pin with `host_key`, and it reuses one connection per host for the whole run. With `become = true` commands run through `sudo`; a password, if sudo needs one, comes from `become_password_file` and never reaches configuration or state.
+Conn3x uses SSH and nothing else. There's nothing to install on the servers first. It always checks host keys, against `~/.ssh/known_hosts` or a key you pin with `host_key`, and it reuses one connection per host for the whole run. With `become = true` commands run through `sudo`; a password, if sudo needs one, comes from `become_password_file` and never reaches configuration or state.
 
 ## State
 

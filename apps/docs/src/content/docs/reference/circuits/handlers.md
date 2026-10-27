@@ -131,7 +131,7 @@ When a notifying step changes something on a host, its `revision` changes, so th
 
 ## The revision attribute
 
-Every step's resource has a computed `revision` attribute, a random string that Conn3x replaces each time it changes something on the host for that instance. It stays the same when the step plans no change. In a plan, it shows as `(known after apply)` on instances that are about to change.
+Every step's resource has a computed `revision` attribute, a random string that Conn3x replaces each time it changes something on the host for that instance. It stays the same when the step plans no change on the host. Settings that change nothing there don't count: changing `on_remove`, the `timeout` of a [reboot](/modules/reboot) or [wait_for](/modules/wait_for) step, or how Conn3x logs in keeps the revision, so handlers don't run. [Where the ssh settings are stored](/reference/circuits/ssh#where-the-ssh-settings-are-stored) lists the login settings. In a plan, it shows as `(known after apply)` on instances that are about to change.
 
 Handlers watch `revision`, and you can use it the same way. A `command` step's `triggers` argument runs the command again whenever its value changes, and a `reboot` step's `triggers` reboots the host:
 

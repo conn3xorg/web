@@ -1,64 +1,76 @@
 /* Copyright (c) The Conn3x Authors
  * SPDX-License-Identifier: MPL-2.0 */
 
-/* Conn3x brand tokens: direction "Junction". */
+/* Conn3x brand tokens. The site is dark by default; the footer toggle
+ * sets data-theme="light" for people who prefer light. */
 
 :root {
-  color-scheme: light;
-  --c-bg: #f3f5f7;
-  --c-surface: #ffffff;
-  --c-grid: #dfe5ec;
-  --c-border: #cfd7e1;
-  --c-text: #13233a;
-  --c-text-muted: #4a5a70;
-  --c-link: #b8430b;
-  --c-accent: #e85d0c;
-  --c-accent-contrast: #13233a;
-  --c-code-bg: #13233a;
+  color-scheme: dark;
+  --c-bg: #07090d;
+  --c-surface: #0c1118;
+  --c-raised: #121924;
+  --c-grid: #121923;
+  --c-border: #1a2230;
+  --c-border-strong: #2a3543;
+  --c-text: #eef2f6;
+  --c-text-muted: #8c98a8;
+  --c-dim: #5d6878;
+  --c-link: #ff9a5c;
+  --c-accent: #ff7a2e;
+  --c-accent-contrast: #07090d;
+  --c-button: #eef2f6;
+  --c-button-text: #07090d;
+  --c-add: #7fd3a7;
+  --c-change: #ff9a5c;
+  --c-destroy: #ff6b6b;
+  --c-code-bg: #0a0e14;
+  --c-code-border: #1a2230;
   --c-code-text: #dbe4ef;
   --c-code-add: #7fd3a7;
-  --c-code-change: #ff8a3d;
-  --c-code-dim: #8ea0b6;
+  --c-code-change: #ff9a5c;
+  --c-code-dim: #8a97a8;
+  --c-glow: rgba(255, 122, 46, 0.35);
+
+  /* The warm contrast band, the same in both themes. */
+  --c-paper: #f4f1ea;
+  --c-paper-raised: #fbf9f5;
+  --c-paper-border: #ded8cb;
+  --c-paper-text: #13233a;
+  --c-paper-muted: #55606f;
+  --c-mark: #ffc9a3;
 
   --font-display: var(--font-schibsted, system-ui, sans-serif);
   --font-body: var(--font-display);
   --font-mono: var(--font-jetbrains, ui-monospace, monospace);
+
+  --radius: 10px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --c-bg: #0f1a2b;
-  --c-surface: #16243a;
-  --c-grid: #1b2a42;
-  --c-border: #2a3b55;
-  --c-text: #e6ecf3;
-  --c-text-muted: #9fb0c5;
-  --c-link: #ff9a5c;
-  --c-accent: #ff7a2e;
-  --c-accent-contrast: #0f1a2b;
-  --c-code-bg: #0a1220;
+:root[data-theme="light"] {
+  color-scheme: light;
+  --c-bg: #f6f4ef;
+  --c-surface: #ffffff;
+  --c-raised: #fbfaf7;
+  --c-grid: #ebe7de;
+  --c-border: #e0dbd0;
+  --c-border-strong: #c9c2b4;
+  --c-text: #13233a;
+  --c-text-muted: #4f5b6b;
+  --c-dim: #8a93a0;
+  --c-link: #b8430b;
+  --c-accent: #e85d0c;
+  --c-accent-contrast: #13233a;
+  --c-button: #13233a;
+  --c-button-text: #ffffff;
+  --c-add: #1a7a4b;
+  --c-change: #b8430b;
+  --c-destroy: #c73a2b;
+  --c-code-bg: #0f1a2b;
+  --c-code-border: #0f1a2b;
   --c-code-text: #dbe4ef;
   --c-code-add: #7fd3a7;
   --c-code-change: #ff9a5c;
   --c-code-dim: #8ea0b6;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --c-bg: #0f1a2b;
-    --c-surface: #16243a;
-    --c-grid: #1b2a42;
-    --c-border: #2a3b55;
-    --c-text: #e6ecf3;
-    --c-text-muted: #9fb0c5;
-    --c-link: #ff9a5c;
-    --c-accent: #ff7a2e;
-    --c-accent-contrast: #0f1a2b;
-    --c-code-bg: #0a1220;
-    --c-code-text: #dbe4ef;
-    --c-code-add: #7fd3a7;
-    --c-code-change: #ff9a5c;
-    --c-code-dim: #8ea0b6;
-  }
+  --c-glow: rgba(232, 93, 12, 0.22);
 }

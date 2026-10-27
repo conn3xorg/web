@@ -85,6 +85,8 @@ Everything that applies the same state needs the same key: your laptop, a teamma
 cat ~/.config/conn3x/hmac.key   # store this as CONN3X_HMAC_KEY in CI
 ```
 
+Keep the file to yourself. If your group or other users can read it, plans and refreshes warn and print the `chmod 600` that fixes it. A key in `CONN3X_HMAC_KEY` is yours to guard.
+
 If a run uses a different key, Conn3x stops and says which key the state expects, rather than treating every secret as drifted. If the key is truly gone, `conn3x state rm` the affected file and apply again to write it with the new key.
 
 ## Keep it out of saved plans

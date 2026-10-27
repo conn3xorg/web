@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How Conn3x is tested: diagram</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  code { font-family: var(--mono); font-size: 0.86em; }
+  .gate { margin-top: 44px; display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: stretch; }
+  .when { background: var(--ink); color: var(--text); padding: 30px 30px; }
+  .when .k { font-family: var(--mono); font-size: 20px; letter-spacing: 0.12em; color: var(--muted); }
+  .when h2 { font-size: 44px; letter-spacing: -0.02em; font-weight: 800; color: var(--accent); margin-top: 10px; line-height: 1.05; }
+  .when p { font-size: 23px; line-height: 1.4; color: var(--muted); margin-top: 12px; }
+  .checks { display: grid; gap: 18px; }
+  .checks.c2 { grid-template-columns: 1fr 1fr; }
+  .checks.c3 { grid-template-columns: 1fr 1fr 1fr; }
+  .box { background: var(--paper-2); border: 2px solid var(--paper-line); border-top: 8px solid var(--navy); padding: 22px 26px; }
+  .box.hot { border-top-color: var(--accent); }
+  .box.ok { border-top-color: var(--add); }
+  .box h3 { font-size: 30px; letter-spacing: -0.02em; font-weight: 800; margin-bottom: 8px; }
+  .box p { font-size: 22px; line-height: 1.4; color: var(--navy-muted); }
+  .distros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 14px; }
+  .distros span { font-family: var(--mono); font-size: 19px; background: var(--paper); border: 2px solid var(--paper-line); padding: 8px 10px; text-align: center; }
+  .down { text-align: center; font-family: var(--mono); color: var(--rust); font-size: 40px; line-height: 1; margin-top: 20px; }
+  .bottom { margin-top: 56px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X V0.6.3</b> · HOW IT'S TESTED</span>
+  <h1>Three gates</h1>
+  <p class="lede">A change reaches your servers only after it has passed all three. Each one catches what the one before it can't.</p>
+
+  <div class="gate">
+    <div class="when"><span class="k">GATE 1</span><h2>Every pull request</h2><p>Required checks. Nothing merges red.</p></div>
+    <div class="checks">
+      <div class="box hot"><h3>Real hosts in Podman</h3><p>Circuits applied over SSH to systemd containers, then checked on the host. Run twice: host agent off, and host agent required.</p>
+        <div class="distros"><span>Rocky 10</span><span>Fedora 45</span><span>Ubuntu 24.04</span><span>Debian 13</span></div></div>
+      <div class="checks c3">
+        <div class="box"><h3>Every example</h3><p>Each docs example and each <code>examples/</code> directory must validate.</p></div>
+        <div class="box"><h3>Four upstream edits</h3><p>Every OpenTofu file Conn3x changes is marked. More than five fails.</p></div>
+        <div class="box"><h3>Smaller than tofu</h3><p>The build fails if <code>conn3x</code> grows past the <code>tofu</code> it's built from.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="down">↓</div>
+
+  <div class="gate">
+    <div class="when"><span class="k">GATE 2</span><h2>Every night</h2><p>Real machines, real bills, deleted after.</p></div>
+    <div class="checks c2">
+      <div class="box hot"><h3>Two DigitalOcean droplets</h3><p>One plan creates a Rocky Linux 10 and an Ubuntu 24.04 droplet and sets them up: firewalld and ufw, SELinux, a mount, sysctl, sudo, a reboot.</p></div>
+      <div class="box"><h3>Then it checks</h3><p>Fetches the page through the firewall, reads the host as root, plans again for <code>No changes.</code>, and runs drift for <code>No drift</code>.</p></div>
+    </div>
+  </div>
+  <div class="down">↓</div>
+
+  <div class="gate">
+    <div class="when"><span class="k">GATE 3</span><h2>Every release</h2><p>Built in GitHub Actions, never on a laptop.</p></div>
+    <div class="checks c3">
+      <div class="box ok"><h3>Signed</h3><p><code>checksums.txt</code> signed with cosign, keyless, in Sigstore's public log.</p></div>
+      <div class="box ok"><h3>Attested</h3><p>Build provenance for every archive. Check it with <code>gh attestation verify</code>.</p></div>
+      <div class="box ok"><h3>Listed</h3><p>An SBOM beside every archive: what went into the binary.</p></div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/conn3x</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
 
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 
 const REPO = "https://github.com/conn3xorg/conn3x";
 
@@ -84,25 +84,26 @@ test.describe("reduced motion on interaction", () => {
 
   test("the button has no hover transition", async ({ page }) => {
     await page.goto("/");
-    const duration = await page.locator("main .button").first().evaluate((el) => getComputedStyle(el).transitionDuration);
+    const duration = await page.locator("main .btn").first().evaluate((el) => getComputedStyle(el).transitionDuration);
     expect(duration).toBe("0s");
   });
 });
 
-test("an explicit dark theme shows the dark logo", async ({ page }) => {
+// One logo, coloured by the theme: light ink on dark, navy ink on light.
+const logoInk = (page: Page) => page.locator(".site-header .logo").evaluate((el) => getComputedStyle(el).color);
+
+test("the logo is light on the default dark theme, even in a light system", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto("/");
-  await page.evaluate(() => document.documentElement.setAttribute("data-theme", "dark"));
-  await expect(page.locator(".logo-dark")).toBeVisible();
-  await expect(page.locator(".logo-light")).toBeHidden();
+  await expect(page.locator(".site-header .logo")).toBeVisible();
+  expect(await logoInk(page)).toBe("rgb(238, 242, 246)");
 });
 
-test("an explicit light theme shows the light logo in a dark system", async ({ page }) => {
+test("an explicit light theme draws the logo in navy in a dark system", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/");
   await page.evaluate(() => document.documentElement.setAttribute("data-theme", "light"));
-  await expect(page.locator(".logo-light")).toBeVisible();
-  await expect(page.locator(".logo-dark")).toBeHidden();
+  expect(await logoInk(page)).toBe("rgb(19, 35, 58)");
 });
 
 test("the 404 page has a skip link", async ({ page }) => {

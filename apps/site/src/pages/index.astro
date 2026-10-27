@@ -4,21 +4,37 @@
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import Hero from "../components/home/Hero.astro";
+import PlanFlow from "../components/home/PlanFlow.astro";
+import DriftFlow from "../components/home/DriftFlow.astro";
+import ConvertFlow from "../components/home/ConvertFlow.astro";
+import Band from "../components/home/Band.astro";
+import CircuitCards from "../components/home/CircuitCards.astro";
+import { getCollection } from "astro:content";
+import { isPublished } from "../lib/published.js";
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
-const examples = `${repo}/tree/main/examples`;
-const playbook = `- name: Install the basics
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop: [chrony, git, jq]`;
-const circuit = `step "install_the_basics" {
-  for_each = ["chrony", "git", "jq"]
-  package {
-    name = item.value
-  }
-}`;
+const posts = (await getCollection("blog", (p) => isPublished(p)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+const date = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+
+const features = [
+  ["Keep your providers", "Built on OpenTofu, so every Terraform and OpenTofu provider works as it is, and so do your modules and state."],
+  ["Install nothing on your servers", "No Python, no agent. Conn3x connects over SSH, checks the host key every time, and runs plain shell commands."],
+  ["Repeat a step for every item", "<code>for_each</code> runs a step once per package, user or file. Drop an item and the next plan stops managing just that one."],
+  ["Keep secrets out of state", "Write a password with <code>content_wo</code> and it reaches the server, not the plan or the state. State keeps an HMAC."],
+  ["Reach hosts behind a bastion", "Chain jump hosts, or point at your SSH config and use its aliases. Each host can log in its own way."],
+  ["Twenty-nine modules", "Packages, files, templates, services, users, cron, sysctl, mounts, firewalld, ufw, SELinux and more."],
+];
+const compare = [
+  ["To install", "Two tools, and Python on the controller and every host", "One binary"],
+  ["State", "Terraform state for the cloud, none for the hosts", "One state for both"],
+  ["Seeing host changes", "A separate <code>--check --diff</code> run", "In the same plan as the cloud"],
+  ["Cloud addresses in host config", "Inventory scripts or plugins", "An expression"],
+  ["Finding drift on hosts", "Run the playbook in check mode", "<code>conn3x drift</code>, both layers"],
+];
 ---
 <Base
   title="Conn3x: one plan for your cloud and the servers it creates"
@@ -28,141 +44,134 @@ const circuit = `step "install_the_basics" {
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
 
-  <main id="main">
-    <section class="hero">
-      <div class="wrap hero-grid">
-        <div class="pitch">
-          <h1><span>Provision it.</span> <span>Configure it.</span> <span>One plan.</span></h1>
-          <p class="lede">
-            Today that's Terraform, Ansible, and a drawer of glue scripts holding them
-            together. Conn3x does both jobs: one binary, one plan, one state, for your cloud
-            and every server it creates.
-          </p>
-          <div class="cta">
-            <a class="button" href={`${docs}/get-started`}>Get started</a>
-            <a class="secondary" href={repo}>Star it on GitHub</a>
-            <p class="cta-note"><a href={`${repo}/releases/latest`}>v0.5 is out</a>. Open source, MPL-2.0, built in public.</p>
-          </div>
-        </div>
+  <main id="main" class="home">
+    <Hero />
 
-        <figure class="plan">
-          <pre aria-describedby="plan-caption"><code><span class="l dim">$ conn3x plan</span>
-<span class="l add">+ digitalocean_droplet.web</span>
-<span class="l add">+ conn3x_package.web__nginx["web1"]</span>
-<span class="l add">+ conn3x_file.web__page["web1"]</span>
-<span class="l dim">    host = (known after apply)</span>
-<span class="l add">+ conn3x_service.web__running["web1"]</span>
-<span class="l dim">Plan: 4 to add, 0 to change, 0 to destroy.</span></code></pre>
-          <figcaption id="plan-caption">
-            Summarised from a real plan: the droplet, and the steps that set it up, waiting
-            on an address that doesn't exist yet.
-          </figcaption>
-        </figure>
+    <section class="sec wrap" aria-labelledby="s1">
+      <div class="sec-head">
+        <p class="label"><span class="n">01</span> One plan</p>
+        <h2 class="lead" id="s1"><strong>One plan for the cloud and the servers in it.</strong> Point a circuit at a resource and the plan shows the server about to be created next to every package, file and service headed for it.</h2>
       </div>
+      <PlanFlow />
     </section>
 
-    <section class="coming wrap" aria-labelledby="coming-title">
-      <h2 id="coming-title">What it does</h2>
-      <div class="points">
-        <div>
-          <h3>See everything before it runs</h3>
-          <p>
-            One plan shows the server you're about to create and the exact changes headed
-            for it, line by line. Run it again later and it tells you what someone changed by
-            hand.
-          </p>
-        </div>
-        <div>
-          <h3>Keep your providers</h3>
-          <p>
-            Conn3x is built on OpenTofu, so every Terraform and OpenTofu provider works as it
-            is, and so do the modules and state you already have.
-          </p>
-        </div>
-        <div>
-          <h3>Install nothing on your servers</h3>
-          <p>
-            No Python, no agent. Conn3x connects over SSH, checks the host key every time, and
-            runs plain shell commands, as root or through sudo.
-          </p>
-        </div>
-        <div>
-          <h3>Repeat a step for every item</h3>
-          <p>
-            <code>for_each</code> runs a step once per package, user or file, on every host. Drop
-            an item and the next plan removes just that item, everywhere.
-          </p>
-        </div>
-        <div>
-          <h3>Keep secrets out of state</h3>
-          <p>
-            Write a password with <code>content_wo</code> and it reaches the server, not the plan
-            or the state. State keeps an HMAC, so a hand edit still shows up.
-          </p>
-        </div>
-        <div>
-          <h3>Reach hosts behind a bastion</h3>
-          <p>
-            Chain jump hosts, or point at your SSH config and use its aliases. Each host can
-            log in its own way, inside one circuit.
-          </p>
-        </div>
+    <section class="sec wrap" aria-labelledby="s2">
+      <div class="sec-head">
+        <p class="label"><span class="n">02</span> Drift</p>
+        <h2 class="lead" id="s2"><strong>Hear about the 3 a.m. fix at breakfast.</strong> <code>conn3x drift</code> checks the cloud and the servers, and fails the job when either has moved.</h2>
       </div>
-      <p class="status">
-        It's early, and Linux first: Rocky, RHEL, AlmaLinux, Fedora, Debian and Ubuntu.
-      </p>
+      <DriftFlow />
     </section>
 
-    <section class="convert" aria-labelledby="convert-title">
-      <div class="wrap">
-        <h2 id="convert-title">Bring your playbooks</h2>
-        <p class="section-lede">
-          <code>conn3x convert ansible -i inventory site.yml</code> rewrites each task it can prove
-          means the same thing, loops over plain lists included. What it can't, a <code>when</code> or a
-          Jinja filter, stays in the file with the reason, so nothing gets guessed.
-        </p>
-        <div class="pair">
-          <figure>
-            <figcaption>site.yml</figcaption>
-            <pre><code>{playbook}</code></pre>
-          </figure>
-          <span class="junction" aria-hidden="true"></span>
-          <figure>
-            <figcaption>site.tf</figcaption>
-            <pre><code>{circuit}</code></pre>
-          </figure>
-        </div>
+    <section class="sec wrap" aria-labelledby="s3">
+      <div class="sec-head">
+        <p class="label"><span class="n">03</span> Bring your playbooks</p>
+        <h2 class="lead" id="s3"><strong>Your playbooks come with you.</strong> The converter rewrites each task it can prove, and marks the rest with the reason. Nothing gets guessed.</h2>
       </div>
+      <ConvertFlow />
     </section>
 
-    <section class="compare wrap" aria-labelledby="compare-title">
-      <h2 id="compare-title">Two tools, or one</h2>
+    <Band />
+
+    <section class="sec wrap" aria-labelledby="s4">
+      <div class="sec-head">
+        <p class="label"><span class="n">04</span> Everyday work</p>
+        <h2 class="lead" id="s4"><strong>Everything a server needs.</strong> Linux first: every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.</h2>
+      </div>
+      <ul class="features">
+        {features.map(([t, d]) => (
+          <li><h3>{t}</h3><p set:html={d} /></li>
+        ))}
+      </ul>
+      <p class="more"><a href={`${docs}/modules/package`}>Every module in the docs →</a></p>
+    </section>
+
+    <section class="sec wrap" aria-labelledby="s5">
+      <div class="sec-head">
+        <p class="label"><span class="n">05</span> Circuits</p>
+        <h2 class="lead" id="s5"><strong>Don't write the nginx setup again.</strong> Borrow a circuit with one <code>module</code> block, or share your own on the directory.</h2>
+      </div>
+      <CircuitCards />
+      <p class="more"><a href="/circuits">Browse every circuit →</a></p>
+    </section>
+
+    <section class="sec wrap" aria-labelledby="s6">
+      <div class="sec-head">
+        <p class="label"><span class="n">06</span> Compare</p>
+        <h2 class="lead" id="s6"><strong>Two tools, or one.</strong> The same job, with one less handoff.</h2>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th scope="col"></th><th scope="col">Terraform or OpenTofu, plus Ansible</th><th scope="col">Conn3x</th></tr>
+            <tr><th scope="col"><span class="sr">Aspect</span></th><th scope="col">Terraform or OpenTofu, plus Ansible</th><th scope="col" class="us">Conn3x</th></tr>
           </thead>
           <tbody>
-            <tr><th scope="row">To install</th><td>Two tools, and Python on the controller and every host</td><td>One binary</td></tr>
-            <tr><th scope="row">State</th><td>Terraform state for the cloud, none for the hosts</td><td>One state for both</td></tr>
-            <tr><th scope="row">Seeing host changes</th><td>A separate <code>--check --diff</code> run</td><td>In the same plan as the cloud</td></tr>
-            <tr><th scope="row">Cloud addresses in host config</th><td>Inventory scripts or plugins</td><td>An expression</td></tr>
-            <tr><th scope="row">Finding drift on hosts</th><td>Run the playbook in check mode</td><td><code>conn3x drift</code>, both layers</td></tr>
+            {compare.map(([k, a, b]) => (
+              <tr><th scope="row">{k}</th><td set:html={a} /><td class="us" set:html={b} /></tr>
+            ))}
           </tbody>
         </table>
       </div>
     </section>
 
-    <section class="closing wrap" aria-labelledby="closing-title">
-      <h2 id="closing-title">Fifteen minutes to your first circuit</h2>
-      <p>
-        All you need is one Linux server you can reach over SSH. No server handy? Try it on a
-        throwaway container with Podman or Docker, in about five.
+    <section class="sec wrap" aria-labelledby="s7">
+      <div class="sec-head">
+        <p class="label"><span class="n">07</span> Open source</p>
+        <h2 class="lead" id="s7"><strong>Built in the open, not by one person.</strong> People outside the project write fixes, and they ship with thanks in the notes.</h2>
+      </div>
+      <div class="ways">
+        <a href={`${repo}/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22help+wanted%22`}>
+          <span class="label">Code</span>
+          <strong>Pick up an issue</strong>
+          <span class="d">Ones marked good first issue come with the files to touch and how to test.</span>
+        </a>
+        <a href="https://github.com/conn3xorg/web">
+          <span class="label">Docs</span>
+          <strong>Fix the docs</strong>
+          <span class="d">Every page has an edit link. Spotted something wrong? That's a pull request.</span>
+        </a>
+        <a href={`${repo}/issues/new/choose`}>
+          <span class="label">Feedback</span>
+          <strong>Tell us what broke</strong>
+          <span class="d">A plan that surprised you is a bug report we want, with the output.</span>
+        </a>
+      </div>
+      <p class="fine">
+        MPL-2.0, no CLA, and no feature held back for sponsors. Start with the{" "}
+        <a href={`${repo}/blob/main/CONTRIBUTING.md`}>contributing guide</a>.
       </p>
-      <div class="cta">
-        <a class="button" href={`${docs}/get-started`}>Get started</a>
-        <a class="secondary" href={`${examples}/try-it-locally`}>Try it locally</a>
-        <a class="secondary" href={docs}>Read the docs</a>
+    </section>
+
+    {posts.length > 0 && (
+      <section class="sec wrap" aria-labelledby="s8">
+        <div class="blog-head">
+          <h2 class="lead" id="s8"><strong>From the blog.</strong></h2>
+          <a class="btn btn-ghost" href="/blog">All posts</a>
+        </div>
+        <ol class="posts">
+          {posts.map((p) => (
+            <li>
+              <a href={`/blog/${p.id}`}>
+                <img src={p.data.image ?? "/og.png"} alt="" width="600" height="315" loading="lazy" decoding="async" />
+                <time datetime={p.data.date.toISOString().slice(0, 10)}>{date(p.data.date)}</time>
+                <strong>{p.data.title}</strong>
+                <span>{p.data.description}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+
+    <section class="closing" aria-labelledby="close">
+      <div class="wrap">
+        <h2 id="close">Fifteen minutes to your<br />first circuit.</h2>
+        <p>All you need is one Linux server you can reach over SSH. No server handy? Try it on a throwaway container, in about five.</p>
+        <div class="cta">
+          <a class="btn" href={`${docs}/get-started`}>Get started</a>
+          <a class="btn btn-ghost" href={`${docs}/tutorials/try-locally`}>Try it locally</a>
+          <a class="btn btn-ghost" href={docs}>Read the docs</a>
+        </div>
       </div>
     </section>
   </main>
@@ -171,281 +180,219 @@ const circuit = `step "install_the_basics" {
 </Base>
 
 <style>
-  .hero {
-    background-image:
-      linear-gradient(var(--c-grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--c-grid) 1px, transparent 1px);
-    background-size: 28px 28px;
-    border-block: 1px solid var(--c-border);
-  }
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: center;
-    padding-block: clamp(3.5rem, 9vw, 7rem);
-  }
-  h1 {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: clamp(2.6rem, 6.2vw, 4.75rem);
-    line-height: 1;
-    letter-spacing: -0.035em;
-    margin: 0 0 1.5rem;
-  }
-  h1 span {
-    display: block;
-  }
-  .lede {
-    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
-    color: var(--c-text-muted);
-    max-width: 38rem;
-    margin: 0 0 2rem;
-  }
-  .cta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem 1.5rem;
-  }
-  .button {
-    display: inline-block;
-    background: var(--c-accent);
-    color: var(--c-accent-contrast);
-    font-weight: 700;
-    text-decoration: none;
-    padding: 0.85rem 1.35rem;
-    border-radius: 8px;
-  }
-  .button:hover {
-    transform: translateY(-1px);
-  }
-  .button:active {
-    transform: translateY(0);
-  }
-  .secondary {
-    color: var(--c-text);
-    font-weight: 700;
-    text-underline-offset: 0.2em;
-  }
-  .cta-note {
-    flex-basis: 100%;
-    margin: 0;
-    color: var(--c-text-muted);
-    font-size: 0.9375rem;
-    max-width: 22rem;
-  }
-  .cta-note strong {
+  .sec-head code {
+    font-size: 0.8em;
     color: var(--c-text);
   }
-
-  .plan {
-    margin: 0;
-  }
-  .plan pre {
-    margin: 0;
-    background: var(--c-code-bg);
-    color: var(--c-code-text);
-    border-radius: 10px;
-    padding: 1.25rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: clamp(0.8125rem, 1.2vw, 0.9375rem);
-    line-height: 1.75;
-    overflow-x: auto;
-  }
-  .plan code {
-    font-family: inherit;
-  }
-  .add {
-    color: var(--c-code-add);
-  }
-  .chg {
-    color: var(--c-code-change);
-  }
-  .dim {
-    color: var(--c-code-dim);
-  }
-  .plan figcaption {
-    margin-top: 0.85rem;
-    font-size: 0.875rem;
-    color: var(--c-text-muted);
-  }
-
-  /* The one moment of motion: the plan prints line by line, once. */
-  @media (prefers-reduced-motion: no-preference) {
-    .button {
-      transition: transform 0.15s ease;
-    }
-    .l {
-      opacity: 0;
-      animation: print 0.35s ease-out forwards;
-    }
-    .l:nth-child(2) { animation-delay: 0.45s; }
-    .l:nth-child(3) { animation-delay: 0.7s; }
-    .l:nth-child(4) { animation-delay: 0.95s; }
-    .l:nth-child(5) { animation-delay: 1.2s; }
-    .l:nth-child(6) { animation-delay: 1.45s; }
-    .l:nth-child(7) { animation-delay: 1.85s; }
-  }
-  @keyframes print {
-    from { opacity: 0; transform: translateX(-4px); }
-    to { opacity: 1; transform: none; }
-  }
-
-  .coming {
-    padding-block: clamp(3.5rem, 8vw, 6rem);
-  }
-  .coming h2 {
-    font-size: clamp(1.75rem, 3vw, 2.25rem);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0 0 2.5rem;
-  }
-  .points {
+  .features {
+    list-style: none;
+    margin: clamp(3rem, 6vw, 4.5rem) 0 0;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2.5rem;
-    border-top: 2px solid var(--c-text);
-    padding-top: 2rem;
+    gap: 1px;
+    background: var(--c-border);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    overflow: hidden;
   }
-  .points h3 {
-    font-size: 1.1875rem;
-    line-height: 1.25;
-    margin: 0 0 0.6rem;
+  .features li {
+    background: var(--c-bg);
+    padding: 2rem 1.75rem;
+    transition: background 0.2s;
   }
-  .points p {
-    margin: 0;
-    color: var(--c-text-muted);
-  }
-  .status {
-    margin: 3rem 0 0;
-    padding-left: 1rem;
-    border-left: 3px solid var(--c-accent);
-    max-width: 42rem;
-  }
-
-  @media (max-width: 900px) {
-    .hero-grid,
-    .points {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .section-lede {
-    color: var(--c-text-muted);
-    max-width: 44rem;
-    margin: 0 0 2rem;
-  }
-  .convert {
-    border-block: 1px solid var(--c-border);
+  .features li:hover {
     background: var(--c-surface);
-    margin-top: clamp(3rem, 7vw, 5rem);
-    padding-block: clamp(3rem, 7vw, 5rem);
   }
-  .convert h2,
-  .compare h2,
-  .closing h2 {
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
-    letter-spacing: -0.025em;
-    margin: 0 0 1rem;
+  .features h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
   }
-  .pair {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 3rem minmax(0, 1.25fr);
-    align-items: start;
-  }
-  .pair figure {
+  .features p {
     margin: 0;
-  }
-  .pair figcaption {
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
     color: var(--c-text-muted);
-    margin-bottom: 0.5rem;
+    line-height: 1.55;
   }
-  .pair pre {
-    margin: 0;
-    background: var(--c-code-bg);
-    color: var(--c-code-text);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    overflow-x: auto;
-    font-size: 0.8125rem;
-    line-height: 1.6;
+  .more {
+    margin: 1.25rem 0 0;
+    font-size: 0.9375rem;
   }
-  .pair code {
-    font-family: var(--font-mono);
-  }
-  /* The brand's junction: a line with a node, joining the two halves. */
-  .junction {
-    height: 2px;
-    background: var(--c-accent);
-    position: relative;
-    margin-top: 4.5rem;
-  }
-  .junction::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 50%;
-    background: var(--c-accent);
-    transform: translate(-50%, -50%);
-  }
-  .compare {
-    padding-block: clamp(3rem, 7vw, 5rem) 0;
+  .more a,
+  .fine a {
+    color: var(--c-link);
   }
   .table-wrap {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
     overflow-x: auto;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
   }
   table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9375rem;
+    min-width: 40rem;
   }
   th,
   td {
     text-align: left;
-    vertical-align: top;
-    padding: 0.85rem 1rem 0.85rem 0;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--c-border);
+    vertical-align: top;
+  }
+  tbody tr:last-child > * {
+    border-bottom: 0;
   }
   thead th {
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--c-text-muted);
   }
   tbody th {
     font-weight: 600;
-    width: 24%;
+    width: 22%;
   }
-  td:last-child,
-  thead th:last-child {
+  td {
+    color: var(--c-text-muted);
+  }
+  .us {
+    background: color-mix(in srgb, var(--c-accent) 7%, transparent);
     color: var(--c-text);
-    font-weight: 700;
-    border-left: 3px solid var(--c-accent);
-    padding-left: 1rem;
+    font-weight: 600;
   }
-  td:nth-child(2) {
+  thead .us {
+    color: var(--c-accent);
+  }
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .ways {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .ways a {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    padding: 1.5rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: var(--c-surface);
+    color: var(--c-text);
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s var(--ease-out);
+  }
+  .ways a:hover {
+    border-color: var(--c-border-strong);
+    transform: translateY(-2px);
+  }
+  .ways strong {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+  }
+  .ways .d {
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+  }
+  .fine {
+    margin: 1.5rem 0 0;
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+  }
+  .blog-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem;
+  }
+  .posts {
+    list-style: none;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .posts a {
+    display: grid;
+    gap: 0.5rem;
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  .posts img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .posts a:hover img {
+    border-color: var(--c-border-strong);
+  }
+  .posts a:hover strong {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .posts time {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+  .posts strong {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .posts span {
+    font-size: 0.9375rem;
     color: var(--c-text-muted);
   }
   .closing {
-    padding-block: clamp(3rem, 7vw, 5rem);
+    margin-top: clamp(6rem, 12vw, 10rem);
+    padding-block: clamp(5rem, 10vw, 8rem);
+    border-block: 1px solid var(--c-border);
+    background:
+      radial-gradient(40rem 26rem at 85% 0%, color-mix(in srgb, var(--c-accent) 16%, transparent), transparent 70%),
+      var(--c-surface);
+  }
+  .closing h2 {
+    font-size: clamp(2.25rem, 5.5vw, 4.25rem);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    margin: 0;
   }
   .closing p {
+    max-width: 34rem;
     color: var(--c-text-muted);
-    margin: 0 0 1.5rem;
+    font-size: 1.125rem;
+    margin: 1.5rem 0 2rem;
   }
-  @media (max-width: 760px) {
-    .pair {
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  @media (max-width: 860px) {
+    .features,
+    .ways,
+    .posts {
       grid-template-columns: minmax(0, 1fr);
-      gap: 0.5rem;
-    }
-    .junction {
-      width: 2px;
-      height: 2rem;
-      margin: 0.25rem auto;
     }
   }
 </style>

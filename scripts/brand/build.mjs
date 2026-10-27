@@ -94,11 +94,17 @@ async function rasters(browser, svgs) {
   });
   writeFileSync(join(site, "public/favicon.ico"), Buffer.concat([header, ...pngs]));
 
-  const grid = `background-image:linear-gradient(${COLORS.light.grid} 1px,transparent 1px),linear-gradient(90deg,${COLORS.light.grid} 1px,transparent 1px);background-size:30px 30px`;
-  const og = `<div style="width:1200px;height:630px;background:${COLORS.light.bg};${grid};padding:72px 80px;display:flex;flex-direction:column;justify-content:space-between;font-family:S;color:${COLORS.light.text}">
-  <div style="width:420px">${fill(svgs["src/brand/logo.svg"])}</div>
-  <div style="font-weight:800;font-size:76px;line-height:1.02;letter-spacing:-0.03em;max-width:16ch">One plan for your cloud and the servers it creates.</div>
-  <div style="display:flex;justify-content:space-between;font-family:M;font-size:24px;color:${COLORS.light.muted}"><span>Open source, MPL-2.0</span><span>conn3x.org</span></div></div>`;
+  // The default share card, in the site's dark design: the honeycomb from
+  // the hero over near-black, the logo, the line, and the address.
+  const ink = "#07090d";
+  const e = 26, hh = Math.sqrt(3) * e;
+  const hex = `<svg xmlns="http://www.w3.org/2000/svg" width="${3 * e}" height="${hh}"><path d="M0 ${hh / 2}L${e / 2} 0H${1.5 * e}L${2 * e} ${hh / 2}H${3 * e}M${2 * e} ${hh / 2}L${1.5 * e} ${hh}H${e / 2}L0 ${hh / 2}" fill="none" stroke="#1a2230" stroke-width="1"/></svg>`;
+  const streaks = `background-image:radial-gradient(55% 70% at 80% 0%,rgba(255,122,46,.22),transparent 70%),url('data:image/svg+xml,${encodeURIComponent(hex)}');`;
+  const og = `<div style="width:1200px;height:630px;background:${ink};${streaks}padding:72px 80px;display:flex;flex-direction:column;justify-content:space-between;font-family:S;color:${COLORS.dark.text};position:relative">
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 20%,${ink} 62%)"></div>
+  <div style="width:380px;position:relative">${fill(svgs["src/brand/logo-dark.svg"])}</div>
+  <div style="position:relative;font-weight:500;font-size:80px;line-height:1.02;letter-spacing:-0.04em;max-width:17ch">One plan for your cloud <span style="color:${COLORS.dark.accent}">and the servers it creates.</span></div>
+  <div style="position:relative;display:flex;justify-content:space-between;font-family:M;font-size:24px;color:${COLORS.dark.muted}"><span>Open source · built on OpenTofu</span><span>conn3x.org</span></div></div>`;
   writeFileSync(join(site, "public/og.png"), await render(og, 1200, 630));
 }
 

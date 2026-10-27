@@ -1,7 +1,8 @@
 /* Copyright (c) The Conn3x Authors
  * SPDX-License-Identifier: MPL-2.0 */
 
-/* Base styles shared by every page. Tokens live in ../brand/tokens.css. */
+/* Base styles and the shared building blocks every page uses.
+ * Tokens live in ../brand/tokens.css. */
 
 *,
 *::before,
@@ -12,6 +13,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -22,6 +24,7 @@ body {
   font-size: 1.0625rem;
   line-height: 1.6;
   font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -30,8 +33,9 @@ a {
 }
 
 a:focus-visible,
-button:focus-visible {
-  outline: 3px solid var(--c-accent);
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--c-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -42,9 +46,19 @@ svg {
   max-width: 100%;
 }
 
+::selection {
+  background: var(--c-accent);
+  color: var(--c-accent-contrast);
+}
+
 .wrap {
-  width: min(72rem, 100% - 2rem);
+  width: min(78rem, 100% - 2.5rem);
   margin-inline: auto;
+}
+
+/* The home page ends on its own closing band. */
+main.home + .site-footer {
+  margin-top: 0;
 }
 
 .skip {
@@ -54,9 +68,234 @@ svg {
   padding: 0.5rem 0.75rem;
   background: var(--c-surface);
   color: var(--c-text);
-  z-index: 10;
+  z-index: 100;
 }
 
 .skip:focus {
   top: 1rem;
+}
+
+/* A small mono label in capitals with an orange marker: ▸ ONE PLAN */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin: 0;
+}
+
+/* The marker is the mark's junction: a short trace into an orange node. */
+.label::before {
+  content: "";
+  width: 1.1em;
+  height: 0.5em;
+  background:
+    radial-gradient(circle at calc(100% - 0.25em) 50%, var(--c-accent) 0.22em, transparent 0.24em),
+    linear-gradient(var(--c-border-strong), var(--c-border-strong)) left center / calc(100% - 0.3em) 1.5px no-repeat;
+}
+
+.label .n {
+  color: var(--c-accent);
+}
+
+/* A big outlined section number: 01 */
+.num {
+  font-family: var(--font-mono);
+  font-size: clamp(4rem, 8vw, 6.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: color-mix(in srgb, var(--c-text) 9%, transparent);
+  margin: 0.4rem 0 0;
+  user-select: none;
+  display: block;
+}
+
+/* Decoration, drawn by CSS so it isn't read or checked as text. */
+.num::before {
+  content: attr(data-n);
+}
+
+/* The house heading: a statement, then a muted continuation. */
+.lead {
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--c-text-muted);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lead code {
+  white-space: nowrap;
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
+.lead strong {
+  color: var(--c-text);
+  font-weight: 500;
+}
+
+/* Section scaffold: label and number on the left, heading on the right. */
+.sec {
+  padding-block: clamp(6rem, 11vw, 10rem) 0;
+}
+
+.sec-head {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 62rem;
+}
+
+.sec-head .num {
+  display: none;
+}
+
+
+
+/* Buttons: a solid pill and an outlined one. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--c-accent);
+  background: var(--c-accent);
+  color: var(--c-accent-contrast);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.btn:hover {
+  box-shadow: 0 0 0 4px var(--c-glow);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--c-text);
+  border-color: var(--c-border-strong);
+}
+
+.btn-ghost:hover {
+  border-color: var(--c-text-muted);
+  box-shadow: none;
+}
+
+.btn-accent {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-contrast);
+}
+
+/* A framed panel that looks like part of a tool. */
+.panel {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  overflow: hidden;
+}
+
+.panel-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--c-border);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+}
+
+.panel-bar::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--c-border-strong);
+  box-shadow: 0.8rem 0 0 var(--c-border-strong), 1.6rem 0 0 var(--c-border-strong);
+  margin-right: 1.6rem;
+}
+
+/* A panel that holds code or a terminal: dark in both themes. */
+.panel.code {
+  background: var(--c-code-bg);
+  border-color: var(--c-code-border);
+  color: var(--c-code-text);
+}
+
+.panel.code .panel-bar {
+  color: var(--c-code-dim);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.panel.code .panel-bar::before {
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0.8rem 0 0 rgba(255, 255, 255, 0.14), 1.6rem 0 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Code that isn't inside a panel. */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+pre {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+pre code {
+  font-size: inherit;
+}
+
+/* Diagrams. src/scripts/play.ts adds .armed, then .on to each piece with
+ * data-at at its time in the cycle. Resting styles are the final frame, so
+ * without JavaScript, or with reduced motion, the finished picture shows. */
+[data-at] {
+  transition:
+    opacity 0.5s var(--ease-out),
+    transform 0.5s var(--ease-out),
+    stroke-dashoffset 0.9s var(--ease-out);
+}
+
+.armed [data-at]:not(.on) {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+.armed .draw[data-at]:not(.on) {
+  opacity: 1;
+  transform: none;
+  stroke-dashoffset: 1;
+}
+
+.rewind [data-at] {
+  opacity: 0 !important;
+  transition: opacity 0.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

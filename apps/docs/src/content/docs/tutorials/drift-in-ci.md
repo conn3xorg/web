@@ -55,9 +55,13 @@ jobs:
 
       - name: Install Conn3x
         env:
-          VERSION: 0.5.0
+          VERSION: 0.6.3
         run: |
-          curl -fsSL "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_linux_amd64.tar.gz" | tar -xz conn3x
+          BASE="https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}"
+          curl -fsSLO "$BASE/conn3x_${VERSION}_linux_amd64.tar.gz"
+          curl -fsSLO "$BASE/checksums.txt"
+          sha256sum --check --ignore-missing checksums.txt
+          tar -xzf "conn3x_${VERSION}_linux_amd64.tar.gz" conn3x
           sudo install conn3x /usr/local/bin/
           conn3x version
 
@@ -77,7 +81,7 @@ jobs:
         run: conn3x drift -no-color
 ```
 
-The workflow runs at 17 minutes past every hour, and on demand from the **Actions** tab through `workflow_dispatch`. If your configuration isn't at the root of the repository, add `working-directory` to the last two steps rather than using `-chdir`: in v0.5.0, `drift` with a relative `-chdir` fails. See the [drift reference](/reference/cli/drift#limitations-in-v050).
+The workflow runs at 17 minutes past every hour, and on demand from the **Actions** tab through `workflow_dispatch`. If your configuration isn't at the root of the repository, point both commands at it with `-chdir`, as in `conn3x -chdir=infra drift -no-color`, or set `working-directory` on the last two steps.
 
 Each step that runs `conn3x` gets the HMAC key from the job's `env`. Without it, Conn3x would make a new key on the runner, and stop at the first write-only file.
 

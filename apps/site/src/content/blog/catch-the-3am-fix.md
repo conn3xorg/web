@@ -52,7 +52,7 @@ So a job can tell "your servers changed" apart from "the check itself broke", an
 
 ## The workflow
 
-Put this in `.github/workflows/drift.yml`, in the repository that holds your configuration. Every morning it installs the v0.5.0 release after checking its checksum, loads the SSH key, runs `conn3x drift` and, on exit 2, opens an issue with the report. If a drift issue is already open, it comments there instead, so a week of ignored drift is one issue, not seven.
+Put this in `.github/workflows/drift.yml`, in the repository that holds your configuration. Every morning it installs the v0.6.3 release after checking its checksum, loads the SSH key, runs `conn3x drift` and, on exit 2, opens an issue with the report. If a drift issue is already open, it comments there instead, so a week of ignored drift is one issue, not seven.
 
 ```yaml
 name: drift
@@ -70,7 +70,7 @@ jobs:
   drift:
     runs-on: ubuntu-latest
     env:
-      CONN3X_VERSION: 0.5.0
+      CONN3X_VERSION: 0.6.3
       CONN3X_HMAC_KEY: ${{ secrets.CONN3X_HMAC_KEY }}
       # Plus whatever your backend and cloud providers need, for example:
       DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
@@ -142,7 +142,7 @@ Drift reads hosts the same way `plan` does, so the job needs what a plan needs:
 - **The HMAC key**, if any file uses `content_wo`. It's the same `CONN3X_HMAC_KEY` everything else uses. With a different key, Conn3x stops and names the one state expects.
 - **Values for your variables.** Drift never prompts, so add `-var-file` or `TF_VAR_` variables for anything without a default.
 
-One thing specific to v0.5.0: if your configuration lives in a subdirectory, set `working-directory` on the steps, or `cd` into it first. A relative `-chdir` fails with drift in this release.
+Configuration in a subdirectory? Give both `conn3x` commands a `-chdir`, as in `conn3x -chdir=infra drift -no-color`, or set `working-directory` on those steps.
 
 ## When the issue opens
 

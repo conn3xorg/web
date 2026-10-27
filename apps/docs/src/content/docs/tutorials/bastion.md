@@ -9,7 +9,7 @@ In this tutorial you'll configure two servers that you can only reach through a 
 
 ## Prerequisites
 
-- Conn3x v0.5.0 [installed](/install), and [Configure your first real server](/tutorials/first-server) done, or the same knowledge of circuits and the `ssh` block.
+- Conn3x v0.6.3 [installed](/install), and [Configure your first real server](/tutorials/first-server) done, or the same knowledge of circuits and the `ssh` block.
 - A bastion you can reach over SSH. This tutorial uses `bastion.example.com`.
 - Two Linux servers that the bastion can reach on port 22. This tutorial uses `10.0.1.5` and `10.0.1.6`.
 - A user called `admin` on all three machines, with passwordless `sudo` and your key `~/.ssh/id_ed25519` in its `authorized_keys`. Every hop uses the same key.
@@ -146,6 +146,11 @@ If your team already keeps the route in an OpenSSH config file, Conn3x can read 
 Create `ssh_config` next to the circuit:
 
 ```sshconfig
+Host bastion
+  HostName bastion.example.com
+  User admin
+  IdentityFile ~/.ssh/id_ed25519
+
 Host app1
   HostName 10.0.1.5
 
@@ -155,7 +160,7 @@ Host app2
 Host app*
   User admin
   IdentityFile ~/.ssh/id_ed25519
-  ProxyJump admin@bastion.example.com
+  ProxyJump bastion
 ```
 
 Then use the aliases as addresses, and point the `ssh` block at the file:
@@ -180,7 +185,7 @@ circuit "app" {
 
 Conn3x looks up each address as a `Host` alias and reads `HostName`, `User`, `Port`, `IdentityFile`, `UserKnownHostsFile` and `ProxyJump`. Wildcard patterns such as `app*` work. Anything set in the `ssh` block or a host object wins over the file. The full rules are in [SSH config files](/reference/circuits/ssh#ssh-config-files).
 
-In v0.5.0, `ProxyJump` must give the bastion's real address, as above. Conn3x doesn't look the jump host up in the config file again, so `ProxyJump bastion` with a separate `Host bastion` entry fails with `lookup bastion: no such host` after the `ssh` block's `timeout`.
+`ProxyJump bastion` names the `Host bastion` entry, and Conn3x looks that up in the same file, as `ssh` does, for its `HostName`, `User`, `Port` and `IdentityFile`. The bastion's address is written once, and `ssh -F ssh_config app1` from your terminal takes the same route as Conn3x.
 
 The addresses in `hosts` changed from IP addresses to aliases, so this circuit's steps have new IDs. Destroy the previous circuit's steps before switching, or start in a new directory. Then apply:
 

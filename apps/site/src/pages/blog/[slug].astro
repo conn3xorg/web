@@ -6,13 +6,17 @@ import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import SiteFooter from "../../components/SiteFooter.astro";
+import PostAside from "../../components/PostAside.astro";
 
 export async function getStaticPaths() {
   return (await getCollection("blog", (p) => isPublished(p))).map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const words = (post.body ?? "").replace(/<[^>]+>|```[\s\S]*?```/g, " ").split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 230));
+const url = new URL(`/blog/${post.id}`, Astro.site).href;
 const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 ---
 <Base title={post.data.title} description={post.data.description} path={`/blog/${post.id}`} image={post.data.image} imageAlt={post.data.imageAlt}>
@@ -20,9 +24,19 @@ const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month:
   <SiteHeader />
   <main id="main" class="wrap">
     <article class="post">
-      <p class="meta"><a href="/blog">Blog</a>, <time datetime={post.data.date.toISOString().slice(0, 10)}>{date}</time> · {post.data.author}</p>
-      <h1>{post.data.title}</h1>
-      <Content />
+      <header class="head">
+        <a class="label back" href="/blog">Blog</a>
+        <h1>{post.data.title}</h1>
+        <p class="desc">{post.data.description}</p>
+        <p class="meta"><time datetime={post.data.date.toISOString().slice(0, 10)}>{date}</time><span aria-hidden="true">·</span>{post.data.author}<span aria-hidden="true">·</span>{minutes} min read</p>
+      </header>
+      {post.data.image && (
+        <img class="cover" src={post.data.image} alt={post.data.imageAlt ?? ""} width="1200" height="630" decoding="async" fetchpriority="high" />
+      )}
+      <div class="layout">
+        <div class="body"><Content /></div>
+        <PostAside headings={headings} url={url} title={post.data.title} />
+      </div>
     </article>
   </main>
   <SiteFooter />
@@ -48,29 +62,115 @@ const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month:
 </script>
 <style>
   .post {
-    max-width: 44rem;
-    padding-block: 3rem 5rem;
+    padding-block: clamp(3.5rem, 8vw, 6rem) 0;
     font-size: 1.0625rem;
-    line-height: 1.7;
+    line-height: 1.75;
   }
-  .meta {
-    color: var(--c-text-muted);
-    font-size: 0.9375rem;
-    margin: 0;
+  .head {
+    max-width: 52rem;
+    margin-inline: auto;
+    text-align: center;
   }
-  .meta a {
-    color: inherit;
+  .back {
+    text-decoration: none;
+  }
+  .back:hover {
+    color: var(--c-text);
   }
   h1 {
-    font-size: clamp(2rem, 4.5vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-    margin: 0.75rem 0 2rem;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    margin: 1.25rem 0 1.25rem;
+    text-wrap: balance;
+  }
+  .desc {
+    font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+    color: var(--c-text-muted);
+    margin: 0 auto;
+    max-width: 40rem;
+    text-wrap: balance;
+  }
+  .meta {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin: 1.5rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+  }
+  .cover {
+    width: 100%;
+    max-width: 48rem;
+    height: auto;
+    margin: clamp(2.5rem, 6vw, 4rem) auto 0;
+    border: 1px solid var(--c-border);
+    border-radius: 14px;
+    box-shadow: 0 30px 80px -30px var(--c-glow);
+  }
+  /* Text in the middle, "On this page" and sharing on the right. */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 44rem) minmax(0, 1fr);
+    column-gap: 3rem;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+  .body {
+    grid-column: 2;
+  }
+  .layout > :global(.post-aside) {
+    grid-column: 3;
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    max-width: 16rem;
+  }
+  @media (max-width: 1180px) {
+    .layout {
+      grid-template-columns: minmax(0, 44rem);
+      justify-content: center;
+    }
+    .body,
+    .layout > :global(.post-aside) {
+      grid-column: 1;
+    }
+    .layout > :global(.post-aside) {
+      position: static;
+      max-width: none;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--c-border);
+    }
+    .layout :global(.toc) {
+      display: none;
+    }
+  }
+  .body > :global(p:first-child) {
+    font-size: 1.1875rem;
+    color: var(--c-text);
+  }
+  .post :global(p),
+  .post :global(li) {
+    color: color-mix(in srgb, var(--c-text) 86%, var(--c-bg));
   }
   .post :global(h2) {
-    font-size: 1.5rem;
+    font-size: 1.625rem;
+    font-weight: 600;
     letter-spacing: -0.02em;
-    margin: 2.5rem 0 0.75rem;
+    margin: 3rem 0 0.75rem;
+  }
+  .post :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 2rem 0 0.5rem;
+  }
+  .post :global(blockquote) {
+    margin: 2rem 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--c-accent);
+    color: var(--c-text-muted);
   }
   .post :global(pre) {
     background: var(--c-code-bg);

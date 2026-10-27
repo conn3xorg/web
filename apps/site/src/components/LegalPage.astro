@@ -1,0 +1,97 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// The frame for a policy page: the subpage header, then readable prose.
+import Base from "../layouts/Base.astro";
+import SiteHeader from "./SiteHeader.astro";
+import SiteFooter from "./SiteFooter.astro";
+import PageHero from "./PageHero.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  label: string;
+  lead: string;
+  updated: string;
+}
+const { title, description, path, label, lead, updated } = Astro.props;
+---
+<Base title={`${title}: Conn3x`} description={description} path={path}>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+  <main id="main">
+    <PageHero label={label} title={title}>
+      <p>{lead}</p>
+    </PageHero>
+    <div class="wrap">
+      <article class="prose">
+        <p class="updated">Last updated {updated}</p>
+        <slot />
+      </article>
+    </div>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .prose {
+    max-width: 46rem;
+    padding-block: clamp(2.5rem, 6vw, 4rem) 0;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .updated {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+    margin: 0 0 2rem;
+  }
+  .prose :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 3rem 0 0.75rem;
+    scroll-margin-top: 6rem;
+  }
+  .prose :global(h3) {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 2rem 0 0.5rem;
+  }
+  .prose :global(p),
+  .prose :global(li) {
+    color: color-mix(in srgb, var(--c-text) 86%, var(--c-bg));
+  }
+  .prose :global(ul) {
+    padding-left: 1.25rem;
+  }
+  .prose :global(li + li) {
+    margin-top: 0.4rem;
+  }
+  .prose :global(li::marker) {
+    color: var(--c-accent);
+  }
+  .prose :global(a) {
+    color: var(--c-link);
+  }
+  .prose :global(code) {
+    font-size: 0.875em;
+    padding: 0.1em 0.35em;
+    border: 1px solid var(--c-border);
+    border-radius: 4px;
+    background: var(--c-surface);
+  }
+  .prose :global(.callout) {
+    margin: 2rem 0;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--c-border);
+    border-left: 2px solid var(--c-accent);
+    border-radius: var(--radius);
+    background: var(--c-surface);
+  }
+  .prose :global(.callout p) {
+    margin: 0;
+  }
+</style>

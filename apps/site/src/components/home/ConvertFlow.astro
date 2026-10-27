@@ -1,0 +1,192 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// Section 03: four Ansible tasks go through conn3x convert ansible. Three
+// become steps; the one with a when stays, commented, under a TODO.
+// Taken from the "Migrate a playbook" tutorial.
+
+const tasks = [
+  {
+    at: 600,
+    yaml: `- name: Install nginx
+  ansible.builtin.dnf:
+    name: nginx
+    state: present`,
+    hcl: `step "install_nginx" {
+  package {
+    name = "nginx"
+  }
+}`,
+  },
+  {
+    at: 2200,
+    yaml: `- name: Start nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true`,
+    hcl: `step "start_nginx" {
+  service {
+    name    = "nginx"
+    state   = "started"
+    enabled = true
+  }
+}`,
+  },
+  {
+    at: 3800,
+    yaml: `- name: Install tools
+  ansible.builtin.package:
+    name: "{{ item }}"
+  loop: [git, jq]`,
+    hcl: `step "install_tools" {
+  for_each = ["git", "jq"]
+  package {
+    name = item.value
+  }
+}`,
+  },
+  {
+    at: 5400,
+    todo: true,
+    yaml: `- name: Open the status port
+  ansible.posix.firewalld:
+    port: "{{ status_port }}/tcp"
+    state: enabled
+  when: ansible_os_family == "RedHat"`,
+    hcl: `# TODO(convert): Task "Open the status port"
+# uses when, which the converter can't
+# translate yet.
+#   - name: Open the status port
+#     when: ansible_os_family == "RedHat"`,
+  },
+];
+---
+<div class="convert" data-play="11000">
+  <div class="panel code side">
+    <div class="panel-bar">site.yml</div>
+    <div class="body">
+      {tasks.map((t) => (
+        <pre class:list={["task", { todo: t.todo }]} data-at={t.at - 400}><code>{t.yaml}</code></pre>
+      ))}
+    </div>
+  </div>
+
+  <div class="pipe" aria-hidden="true">
+    <span class="cmd">conn3x convert ansible</span>
+    <span class="rail"><span class="pulse"></span></span>
+    <span class="sum" data-at="6400">Converted 3 tasks. 1 thing needs you.</span>
+  </div>
+
+  <div class="panel code side out">
+    <div class="panel-bar">web.circuit.hcl</div>
+    <div class="body">
+      {tasks.map((t) => (
+        <pre class:list={["task", { todo: t.todo }]} data-at={t.at + 500}><code>{t.hcl}</code></pre>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .convert {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 12rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: stretch;
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .side {
+    display: flex;
+    flex-direction: column;
+    background: var(--c-code-bg);
+  }
+  .body {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  .task {
+    padding: 0.65rem 0.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--c-code-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .out .task {
+    border-color: color-mix(in srgb, var(--c-code-add) 35%, transparent);
+  }
+  .task.todo {
+    color: var(--c-code-change);
+    border-color: color-mix(in srgb, var(--c-code-change) 45%, transparent);
+    background: color-mix(in srgb, var(--c-change) 7%, transparent);
+  }
+  .side:not(.out) .task.todo {
+    color: var(--c-code-text);
+  }
+  .pipe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+  }
+  .cmd {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: var(--c-button);
+    color: var(--c-button-text);
+    font-weight: 600;
+  }
+  .rail {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    background: var(--c-border-strong);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .pulse {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 30%;
+    background: linear-gradient(90deg, transparent, var(--c-accent), transparent);
+    opacity: 0;
+  }
+  .play .pulse {
+    opacity: 1;
+    animation: slide 1.6s linear infinite;
+  }
+  @keyframes slide {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(340%);
+    }
+  }
+  .sum {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+  @media (max-width: 960px) {
+    .convert {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .rail {
+      width: 2px;
+      height: 3rem;
+    }
+    .play .pulse {
+      animation: none;
+    }
+  }
+</style>

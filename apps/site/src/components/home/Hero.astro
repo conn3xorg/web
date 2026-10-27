@@ -1,0 +1,174 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import providers from "../../data/providers.json";
+import Traces from "./Traces.astro";
+
+const repo = "https://github.com/conn3xorg/conn3x";
+const docs = "https://docs.conn3x.org";
+const install = "brew install conn3xorg/tap/conn3x";
+const marks = [
+  ...providers.map((p) => p.name).filter((n) => n !== "Cloudflare" && n !== "TLS"),
+  "Rocky Linux", "RHEL", "AlmaLinux", "Fedora", "Debian", "Ubuntu",
+];
+---
+<section class="hero">
+  <div class="fx" aria-hidden="true">
+    <Traces />
+    <span class="glow"></span>
+  </div>
+  <div class="wrap inner">
+    <p class="label">Open source · Built on OpenTofu</p>
+    <h1>Provision it. Configure it.<br /><span>One plan.</span></h1>
+    <p class="sub">
+      Today that's Terraform, Ansible, and a drawer of glue scripts holding them together.
+      Conn3x does both jobs: one binary, one plan, one state, for your cloud and every server
+      it creates.
+    </p>
+    <div class="cta">
+      <a class="btn" href={`${docs}/get-started`}>Get started</a>
+      <a class="btn btn-ghost" href={repo}>
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 .6l2.2 4.6 5 .7-3.6 3.5.9 5L8 12 3.5 14.4l.9-5L.8 5.9l5-.7z"/></svg>
+        Star on GitHub
+      </a>
+    </div>
+    <div class="install">
+      <code><span class="p" aria-hidden="true">$</span> {install}</code>
+      <button type="button" class="copy" data-copy={install} hidden>Copy</button>
+    </div>
+  </div>
+  <div class="strip" aria-label="Works with">
+    <div class="track">
+      <ul>{marks.map((m) => <li>{m}</li>)}</ul>
+      <ul aria-hidden="true">{marks.map((m) => <li>{m}</li>)}</ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  for (const b of document.querySelectorAll<HTMLButtonElement>("button[data-copy]")) {
+    if (!navigator.clipboard) continue;
+    b.hidden = false;
+    b.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy!);
+        b.textContent = "Copied";
+        setTimeout(() => (b.textContent = "Copy"), 1600);
+      } catch {}
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .fx {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 36rem;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(transparent, #000 4rem), radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(transparent, #000 4rem), radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
+    mask-composite: intersect;
+  }
+  .glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(45% 55% at 72% 10%, color-mix(in srgb, var(--c-accent) 14%, transparent), transparent 70%);
+  }
+  .inner {
+    position: relative;
+    padding-block: clamp(8rem, 18vw, 13rem) 3.5rem;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 6.4vw, 5.25rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    margin: 1.25rem 0 1.5rem;
+    text-wrap: balance;
+  }
+  h1 span {
+    color: var(--c-accent);
+  }
+  .sub {
+    max-width: 38rem;
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: var(--c-text-muted);
+    margin: 0 0 2rem;
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .install {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding: 0.35rem 0.35rem 0.35rem 1rem;
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--c-surface) 80%, transparent);
+    max-width: 100%;
+  }
+  .install code {
+    font-size: 0.8125rem;
+    color: var(--c-text);
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .install .p {
+    color: var(--c-accent);
+  }
+  .copy {
+    flex: none;
+    font: inherit;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--c-border-strong);
+    background: var(--c-raised);
+    color: var(--c-text);
+    cursor: pointer;
+  }
+  .copy[hidden] {
+    display: none;
+  }
+  .strip {
+    position: relative;
+    border-top: 1px solid var(--c-border);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  }
+  .track {
+    display: flex;
+    width: max-content;
+    animation: marquee 45s linear infinite;
+  }
+  .strip ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 1.4rem 0;
+  }
+  .strip li {
+    padding-inline: 2rem;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--c-text-muted);
+    white-space: nowrap;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

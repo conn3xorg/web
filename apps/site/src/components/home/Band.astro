@@ -1,0 +1,456 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// The light band: a statement with highlighter marks, then three tabs that
+// show how Conn3x fits together. Without JavaScript the tabs are hidden and
+// all three panels show, one after another.
+
+const tabs = [
+  { id: "fits", title: "How it fits together" },
+  { id: "step", title: "How a step runs" },
+  { id: "tofu", title: "Built on OpenTofu" },
+];
+const adds = ["Circuits", "29 host modules", "SSH with host-key checks", "conn3x drift", "conn3x convert ansible"];
+const core = ["Plan and apply", "State and backends", "Providers", "Modules", "HCL"];
+---
+<section class="band" aria-labelledby="band-title">
+  <div class="wrap">
+    <h2 id="band-title" class="statement" data-play="6000">
+      Servers still need <mark data-at="300">packages, files and services.</mark>{" "}
+      What's changing is that <mark data-at="1100">one plan can see all of it.</mark>
+    </h2>
+
+    <div class="explain">
+      <div class="tablist" role="tablist" aria-label="How Conn3x works" hidden>
+        {tabs.map((t, i) => (
+          <button type="button" role="tab" id={`tab-${t.id}`} aria-controls={`panel-${t.id}`} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>
+            <span class="bar"><span></span></span>{t.title}
+          </button>
+        ))}
+      </div>
+
+      <div class="panels">
+        <div class="tp" id="panel-fits" role="tabpanel" aria-labelledby="tab-fits">
+          <h3 class="nojs">How it fits together</h3>
+          <figure data-play="9000">
+            <svg viewBox="0 0 760 400" role="img" aria-labelledby="fits-t">
+              <title id="fits-t">Your HCL configuration and circuits go into Conn3x, which has an OpenTofu core and a circuit engine. The core talks to cloud APIs through providers, the engine talks to hosts over SSH, and both write to one state file.</title>
+              <g class="flowlines">
+                <path class="wire" d="M170 83H230M170 153H230" />
+                <path class="wire" d="M510 105H590M510 195H590" />
+                <path class="wire" d="M380 260V310" />
+                <path class="pulse" pathLength="1" data-at="600" d="M170 83H250" />
+                <path class="pulse" pathLength="1" data-at="900" d="M170 153H250" />
+                <path class="pulse p2" pathLength="1" data-at="2200" d="M510 105H590" />
+                <path class="pulse p2" pathLength="1" data-at="2600" d="M510 195H590" />
+                <path class="pulse p3" pathLength="1" data-at="3600" d="M380 260V310" />
+              </g>
+              <g class="box" data-at="0"><rect x="20" y="60" width="150" height="46" rx="8" /><text x="95" y="88">main.tf</text></g>
+              <g class="box" data-at="200"><rect x="20" y="130" width="150" height="46" rx="8" /><text x="95" y="158">web.circuit.hcl</text></g>
+              <g class="big" data-at="400">
+                <rect x="230" y="30" width="280" height="230" rx="12" />
+                <text x="250" y="56" class="lbl">CONN3X</text>
+              </g>
+              <g class="inner" data-at="1200"><rect x="250" y="72" width="240" height="66" rx="8" /><text x="370" y="100" class="t">OpenTofu core</text><text x="370" y="120" class="s">graph · plan · providers</text></g>
+              <g class="inner" data-at="1500"><rect x="250" y="162" width="240" height="66" rx="8" /><text x="370" y="190" class="t">Circuit engine</text><text x="370" y="210" class="s">read · diff · apply</text></g>
+              <text x="550" y="96" class="edge">providers</text>
+              <text x="550" y="186" class="edge">SSH</text>
+              <g class="box out" data-at="2800"><rect x="590" y="72" width="150" height="66" rx="8" /><text x="665" y="100" class="t">Cloud APIs</text><text x="665" y="120" class="s">any provider</text></g>
+              <g class="box out" data-at="3100"><rect x="590" y="162" width="150" height="66" rx="8" /><text x="665" y="190" class="t">Your servers</text><text x="665" y="210" class="s">web1 · web2</text></g>
+              <g class="state" data-at="4000"><rect x="290" y="310" width="180" height="56" rx="8" /><text x="380" y="335" class="t">One state</text><text x="380" y="353" class="s">cloud and hosts together</text></g>
+            </svg>
+          </figure>
+          <p>Your configuration and your circuits are one HCL project. Conn3x plans the cloud through OpenTofu's providers and the servers over SSH, and records both in <strong>one state file</strong>.</p>
+        </div>
+
+        <div class="tp" id="panel-step" role="tabpanel" aria-labelledby="tab-step">
+          <h3 class="nojs">How a step runs</h3>
+          <div class="stages" data-play="8000">
+            <div class="stage" data-at="0">
+              <p class="k">1 · Read</p>
+              <p class="q">What's on web1 now?</p>
+              <pre><span class="d">/etc/nginx/nginx.conf</span>
+worker_connections 4096;</pre>
+            </div>
+            <span class="arrow" data-at="1200" aria-hidden="true"></span>
+            <div class="stage" data-at="1500">
+              <p class="k">2 · Diff</p>
+              <p class="q">What would change, shown in the plan.</p>
+              <pre><span class="c">~ conn3x_file.web__nginx_conf["web1"]</span>
+<span class="r">-   worker_connections 4096;</span>
+<span class="a">+   worker_connections 1024;</span></pre>
+            </div>
+            <span class="arrow" data-at="2700" aria-hidden="true"></span>
+            <div class="stage" data-at="3000">
+              <p class="k">3 · Apply</p>
+              <p class="q">Only after you approve the plan.</p>
+              <pre><span class="a">Modifications complete after 1s</span>
+<span class="d">notify → handler.reload_nginx</span></pre>
+            </div>
+          </div>
+          <p>Every step reads the server first, so the plan shows the exact change, not a guess. Nothing on the server changes until you apply, and a step that already matches does nothing.</p>
+        </div>
+
+        <div class="tp" id="panel-tofu" role="tabpanel" aria-labelledby="tab-tofu">
+          <h3 class="nojs">Built on OpenTofu</h3>
+          <div class="stack" data-play="7000">
+            <div class="layer top" data-at="900">
+              <p class="k">Conn3x adds</p>
+              <ul>{adds.map((a, i) => <li data-at={1200 + i * 220}>{a}</li>)}</ul>
+            </div>
+            <div class="layer base" data-at="0">
+              <p class="k">OpenTofu v1.13</p>
+              <ul>{core.map((c) => <li>{c}</li>)}</ul>
+            </div>
+          </div>
+          <p>Conn3x starts from OpenTofu and tracks its releases, so <strong>your providers, modules and state come with you</strong>. Files from OpenTofu keep their original licence headers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const list = document.querySelector<HTMLElement>(".band .tablist");
+  if (list) {
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>("[role=tab]")];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute("aria-controls")!)!);
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let current = 0;
+    let auto = !still;
+    let timer = 0;
+    const show = (i: number, focus = false) => {
+      current = i;
+      tabs.forEach((t, j) => {
+        t.setAttribute("aria-selected", String(j === i));
+        t.tabIndex = j === i ? 0 : -1;
+        panels[j].hidden = j !== i;
+      });
+      if (focus) tabs[i].focus();
+    };
+    const next = () => show((current + 1) % tabs.length);
+    const start = () => {
+      clearInterval(timer);
+      if (auto) timer = window.setInterval(next, 9000);
+    };
+    const stopAuto = () => {
+      auto = false;
+      clearInterval(timer);
+    };
+    tabs.forEach((t, i) =>
+      t.addEventListener("click", () => {
+        stopAuto();
+        show(i);
+      }),
+    );
+    list.addEventListener("keydown", (e) => {
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      stopAuto();
+      show((current + d + tabs.length) % tabs.length, true);
+    });
+    list.hidden = false;
+    document.querySelector(".band")!.classList.add("tabbed");
+    show(0);
+    new IntersectionObserver(([e]) => (e.isIntersecting ? start() : clearInterval(timer)), { threshold: 0.3 }).observe(list.parentElement!);
+  }
+</script>
+
+<style>
+  .band {
+    --c-text: var(--c-paper-text);
+    --c-text-muted: var(--c-paper-muted);
+    --c-border: var(--c-paper-border);
+    --c-surface: var(--c-paper-raised);
+    background: var(--c-paper);
+    color: var(--c-text);
+    margin-top: clamp(6rem, 12vw, 10rem);
+    padding-block: clamp(5rem, 10vw, 8rem);
+  }
+  .statement {
+    font-size: clamp(1.9rem, 4.2vw, 3.4rem);
+    font-weight: 500;
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+    max-width: 62rem;
+    margin: 0;
+  }
+  mark {
+    color: inherit;
+    background: linear-gradient(var(--c-accent), var(--c-accent)) no-repeat 0 96% / 100% 0.09em;
+    padding: 0 0.02em 0.04em;
+    transition: background-size 0.9s var(--ease-out);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  /* Highlighter sweep instead of the usual fade. */
+  .armed mark[data-at]:not(.on) {
+    opacity: 1;
+    transform: none;
+    background-size: 0% 0.09em;
+  }
+  .explain {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 3rem;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--c-border);
+  }
+  .tablist {
+    display: grid;
+    align-content: start;
+    gap: 0.25rem;
+  }
+  .tablist[hidden] {
+    display: none;
+  }
+  [role="tab"] {
+    display: grid;
+    grid-template-columns: 1.25rem 1fr;
+    align-items: center;
+    text-align: left;
+    padding: 0.6rem 0;
+    font: inherit;
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+  [role="tab"][aria-selected="true"] {
+    color: var(--c-text);
+    font-weight: 600;
+  }
+  .bar {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--c-border);
+    overflow: hidden;
+  }
+  [aria-selected="true"] .bar {
+    background: var(--c-paper-text);
+  }
+  .tp + .tp {
+    margin-top: 4rem;
+  }
+  .tabbed .tp + .tp {
+    margin-top: 0;
+  }
+  .tp[hidden] {
+    display: none;
+  }
+  .tabbed .nojs {
+    display: none;
+  }
+  .nojs {
+    font-size: 1.125rem;
+    margin: 0 0 1rem;
+  }
+  .tp > p {
+    max-width: 40rem;
+    margin: 1.5rem 0 0;
+    font-size: 1.0625rem;
+    color: var(--c-text-muted);
+  }
+  .tp > p strong {
+    color: var(--c-text);
+    font-weight: 600;
+    background: linear-gradient(var(--c-accent), var(--c-accent)) no-repeat 0 100% / 100% 2px;
+  }
+  figure {
+    margin: 0;
+    padding: 1.5rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(circle at 1px 1px, var(--c-paper-border) 1px, transparent 0) 0 0 / 20px 20px,
+      var(--c-surface);
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  svg text {
+    fill: var(--c-text);
+    text-anchor: middle;
+  }
+  svg .s,
+  svg .edge {
+    font-size: 12px;
+    fill: var(--c-text-muted);
+  }
+  svg .t {
+    font-weight: 600;
+  }
+  svg .lbl {
+    text-anchor: start;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    fill: var(--c-accent);
+  }
+  .box rect,
+  .inner rect {
+    fill: #fff;
+    stroke: var(--c-paper-border);
+  }
+  .big rect {
+    fill: color-mix(in srgb, var(--c-mark) 22%, #fff);
+    stroke: var(--c-accent);
+    stroke-dasharray: 4 4;
+  }
+  .out rect {
+    fill: #fff;
+  }
+  .state rect {
+    fill: var(--c-mark);
+    stroke: var(--c-accent);
+  }
+  .wire {
+    fill: none;
+    stroke: var(--c-paper-muted);
+    stroke-width: 1.5;
+  }
+  .pulse {
+    fill: none;
+    stroke: var(--c-accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 0.18 0.82;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+  .play .pulse.on {
+    opacity: 1;
+    animation: travel 1.8s linear infinite;
+  }
+  @keyframes travel {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .stages {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2rem minmax(0, 1.25fr) 2rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .stage {
+    align-self: stretch;
+    padding: 1.1rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: var(--c-surface);
+  }
+  .k {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+  .q {
+    margin: 0.35rem 0 0.9rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+  .stage pre {
+    padding: 0.75rem;
+    border-radius: 6px;
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .stage .d {
+    color: var(--c-code-dim);
+  }
+  .stage .c {
+    color: var(--c-code-change);
+  }
+  .stage .r {
+    color: #ff8f8f;
+  }
+  .stage .a {
+    color: var(--c-code-add);
+  }
+  .arrow {
+    height: 2px;
+    background: var(--c-paper-muted);
+    position: relative;
+  }
+  .arrow::after {
+    content: "";
+    position: absolute;
+    right: -2px;
+    top: -4px;
+    border-block: 5px solid transparent;
+    border-inline-start: 7px solid var(--c-paper-muted);
+  }
+  .stack {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .layer {
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--c-border);
+    background: var(--c-surface);
+  }
+  .layer.top {
+    border-color: var(--c-accent);
+    background: color-mix(in srgb, var(--c-mark) 30%, #fff);
+  }
+  .layer ul {
+    list-style: none;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .layer li {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--c-border);
+    background: #fff;
+  }
+  .top li {
+    border-color: color-mix(in srgb, var(--c-accent) 50%, transparent);
+  }
+  @media (max-width: 860px) {
+    .explain {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+    .tablist {
+      grid-auto-flow: column;
+      overflow-x: auto;
+      gap: 1rem;
+    }
+    [role="tab"] {
+      white-space: nowrap;
+    }
+    .stages {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .arrow {
+      display: none;
+    }
+    .statement {
+      text-indent: 0;
+    }
+    figure {
+      padding: 0.75rem;
+    }
+  }
+</style>

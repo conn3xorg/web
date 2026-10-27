@@ -1,0 +1,316 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// Section 01: one apply creates two droplets, waits for SSH on each, runs
+// their steps, and finishes. The terminal beside it tells the same run.
+
+const hosts = [
+  { name: "web1", x: 160, t: 0 },
+  { name: "web2", x: 440, t: 250 },
+];
+const steps = [
+  ["package", "nginx"],
+  ["file", "nginx.conf"],
+  ["service", "nginx"],
+];
+const stepAt = (h: number, i: number) => 4700 + i * 650 + h;
+const log = [
+  [0, "dim", "$ conn3x apply"],
+  [1500, "", 'digitalocean_droplet.web["web1"]: Creating...'],
+  [1750, "", 'digitalocean_droplet.web["web2"]: Creating...'],
+  [3900, "add", 'digitalocean_droplet.web["web1"]: Creation complete after 38s'],
+  [4150, "add", 'digitalocean_droplet.web["web2"]: Creation complete after 41s'],
+  [4700, "", 'conn3x_package.web__nginx["web1"]: Creating...'],
+  [5350, "add", 'conn3x_package.web__nginx["web1"]: Creation complete after 9s'],
+  [6000, "add", 'conn3x_file.web__nginx_conf["web1"]: Creation complete after 1s'],
+  [6650, "add", 'conn3x_service.web__nginx["web1"]: Creation complete after 2s'],
+  [7100, "dim", "…"],
+  [8300, "ok", "Apply complete! Resources: 8 added, 0 changed, 0 destroyed."],
+] as const;
+---
+<div class="planflow" data-play="13500">
+  <div class="points">
+    <div data-at="200">
+      <h3>Reads before it writes</h3>
+      <p>Every step reads the server first, so the plan shows the exact change, not a guess.</p>
+    </div>
+    <div data-at="2700">
+      <h3>Waits for SSH</h3>
+      <p>A new server's steps wait until it answers. No <code>sleep 60</code>.</p>
+    </div>
+    <div data-at="8300">
+      <h3>One state</h3>
+      <p>The droplet and everything on it live in the same state file.</p>
+    </div>
+  </div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 600 560" role="img" aria-labelledby="pf-title">
+      <title id="pf-title">One conn3x apply creates two droplets, waits for SSH on each, installs nginx, writes its config and starts it on both, then reports 8 resources added.</title>
+      <defs>
+        <pattern id="pf-grid" width="30" height="560" patternUnits="userSpaceOnUse">
+          <path d="M0.5 0V560" class="gridline" />
+        </pattern>
+        <linearGradient id="pf-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#000" stop-opacity="0" />
+          <stop offset="0.12" stop-color="#000" stop-opacity="1" />
+          <stop offset="0.88" stop-color="#000" stop-opacity="1" />
+          <stop offset="1" stop-color="#000" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <rect width="600" height="560" fill="url(#pf-grid)" />
+
+      <!-- wires -->
+      <path class="wire draw" pathLength="1" data-at="400" d="M300 56V100" />
+      {hosts.map((h) => (
+        <>
+          <path class="wire draw" pathLength="1" data-at={900 + h.t} d={`M300 100C300 140 ${h.x} 128 ${h.x} 170`} />
+          <path class="wire draw" pathLength="1" data-at={2300 + h.t} d={`M${h.x} 200V246`} />
+          <path class="wire draw" pathLength="1" data-at={4400 + h.t} d={`M${h.x} 276V296`} />
+          <path class="wire draw" pathLength="1" data-at={7500 + h.t} d={`M${h.x} 420C${h.x} 470 300 450 300 490`} />
+          <path class="flow" pathLength="1" data-at={4400 + h.t} d={`M300 56V100C300 140 ${h.x} 128 ${h.x} 170V296`} />
+        </>
+      ))}
+
+      <!-- root -->
+      <g class="pill root" data-at="0">
+        <rect x="235" y="26" width="130" height="30" rx="15" />
+        <text x="300" y="46">conn3x apply</text>
+      </g>
+
+      {hosts.map((h, hi) => (
+        <>
+          <g class="pill" data-at={1500 + h.t}>
+            <rect x={h.x - 105} y="170" width="210" height="30" rx="15" />
+            <text x={h.x} y="190">{`droplet.web["${h.name}"]`}</text>
+          </g>
+          <g class="tag add" data-at={3900 + h.t}>
+            <text x={h.x + 7} y="226">+ created</text>
+          </g>
+          <g class="host" data-at={2700 + h.t}>
+            <rect x={h.x - 70} y="246" width="140" height="30" rx="6" />
+            <circle class="led ready" data-at={4100 + h.t} cx={h.x - 52} cy="261" r="4" />
+            <circle class="led wait" cx={h.x - 52} cy="261" r="4" />
+            <text x={h.x - 40} y="266" class="left">{h.name}</text>
+            <text x={h.x + 58} y="266" class="right ssh ready-t" data-at={4100 + h.t}>ssh ok</text>
+            <text x={h.x + 58} y="266" class="right ssh wait-t">ssh …</text>
+          </g>
+          {steps.map(([kind, what], i) => (
+            <g class="step" data-at={stepAt(h.t, i)}>
+              <rect class="box" x={h.x - 80} y={302 + i * 40} width="14" height="14" rx="3" />
+              <path class="check" data-at={stepAt(h.t, i) + 450} d={`M${h.x - 77} ${309 + i * 40}l3.5 3.5 6-7`} />
+              <text x={h.x - 58} y={314 + i * 40} class="left"><tspan class="k">{kind}</tspan> {what}</text>
+            </g>
+          ))}
+        </>
+      ))}
+
+      <!-- done -->
+      <g class="pill done" data-at="8300">
+        <rect x="185" y="490" width="230" height="34" rx="17" />
+        <text x="300" y="512">Apply complete · 8 added</text>
+      </g>
+    </svg>
+  </figure>
+
+  <div class="panel code term" aria-hidden="true">
+    <div class="panel-bar">terminal</div>
+    <pre>{log.map(([at, cls, line]) => (
+      <span class={`ln ${cls}`} data-at={at}>{line}</span>
+    ))}</pre>
+  </div>
+</div>
+
+<style>
+  .planflow {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr) minmax(0, 24rem);
+    gap: 2rem;
+    align-items: center;
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+  .points {
+    display: grid;
+    gap: 2rem;
+  }
+  .points h3 {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    margin: 0 0 0.3rem;
+  }
+  .points p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+    line-height: 1.5;
+  }
+  .diagram {
+    margin: 0;
+  }
+  svg {
+    width: 100%;
+    height: auto;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+  .gridline {
+    stroke: var(--c-grid);
+    stroke-width: 1;
+  }
+  .wire {
+    fill: none;
+    stroke: var(--c-border-strong);
+    stroke-width: 1.5;
+  }
+  .flow {
+    fill: none;
+    stroke: var(--c-accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 0.07 0.93;
+    stroke-dashoffset: 1;
+    opacity: 0;
+    filter: drop-shadow(0 0 6px var(--c-accent)) drop-shadow(0 0 14px var(--c-glow));
+  }
+  .play .flow.on {
+    opacity: 0.9;
+    animation: flow 2.6s linear infinite;
+  }
+  @keyframes flow {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  text {
+    fill: var(--c-text);
+    text-anchor: middle;
+  }
+  text.left {
+    text-anchor: start;
+  }
+  text.right {
+    text-anchor: end;
+  }
+  .pill rect {
+    fill: var(--c-surface);
+    stroke: var(--c-border-strong);
+  }
+  .root rect {
+    fill: var(--c-button);
+    stroke: none;
+  }
+  .root text {
+    fill: var(--c-button-text);
+    font-weight: 600;
+  }
+  .tag text {
+    text-anchor: start;
+    font-size: 12px;
+    fill: var(--c-add);
+  }
+  .host rect {
+    fill: var(--c-raised);
+    stroke: var(--c-border);
+  }
+  .ssh {
+    font-size: 12px;
+    fill: var(--c-text-muted);
+  }
+  .led.wait {
+    fill: var(--c-change);
+  }
+  .led.ready {
+    fill: var(--c-add);
+  }
+  /* "waiting" shows only while "ready" hasn't arrived. */
+  .led.wait,
+  .wait-t {
+    opacity: 0;
+  }
+  .armed .led.ready:not(.on) ~ .led.wait,
+  .armed .ready-t:not(.on) ~ .wait-t {
+    opacity: 1;
+  }
+  .box {
+    fill: none;
+    stroke: var(--c-border-strong);
+  }
+  .check {
+    fill: none;
+    stroke: var(--c-add);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .step .k {
+    fill: var(--c-text-muted);
+  }
+  .done rect {
+    fill: color-mix(in srgb, var(--c-add) 14%, var(--c-surface));
+    stroke: var(--c-add);
+  }
+  .done text {
+    fill: var(--c-add);
+    font-weight: 600;
+  }
+  .play .done.on rect {
+    filter: drop-shadow(0 0 10px color-mix(in srgb, var(--c-add) 60%, transparent));
+  }
+  .term {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    background: var(--c-code-bg);
+  }
+  .term pre {
+    flex: 1;
+    padding: 1rem;
+    font-size: 0.75rem;
+    line-height: 1.75;
+    color: var(--c-code-text);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .ln {
+    display: block;
+  }
+  .ln.dim {
+    color: var(--c-code-dim);
+  }
+  .ln.add {
+    color: var(--c-code-add);
+  }
+  .ln.ok {
+    color: var(--c-code-add);
+    font-weight: 700;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 1100px) {
+    .planflow {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .points {
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      order: 2;
+    }
+  }
+  @media (max-width: 720px) {
+    .planflow {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    /* Crop the empty margins so the labels stay readable on a phone. */
+    .diagram {
+      overflow: hidden;
+    }
+    .diagram svg {
+      width: 128%;
+      max-width: none;
+      margin-left: -14%;
+    }
+    .points {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

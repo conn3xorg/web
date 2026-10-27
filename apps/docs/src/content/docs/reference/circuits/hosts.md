@@ -126,7 +126,9 @@ For a complete example with DigitalOcean droplets and host keys pinned at creati
 | `host_key` | string | Overrides the `ssh` block's `host_key`. Use it to pin each host's own key. |
 | `jump_hosts` | list of strings | Overrides the `ssh` block's `jump_hosts`. An empty list connects to this host directly. |
 
-Only these five settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host. A host object can hold other fields as well. Conn3x doesn't use them to connect, and steps can read them as `each.value.FIELD`:
+Only these five settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host.
+
+A host object can hold fields of your own as well. Conn3x doesn't use them to connect, and steps can read them as `each.value.FIELD`:
 
 ```hcl
 circuit "app" {
@@ -146,6 +148,16 @@ circuit "app" {
     }
   }
 }
+```
+
+What a host object can't hold is an ssh setting that only the `ssh` block takes: ssh settings such as `become`, `timeout` and `known_hosts_file` belong in the ssh block. Naming one in a host object is an error, not a setting that quietly does nothing. `validate` reports it when `hosts` is known, and `plan` reports it otherwise:
+
+```text
+Error: Unsupported field in host object
+
+Host "web1" sets "become", which only the circuit's ssh block takes. A host
+object can set address, user, port, private_key_file, host_key and
+jump_hosts, plus any fields of your own to read with each.value.
 ```
 
 See [The ssh block](/reference/circuits/ssh#precedence) for how host objects, the `ssh` block and an SSH config file combine.

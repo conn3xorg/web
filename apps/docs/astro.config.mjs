@@ -25,6 +25,10 @@ export default defineConfig({
       ],
       editLink: { baseUrl: "https://github.com/conn3xorg/web/edit/main/apps/docs/" },
       customCss: ["./src/styles/brand.css"],
+      components: {
+        ThemeProvider: "./src/components/ThemeProvider.astro",
+        ThemeSelect: "./src/components/ThemeSelect.astro",
+      },
       lastUpdated: false,
       head: [
         { tag: "meta", attrs: { property: "og:image", content: "https://docs.conn3x.org/og.png" } },
@@ -42,7 +46,7 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         {
           label: "Circuit language",

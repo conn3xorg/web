@@ -3,7 +3,7 @@ title: Expressions and functions
 description: The expressions and functions circuits inherit from OpenTofu, and the names that only exist inside a circuit.
 ---
 
-Circuits use OpenTofu's expression language and built-in functions, unchanged. Conn3x v0.5.0 is built on OpenTofu 1.13.2, so OpenTofu's [expressions](https://opentofu.org/docs/language/expressions/) and [functions](https://opentofu.org/docs/language/functions/) documentation applies to every argument in a circuit.
+Circuits use OpenTofu's expression language and built-in functions, unchanged. Conn3x v0.6.3 is built on OpenTofu 1.13.2, so OpenTofu's [expressions](https://opentofu.org/docs/language/expressions/) and [functions](https://opentofu.org/docs/language/functions/) documentation applies to every argument in a circuit.
 
 ## What circuits inherit
 
@@ -63,7 +63,7 @@ circuit "web" {
 | `item.value` | Module blocks of a step with `for_each` | The current item's value. |
 | `handler.NAME` | A step's `notify` | A handler in the same circuit. `handler` can't be used anywhere else. |
 
-`each` and `item` aren't available in `hosts` or in a step's `for_each`. In a step with `for_each`, `each` in the `ssh` block refers to the step's own instance rather than the host; see [The ssh block](/reference/circuits/ssh#each-in-the-ssh-block).
+`each` and `item` aren't available in `hosts` or in a step's `for_each`. In the `ssh` block, `each` means the host in every step, a step with `for_each` included; see [The ssh block](/reference/circuits/ssh#each-in-the-ssh-block).
 
 `count.index` and `self` aren't available in a circuit.
 
