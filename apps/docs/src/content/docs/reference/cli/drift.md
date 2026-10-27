@@ -53,7 +53,7 @@ When the only difference is in output values:
 Only outputs changed since the last apply; the cloud and the hosts match it.
 ```
 
-Errors are printed after the drift list, each starting with `Error:`.
+Errors are printed after the drift list, each starting with `Error:`. A host that doesn't answer is one of them: `plan` only warns about it, but `drift` can't say a host it couldn't read hasn't changed.
 
 `drift` shows which objects changed, not how. Run `conn3x plan` to see the attribute-level diff and what Conn3x would do to put things back.
 
@@ -104,7 +104,7 @@ conn3x drift -var-file=prod.tfvars -no-color
 | Code | Meaning |
 | --- | --- |
 | 0 | No drift. |
-| 1 | An error. Any drift found before the error is still listed. |
+| 1 | An error, including a host that didn't answer. Any drift found before the error is still listed. |
 | 2 | Something drifted, or only output values changed. |
 
 ## Limitations
