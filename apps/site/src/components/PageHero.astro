@@ -9,8 +9,33 @@ interface Props {
   title: string;
 }
 const { label, title } = Astro.props;
+
+// The home page's honeycomb, held still: a grid drawn by a CSS mask (the
+// cell below, edge 26), and a few lit traces on it, anchored to the right
+// edge so they sit on the grid.
+const e = 26, h = Math.sqrt(3) * e, W = 3 * e * 10;
+// Each trace: start column and row, then up (1) or down (0) for each turn.
+const trace = (col: number, row: number, turns: number[]) => {
+  let x = 3 * e * col, y = h / 2 + h * row, d = `M${x} ${y.toFixed(1)}`;
+  for (const up of turns) {
+    x += e / 2;
+    y += up ? -h / 2 : h / 2;
+    d += `L${x} ${y.toFixed(1)}H${(x += e)}`;
+  }
+  return { d, x, y };
+};
+const traces = [trace(1, 1, [1, 0, 0, 1, 0, 1, 1]), trace(5, 2, [0, 1, 1, 0, 0, 1]), trace(8, 0, [0, 1, 0, 0, 1])];
 ---
 <header class="page-hero">
+  <span class="hex" aria-hidden="true"></span>
+  <svg class="lit" viewBox={`0 0 ${W} 300`} width={W} height="300" aria-hidden="true">
+    {traces.map((t) => (
+      <>
+        <path d={t.d} />
+        <circle cx={t.x} cy={t.y} r="4" />
+      </>
+    ))}
+  </svg>
   <div class="wrap">
     <p class="label">{label}</p>
     <h1>{title}</h1>
@@ -23,11 +48,40 @@ const { label, title } = Astro.props;
     position: relative;
     padding-block: clamp(5rem, 11vw, 8rem) clamp(3rem, 6vw, 4.5rem);
     border-bottom: 1px solid var(--c-border);
+    overflow: hidden;
     background:
-      radial-gradient(50rem 22rem at 75% 0%, var(--c-glow), transparent 70%),
-      linear-gradient(90deg, var(--c-grid) 1px, transparent 1px) 0 0 / 56px 100%,
+      radial-gradient(46rem 20rem at 80% 0%, color-mix(in srgb, var(--c-accent) 13%, transparent), transparent 70%),
       var(--c-bg);
-    -webkit-mask-image: none;
+  }
+  .hex,
+  .lit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    pointer-events: none;
+  }
+  .hex {
+    left: 0;
+    bottom: 0;
+    background: var(--c-border);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2278%22%20height%3D%2245.03%22%3E%3Cpath%20d%3D%22M0%2022.52L13%200H39L52%2022.52H78M52%2022.52L39%2045.03H13L0%2022.52%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%2F%3E%3C%2Fsvg%3E") right top / auto repeat, radial-gradient(70% 100% at 80% 0%, #000 20%, transparent 75%);
+    -webkit-mask-composite: source-in;
+    mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2278%22%20height%3D%2245.03%22%3E%3Cpath%20d%3D%22M0%2022.52L13%200H39L52%2022.52H78M52%2022.52L39%2045.03H13L0%2022.52%22%20fill%3D%22none%22%20stroke%3D%22%23000%22%2F%3E%3C%2Fsvg%3E") right top / auto repeat, radial-gradient(70% 100% at 80% 0%, #000 20%, transparent 75%);
+    mask-composite: intersect;
+  }
+  .lit {
+    opacity: 0.75;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 40%);
+    mask-image: linear-gradient(90deg, transparent, #000 40%);
+  }
+  .lit path {
+    fill: none;
+    stroke: color-mix(in srgb, var(--c-accent) 55%, var(--c-border));
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .lit circle {
+    fill: var(--c-accent);
   }
   .page-hero::after {
     content: "";
