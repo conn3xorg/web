@@ -84,7 +84,7 @@ test.describe("reduced motion on interaction", () => {
 
   test("the button has no hover transition", async ({ page }) => {
     await page.goto("/");
-    const duration = await page.locator("main .button").first().evaluate((el) => getComputedStyle(el).transitionDuration);
+    const duration = await page.locator("main .btn").first().evaluate((el) => getComputedStyle(el).transitionDuration);
     expect(duration).toBe("0s");
   });
 });
