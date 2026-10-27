@@ -107,3 +107,9 @@ h1#_top {
 .sl-markdown-content :is(.starlight-aside, .card) {
   border-radius: 10px;
 }
+
+/* The logo at the same size as on conn3x.org. */
+.site-title img {
+  height: 1.375rem;
+  width: auto;
+}

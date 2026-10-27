@@ -2,6 +2,7 @@
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
 import providers from "../../data/providers.json";
+import Traces from "./Traces.astro";
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
@@ -13,9 +14,7 @@ const marks = [
 ---
 <section class="hero">
   <div class="fx" aria-hidden="true">
-    <span class="layer a"></span>
-    <span class="layer b"></span>
-    <span class="layer c"></span>
+    <Traces />
     <span class="glow"></span>
   </div>
   <div class="wrap inner">
@@ -69,50 +68,17 @@ const marks = [
   .fx {
     position: absolute;
     inset: 0 0 auto 0;
-    height: 34rem;
+    height: 36rem;
     pointer-events: none;
     -webkit-mask-image: linear-gradient(transparent, #000 4rem), radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
     -webkit-mask-composite: source-in;
     mask-image: linear-gradient(transparent, #000 4rem), radial-gradient(75% 85% at 70% 0%, #000 25%, transparent 78%);
     mask-composite: intersect;
   }
-  .layer {
-    position: absolute;
-    inset: -100% 0 0 0;
-    will-change: transform;
-  }
-  /* Columns of light, cut into soft dashes that fall at different speeds. */
-  .layer.a {
-    background: repeating-linear-gradient(90deg, transparent 0 17px, color-mix(in srgb, var(--c-accent) 45%, transparent) 17px 18px);
-    -webkit-mask-image: repeating-linear-gradient(180deg, transparent 0, #000 50px, #000 90px, transparent 150px, transparent 290px);
-    mask-image: repeating-linear-gradient(180deg, transparent 0, #000 50px, #000 90px, transparent 150px, transparent 290px);
-    opacity: 0.5;
-    animation: fall 16s linear infinite;
-  }
-  .layer.b {
-    background: repeating-linear-gradient(90deg, transparent 0 41px, color-mix(in srgb, var(--c-accent) 85%, transparent) 41px 43px, transparent 43px 59px);
-    -webkit-mask-image: repeating-linear-gradient(180deg, transparent 0, #000 90px, transparent 200px, transparent 410px);
-    mask-image: repeating-linear-gradient(180deg, transparent 0, #000 90px, transparent 200px, transparent 410px);
-    opacity: 0.6;
-    animation: fall 11s linear infinite;
-  }
-  .layer.c {
-    background: repeating-linear-gradient(90deg, transparent 0 107px, color-mix(in srgb, var(--c-add) 70%, transparent) 107px 110px, transparent 110px 157px);
-    -webkit-mask-image: repeating-linear-gradient(180deg, transparent 0, #000 140px, transparent 260px, transparent 560px);
-    mask-image: repeating-linear-gradient(180deg, transparent 0, #000 140px, transparent 260px, transparent 560px);
-    opacity: 0.45;
-    filter: blur(0.6px);
-    animation: fall 24s linear infinite;
-  }
   .glow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(50% 60% at 65% 0%, var(--c-glow), transparent 70%);
-  }
-  @keyframes fall {
-    to {
-      transform: translateY(50%);
-    }
+    background: radial-gradient(45% 55% at 72% 10%, color-mix(in srgb, var(--c-accent) 14%, transparent), transparent 70%);
   }
   .inner {
     position: relative;
@@ -147,7 +113,7 @@ const marks = [
     margin-top: 1.5rem;
     padding: 0.35rem 0.35rem 0.35rem 1rem;
     border: 1px solid var(--c-border);
-    border-radius: 999px;
+    border-radius: 10px;
     background: color-mix(in srgb, var(--c-surface) 80%, transparent);
     max-width: 100%;
   }

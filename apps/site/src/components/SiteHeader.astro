@@ -26,7 +26,7 @@ const [latest] = (await getCollection("blog", (p) => isPublished(p)))
 )}
 <header class="site-header">
   <div class="wrap bar">
-    <a class="brand" href="/" aria-label="Conn3x home">
+    <a class="brand draw" href="/" aria-label="Conn3x home">
       <span class="logo logo-dark" set:html={logoDark} />
       <span class="logo logo-light" set:html={logo} />
     </a>
@@ -50,7 +50,70 @@ const [latest] = (await getCollection("blog", (p) => isPublished(p)))
   </div>
 </header>
 
+<script>
+  // Replay the logo's draw-in when someone points at it.
+  const brand = document.querySelector<HTMLElement>(".site-header .brand");
+  brand?.addEventListener("pointerenter", () => {
+    brand.classList.remove("draw");
+    void brand.getBoundingClientRect();
+    brand.classList.add("draw");
+  });
+</script>
+
 <style>
+  /* The mark draws itself: traces in, the node lands, the signal leaves. */
+  /* A gap longer than the line, so a round cap can't show before it starts. */
+  .brand :global(.trace),
+  .brand :global(.out) {
+    stroke-dasharray: 1 2;
+  }
+  .brand :global(.node) {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .brand.draw :global(.trace) {
+      animation: c3-draw 0.7s var(--ease-out) both;
+    }
+    .brand.draw :global(.trace + .trace) {
+      animation-delay: 0.08s;
+    }
+    .brand.draw :global(.node) {
+      animation:
+        c3-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s both,
+        c3-glow 1.2s ease-out 0.75s;
+    }
+    .brand.draw :global(.out) {
+      animation: c3-draw 0.45s var(--ease-out) 0.75s both;
+    }
+  }
+  @keyframes c3-draw {
+    from {
+      stroke-dashoffset: 1.05;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes c3-pop {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes c3-glow {
+    0% {
+      filter: drop-shadow(0 0 0 var(--c-accent));
+    }
+    35% {
+      filter: drop-shadow(0 0 6px var(--c-accent));
+    }
+    100% {
+      filter: drop-shadow(0 0 0 transparent);
+    }
+  }
   .announce {
     display: flex;
     justify-content: center;

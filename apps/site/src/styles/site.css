@@ -89,12 +89,18 @@ main.home + .site-footer {
   margin: 0;
 }
 
+/* The marker is the mark's junction: a short trace into an orange node. */
 .label::before {
   content: "";
-  width: 0;
-  height: 0;
-  border-block: 0.32em solid transparent;
-  border-inline-start: 0.5em solid var(--c-accent);
+  width: 1.1em;
+  height: 0.5em;
+  background:
+    radial-gradient(circle at calc(100% - 0.25em) 50%, var(--c-accent) 0.22em, transparent 0.24em),
+    linear-gradient(var(--c-border-strong), var(--c-border-strong)) left center / calc(100% - 0.3em) 1.5px no-repeat;
+}
+
+.label .n {
+  color: var(--c-accent);
 }
 
 /* A big outlined section number: 01 */
@@ -144,27 +150,15 @@ main.home + .site-footer {
 
 .sec-head {
   display: grid;
-  grid-template-columns: 14rem minmax(0, 1fr);
-  gap: 2rem;
-  align-items: start;
+  gap: 1.25rem;
+  max-width: 62rem;
 }
 
-.sec-head .lead {
-  text-indent: 3rem;
+.sec-head .num {
+  display: none;
 }
 
-@media (max-width: 860px) {
-  .sec-head {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1rem;
-  }
-  .sec-head .num {
-    display: none;
-  }
-  .sec-head .lead {
-    text-indent: 0;
-  }
-}
+
 
 /* Buttons: a solid pill and an outlined one. */
 .btn {
@@ -173,10 +167,10 @@ main.home + .site-footer {
   gap: 0.5rem;
   min-height: 2.75rem;
   padding: 0 1.25rem;
-  border-radius: 999px;
-  border: 1px solid var(--c-button);
-  background: var(--c-button);
-  color: var(--c-button-text);
+  border-radius: 8px;
+  border: 1px solid var(--c-accent);
+  background: var(--c-accent);
+  color: var(--c-accent-contrast);
   font-size: 0.9375rem;
   font-weight: 600;
   text-decoration: none;

@@ -23,11 +23,12 @@ export function markPaths(u, stroke) {
   const top = `M${x0} ${-u}H${x0 + e}L${xJ} 0`;
   const bottom = `M${x0} ${u}H${x0 + e}L${xJ} 0`;
   const outLine = `M${xJ} 0H${xEnd}`;
-  return { top, bottom, outLine, xJ, width: xEnd + stroke / 2, height: 2 * u + stroke, nodeR: stroke * 0.82 };
+  return { top, bottom, outLine, xJ, width: xEnd + stroke / 2, height: 2 * u + stroke, nodeR: stroke * 0.9 };
 }
 
-// Square ends and sharp corners keep the lines honeycomb-straight.
-export const LINE = 'stroke-linecap="square" stroke-linejoin="miter" stroke-miterlimit="4"';
+// Round ends and corners: the lines stay honeycomb-straight, and the edges
+// stay smooth at header and favicon sizes.
+export const LINE = 'stroke-linecap="round" stroke-linejoin="round"';
 
 export function wordmark(fontFile, size) {
   const font = loadFont(fontFile);

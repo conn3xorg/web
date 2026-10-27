@@ -1,0 +1,140 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// The hero's backdrop: a faint honeycomb built from the mark's geometry
+// (flat edges and 120-degree turns), with signals running along a few
+// traces and landing on orange nodes. Decorative, so it's hidden from
+// assistive tech, and still under reduced motion.
+
+const e = 26; // edge length
+const h = Math.sqrt(3) * e;
+const W = 1600, H = 560;
+
+// A seeded walk to the right along the honeycomb: a diagonal, then a flat
+// edge, again and again, the same moves the mark makes.
+function walk(seed: number, x0: number, y0: number, steps: number) {
+  let s = seed;
+  const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  let x = x0, y = y0;
+  let d = `M${x} ${y}`;
+  for (let i = 0; i < steps; i++) {
+    const up = y - h / 2 < 40 ? false : y + h / 2 > H - 40 ? true : rnd() < 0.5;
+    x += e / 2;
+    y += up ? -h / 2 : h / 2;
+    d += `L${x.toFixed(1)} ${y.toFixed(1)}`;
+    x += e;
+    d += `H${x.toFixed(1)}`;
+  }
+  return { d, end: [x, y] as const };
+}
+
+const traces = [
+  walk(7, 3 * e * 4, h / 2 + h * 1, 14),
+  walk(19, 3 * e * 9, h / 2 + h * 3, 12),
+  walk(42, 3 * e * 15, h / 2 + h * 0, 16),
+  walk(77, 3 * e * 20, h / 2 + h * 4, 10),
+  walk(5, 3 * e * 1, h / 2 + h * 5, 12),
+  walk(91, 3 * e * 12, h / 2 + h * 6, 14),
+];
+const tile = `M0 ${h / 2}L${e / 2} 0H${1.5 * e}L${2 * e} ${h / 2}H${3 * e}M${2 * e} ${h / 2}L${1.5 * e} ${h}H${e / 2}L0 ${h / 2}`;
+---
+<svg class="traces" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+  <defs>
+    <pattern id="hex" width={3 * e} height={h} patternUnits="userSpaceOnUse">
+      <path d={tile} class="cell" />
+    </pattern>
+  </defs>
+  <rect width={W} height={H} fill="url(#hex)" />
+  {traces.map((t) => (
+    <g class="trace">
+      <path d={t.d} class="lit" />
+      <path d={t.d} class="pulse" pathLength="1" />
+      <circle cx={t.end[0]} cy={t.end[1]} r="4.5" class="node" />
+    </g>
+  ))}
+</svg>
+
+<style>
+  .traces {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .cell {
+    fill: none;
+    stroke: var(--c-border);
+    stroke-width: 1;
+  }
+  .lit {
+    fill: none;
+    stroke: color-mix(in srgb, var(--c-accent) 28%, var(--c-border));
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .pulse {
+    fill: none;
+    stroke: var(--c-accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 0.08 0.92;
+    stroke-dashoffset: 0.08;
+    filter: drop-shadow(0 0 5px var(--c-accent));
+    opacity: 0;
+  }
+  .node {
+    fill: var(--c-accent);
+    opacity: 0.85;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pulse {
+      opacity: 1;
+      animation: run 5.5s linear infinite;
+    }
+    .node {
+      animation: land 5.5s ease-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .trace:nth-child(3n) .pulse,
+    .trace:nth-child(3n) .node {
+      animation-duration: 7s;
+      animation-delay: -2.4s;
+    }
+    .trace:nth-child(3n + 1) .pulse,
+    .trace:nth-child(3n + 1) .node {
+      animation-duration: 6.2s;
+      animation-delay: -4.1s;
+    }
+    .trace:nth-child(2n) .pulse,
+    .trace:nth-child(2n) .node {
+      animation-delay: -1.3s;
+    }
+  }
+  @keyframes run {
+    from {
+      stroke-dashoffset: 0.08;
+    }
+    to {
+      stroke-dashoffset: -0.92;
+    }
+  }
+  /* The node flares as the signal arrives at the end of the trace. */
+  @keyframes land {
+    0%,
+    85% {
+      transform: scale(1);
+      filter: none;
+    }
+    92% {
+      transform: scale(1.7);
+      filter: drop-shadow(0 0 8px var(--c-accent));
+    }
+    100% {
+      transform: scale(1);
+      filter: none;
+    }
+  }
+</style>
