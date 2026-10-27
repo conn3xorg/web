@@ -4,6 +4,7 @@
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
 
 type Circuit = {
   name: string;
@@ -38,10 +39,9 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
 
-  <main id="main" class="wrap page">
-    <header class="intro">
-      <h1>Circuits</h1>
-      <p class="lede">
+  <main id="main">
+    <PageHero label="Directory" title="Circuits">
+      <p>
         Somebody has already set up nginx, locked down SSH and added the deploy users. Here's
         their circuit. Add one <code>module</code> block, point it at your hosts, and plan.
       </p>
@@ -50,10 +50,10 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <span class="visually-hidden">Search circuits</span>
           <input id="q" type="search" placeholder="Search circuits" autocomplete="off" />
         </label>
-        <a class="button" href="#share">Share yours</a>
+        <a class="btn" href="#share">Share yours</a>
       </div>
-    </header>
-
+    </PageHero>
+    <div class="wrap page">
     <ol class="grid" id="list">
       {circuits.map((c) => (
         <li class="card" data-text={`${c.name} ${c.description} ${c.tags.join(" ")}`.toLowerCase()}>
@@ -117,6 +117,7 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
         for hosts and SSH, versioning with tags, and testing it on a container first.
       </p>
     </section>
+    </div>
   </main>
 
   <SiteFooter />

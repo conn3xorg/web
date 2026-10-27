@@ -4,6 +4,7 @@
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
 
 const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
@@ -174,14 +175,11 @@ const sections = [
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
 
-  <main id="main" class="wrap page">
-    <header class="intro">
-      <h1>Frequently asked questions</h1>
-      <p class="lede">
-        Didn't find yours? Ask in <a href={`${repo}/discussions`}>Discussions</a> and we'll add it.
-      </p>
-    </header>
-
+  <main id="main">
+    <PageHero label="FAQ" title="Frequently asked questions">
+      <p>Didn't find yours? Ask in <a href={`${repo}/discussions`}>Discussions</a> and we'll add it.</p>
+    </PageHero>
+    <div class="wrap page">
     <nav class="toc" aria-label="On this page">
       {sections.map((s) => (
         <div>
@@ -206,6 +204,7 @@ const sections = [
         ))}
       </section>
     ))}
+    </div>
   </main>
 
   <SiteFooter />

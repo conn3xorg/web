@@ -1,0 +1,62 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// The top of every inner page: a label, a big title, a lead, and room for
+// actions, over a faint grid that glows orange at the top.
+interface Props {
+  label: string;
+  title: string;
+}
+const { label, title } = Astro.props;
+---
+<header class="page-hero">
+  <div class="wrap">
+    <p class="label">{label}</p>
+    <h1>{title}</h1>
+    <div class="lead-in"><slot /></div>
+  </div>
+</header>
+
+<style>
+  .page-hero {
+    position: relative;
+    padding-block: clamp(5rem, 11vw, 8rem) clamp(3rem, 6vw, 4.5rem);
+    border-bottom: 1px solid var(--c-border);
+    background:
+      radial-gradient(50rem 22rem at 75% 0%, var(--c-glow), transparent 70%),
+      linear-gradient(90deg, var(--c-grid) 1px, transparent 1px) 0 0 / 56px 100%,
+      var(--c-bg);
+    -webkit-mask-image: none;
+  }
+  .page-hero::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 60%;
+    background: linear-gradient(transparent, var(--c-bg));
+    pointer-events: none;
+  }
+  .wrap {
+    position: relative;
+    z-index: 1;
+  }
+  h1 {
+    font-size: clamp(2.75rem, 7vw, 5rem);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    margin: 1.25rem 0 1.25rem;
+  }
+  .lead-in {
+    max-width: 44rem;
+    font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+    color: var(--c-text-muted);
+  }
+  .lead-in :global(p) {
+    margin: 0;
+  }
+  .lead-in :global(code) {
+    color: var(--c-text);
+  }
+</style>
