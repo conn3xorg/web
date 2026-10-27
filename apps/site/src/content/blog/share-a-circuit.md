@@ -3,6 +3,8 @@ title: "Circuits you can borrow, and a place to share yours"
 description: "Four official circuits for nginx, users, a hardened baseline and Prometheus node_exporter, tested on four distributions. Plus conn3x.org/circuits, where anyone can list their own."
 date: 2026-10-27
 author: James Conway
+image: /media/blog/share-a-circuit/card.png
+imageAlt: "A Conn3x module block that adds the official nginx circuit to a host, pinned to v0.1.0."
 ---
 
 Count the times you've written the same setup. Install nginx, drop in a site, open port 80. Add the deploy user and their key. Turn off password logins. Every team writes these, and every team gets the Debian service name wrong once.
