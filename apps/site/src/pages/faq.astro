@@ -180,116 +180,239 @@ const sections = [
       <p>Didn't find yours? Ask in <a href={`${repo}/discussions`}>Discussions</a> and we'll add it.</p>
     </PageHero>
     <div class="wrap page">
-    <nav class="toc" aria-label="On this page">
-      {sections.map((s) => (
-        <div>
-          <a class="toc-h" href={`#${s.id}`}>{s.title}</a>
-          <ul>
-            {s.items.map((i) => (
-              <li><a href={`#${i.id}`}>{i.q}</a></li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </nav>
+      <nav class="cats" aria-label="Topics">
+        <p class="label">Topics</p>
+        <ul>
+          {sections.map((s) => (
+            <li><a href={`#${s.id}`} data-cat={s.id}>{s.title}<span>{s.items.length}</span></a></li>
+          ))}
+        </ul>
+      </nav>
 
-    {sections.map((s) => (
-      <section aria-labelledby={s.id}>
-        <h2 id={s.id}>{s.title}</h2>
-        {s.items.map((i) => (
-          <article class="qa">
-            <h3 id={i.id}><a href={`#${i.id}`}>{i.q}</a></h3>
-            <Fragment set:html={i.a} />
-          </article>
+      <div class="groups">
+        {sections.map((s) => (
+          <section aria-labelledby={s.id}>
+            <h2 id={s.id}>{s.title}</h2>
+            <div class="list">
+              {s.items.map((i) => (
+                <details class="qa" id={i.id}>
+                  <summary>
+                    <span class="q">{i.q}</span>
+                    <span class="pm" aria-hidden="true"></span>
+                  </summary>
+                  <div class="a"><Fragment set:html={i.a} /></div>
+                </details>
+              ))}
+            </div>
+          </section>
         ))}
-      </section>
-    ))}
+      </div>
     </div>
   </main>
 
   <SiteFooter />
 </Base>
 
+<script>
+  // A link to a question opens its answer, on arrival and on later clicks.
+  const open = () => {
+    const el = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (el instanceof HTMLDetailsElement) el.open = true;
+  };
+  open();
+  addEventListener("hashchange", open);
+
+  // Mark the topic in view.
+  const cats = new Map([...document.querySelectorAll<HTMLAnchorElement>("[data-cat]")].map((a) => [a.dataset.cat!, a]));
+  const heads = [...cats.keys()].map((id) => document.getElementById(id)!);
+  const mark = () => {
+    let current = heads[0];
+    for (const h of heads) if (h.getBoundingClientRect().top < 160) current = h;
+    cats.forEach((a, id) => a.toggleAttribute("aria-current", id === current.id));
+  };
+  addEventListener("scroll", mark, { passive: true });
+  mark();
+</script>
+
 <style>
   .page {
-    padding-block: 3rem 5rem;
-    max-width: 52rem;
-  }
-  h1 {
-    font-size: clamp(2.25rem, 5vw, 3.25rem);
-    letter-spacing: -0.03em;
-    margin: 0 0 0.75rem;
-  }
-  .lede {
-    color: var(--c-text-muted);
-    font-size: 1.125rem;
-    margin: 0 0 2rem;
-  }
-  .toc {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem 2rem;
-    padding: 1.5rem;
-    border: 1px solid var(--c-border);
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    padding-block: clamp(3rem, 6vw, 4.5rem) 0;
+  }
+  .cats {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+  }
+  .cats ul {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.15rem;
+  }
+  .cats a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0.75rem;
     border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .cats a span {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+  .cats a:hover {
+    color: var(--c-text);
     background: var(--c-surface);
   }
-  .toc-h {
-    font-weight: 700;
+  .cats a[aria-current] {
     color: var(--c-text);
+    background: var(--c-surface);
+    box-shadow: inset 2px 0 0 var(--c-accent);
   }
-  .toc ul {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0;
+  .groups {
     display: grid;
-    gap: 0.35rem;
-    font-size: 0.9375rem;
+    gap: clamp(3rem, 6vw, 4.5rem);
+    max-width: 52rem;
   }
   h2 {
     font-size: clamp(1.5rem, 3vw, 2rem);
-    letter-spacing: -0.02em;
-    margin: 3.5rem 0 0.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--c-border);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 0 0 1.25rem;
+    scroll-margin-top: 6rem;
+  }
+  .list {
+    border-top: 1px solid var(--c-border);
   }
   .qa {
-    margin-top: 2rem;
+    border-bottom: 1px solid var(--c-border);
+    scroll-margin-top: 6rem;
+    interpolate-size: allow-keywords;
   }
-  h3 {
-    font-size: 1.25rem;
+  summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.35rem 0.25rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .q {
+    font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+    font-weight: 500;
+    line-height: 1.35;
     letter-spacing: -0.01em;
-    margin: 0 0 0.5rem;
-  }
-  h3 a {
     color: var(--c-text);
-    text-decoration: none;
+    transition: color 0.15s;
   }
-  h3 a:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+  summary:hover .q {
+    color: var(--c-accent);
   }
-  h2,
-  h3 {
-    scroll-margin-top: 1.5rem;
+  /* A plus that turns into an orange cross. */
+  .pm {
+    position: relative;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--c-border-strong);
+    border-radius: 50%;
+    transition: transform 0.3s var(--ease-out), background 0.2s, border-color 0.2s;
   }
-  .qa :global(p) {
+  .pm::before,
+  .pm::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.75rem;
+    height: 1.5px;
+    background: var(--c-text);
+    translate: -50% -50%;
+  }
+  .pm::after {
+    rotate: 90deg;
+  }
+  .qa[open] .pm {
+    transform: rotate(45deg);
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+  }
+  .qa[open] .pm::before,
+  .qa[open] .pm::after {
+    background: var(--c-accent-contrast);
+  }
+  /* The answer slides open where the browser can animate to auto height. */
+  .qa::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 0.35s var(--ease-out),
+      content-visibility 0.35s allow-discrete;
+  }
+  .qa[open]::details-content {
+    block-size: auto;
+  }
+  .a {
+    padding: 0 3.5rem 1.5rem 0.25rem;
+    max-width: 46rem;
+  }
+  .a :global(p) {
     color: var(--c-text-muted);
-    line-height: 1.65;
-    margin: 0 0 0.85rem;
+    line-height: 1.7;
+    margin: 0 0 0.9rem;
   }
-  .qa :global(code) {
+  .a :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .a :global(a) {
+    color: var(--c-link);
+  }
+  .a :global(code) {
     font-family: var(--font-mono);
     font-size: 0.875em;
-    background: var(--c-code-bg);
-    color: var(--c-code-text);
     padding: 0.1em 0.35em;
+    border: 1px solid var(--c-border);
     border-radius: 4px;
+    background: var(--c-surface);
+    color: var(--c-text);
     overflow-wrap: anywhere;
   }
-  @media (max-width: 700px) {
-    .toc {
+  @media (max-width: 860px) {
+    .page {
       grid-template-columns: minmax(0, 1fr);
+    }
+    .cats {
+      position: static;
+    }
+    .cats ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .cats a {
+      border: 1px solid var(--c-border);
+      border-radius: 999px;
+      padding: 0.4rem 0.85rem;
+    }
+    .cats a span {
+      display: none;
+    }
+    .a {
+      padding-right: 0.25rem;
     }
   }
 </style>
