@@ -4,6 +4,7 @@
 import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
 import providers from "../data/providers.json";
 
 const search = "https://search.opentofu.org/providers";
@@ -34,17 +35,16 @@ module "web" {
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
 
-  <main id="main" class="wrap page">
-    <header class="intro">
-      <h1>Providers</h1>
-      <p class="lede">
+  <main id="main">
+    <PageHero label="Works with" title="Providers">
+      <p>
         Conn3x is built on OpenTofu, so every provider in the OpenTofu Registry works, as it is.
         Create the server with whichever cloud you already use, and hand its address to a circuit
         in the same plan.
       </p>
-      <a class="button" href={search}>Search every provider</a>
-    </header>
-
+      <a class="btn" href={search}>Search every provider</a>
+    </PageHero>
+    <div class="wrap page">
     <h2 class="sub">Where servers usually come from</h2>
     <ul class="grid">
       {providers.map((p) => (
@@ -74,6 +74,7 @@ module "web" {
         adding it is welcome.
       </p>
     </section>
+    </div>
   </main>
 
   <SiteFooter />
@@ -94,14 +95,8 @@ module "web" {
     font-size: 1.125rem;
     margin: 0 0 1.75rem;
   }
-  .button {
-    display: inline-block;
-    background: var(--c-accent);
-    color: var(--c-accent-contrast);
-    font-weight: 700;
-    text-decoration: none;
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
+  .btn {
+    margin-top: 1.75rem;
   }
   .sub,
   .how h2 {

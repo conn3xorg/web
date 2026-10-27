@@ -9,9 +9,10 @@ import SiteFooter from "../components/SiteFooter.astro";
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
   <main id="main" class="wrap missing">
+    <span class="code" aria-hidden="true"></span>
     <h1>Page not found</h1>
     <p>There's nothing at this address. The site is small for now, so the home page has everything.</p>
-    <p><a href="/">Go to the home page</a></p>
+    <p class="go"><a class="btn" href="/">Go to the home page</a> <a class="btn btn-ghost" href="https://docs.conn3x.org">Read the docs</a></p>
   </main>
   <SiteFooter />
 </Base>
@@ -21,9 +22,36 @@ import SiteFooter from "../components/SiteFooter.astro";
     padding-block: clamp(4rem, 12vw, 8rem);
     min-height: 50vh;
   }
+  .code::before {
+    content: "404";
+  }
+  .code {
+    display: block;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: clamp(5rem, 16vw, 10rem);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    color: transparent;
+    background: linear-gradient(180deg, var(--c-accent), transparent 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
   h1 {
     font-size: clamp(2.25rem, 5vw, 3.5rem);
+    font-weight: 500;
     letter-spacing: -0.03em;
-    margin: 0 0 1rem;
+    margin: 1rem 0 1rem;
+  }
+  p {
+    color: var(--c-text-muted);
+    max-width: 36rem;
+  }
+  .go {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
   }
 </style>
