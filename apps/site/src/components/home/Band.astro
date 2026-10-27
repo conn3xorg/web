@@ -175,12 +175,11 @@ worker_connections 4096;</pre>
     letter-spacing: -0.03em;
     max-width: 62rem;
     margin: 0;
-    text-indent: 3rem;
   }
   mark {
     color: inherit;
-    background: linear-gradient(var(--c-mark), var(--c-mark)) no-repeat 0 85% / 100% 0.62em;
-    padding: 0 0.08em;
+    background: linear-gradient(var(--c-accent), var(--c-accent)) no-repeat 0 96% / 100% 0.09em;
+    padding: 0 0.02em 0.04em;
     transition: background-size 0.9s var(--ease-out);
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -189,7 +188,7 @@ worker_connections 4096;</pre>
   .armed mark[data-at]:not(.on) {
     opacity: 1;
     transform: none;
-    background-size: 0% 0.62em;
+    background-size: 0% 0.09em;
   }
   .explain {
     display: grid;
@@ -259,7 +258,7 @@ worker_connections 4096;</pre>
   .tp > p strong {
     color: var(--c-text);
     font-weight: 600;
-    background: linear-gradient(var(--c-mark), var(--c-mark)) no-repeat 0 85% / 100% 0.5em;
+    background: linear-gradient(var(--c-accent), var(--c-accent)) no-repeat 0 100% / 100% 2px;
   }
   figure {
     margin: 0;

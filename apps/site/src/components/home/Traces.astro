@@ -1,0 +1,147 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// The hero's backdrop: a faint honeycomb built from the mark's geometry
+// (flat edges and 120-degree turns), with signals running along a few
+// traces and landing on orange nodes. Decorative, so it's hidden from
+// assistive tech, and still under reduced motion.
+
+const e = 26; // edge length
+const h = Math.sqrt(3) * e;
+const W = 1600, H = 560;
+
+const tile = `M0 ${h / 2}L${e / 2} 0H${1.5 * e}L${2 * e} ${h / 2}H${3 * e}M${2 * e} ${h / 2}L${1.5 * e} ${h}H${e / 2}L0 ${h / 2}`;
+---
+<svg class="traces" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+  <defs>
+    <pattern id="hex" width={3 * e} height={h} patternUnits="userSpaceOnUse">
+      <path d={tile} class="cell" />
+    </pattern>
+  </defs>
+  <rect width={W} height={H} fill="url(#hex)" />
+  <g class="traces-lines" data-e={e} data-h={H}></g>
+</svg>
+
+<script>
+  // The traces are drawn here rather than in the HTML: their coordinates
+  // don't compress, and keeping the page small keeps the first paint fast.
+  // Without JavaScript the honeycomb shows without its signals.
+  const NS = "http://www.w3.org/2000/svg";
+  for (const g of document.querySelectorAll<SVGGElement>(".traces-lines")) {
+    const e = Number(g.dataset.e), H = Number(g.dataset.h), h = Math.sqrt(3) * e;
+    // A seeded walk to the right: a diagonal, then a flat edge, the moves
+    // the mark makes.
+    const walk = (seed: number, col: number, row: number, steps: number) => {
+      let s = seed;
+      const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+      let x = 3 * e * col, y = h / 2 + h * row, d = `M${x} ${y}`;
+      for (let i = 0; i < steps; i++) {
+        const up = y - h / 2 < 40 ? false : y + h / 2 > H - 40 ? true : rnd() < 0.5;
+        x += e / 2;
+        y += up ? -h / 2 : h / 2;
+        d += `L${x.toFixed(1)} ${y.toFixed(1)}H${(x += e).toFixed(1)}`;
+      }
+      return { d, x, y };
+    };
+    const el = (tag: string, attrs: Record<string, string>) => {
+      const n = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+      return n;
+    };
+    for (const [seed, col, row, steps] of [[7, 4, 1, 14], [19, 9, 3, 12], [42, 15, 0, 16], [77, 20, 4, 10], [5, 1, 5, 12], [91, 12, 6, 14]]) {
+      const t = walk(seed, col, row, steps);
+      const trace = el("g", { class: "trace" });
+      trace.append(
+        el("path", { d: t.d, class: "lit" }),
+        el("path", { d: t.d, class: "pulse", pathLength: "1" }),
+        el("circle", { cx: String(t.x), cy: String(t.y), r: "4.5", class: "node" }),
+      );
+      g.append(trace);
+    }
+  }
+</script>
+
+<style is:global>
+  .traces {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .traces .cell {
+    fill: none;
+    stroke: var(--c-border);
+    stroke-width: 1;
+  }
+  .traces .lit {
+    fill: none;
+    stroke: color-mix(in srgb, var(--c-accent) 28%, var(--c-border));
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .traces .pulse {
+    fill: none;
+    stroke: var(--c-accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 0.08 0.92;
+    stroke-dashoffset: 0.08;
+    filter: drop-shadow(0 0 5px var(--c-accent));
+    opacity: 0;
+  }
+  .traces .node {
+    fill: var(--c-accent);
+    opacity: 0.85;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .traces .pulse {
+      opacity: 1;
+      animation: run 5.5s linear infinite;
+    }
+    .traces .node {
+      animation: land 5.5s ease-out infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .traces .trace:nth-child(3n) .pulse,
+    .traces .trace:nth-child(3n) .node {
+      animation-duration: 7s;
+      animation-delay: -2.4s;
+    }
+    .traces .trace:nth-child(3n + 1) .pulse,
+    .traces .trace:nth-child(3n + 1) .node {
+      animation-duration: 6.2s;
+      animation-delay: -4.1s;
+    }
+    .traces .trace:nth-child(2n) .pulse,
+    .traces .trace:nth-child(2n) .node {
+      animation-delay: -1.3s;
+    }
+  }
+  @keyframes run {
+    from {
+      stroke-dashoffset: 0.08;
+    }
+    to {
+      stroke-dashoffset: -0.92;
+    }
+  }
+  /* The node flares as the signal arrives at the end of the trace. */
+  @keyframes land {
+    0%,
+    85% {
+      transform: scale(1);
+      filter: none;
+    }
+    92% {
+      transform: scale(1.7);
+      filter: drop-shadow(0 0 8px var(--c-accent));
+    }
+    100% {
+      transform: scale(1);
+      filter: none;
+    }
+  }
+</style>
