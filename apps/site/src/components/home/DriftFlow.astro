@@ -117,6 +117,14 @@ const events = [
       box-shadow: 0 0 0 1px currentColor, 0 0 0 14px transparent;
     }
   }
+  /* While it plays, earlier moments dim and the current one gets a ring. */
+  .armed .timeline li.on:has(~ li.on) {
+    opacity: 0.45;
+  }
+  .armed .timeline li.on:not(:has(~ li.on)) .dot {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+  }
   time {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -219,8 +227,24 @@ const events = [
   }
   @media (max-width: 860px) {
     .timeline {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 2rem;
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 1.5rem;
+      padding-left: 1.75rem;
+    }
+    .timeline::before {
+      top: 0.45rem;
+      bottom: 0.45rem;
+      left: 0.45rem;
+      right: auto;
+      width: 1px;
+      height: auto;
+      background: var(--c-border-strong);
+    }
+    .timeline li {
+      padding-top: 0;
+    }
+    .dot {
+      left: -1.75rem;
     }
     .cards {
       grid-template-columns: minmax(0, 1fr);

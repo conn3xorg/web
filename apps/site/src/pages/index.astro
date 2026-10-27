@@ -8,6 +8,8 @@ import Hero from "../components/home/Hero.astro";
 import PlanFlow from "../components/home/PlanFlow.astro";
 import DriftFlow from "../components/home/DriftFlow.astro";
 import ConvertFlow from "../components/home/ConvertFlow.astro";
+import Band from "../components/home/Band.astro";
+import CircuitCards from "../components/home/CircuitCards.astro";
 import { getCollection } from "astro:content";
 import { isPublished } from "../lib/published.js";
 
@@ -47,7 +49,7 @@ const compare = [
 
     <section class="sec wrap" aria-labelledby="s1">
       <div class="sec-head">
-        <div><p class="label">One plan</p><p class="num" aria-hidden="true">01</p></div>
+        <div><p class="label">One plan</p><span class="num" data-n="01" aria-hidden="true"></span></div>
         <h2 class="lead" id="s1"><strong>One plan for the cloud and the servers in it.</strong> Point a circuit at a resource and the plan shows the server about to be created next to every package, file and service headed for it.</h2>
       </div>
       <PlanFlow />
@@ -55,23 +57,25 @@ const compare = [
 
     <section class="sec wrap" aria-labelledby="s2">
       <div class="sec-head">
-        <div><p class="label">Drift</p><p class="num" aria-hidden="true">02</p></div>
-        <h2 class="lead" id="s2"><strong>Hear about the 3 a.m. fix at breakfast.</strong> <code>conn3x drift</code> reads your cloud and your servers, and exits 2 when either has moved, so a scheduled job can tell you.</h2>
+        <div><p class="label">Drift</p><span class="num" data-n="02" aria-hidden="true"></span></div>
+        <h2 class="lead" id="s2"><strong>Hear about the 3 a.m. fix at breakfast.</strong> <code>conn3x drift</code> checks the cloud and the servers, and fails the job when either has moved.</h2>
       </div>
       <DriftFlow />
     </section>
 
     <section class="sec wrap" aria-labelledby="s3">
       <div class="sec-head">
-        <div><p class="label">Bring your playbooks</p><p class="num" aria-hidden="true">03</p></div>
-        <h2 class="lead" id="s3"><strong>Your playbooks come with you.</strong> <code>conn3x convert ansible</code> rewrites each task it can prove means the same thing, and leaves the rest in the file with the reason. Nothing gets guessed.</h2>
+        <div><p class="label">Bring your playbooks</p><span class="num" data-n="03" aria-hidden="true"></span></div>
+        <h2 class="lead" id="s3"><strong>Your playbooks come with you.</strong> The converter rewrites each task it can prove, and marks the rest with the reason. Nothing gets guessed.</h2>
       </div>
       <ConvertFlow />
     </section>
 
+    <Band />
+
     <section class="sec wrap" aria-labelledby="s4">
       <div class="sec-head">
-        <div><p class="label">Everyday work</p><p class="num" aria-hidden="true">04</p></div>
+        <div><p class="label">Everyday work</p><span class="num" data-n="04" aria-hidden="true"></span></div>
         <h2 class="lead" id="s4"><strong>Everything a server needs.</strong> Linux first: every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.</h2>
       </div>
       <ul class="features">
@@ -84,8 +88,17 @@ const compare = [
 
     <section class="sec wrap" aria-labelledby="s5">
       <div class="sec-head">
-        <div><p class="label">Compare</p><p class="num" aria-hidden="true">05</p></div>
-        <h2 class="lead" id="s5"><strong>Two tools, or one.</strong> The same job, with one less handoff.</h2>
+        <div><p class="label">Circuits</p><span class="num" data-n="05" aria-hidden="true"></span></div>
+        <h2 class="lead" id="s5"><strong>Don't write the nginx setup again.</strong> Borrow a circuit with one <code>module</code> block, or share your own on the directory.</h2>
+      </div>
+      <CircuitCards />
+      <p class="more"><a href="/circuits">Browse every circuit →</a></p>
+    </section>
+
+    <section class="sec wrap" aria-labelledby="s6">
+      <div class="sec-head">
+        <div><p class="label">Compare</p><span class="num" data-n="06" aria-hidden="true"></span></div>
+        <h2 class="lead" id="s6"><strong>Two tools, or one.</strong> The same job, with one less handoff.</h2>
       </div>
       <div class="table-wrap">
         <table>
@@ -101,10 +114,10 @@ const compare = [
       </div>
     </section>
 
-    <section class="sec wrap" aria-labelledby="s6">
+    <section class="sec wrap" aria-labelledby="s7">
       <div class="sec-head">
-        <div><p class="label">Open source</p><p class="num" aria-hidden="true">06</p></div>
-        <h2 class="lead" id="s6"><strong>Built in the open, and not by one person.</strong> Clearer errors, permission checks, fixes to the docs: people outside the project wrote those, and they shipped with thanks in the notes.</h2>
+        <div><p class="label">Open source</p><span class="num" data-n="07" aria-hidden="true"></span></div>
+        <h2 class="lead" id="s7"><strong>Built in the open, not by one person.</strong> People outside the project write fixes, and they ship with thanks in the notes.</h2>
       </div>
       <div class="ways">
         <a href={`${repo}/issues?q=is%3Aopen+label%3A%22good+first+issue%22%2C%22help+wanted%22`}>
@@ -130,9 +143,9 @@ const compare = [
     </section>
 
     {posts.length > 0 && (
-      <section class="sec wrap" aria-labelledby="s7">
+      <section class="sec wrap" aria-labelledby="s8">
         <div class="blog-head">
-          <h2 class="lead" id="s7"><strong>From the blog.</strong></h2>
+          <h2 class="lead" id="s8"><strong>From the blog.</strong></h2>
           <a class="btn btn-ghost" href="/blog">All posts</a>
         </div>
         <ol class="posts">
@@ -185,7 +198,7 @@ const compare = [
   }
   .features li {
     background: var(--c-bg);
-    padding: 1.75rem 1.5rem;
+    padding: 2rem 1.75rem;
     transition: background 0.2s;
   }
   .features li:hover {
@@ -354,7 +367,7 @@ const compare = [
     padding-block: clamp(5rem, 10vw, 8rem);
     border-block: 1px solid var(--c-border);
     background:
-      radial-gradient(60% 80% at 50% 120%, var(--c-glow), transparent 70%),
+      radial-gradient(40rem 26rem at 85% 0%, color-mix(in srgb, var(--c-accent) 16%, transparent), transparent 70%),
       var(--c-surface);
   }
   .closing h2 {

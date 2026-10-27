@@ -1,0 +1,144 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+
+// The official circuits as cards, each with a small dot mark drawn from its
+// name, so every card looks different but the same family.
+
+type Circuit = { name: string; repo: string; description: string; version: string; official: boolean };
+const files = import.meta.glob<{ default: Circuit }>("../../data/circuits/*.json", { eager: true });
+const circuits = Object.values(files)
+  .map((f) => f.default)
+  .filter((c) => c.official)
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+// A 5x5 mirrored pattern from the name: the same name always draws the same mark.
+function mark(name: string) {
+  let h = 2166136261;
+  for (const ch of name) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
+  const dots: [number, number][] = [];
+  for (let y = 0; y < 5; y++)
+    for (let x = 0; x < 3; x++)
+      if ((h >>> (y * 3 + x)) & 1 || (x === 2 && y === 2)) {
+        dots.push([x, y]);
+        if (x < 2) dots.push([4 - x, y]);
+      }
+  return dots;
+}
+---
+<ul class="cards">
+  {circuits.map((c) => (
+    <li>
+      <a href={`https://github.com/${c.repo}`}>
+        <svg class="mark" viewBox="0 0 50 50" aria-hidden="true">
+          {mark(c.name).map(([x, y]) => <circle cx={5 + x * 10} cy={5 + y * 10} r="3.2" />)}
+        </svg>
+        <span class="v">{c.version}</span>
+        <strong>{c.name}</strong>
+        <span class="d">{c.description}</span>
+        <code>{c.repo}</code>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .cards {
+    list-style: none;
+    margin: clamp(3rem, 6vw, 4.5rem) 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  a {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: var(--c-surface);
+    color: var(--c-text);
+    text-decoration: none;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.25s var(--ease-out);
+  }
+  a::after {
+    content: "";
+    position: absolute;
+    inset: auto -30% -60% auto;
+    width: 70%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle, var(--c-glow), transparent 65%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  a:hover {
+    border-color: var(--c-border-strong);
+    transform: translateY(-3px);
+  }
+  a:hover::after {
+    opacity: 1;
+  }
+  .mark {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-bottom: 1.25rem;
+  }
+  circle {
+    fill: var(--c-accent);
+    transition: opacity 0.3s;
+  }
+  circle:nth-child(3n) {
+    opacity: 0.45;
+  }
+  a:hover circle {
+    animation: blink 1.2s steps(2, jump-none) infinite;
+  }
+  a:hover circle:nth-child(2n) {
+    animation-delay: 0.3s;
+  }
+  a:hover circle:nth-child(3n) {
+    animation-delay: 0.6s;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0.25;
+    }
+  }
+  .v {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+  strong {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  .d {
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+    line-height: 1.5;
+  }
+  code {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--c-text-muted);
+  }
+  @media (max-width: 1000px) {
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
