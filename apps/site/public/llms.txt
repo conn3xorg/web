@@ -16,6 +16,7 @@ Conn3x configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu, and e
 ## Links
 
 - [Source code on GitHub](https://github.com/conn3xorg/conn3x)
+- [FAQ](https://conn3x.org/faq): what Conn3x is, how it relates to OpenTofu, Terraform and Ansible, and how to get involved
 - [Releases](https://github.com/conn3xorg/conn3x/releases)
 - [Examples](https://github.com/conn3xorg/conn3x/tree/main/examples)
 - [Blog](https://conn3x.org/blog)
