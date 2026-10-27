@@ -1,81 +1,211 @@
 ---
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
+import { getCollection } from "astro:content";
+import { isPublished } from "../lib/published.js";
 import logo from "../brand/logo.svg?raw";
 import logoDark from "../brand/logo-dark.svg?raw";
+
+const repo = "https://github.com/conn3xorg/conn3x";
+const links = [
+  ["Circuits", "/circuits"],
+  ["Providers", "/providers"],
+  ["Docs", "https://docs.conn3x.org"],
+  ["Blog", "/blog"],
+  ["FAQ", "/faq"],
+];
+const [latest] = (await getCollection("blog", (p) => isPublished(p)))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
-<header class="site-header wrap">
-  <a class="brand" href="/" aria-label="Conn3x home">
-    <span class="logo logo-light" set:html={logo} />
-    <span class="logo logo-dark" set:html={logoDark} />
+{latest && (
+  <a class="announce" href={`/blog/${latest.id}`}>
+    <span class="dot" aria-hidden="true"></span>
+    <span class="t">{latest.data.title}</span>
+    <span class="go" aria-hidden="true">→</span>
   </a>
-  <nav class="links" aria-label="Main">
-    <a class="gh" href="/circuits">Circuits</a>
-    <a class="gh" href="/blog">Blog</a>
-    <a class="gh" href="https://docs.conn3x.org">Docs</a>
-    <a class="gh repo" href="https://github.com/conn3xorg/conn3x">GitHub</a>
-  </nav>
+)}
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="Conn3x home">
+      <span class="logo logo-dark" set:html={logoDark} />
+      <span class="logo logo-light" set:html={logo} />
+    </a>
+    <nav class="links" aria-label="Main">
+      {links.map(([t, h]) => <a href={h}>{t}</a>)}
+    </nav>
+    <div class="actions">
+      <a class="btn btn-ghost gh" href={repo}>
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 .6l2.2 4.6 5 .7-3.6 3.5.9 5L8 12 3.5 14.4l.9-5L.8 5.9l5-.7z"/></svg>
+        Star on GitHub
+      </a>
+      <a class="btn start" href="https://docs.conn3x.org/get-started">Get started</a>
+      <details class="menu">
+        <summary aria-label="Menu"><span></span><span></span></summary>
+        <nav aria-label="Menu">
+          {links.map(([t, h]) => <a href={h}>{t}</a>)}
+          <a href={repo}>GitHub</a>
+        </nav>
+      </details>
+    </div>
+  </div>
 </header>
 
 <style>
+  .announce {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--c-text);
+    text-decoration: none;
+    background:
+      radial-gradient(60% 200% at 50% 120%, var(--c-glow), transparent 70%),
+      var(--c-surface);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .announce .t {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .announce:hover .t {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .dot {
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--c-accent);
+    box-shadow: 0 0 0 3px var(--c-glow);
+  }
+  .go {
+    color: var(--c-text-muted);
+  }
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--c-bg) 82%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--c-border);
+  }
+  .bar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-block: 1.5rem;
+    gap: 2rem;
+    height: 4rem;
   }
   .brand {
     display: block;
-    width: 11rem;
+    width: 8.5rem;
+    flex: none;
   }
   .logo :global(svg) {
     width: 100%;
     height: auto;
   }
-  .logo-dark {
+  .logo-light {
+    display: none;
+  }
+  :global(:root[data-theme="light"]) .logo-light {
+    display: block;
+  }
+  :global(:root[data-theme="light"]) .logo-dark {
     display: none;
   }
   .links {
     display: flex;
-    gap: 1.25rem;
+    gap: 1.6rem;
+    font-size: 0.9375rem;
   }
-  .gh {
-    color: var(--c-text);
-    font-weight: 600;
+  .links a,
+  .menu nav a {
+    color: var(--c-text-muted);
     text-decoration: none;
-    padding: 0.4rem 0.2rem;
+    transition: color 0.15s;
   }
-  .gh:hover {
-    text-decoration: underline;
+  .links a:hover,
+  .menu nav a:hover {
+    color: var(--c-text);
   }
-  :global(:root[data-theme="dark"]) .logo-light {
+  .actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .actions .btn {
+    min-height: 2.25rem;
+    padding: 0 0.95rem;
+    font-size: 0.875rem;
+  }
+  .menu {
+    display: none;
+    position: relative;
+  }
+  .menu summary {
+    list-style: none;
+    cursor: pointer;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-content: center;
+    gap: 6px;
+    border: 1px solid var(--c-border-strong);
+    border-radius: 999px;
+  }
+  .menu summary::-webkit-details-marker {
     display: none;
   }
-  :global(:root[data-theme="dark"]) .logo-dark {
+  .menu summary span {
     display: block;
+    width: 16px;
+    height: 1.5px;
+    background: var(--c-text);
+    transition: transform 0.2s var(--ease-out);
   }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme="light"])) .logo-light {
+  .menu[open] summary span:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+  .menu[open] summary span:last-child {
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+  .menu nav {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.6rem);
+    min-width: 13rem;
+    display: grid;
+    padding: 0.5rem;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  }
+  .menu nav a {
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+  }
+  .menu nav a:hover {
+    background: var(--c-raised);
+  }
+  @media (max-width: 960px) {
+    .links,
+    .gh {
       display: none;
     }
-    :global(:root:not([data-theme="light"])) .logo-dark {
+    .menu {
       display: block;
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 380px) {
     .brand {
-      width: 6.5rem;
-      flex-shrink: 0;
-    }
-    .links {
-      gap: 0.6rem;
-      font-size: 0.875rem;
-    }
-  }
-  /* The footer links the source too, so the narrowest phones drop it here. */
-  @media (max-width: 359px) {
-    .repo {
-      display: none;
+      width: 7rem;
     }
   }
 </style>

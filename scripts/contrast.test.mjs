@@ -28,11 +28,17 @@ export function ratio(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const themes = { light: block(":root"), dark: block(':root[data-theme="dark"]') };
+// Dark is the default; light overrides it, so light inherits anything it doesn't set.
+const dark = block(":root");
+const themes = { dark, light: { ...dark, ...block(':root[data-theme="light"]') } };
 const text = [
   ["--c-text", "--c-bg"], ["--c-text", "--c-surface"],
   ["--c-text-muted", "--c-bg"], ["--c-text-muted", "--c-surface"],
-  ["--c-link", "--c-bg"], ["--c-accent-contrast", "--c-accent"],
+  ["--c-text-muted", "--c-raised"], ["--c-link", "--c-bg"], ["--c-link", "--c-surface"],
+  ["--c-accent-contrast", "--c-accent"], ["--c-button-text", "--c-button"],
+  ["--c-add", "--c-surface"], ["--c-change", "--c-surface"], ["--c-destroy", "--c-surface"],
+  ["--c-code-text", "--c-code-bg"], ["--c-code-dim", "--c-code-bg"], ["--c-code-add", "--c-code-bg"],
+  ["--c-paper-text", "--c-paper"], ["--c-paper-muted", "--c-paper"], ["--c-paper-text", "--c-mark"],
 ];
 
 for (const [name, t] of Object.entries(themes)) {
@@ -51,8 +57,4 @@ for (const [name, t] of Object.entries(themes)) {
 test("ratio matches the WCAG reference values", () => {
   assert.equal(ratio("#000000", "#ffffff").toFixed(2), "21.00");
   assert.equal(ratio("#777777", "#ffffff").toFixed(2), "4.48");
-});
-
-test("system dark theme matches the explicit dark theme", () => {
-  assert.deepEqual(block(':root:not([data-theme="light"])'), themes.dark);
 });
