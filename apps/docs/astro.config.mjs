@@ -25,6 +25,10 @@ export default defineConfig({
       ],
       editLink: { baseUrl: "https://github.com/conn3xorg/web/edit/main/apps/docs/" },
       customCss: ["./src/styles/brand.css"],
+      components: {
+        ThemeProvider: "./src/components/ThemeProvider.astro",
+        ThemeSelect: "./src/components/ThemeSelect.astro",
+      },
       lastUpdated: false,
       head: [
         { tag: "meta", attrs: { property: "og:image", content: "https://docs.conn3x.org/og.png" } },
