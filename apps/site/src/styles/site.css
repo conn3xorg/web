@@ -1,7 +1,8 @@
 /* Copyright (c) The Conn3x Authors
  * SPDX-License-Identifier: MPL-2.0 */
 
-/* Base styles shared by every page. Tokens live in ../brand/tokens.css. */
+/* Base styles and the shared building blocks every page uses.
+ * Tokens live in ../brand/tokens.css. */
 
 *,
 *::before,
@@ -12,6 +13,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -22,6 +24,7 @@ body {
   font-size: 1.0625rem;
   line-height: 1.6;
   font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -30,8 +33,9 @@ a {
 }
 
 a:focus-visible,
-button:focus-visible {
-  outline: 3px solid var(--c-accent);
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--c-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -42,8 +46,13 @@ svg {
   max-width: 100%;
 }
 
+::selection {
+  background: var(--c-accent);
+  color: var(--c-accent-contrast);
+}
+
 .wrap {
-  width: min(72rem, 100% - 2rem);
+  width: min(78rem, 100% - 2.5rem);
   margin-inline: auto;
 }
 
@@ -54,9 +63,180 @@ svg {
   padding: 0.5rem 0.75rem;
   background: var(--c-surface);
   color: var(--c-text);
-  z-index: 10;
+  z-index: 100;
 }
 
 .skip:focus {
   top: 1rem;
+}
+
+/* A small mono label in capitals with an orange marker: ▸ ONE PLAN */
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-text-muted);
+  margin: 0;
+}
+
+.label::before {
+  content: "";
+  width: 0;
+  height: 0;
+  border-block: 0.32em solid transparent;
+  border-inline-start: 0.5em solid var(--c-accent);
+}
+
+/* A big outlined section number: 01 */
+.num {
+  font-family: var(--font-mono);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--c-border-strong);
+  margin: 0.4rem 0 0;
+  user-select: none;
+}
+
+/* The house heading: a statement, then a muted continuation. */
+.lead {
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  color: var(--c-text-muted);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lead strong {
+  color: var(--c-text);
+  font-weight: 500;
+}
+
+/* Section scaffold: label and number on the left, heading on the right. */
+.sec {
+  padding-block: clamp(5rem, 10vw, 9rem) 0;
+}
+
+.sec-head {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.sec-head .lead {
+  text-indent: 3rem;
+}
+
+@media (max-width: 860px) {
+  .sec-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  .sec-head .num {
+    display: none;
+  }
+  .sec-head .lead {
+    text-indent: 0;
+  }
+}
+
+/* Buttons: a solid pill and an outlined one. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-button);
+  background: var(--c-button);
+  color: var(--c-button-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.btn:hover {
+  box-shadow: 0 0 0 4px var(--c-glow);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--c-text);
+  border-color: var(--c-border-strong);
+}
+
+.btn-ghost:hover {
+  border-color: var(--c-text-muted);
+  box-shadow: none;
+}
+
+.btn-accent {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-accent-contrast);
+}
+
+/* A framed panel that looks like part of a tool. */
+.panel {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  overflow: hidden;
+}
+
+.panel-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--c-border);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+}
+
+.panel-bar::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--c-border-strong);
+  box-shadow: 0.8rem 0 0 var(--c-border-strong), 1.6rem 0 0 var(--c-border-strong);
+  margin-right: 1.6rem;
+}
+
+/* Code that isn't inside a panel. */
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+pre {
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+/* Diagrams start when they come into view: a script adds .play.
+ * Their resting styles are the final frame, so without JavaScript, or
+ * with reduced motion, the finished picture shows. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }
