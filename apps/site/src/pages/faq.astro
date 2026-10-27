@@ -1,0 +1,296 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+
+const repo = "https://github.com/conn3xorg/conn3x";
+const docs = "https://docs.conn3x.org";
+
+// Each answer is trusted HTML written here, so links and code can sit inline.
+const sections = [
+  {
+    id: "about",
+    title: "About Conn3x",
+    items: [
+      {
+        id: "what-is-conn3x",
+        q: "What is Conn3x?",
+        a: `<p>One tool that creates your servers and configures them, in the same plan. You describe the cloud the way you already do, in HCL with any OpenTofu or Terraform provider, and describe what goes on each server in a <em>circuit</em>: packages, files, services, users and the rest. <code>conn3x plan</code> shows the droplet about to be created next to the exact file changes headed for it, and <code>conn3x apply</code> does both.</p>
+<p>It's a single binary, built on OpenTofu, and it reaches your servers over plain SSH.</p>`,
+      },
+      {
+        id: "why-created",
+        q: "Why was Conn3x created?",
+        a: `<p>Because creating a server and setting it up are one job that usually takes two tools. Terraform or OpenTofu makes the machine, Ansible configures it, and something in between carries the addresses across: an inventory script, a <code>local-exec</code>, a <code>sleep 60</code> while SSH comes up. Each tool has its own idea of what's out there, and neither one sees the whole change before it happens.</p>
+<p>Conn3x does the whole job with one plan and one state. <a href="/blog/why-conn3x">Why Conn3x</a> tells the longer story.</p>`,
+      },
+      {
+        id: "who",
+        q: "Who's behind Conn3x?",
+        a: `<p>James Conway started Conn3x and makes the final call while the project is small. Decisions happen in public, in issues, Discussions and pull requests. Anyone who contributes steadily and reviews other people's work can be invited to become a maintainer.</p>
+<p>Once there are maintainers from more than one organization, the plan is to move the project, its trademark and its domains to a neutral foundation, so it doesn't depend on any one person or company. <a href="${repo}/blob/main/GOVERNANCE.md">GOVERNANCE.md</a> has the details.</p>`,
+      },
+      {
+        id: "license",
+        q: "Is it free? Could the license change?",
+        a: `<p>It's free, and it's licensed under the <a href="${repo}/blob/main/LICENSE">Mozilla Public License 2.0</a>, the same license as OpenTofu. That won't change.</p>
+<p>There's no CLA and no copyright assignment. Contributors keep the copyright to their work and sign off under the Developer Certificate of Origin, so no single person or company can relicense the project. Sponsors, when there are some, get visibility, not control: nothing is held back from the open source project.</p>`,
+      },
+      {
+        id: "production",
+        q: "Is Conn3x ready for production?",
+        a: `<p>It's early, and it's honest about it. Conn3x configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu, and every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. Releases are signed and come with SBOMs.</p>
+<p>Until 1.0, read the release notes before you upgrade. Start the way you'd start with any new tool: one server you don't mind touching, with your state backed up. If something doesn't behave, <a href="${repo}/issues">tell us</a>.</p>`,
+      },
+    ],
+  },
+  {
+    id: "terraform",
+    title: "Coming from Terraform or OpenTofu",
+    items: [
+      {
+        id: "fork",
+        q: "Is Conn3x a fork of OpenTofu?",
+        a: `<p>Yes. Conn3x starts from OpenTofu v1.13.2 and tracks its releases. It adds circuits and the host modules that run them; the planning, state and provider machinery is OpenTofu's. Files that come from OpenTofu keep their original copyright and license headers.</p>
+<p>The commands will look familiar: <code>conn3x init</code>, <code>conn3x plan</code> and <code>conn3x apply</code>, where you'd run <code>tofu</code> or <code>terraform</code>.</p>`,
+      },
+      {
+        id: "existing-config",
+        q: "Will my existing configuration and state work?",
+        a: `<p>Your configuration runs unchanged: the same <code>.tf</code> files, the same providers, the same modules. Conn3x reads and writes OpenTofu state, and OpenTofu reads Terraform state up to the versions it supports. The S3, GCS, azurerm, Kubernetes, Consul, PostgreSQL and HTTP backends are built in.</p>
+<p>Back up your state before the first <code>conn3x apply</code>, as you would before any tool change. <a href="${docs}/guides/migrate-from-terraform">Use Conn3x with Terraform or OpenTofu configuration</a> walks through it.</p>`,
+      },
+      {
+        id: "providers",
+        q: "Do all the providers work?",
+        a: `<p>Every provider in the OpenTofu Registry works, as it is. Create servers with whichever cloud you already use and hand their addresses to a circuit. <a href="/providers">Providers</a> lists the usual ones.</p>`,
+      },
+      {
+        id: "provisioners",
+        q: "How is a circuit different from a provisioner or user_data?",
+        a: `<p>A <code>user_data</code> script or a <code>remote-exec</code> provisioner runs once, when the server is created. The plan doesn't show what it will do, state doesn't record what it did, and nobody hears about it when someone changes the server later.</p>
+<p>A circuit reads the server first, shows a diff in the plan, then applies it. What it manages lives in the same state as your resources, so the next plan, and <code>conn3x drift</code>, will tell you when the server no longer matches.</p>`,
+      },
+    ],
+  },
+  {
+    id: "ansible",
+    title: "Coming from Ansible",
+    items: [
+      {
+        id: "playbooks",
+        q: "Do I have to rewrite my playbooks?",
+        a: `<p>Not by hand. <code>conn3x convert ansible -i inventory.ini site.yml</code> turns a playbook into circuits: one per play, a step per task, handlers for the restarts your tasks notify, and hosts read from your inventory. Anything it can't translate stays in the output, commented out, with a <code>TODO(convert)</code> line saying why, so nothing is lost.</p>
+<p><a href="${docs}/guides/migrate-from-ansible">Migrate from Ansible</a> covers what converts and how to finish the rest.</p>`,
+      },
+      {
+        id: "hcl",
+        q: "Why HCL and not YAML?",
+        a: `<p>Because the server config lives next to the infrastructure that creates the server. In HCL a circuit's <code>hosts</code> can be <code>digitalocean_droplet.web.ipv4_address</code>, an expression the plan understands, instead of an address copied into an inventory. Loops, conditions and templates are part of the language, so there's no Jinja inside YAML to keep straight.</p>`,
+      },
+      {
+        id: "modules",
+        q: "What can a circuit manage?",
+        a: `<p>The everyday work: files, templates, and lines or blocks inside them; packages and repositories, services, users and SSH keys, cron jobs and timers, sysctl, mounts, the hostname, time zone and locale, firewalld and ufw, SELinux, downloads, archives, git checkouts, reboots, waits and guarded commands, plus facts about each host to plan with. <a href="${docs}/modules/file">Every module</a> is in the docs.</p>`,
+      },
+      {
+        id: "on-servers",
+        q: "Does Conn3x need anything installed on my servers?",
+        a: `<p>No. No Python, no agent. Conn3x connects over SSH, checks the host key every time, and runs ordinary shell commands, as root or through sudo.</p>`,
+      },
+    ],
+  },
+  {
+    id: "using",
+    title: "Using Conn3x",
+    items: [
+      {
+        id: "platforms",
+        q: "Which systems does it run on, and which can it configure?",
+        a: `<p>Conn3x runs on Linux and macOS, on amd64 and arm64. It configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu servers today. Network devices come next, then Windows.</p>`,
+      },
+      {
+        id: "existing-servers",
+        q: "Can it configure servers it didn't create?",
+        a: `<p>Yes. A circuit's <code>hosts</code> can be plain addresses, such as <code>{ web1 = "203.0.113.10" }</code>, so you can point Conn3x at servers you already run. <a href="${docs}/tutorials/first-server">Configure your first real server</a> starts that way.</p>`,
+      },
+      {
+        id: "secrets",
+        q: "How does it handle secrets?",
+        a: `<p>Pass a secret in through an ephemeral variable and write it with <code>content_wo</code> or a write-only template. It reaches the server, but never the plan, the state file or a saved plan; state keeps an HMAC instead, so Conn3x can still tell when the file changes. <a href="${docs}/tutorials/secrets">Keep secrets out of state</a> shows it end to end.</p>`,
+      },
+      {
+        id: "bastion",
+        q: "Can it reach servers behind a bastion?",
+        a: `<p>Yes. List the hops in <code>jump_hosts</code>, the way you'd pass them to <code>ssh -J</code>, or use the host names you already have in <code>~/.ssh/config</code>. <a href="${docs}/guides/bastions">Reach hosts behind a bastion</a> has the details.</p>`,
+      },
+      {
+        id: "drift",
+        q: "How do I find out when someone changes a server by hand?",
+        a: `<p>Run <code>conn3x drift</code>. It checks both your cloud resources and what's on the servers, and exits 2 when something changed, so a scheduled CI job can alert on it. <a href="${docs}/tutorials/drift-in-ci">Catch drift in CI</a> sets one up.</p>`,
+      },
+      {
+        id: "circuits",
+        q: "Where can I find circuits other people have written?",
+        a: `<p>On <a href="/circuits">conn3x.org/circuits</a>. Each one goes in with a single <code>module</code> block. Written one worth sharing? <a href="${docs}/guides/share-a-circuit">Share a circuit</a> explains how to publish it and list it there.</p>`,
+      },
+    ],
+  },
+  {
+    id: "community",
+    title: "Community",
+    items: [
+      {
+        id: "contribute",
+        q: "How can I contribute?",
+        a: `<p>Ideas and feedback are the most useful thing right now, and they go in <a href="${repo}/discussions">Discussions</a>. If you'd like to write code, issues labelled <a href="${repo}/labels/good%20first%20issue">good first issue</a> and <a href="${repo}/labels/help%20wanted">help wanted</a> are ready to pick up: comment on one to claim it. Read <a href="${repo}/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> first. Every commit needs a DCO sign-off (<code>git commit -s</code>).</p>`,
+      },
+      {
+        id: "report",
+        q: "How do I report a bug or a security problem?",
+        a: `<p>Bugs go in <a href="${repo}/issues">GitHub issues</a>. Security problems should be reported privately, never in a public issue; <a href="${repo}/blob/main/SECURITY.md">SECURITY.md</a> explains how.</p>`,
+      },
+      {
+        id: "verify",
+        q: "How do I check that a release is genuine?",
+        a: `<p>Every release ships a <code>checksums.txt</code> signed with cosign by the release workflow, an SBOM for every archive, and GitHub build provenance you can check with <code>gh attestation verify</code>. <a href="${docs}/install">Install</a> has the commands.</p>`,
+      },
+      {
+        id: "follow",
+        q: "Where can I follow what's happening?",
+        a: `<p>Releases and progress go out on the <a href="/blog">blog</a> (with an <a href="/rss.xml">RSS feed</a>) and on X at <a href="https://x.com/conn3xone">@conn3xone</a>. Questions and show-and-tell live in <a href="${repo}/discussions">Discussions</a>.</p>`,
+      },
+    ],
+  },
+];
+---
+<Base
+  title="FAQ: Conn3x"
+  description="Answers to common questions about Conn3x: what it is, how it relates to OpenTofu, Terraform and Ansible, what it needs on your servers, and how to get involved."
+  path="/faq"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main" class="wrap page">
+    <header class="intro">
+      <h1>Frequently asked questions</h1>
+      <p class="lede">
+        Didn't find yours? Ask in <a href={`${repo}/discussions`}>Discussions</a> and we'll add it.
+      </p>
+    </header>
+
+    <nav class="toc" aria-label="On this page">
+      {sections.map((s) => (
+        <div>
+          <a class="toc-h" href={`#${s.id}`}>{s.title}</a>
+          <ul>
+            {s.items.map((i) => (
+              <li><a href={`#${i.id}`}>{i.q}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </nav>
+
+    {sections.map((s) => (
+      <section aria-labelledby={s.id}>
+        <h2 id={s.id}>{s.title}</h2>
+        {s.items.map((i) => (
+          <article class="qa">
+            <h3 id={i.id}><a href={`#${i.id}`}>{i.q}</a></h3>
+            <Fragment set:html={i.a} />
+          </article>
+        ))}
+      </section>
+    ))}
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .page {
+    padding-block: 3rem 5rem;
+    max-width: 52rem;
+  }
+  h1 {
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+    letter-spacing: -0.03em;
+    margin: 0 0 0.75rem;
+  }
+  .lede {
+    color: var(--c-text-muted);
+    font-size: 1.125rem;
+    margin: 0 0 2rem;
+  }
+  .toc {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    background: var(--c-surface);
+  }
+  .toc-h {
+    font-weight: 700;
+    color: var(--c-text);
+  }
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9375rem;
+  }
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    margin: 3.5rem 0 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .qa {
+    margin-top: 2rem;
+  }
+  h3 {
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+  }
+  h3 a {
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  h2,
+  h3 {
+    scroll-margin-top: 1.5rem;
+  }
+  .qa :global(p) {
+    color: var(--c-text-muted);
+    line-height: 1.65;
+    margin: 0 0 0.85rem;
+  }
+  .qa :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    overflow-wrap: anywhere;
+  }
+  @media (max-width: 700px) {
+    .toc {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
