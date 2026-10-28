@@ -1,0 +1,18 @@
+{
+  "name": "k3s",
+  "repo": "conn3xorg/circuit-k3s",
+  "description": "A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support.",
+  "version": "v0.1.0",
+  "tags": [
+    "kubernetes",
+    "k3s",
+    "raspberry-pi"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
