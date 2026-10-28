@@ -11,7 +11,7 @@ const meta = (page: Page, key: string) =>
 
 test("a post shows its byline", async ({ page }) => {
   await page.goto("/blog/conn3x-v0-1");
-  await expect(page.locator(".meta")).toContainText("James Conway");
+  await expect(page.locator(".meta")).toContainText("The Conn3x team");
 });
 
 test("a post without an image uses the site card", async ({ page }) => {
