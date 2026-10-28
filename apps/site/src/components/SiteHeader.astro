@@ -19,7 +19,7 @@ const links = [
   ["Providers", "/providers"],
   ["Docs", "https://docs.conn3x.org"],
   ["Blog", "/blog"],
-  ["FAQ", "/faq"],
+  ["Community", "/community"],
 ];
 const [latest] = (await getCollection("blog", (p) => isPublished(p)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
