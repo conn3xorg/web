@@ -28,6 +28,8 @@ While one instance is dialing a host, the others that need the same connection w
 
 Before it hands out a pooled connection, Conn3x sends it an OpenSSH keepalive request. If the request fails, Conn3x closes the connection and dials a new one.
 
+A connection sends keepalives one at a time, so when several steps on one host check at the same moment, they share a single keepalive instead of queueing behind each other. A step that starts checking while a keepalive is in flight gets that keepalive's answer.
+
 ## Sessions on the connection
 
 Each command runs in its own SSH session on the shared connection. OpenSSH's sshd allows 10 sessions per connection by default (`MaxSessions` in `sshd_config`) and refuses the eleventh, so Conn3x caps the sessions it opens at once on one connection. The cap is 8, which leaves room for a session that's still closing when the next one opens. A command that finds every session in use waits for one to free up; it doesn't fail.
