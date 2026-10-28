@@ -1,0 +1,17 @@
+{
+  "name": "postgres",
+  "repo": "conn3xorg/circuit-postgres",
+  "description": "Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state.",
+  "version": "v0.1.0",
+  "tags": [
+    "postgresql",
+    "database"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
