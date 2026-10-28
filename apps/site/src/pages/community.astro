@@ -1,0 +1,252 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+import { contributors } from "../lib/contributors.js";
+
+const repo = "https://github.com/conn3xorg/conn3x";
+const docs = "https://docs.conn3x.org";
+const discuss = `${repo}/discussions`;
+
+// Avatars are inlined at build time: the CSP allows images from this site
+// and data: URLs only. One that won't download shows the handle's initial.
+const people = await Promise.all(
+  (await contributors()).map(async (p) => {
+    try {
+      const res = await fetch(`${p.avatar}${p.avatar.includes("?") ? "&" : "?"}s=96`, { signal: AbortSignal.timeout(10_000) });
+      if (!res.ok) throw new Error(String(res.status));
+      const type = res.headers.get("content-type") ?? "image/png";
+      return { ...p, src: `data:${type};base64,${Buffer.from(await res.arrayBuffer()).toString("base64")}` };
+    } catch {
+      return { ...p, src: null };
+    }
+  }),
+);
+
+const categories = [
+  ["Q&A", "q-a", "Stuck on something? Ask here, and answer when you can."],
+  ["Ideas", "ideas", "Features you'd like Conn3x to have."],
+  ["Circuits", "circuits", "Share a circuit you wrote, or ask for one you need."],
+  ["Show and tell", "show-and-tell", "Something you've made with Conn3x."],
+  ["Announcements", "announcements", "News from the maintainers."],
+] as const;
+---
+<Base
+  title="Community: Conn3x"
+  description="Who builds Conn3x, how to join them, and where we talk."
+  path="/community"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero label="Open source" title="Community">
+      <p>
+        Conn3x is open source, and the people who use it fix it, document it and write its
+        circuits. Here's who they are so far, and how to join them.
+      </p>
+    </PageHero>
+    <div class="wrap page">
+      <section aria-labelledby="people">
+        <h2 class="sub" id="people">Who builds Conn3x</h2>
+        <p class="intro">
+          Everyone with a commit in Conn3x, this website or an official circuit, A to Z, as GitHub
+          listed them when this page was built.
+        </p>
+        <ul class="people">
+          {people.map((p) => (
+            <li>
+              <a href={`https://github.com/${p.login}`}>
+                {p.src
+                  ? <img src={p.src} alt="" width="48" height="48" />
+                  : <span class="initial" aria-hidden="true">{p.login[0].toUpperCase()}</span>}
+                <span class="handle">{p.login}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section aria-labelledby="involved">
+        <h2 class="sub" id="involved">Get involved</h2>
+        <div class="ways">
+          <a href={`${repo}/issues/new/choose`}>
+            <span class="label">Feedback</span>
+            <strong>Tell us what broke</strong>
+            <span class="d">A plan that surprised you is a bug report we want, with the output.</span>
+          </a>
+          <a href={`${docs}/guides/share-a-circuit`}>
+            <span class="label">Circuits</span>
+            <strong>Share a circuit</strong>
+            <span class="d">Wrote one for something you run? Package it, and list it in the directory.</span>
+          </a>
+          <a href={`${repo}/labels/good%20first%20issue`}>
+            <span class="label">Code</span>
+            <strong>Pick up an issue</strong>
+            <span class="d">Good first issues name the file to change and the test to add.</span>
+          </a>
+        </div>
+        <p class="fine">
+          Fixing the docs, answering questions and testing releases count too.{" "}
+          <a href={`${docs}/contribute`}>Get involved</a> has every way in.
+        </p>
+      </section>
+
+      <section aria-labelledby="talk">
+        <h2 class="sub" id="talk">Where we talk</h2>
+        <p class="intro">
+          <a href={discuss}>GitHub Discussions</a> is the one place for questions and ideas. There's
+          no chat server or community call, so nothing gets lost in a channel you weren't in.
+        </p>
+        <ul class="talk">
+          {categories.map(([name, slug, d]) => (
+            <li><a href={`${discuss}/categories/${slug}`}>{name}</a><span>{d}</span></li>
+          ))}
+        </ul>
+        <p class="fine">
+          News also goes out on the <a href="/blog">blog</a> (<a href="/rss.xml">RSS</a>) and on X at{" "}
+          <a href="https://x.com/conn3xone">@conn3xone</a>. Found a security problem? Email{" "}
+          <a href="mailto:security@conn3x.org">security@conn3x.org</a> instead of opening an issue.
+        </p>
+      </section>
+
+      <section aria-labelledby="decide">
+        <h2 class="sub" id="decide">How decisions get made</h2>
+        <p class="intro">
+          In public, in issues, Discussions and pull requests. While the project is small, James Conway
+          makes the final call. Anyone who contributes steadily and reviews other people's work can be
+          invited to become a maintainer, and once maintainers come from more than one organization,
+          the plan is to move Conn3x to a neutral foundation.{" "}
+          <a href={`${repo}/blob/main/GOVERNANCE.md`}>GOVERNANCE.md</a> has the details.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .page {
+    padding-block: 0 5rem;
+  }
+  .sub {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    letter-spacing: -0.02em;
+    margin: 3rem 0 1rem;
+  }
+  .intro {
+    max-width: 46rem;
+    color: var(--c-text-muted);
+    margin: 0 0 1.5rem;
+  }
+  .people {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+    gap: 0.75rem;
+  }
+  .people a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    background: var(--c-surface);
+    color: var(--c-text);
+    text-decoration: none;
+  }
+  .people a:hover .handle {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .people img,
+  .initial {
+    flex: none;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+  }
+  .initial {
+    display: grid;
+    place-content: center;
+    background: var(--c-raised);
+    font-weight: 700;
+  }
+  .handle {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .ways a {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+    padding: 1.5rem;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: var(--c-surface);
+    color: var(--c-text);
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s var(--ease-out);
+  }
+  .ways a:hover {
+    border-color: var(--c-border-strong);
+    transform: translateY(-2px);
+  }
+  .ways strong {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+  }
+  .ways .d {
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+  }
+  .fine {
+    margin: 1.5rem 0 0;
+    font-size: 0.9375rem;
+    color: var(--c-text-muted);
+  }
+  .talk {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    border-top: 1px solid var(--c-border);
+  }
+  .talk li {
+    display: grid;
+    grid-template-columns: 12rem 1fr;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .talk a {
+    font-weight: 600;
+  }
+  .talk span {
+    color: var(--c-text-muted);
+  }
+  @media (max-width: 860px) {
+    .ways {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .talk li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.25rem;
+    }
+  }
+</style>
