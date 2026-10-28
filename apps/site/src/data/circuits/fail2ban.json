@@ -1,0 +1,18 @@
+{
+  "name": "fail2ban",
+  "repo": "conn3xorg/circuit-fail2ban",
+  "description": "Bans addresses that keep failing SSH logins, through nftables, with room for jails of your own.",
+  "version": "v0.1.0",
+  "tags": [
+    "fail2ban",
+    "ssh",
+    "security"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
