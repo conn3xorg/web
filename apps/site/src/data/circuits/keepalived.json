@@ -1,0 +1,18 @@
+{
+  "name": "keepalived",
+  "repo": "conn3xorg/circuit-keepalived",
+  "description": "A floating IP address shared between hosts with keepalived, moving to a backup within a second when a host or a check fails.",
+  "version": "v0.1.0",
+  "tags": [
+    "keepalived",
+    "vrrp",
+    "high-availability"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
