@@ -49,6 +49,11 @@ export default defineConfig({
           items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         {
+          label: "Circuits",
+          collapsed: true,
+          items: [{ slug: "circuits", label: "Overview" }, { autogenerate: { directory: "circuits" } }],
+        },
+        {
           label: "Circuit language",
           items: [
             { slug: "reference/circuits", label: "Overview" },

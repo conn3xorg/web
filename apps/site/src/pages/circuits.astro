@@ -64,6 +64,7 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <p class="desc">{c.description}</p>
           <p class="meta">
             <span>{c.repo}</span> · <span>{c.version}</span>
+            {c.official && <> · <a href={`https://docs.conn3x.org/circuits/${c.name}`}>Docs</a></>}
           </p>
           <pre><code>{source(c)}</code></pre>
           <button class="copy" type="button" data-copy={source(c)}>Copy</button>

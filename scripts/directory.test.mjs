@@ -6,7 +6,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 const dir = new URL("../apps/site/src/data/circuits/", import.meta.url);
 const distros = new Set(["rocky10", "fedora45", "ubuntu2404", "debian13"]);
@@ -24,6 +24,7 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
     assert.ok(c.tested.length > 0 && c.tested.every((d) => distros.has(d)), "tested names known distros");
     assert.equal(typeof c.official, "boolean");
     if (c.official) assert.ok(c.repo.startsWith("conn3xorg/"), "only conn3xorg circuits are official");
+    if (c.official) assert.ok(existsSync(new URL(`../apps/docs/src/content/docs/circuits/${c.name}.md`, import.meta.url)), "official circuits have a docs page");
   });
 }
 
