@@ -1,0 +1,18 @@
+{
+  "name": "nfs",
+  "repo": "conn3xorg/circuit-nfs",
+  "description": "Share folders over NFSv4 from the kernel NFS server, with each export checked by exportfs and v3 off unless you want it.",
+  "version": "v0.1.0",
+  "tags": [
+    "nfs",
+    "storage",
+    "file-sharing"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
