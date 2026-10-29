@@ -114,3 +114,4 @@ Hosts
 - [Create the server in the same plan](/guides/provision-and-configure), so its address flows straight into the circuit.
 - Read the [concepts](/concepts) behind circuits, plans and drift.
 - Browse the [modules](/modules/file).
+- Use an [official circuit](/circuits) for nginx, PostgreSQL, WireGuard and more.
