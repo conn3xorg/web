@@ -1,0 +1,18 @@
+{
+  "name": "hardening",
+  "repo": "conn3xorg/circuit-hardening",
+  "description": "SSH and kernel hardening for a fresh server: modern SSH crypto, hardening sysctls, rare modules blocked, no core dumps, every control switchable.",
+  "version": "v0.1.0",
+  "tags": [
+    "security",
+    "ssh",
+    "hardening"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
