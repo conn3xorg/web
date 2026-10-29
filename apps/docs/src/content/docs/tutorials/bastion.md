@@ -145,7 +145,7 @@ If your team already keeps the route in an OpenSSH config file, Conn3x can read 
 
 Create `ssh_config` next to the circuit:
 
-```sshconfig
+```ssh-config
 Host bastion
   HostName bastion.example.com
   User admin

@@ -33,7 +33,7 @@ Every hop's host key is checked against your known_hosts file, just like the hos
 
 If `~/.ssh/config` already says how to reach each host, point the `ssh` block at it and use the aliases as addresses:
 
-```sshconfig
+```ssh-config
 Host bastion
   HostName bastion.example.com
 
