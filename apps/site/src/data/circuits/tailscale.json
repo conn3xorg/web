@@ -14,5 +14,6 @@
     "ubuntu2404",
     "debian13"
   ],
+  "category": "Networking and VPN",
   "official": true
 }

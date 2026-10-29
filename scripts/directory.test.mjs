@@ -10,11 +10,12 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 const dir = new URL("../apps/site/src/data/circuits/", import.meta.url);
 const distros = new Set(["rocky10", "fedora45", "ubuntu2404", "debian13"]);
+const categories = new Set(JSON.parse(readFileSync(new URL("../apps/site/src/data/categories.json", import.meta.url), "utf8")));
 
 for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
   test(`circuit ${file}`, () => {
     const c = JSON.parse(readFileSync(new URL(file, dir), "utf8"));
-    assert.deepEqual(Object.keys(c).sort(), ["description", "name", "official", "repo", "tags", "tested", "version"]);
+    assert.deepEqual(Object.keys(c).sort(), ["category", "description", "name", "official", "repo", "tags", "tested", "version"]);
     assert.equal(file, `${c.name}.json`, "file is named after the circuit");
     assert.match(c.name, /^[a-z0-9][a-z0-9-]*$/);
     assert.match(c.repo, /^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/, "repo is OWNER/NAME on GitHub");
@@ -22,6 +23,7 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
     assert.ok(c.description.length >= 20 && c.description.length <= 140, "description is one line");
     assert.ok(Array.isArray(c.tags) && c.tags.every((t) => /^[a-z0-9-]+$/.test(t)));
     assert.ok(c.tested.length > 0 && c.tested.every((d) => distros.has(d)), "tested names known distros");
+    assert.ok(categories.has(c.category), "category is one of data/categories.json");
     assert.equal(typeof c.official, "boolean");
     if (c.official) assert.ok(c.repo.startsWith("conn3xorg/"), "only conn3xorg circuits are official");
     if (c.official) assert.ok(existsSync(new URL(`../apps/docs/src/content/docs/circuits/${c.name}.md`, import.meta.url)), "official circuits have a docs page");

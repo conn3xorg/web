@@ -11,5 +11,6 @@
   "tested": [
     "debian13"
   ],
+  "category": "Platforms",
   "official": true
 }

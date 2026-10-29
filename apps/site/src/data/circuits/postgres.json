@@ -13,5 +13,6 @@
     "ubuntu2404",
     "debian13"
   ],
+  "category": "Databases and caches",
   "official": true
 }

@@ -11,5 +11,6 @@
   "tested": [
     "rocky10"
   ],
+  "category": "Containers and Kubernetes",
   "official": true
 }
