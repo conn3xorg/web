@@ -1,0 +1,18 @@
+{
+  "name": "wireguard",
+  "repo": "conn3xorg/circuit-wireguard",
+  "description": "Joins hosts into a WireGuard network, full mesh or hub and spoke, with each private key made on its host and never leaving it.",
+  "version": "v0.1.0",
+  "tags": [
+    "wireguard",
+    "vpn",
+    "networking"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
