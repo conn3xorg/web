@@ -1,0 +1,88 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What one apply builds: diagram</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1220px; }
+  code { font-family: var(--mono); font-size: 0.88em; }
+  .map { display: grid; grid-template-columns: 330px 150px 1fr; align-items: center; margin-top: 56px; }
+  .node { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 26px; }
+  .k { display: block; font-family: var(--mono); font-size: 18px; letter-spacing: 0.12em; color: var(--navy-muted); margin-bottom: 10px; }
+  .node h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 800; margin-bottom: 12px; }
+  .node p { font-size: 22px; line-height: 1.45; color: var(--navy-muted); }
+  pre { font-family: var(--mono); font-size: 17px; line-height: 1.5; background: var(--ink); color: var(--text); padding: 14px 16px; margin-top: 16px; white-space: pre; }
+  .wire { text-align: center; font-family: var(--mono); font-size: 18px; color: var(--rust); line-height: 1.4; }
+  .wire .arrow { font-size: 48px; display: block; }
+  .cloud { border: 3px dashed var(--accent); padding: 22px; background: rgba(255, 122, 46, 0.06); }
+  .droplet { background: var(--paper-2); border: 2px solid var(--paper-line); border-top: 8px solid var(--accent); padding: 24px; margin-top: 14px; }
+  .layers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .layer { background: var(--paper); border: 2px solid var(--paper-line); padding: 14px 16px; font-size: 20px; line-height: 1.35; color: var(--navy-muted); }
+  .layer b { display: block; font-family: var(--mono); font-size: 19px; color: var(--navy); margin-bottom: 4px; }
+  .lo { margin-top: 18px; border: 2px solid var(--navy); padding: 16px; }
+  .lo > .k { color: var(--navy); }
+  .svcs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .svc { background: var(--ink); color: var(--text); padding: 18px 20px; }
+  .svc h3 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+  .svc h3 span { font-family: var(--mono); font-size: 22px; color: var(--accent); font-weight: 600; margin-left: 8px; }
+  .svc p { font-size: 20px; line-height: 1.45; color: var(--muted); margin-top: 6px; }
+  .svc code { color: var(--text); }
+  .key { margin-top: 44px; background: var(--ink); color: var(--text); padding: 30px 40px; display: grid; grid-template-columns: 360px 1fr; gap: 36px; align-items: center; }
+  .key h3 { font-size: 38px; letter-spacing: -0.02em; font-weight: 800; color: var(--accent); }
+  .key p { font-size: 24px; line-height: 1.45; color: var(--muted); }
+  .key code { color: var(--text); }
+  .bottom { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CIRCUIT-OLLAMA · CIRCUIT-QDRANT</span>
+  <h1>What one apply builds</h1>
+  <p class="lede">A droplet, locked down to SSH, running a local model and a vector database that only listen on <code>127.0.0.1</code>. Your laptop reaches them through a tunnel.</p>
+  <div class="map">
+    <div class="node">
+      <span class="k">YOUR LAPTOP</span>
+      <h2>The tunnel</h2>
+      <p><code>localhost:11434</code> is Ollama, <code>localhost:6333</code> is Qdrant.</p>
+<pre>$(conn3x output \
+  -raw tunnel)</pre>
+    </div>
+    <div class="wire"><span class="arrow">→</span>SSH :22<br>from<br>admin_cidrs</div>
+    <div class="cloud">
+      <span class="k">DIGITALOCEAN CLOUD FIREWALL · SSH FROM admin_cidrs, NOTHING ELSE</span>
+      <div class="droplet">
+        <span class="k">UBUNTU 24.04 DROPLET · s-2vcpu-4gb · $24 A MONTH</span>
+        <div class="layers">
+          <div class="layer"><b>baseline</b>chrony, time zone, key-only SSH</div>
+          <div class="layer"><b>hardening</b>Tighter SSH and kernel; tunnels by <code>-L</code> only</div>
+          <div class="layer"><b>firewall</b>ufw denies all incoming but SSH</div>
+        </div>
+        <div class="lo">
+          <span class="k">LOOPBACK ONLY · 127.0.0.1</span>
+          <div class="svcs">
+            <div class="svc"><h3>Ollama<span>:11434</span></h3><p><code>nomic-embed-text</code> makes the vectors, <code>qwen2.5:0.5b</code> answers.</p></div>
+            <div class="svc"><h3>Qdrant<span>:6333</span></h3><p>Stores and searches the vectors. Every request needs its API key.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="key">
+    <h3>Tested from outside</h3>
+    <p>Ports 11434, 6333 and 6334 didn't answer from the internet. Qdrant turned away a request without its key with <code>401</code>. Built in 2 minutes 36 seconds, gone in 41.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/circuit-ollama</span>
+  </div>
+</div>
+</body>
+</html>

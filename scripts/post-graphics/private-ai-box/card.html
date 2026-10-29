@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A private AI box: social card</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1200px; height: 630px; overflow: hidden; color: var(--text); font-variant-ligatures: none; }
+  .frame { padding: 60px 72px; height: 100%; display: grid; grid-template-rows: auto auto 1fr; gap: 30px; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .top img { height: 44px; }
+  .label { font-family: var(--mono); font-size: 20px; letter-spacing: 0.14em; color: var(--muted); }
+  .label b { color: var(--accent); font-weight: 600; }
+  h1 { font-size: 66px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; }
+  h1 span { color: var(--accent); }
+  .route { align-self: end; display: grid; grid-template-columns: 1fr 56px 1.5fr; align-items: center; }
+  .node { background: var(--ink-3); border: 2px solid var(--line); padding: 18px 22px; font-family: var(--mono); font-size: 21px; line-height: 1.45; }
+  .node .tag { display: block; font-size: 15px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 6px; }
+  .node.mid { border-color: var(--accent); }
+  .arrow { text-align: center; color: var(--accent); font-size: 36px; font-family: var(--mono); }
+  .ok { color: var(--add); }
+</style>
+</head>
+<body class="grid-dark">
+<div class="frame">
+  <div class="top"><img src="../../../apps/site/src/brand/logo-dark.svg" alt=""><span class="label"><b>OLLAMA</b> · QDRANT</span></div>
+  <h1>A private AI box.<br><span>One apply. Only SSH open.</span></h1>
+  <div class="route">
+    <div class="node"><span class="tag">YOUR LAPTOP</span>ssh -L 11434 -L 6333</div>
+    <div class="arrow">→</div>
+    <div class="node mid"><span class="tag">DROPLET · 127.0.0.1 ONLY</span>ollama :11434 <span class="ok">✓</span><br>qdrant :6333 <span class="ok">✓</span></div>
+  </div>
+</div>
+</body>
+</html>
