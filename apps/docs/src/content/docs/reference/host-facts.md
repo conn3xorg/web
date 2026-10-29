@@ -64,3 +64,35 @@ circuit "web" {
 ```
 
 Facts are read fresh on every plan and aren't stored as anything to change, so they never show up as drift.
+
+## Hosts that don't exist yet
+
+A host created in the same plan has no facts to read until the apply makes it, and neither does a host behind a `depends_on` on the module, which holds the read back until the apply. Until then every fact is unknown.
+
+Using a fact inside a step's arguments, as in the example above, is fine: the plan shows `(known after apply)` for that value and the apply fills it in. Using a fact to decide which hosts a circuit runs on, or how many instances a `for_each` has, isn't. The plan fails with `Invalid for_each argument`, because it has to know which steps exist.
+
+When a circuit splits its hosts by distribution, let the caller say what each new host will be. The official circuits take an `os` in each host object and fall back to the facts:
+
+```hcl
+data "conn3x_host" "facts" {
+  for_each = var.hosts
+  ssh {
+    host     = try(each.value.address, each.value)
+    host_key = try(each.value.host_key, null)
+  }
+
+  lifecycle {
+    postcondition {
+      condition     = try(each.value.os, self.os_id) == self.os_id
+      error_message = "Host ${each.key} is ${self.os_id}, not the ${try(each.value.os, "")} its os says."
+    }
+  }
+}
+
+locals {
+  os       = { for name, h in var.hosts : name => try(h.os, data.conn3x_host.facts[name].os_id) }
+  apt_hosts = { for name, h in var.hosts : name => h if contains(["debian", "ubuntu"], local.os[name]) }
+}
+```
+
+`try` takes `os` when the host object has it and never reads the facts for that host. The postcondition checks it against the real host once the facts can be read, so a wrong `os` fails the apply before any step runs on that host.
