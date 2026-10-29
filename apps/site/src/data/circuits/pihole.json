@@ -1,0 +1,18 @@
+{
+  "name": "pihole",
+  "repo": "conn3xorg/circuit-pihole",
+  "description": "Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists.",
+  "version": "v0.1.0",
+  "tags": [
+    "pihole",
+    "dns",
+    "homelab"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}

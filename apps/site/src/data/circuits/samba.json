@@ -1,0 +1,18 @@
+{
+  "name": "samba",
+  "repo": "conn3xorg/circuit-samba",
+  "description": "Samba file shares with per-user passwords kept out of state, SMB2 minimum, NetBIOS off and SELinux labels.",
+  "version": "v0.1.0",
+  "tags": [
+    "samba",
+    "file-sharing",
+    "homelab"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
