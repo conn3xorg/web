@@ -104,4 +104,4 @@ Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/loca
 
 - Repository: [conn3xorg/circuit-nginx](https://github.com/conn3xorg/circuit-nginx). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-nginx/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.0/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot).
+- Related circuits: [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot).
