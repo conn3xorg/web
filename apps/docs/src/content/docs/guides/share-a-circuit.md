@@ -120,8 +120,11 @@ Put the circuit in a public repository with an open-source licence and at least 
     "version": "v0.1.0",
     "tags": ["database", "postgres"],
     "tested": ["rocky10", "debian13"],
+    "category": "Databases and caches",
     "official": false
   }
   ```
+
+  `category` is one of the names in [`categories.json`](https://github.com/conn3xorg/web/blob/main/apps/site/src/data/categories.json), and it's the filter your circuit shows up under on the page.
 
 Before we list a circuit, we check that `conn3x validate` passes, read it through, and make sure the README covers the points above. When you release a new version, open a pull request that bumps `version`.

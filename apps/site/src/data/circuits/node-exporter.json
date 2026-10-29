@@ -13,5 +13,6 @@
     "ubuntu2404",
     "debian13"
   ],
+  "category": "Monitoring",
   "official": true
 }
