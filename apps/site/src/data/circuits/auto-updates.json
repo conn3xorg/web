@@ -2,7 +2,7 @@
   "name": "auto-updates",
   "repo": "conn3xorg/circuit-auto-updates",
   "description": "Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window.",
-  "version": "v0.1.0",
+  "version": "v0.2.0",
   "tags": [
     "updates",
     "patching",
