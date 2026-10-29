@@ -118,7 +118,7 @@ Conn3x doesn't read `~/.ssh/config` by default, so a `Host *` entry in someone's
 
 A `ProxyJump` hop can name another `Host` entry in the same file, the way you'd write it for `ssh`:
 
-```sshconfig
+```ssh-config
 Host bastion
   HostName bastion.example.com
   User admin
