@@ -1,0 +1,18 @@
+{
+  "name": "adguardhome",
+  "repo": "conn3xorg/circuit-adguardhome",
+  "description": "AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard.",
+  "version": "v0.1.0",
+  "tags": [
+    "adguard-home",
+    "dns",
+    "ad-blocking"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}

@@ -146,4 +146,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-pihole/blob/v0.1.0/L
 
 - Repository: [conn3xorg/circuit-pihole](https://github.com/conn3xorg/circuit-pihole). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-pihole/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Podman](/circuits/podman), [Unbound](/circuits/unbound).
+- Related circuits: [Firewall](/circuits/firewall), [Podman](/circuits/podman), [AdGuard Home](/circuits/adguardhome), [Unbound](/circuits/unbound), [BIND](/circuits/bind).

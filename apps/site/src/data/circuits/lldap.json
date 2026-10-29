@@ -1,0 +1,18 @@
+{
+  "name": "lldap",
+  "repo": "conn3xorg/circuit-lldap",
+  "description": "LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state.",
+  "version": "v0.1.0",
+  "tags": [
+    "lldap",
+    "ldap",
+    "sso"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}
