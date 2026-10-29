@@ -2,7 +2,7 @@
   "name": "docker",
   "repo": "conn3xorg/circuit-docker",
   "description": "Installs Docker Engine from Docker's repository and runs your Compose stacks from files in your configuration.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "docker",
     "compose",
