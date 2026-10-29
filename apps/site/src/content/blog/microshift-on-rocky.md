@@ -1,6 +1,6 @@
 ---
 title: "MicroShift on one Rocky Linux box"
-description: "A new official circuit turns a single Rocky Linux 10 host into a MicroShift cluster. What it does, what we found getting it there, and the parts of the supply chain we wouldn't copy from the install docs."
+description: "A new official circuit turns one Rocky Linux 10 host into a MicroShift cluster, without the unsigned repositories the install docs add."
 date: 2026-10-29
 ---
 
