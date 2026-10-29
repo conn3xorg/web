@@ -109,7 +109,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Users](/circuits/users) | Creates users, groups and their SSH keys from one map, with optional passwordless sudo. | v0.1.0 |
 | [LLDAP](/circuits/lldap) | LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state. | v0.1.0 |
 | [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.1.0 |
-| [OpenBao](/circuits/openbao) | OpenBao secrets server from the official release with raft storage, on loopback until you give it TLS, and an opt-in lab init. | v0.1.0 |
+| [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.2.0 |
 
 ### AI
 
