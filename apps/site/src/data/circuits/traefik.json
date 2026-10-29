@@ -1,0 +1,18 @@
+{
+  "name": "traefik",
+  "repo": "conn3xorg/circuit-traefik",
+  "description": "Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes.",
+  "version": "v0.1.0",
+  "tags": [
+    "traefik",
+    "reverse-proxy",
+    "lets-encrypt"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}

@@ -1,0 +1,18 @@
+{
+  "name": "bind",
+  "repo": "conn3xorg/circuit-bind",
+  "description": "BIND 9 serving your zones, written as HCL, with serials that go up when records change and TSIG-signed secondaries.",
+  "version": "v0.1.0",
+  "tags": [
+    "bind",
+    "dns",
+    "authoritative-dns"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "official": true
+}

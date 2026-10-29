@@ -33,8 +33,9 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [nginx](/circuits/nginx) | Installs nginx, writes your site, keeps the service running and opens port 80 in firewalld or ufw. | v0.1.0 |
-| [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.2.0 |
+| [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.2.1 |
 | [HAProxy](/circuits/haproxy) | HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live. | v0.1.0 |
+| [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.1.0 |
 | [certbot](/circuits/certbot) | Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer. | v0.1.0 |
 
 ### Databases and caches
@@ -70,7 +71,9 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Pi-hole](/circuits/pihole) | Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists. | v0.1.0 |
+| [AdGuard Home](/circuits/adguardhome) | AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard. | v0.1.0 |
 | [Unbound](/circuits/unbound) | A validating, caching DNS resolver with Unbound: DNSSEC on, optional DNS over TLS upstreams and local records for your network. | v0.1.0 |
+| [BIND](/circuits/bind) | BIND 9 serving your zones, written as HCL, with serials that go up when records change and TSIG-signed secondaries. | v0.1.0 |
 
 ### Networking and VPN
 
@@ -104,6 +107,8 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Users](/circuits/users) | Creates users, groups and their SSH keys from one map, with optional passwordless sudo. | v0.1.0 |
+| [LLDAP](/circuits/lldap) | LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state. | v0.1.0 |
+| [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.1.0 |
 | [OpenBao](/circuits/openbao) | OpenBao secrets server from the official release with raft storage, on loopback until you give it TLS, and an opt-in lab init. | v0.1.0 |
 
 ### AI
