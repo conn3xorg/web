@@ -155,7 +155,7 @@ What validate can't do is apply. It proves the config is well formed and the val
 
 ## What it doesn't do yet
 
-It writes for one group of hosts, all with the same role. Clusters with servers and agents need a second group, and that's not in v1. It doesn't create cloud servers either; you bring the machines.
+It doesn't create cloud servers; you bring the machines. And kubeadm and Zabbix aren't in it yet, since each needs more than a list of hosts for each role.
 
 Forgejo, Keycloak, Matrix and LLDAP work without a database circuit, on SQLite or a file meant for trials, so the builder doesn't wire PostgreSQL to them. Their hints point at the README, which shows how.
 

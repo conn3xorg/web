@@ -1,6 +1,6 @@
 {
   "name": "litellm",
-  "version": "v0.1.0",
+  "version": "v0.2.0",
   "hostObjects": true,
   "inputs": [
     {
@@ -57,6 +57,24 @@
       "required": false
     },
     {
+      "name": "guardrails",
+      "type": "any",
+      "default": [],
+      "description": "LiteLLM's guardrails list, such as [{ guardrail_name = \"presidio-pii\", litellm_params = { guardrail = \"presidio\", mode = \"pre_call\", default_on = true } }]. It's written to config.yaml as it is, so give keys as os.environ/NAME references to api_keys.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "langfuse_url",
+      "type": "string",
+      "default": null,
+      "description": "Base URL of a Langfuse 3 or later to send a trace of every model call to over OpenTelemetry, such as \"http://127.0.0.1:3000\". Put the project's LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY in api_keys. When null, nothing is sent.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
       "name": "api_keys",
       "type": "map(string)",
       "default": {},
@@ -69,7 +87,7 @@
       "name": "log_prompts",
       "type": "bool",
       "default": false,
-      "description": "Store each request's messages and the model's answer in LiteLLM's spend logs, in PostgreSQL, where admins can read them in the UI. Off by default: the logs then hold who called which model, when, with how many tokens and at what cost, but not what was said.",
+      "description": "Store each request's messages and the model's answer in LiteLLM's spend logs, in PostgreSQL, where admins can read them in the UI, and with langfuse_url, in each Langfuse trace. Off by default: the logs and traces then hold who called which model, when, with how many tokens and at what cost, but not what was said.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

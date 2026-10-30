@@ -21,10 +21,10 @@ test("builds a config and greys out what conflicts", async ({ page }) => {
 
 test("never offers excluded circuits", async ({ page }) => {
   await page.goto("/build");
-  for (const name of ["k3s", "kubeadm", "proxmox", "microshift", "velociraptor", "zabbix", "freeipa", "lastrack"]) {
+  for (const name of ["kubeadm", "proxmox", "microshift", "zabbix", "lastrack"]) {
     await expect(page.locator(`input[name=pick][value="${name}"]`)).toHaveCount(0);
   }
-  await expect(page.locator(".later")).toContainText("k3s has servers and agents");
+  await expect(page.locator(".later")).toContainText("kubeadm has control planes and workers");
 });
 
 test("waits for a person to accept the SQL Server licence", async ({ page }) => {
@@ -59,4 +59,17 @@ test("a link brings the picks back, and nothing typed", async ({ page }) => {
   await expect(page.locator("#hosts")).toHaveValue("");
   await expect(page.locator("#f-mssql-accept_eula")).not.toBeChecked();
   await expect(page.locator("#write")).toBeDisabled();
+});
+
+test("asks for k3s hosts by role, and drops the shared list", async ({ page }) => {
+  await page.goto("/build");
+  await page.locator('input[name=pick][value="k3s"]').check({ force: true });
+  await expect(page.locator("#hosts-field")).toBeHidden();
+  await page.fill("#f-k3s-servers", "cp1 203.0.113.20\ncp2 203.0.113.21");
+  await page.click("#write");
+  await expect(page.locator("#errors")).toContainText("odd number");
+  await page.fill("#f-k3s-servers", "cp1 203.0.113.20");
+  await page.fill("#f-k3s-agents", "w1 203.0.113.21");
+  await expect(page.locator("#code")).toContainText('cp1 = "203.0.113.20"');
+  await expect(page.locator("#code")).not.toContainText("local.hosts");
 });

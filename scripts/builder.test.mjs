@@ -8,7 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { hcl, parseType, fieldKind, convert, unavailable, conflict, withRequired, generate, unticked, zip, linkFor, readLink } from "../apps/site/src/lib/builder.js";
+import { hcl, parseType, fieldKind, convert, unavailable, conflict, withRequired, generate, unticked, zip, linkFor, readLink, rolesOf } from "../apps/site/src/lib/builder.js";
 import { load, builds } from "./builder-combos.mjs";
 
 const data = load();
@@ -199,7 +199,48 @@ test("a link carries picks only, and can't smuggle in a bad build", () => {
   assert.deepEqual(readLink(data, linkFor("rocky10", ["nginx", "grafana"])), { distro: "rocky10", picks: ["nginx", "grafana"] });
   assert.deepEqual(readLink(data, "#distro=rocky10&picks="), { distro: "rocky10", picks: [] });
   assert.deepEqual(readLink(data, "#distro=rocky10&picks=nginx,apache,nginx"), { distro: "rocky10", picks: ["nginx"] }, "the clash and the repeat go");
-  assert.deepEqual(readLink(data, "#distro=rocky10&picks=k3s,lastrack,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
+  assert.deepEqual(readLink(data, "#distro=rocky10&picks=kubeadm,lastrack,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
   assert.equal(readLink(data, "#distro=nope&picks=nginx"), null);
   assert.equal(readLink(data, "#hosts"), null, "a link inside the page isn't a build");
+});
+
+test("roles point at real inputs of offered circuits", () => {
+  for (const [n, rs] of Object.entries(data.builder.roles)) {
+    assert.ok(!data.builder.excluded[n], `${n} has roles and is excluded`);
+    for (const r of rs) assert.ok(data.inputs[n].inputs.some((v) => v.name === r.input), `${n}.${r.input}`);
+  }
+});
+
+test("circuits with roles get their own hosts", () => {
+  const values = { "k3s.servers": "cp1 203.0.113.20", "k3s.agents": "203.0.113.21" };
+  const r = generate(data, { ...base, hosts: "", picks: ["k3s"], values });
+  assert.ok(!r.errors, JSON.stringify(r.errors));
+  const main = r.files["main.tf"];
+  assert.match(main, /servers = \{\n\s+cp1 = "203\.0\.113\.20"/);
+  assert.match(main, /agents = \{\n\s+agent1 = "203\.0\.113\.21"/);
+  assert.match(main, /token\s+= var\.k3s_token/);
+  assert.ok(!main.includes("local.hosts") && !main.includes("locals {"), "no shared hosts");
+  assert.match(r.files["README.md"], /on 2 hosts/);
+
+  const mixed = generate(data, { ...base, picks: ["k3s", "nginx"], values });
+  assert.match(mixed.files["main.tf"], /module "nginx"[^}]*hosts\s+= local\.hosts/s);
+  assert.ok(!/module "k3s"[\s\S]*?hosts\s+= local\.hosts[\s\S]*?module "nginx"/.test(mixed.files["main.tf"]));
+});
+
+test("roles refuse a layout that can't work", () => {
+  const err = (picks, values, hosts = "") => (generate(data, { ...base, hosts, picks, values }).errors ?? []).map((e) => e[1]).join(" ");
+  assert.match(err(["k3s"], {}), /needs at least one host/);
+  assert.match(err(["k3s"], { "k3s.servers": "203.0.113.1\n203.0.113.2" }), /odd number/);
+  assert.match(err(["freeipa"], { "freeipa.server": "203.0.113.1\n203.0.113.2", "freeipa.domain": "a.example.com" }), /takes one host/);
+  assert.match(err(["k3s"], { "k3s.servers": "203.0.113.1", "k3s.agents": "203.0.113.1" }), /Each host has one role/);
+  assert.match(err(["k3s", "nginx"], { "k3s.servers": "203.0.113.1" }, "web 203.0.113.1"), /in both/);
+  assert.match(err(["k3s", "freeipa"], { "k3s.servers": "203.0.113.1", "freeipa.server": "203.0.113.1", "freeipa.domain": "a.example.com" }), /in both/);
+  // Clients can sit beside other circuits.
+  assert.equal(err(["velociraptor", "nginx"], { "velociraptor.server": "203.0.113.9", "velociraptor.clients": "203.0.113.1" }, "web 203.0.113.1"), "");
+  assert.ok(rolesOf(data, "k3s").length && !rolesOf(data, "nginx").length);
+});
+
+test("role addresses are typed text, so stay strings", () => {
+  const r = generate(data, { ...base, hosts: "", picks: ["k3s"], values: { "k3s.servers": 'cp1 "}${file("/etc/shadow")}' } });
+  assert.ok(r.files["main.tf"].includes('cp1 = "\\"}$${file(\\"/etc/shadow\\")}"'));
 });

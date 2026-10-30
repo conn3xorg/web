@@ -40,7 +40,14 @@ export const samples = {
   "gitlab.external_url": "https://gitlab.example.com",
   "gitlab-runner.gitlab_url": "https://gitlab.example.com",
   "infisical.site_url": "https://secrets.example.com",
+  "freeipa.server": "ipa 203.0.113.30",
+  "freeipa.clients": "client1 203.0.113.10\nclient2 203.0.113.11",
+  "freeipa.domain": "ipa.example.com",
+  "k3s.servers": "server1 203.0.113.20\nserver2 203.0.113.21\nserver3 203.0.113.22",
+  "k3s.agents": "agent1 203.0.113.23",
   "keepalived.virtual_ips": "10.0.0.100/24",
+  "velociraptor.server": "dfir 203.0.113.40",
+  "velociraptor.clients": "client1 203.0.113.10\nclient2 203.0.113.20",
   "langfuse.public_url": "https://langfuse.example.com",
   "langfuse.admin_email": "you@example.com",
   "lldap.base_dn": "dc=example,dc=com",
@@ -77,6 +84,8 @@ export const combos = [
   { distro: "debian13", picks: ["openldap", "keycloak", "n8n", "github-runner", "firewall"] },
   { distro: "fedora45", picks: ["langfuse", "litellm", "infisical", "caddy"] },
   { distro: "ubuntu2404", picks: ["mssql", "caddy", "firewall"], values: { "mssql.edition": "Express" } },
+  { distro: "rocky10", picks: ["k3s", "velociraptor", "nginx", "firewall"] },
+  { distro: "rocky10", picks: ["freeipa", "velociraptor", "caddy", "auto-updates"] },
 ];
 
 /** Every build CI validates: [folder name, build]. */

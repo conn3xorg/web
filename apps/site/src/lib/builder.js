@@ -248,7 +248,7 @@ export function unavailable(data, name, distro) {
   const d = data.builder.distros.find((x) => x.id === distro);
   if (!d) return "Pick a distribution first.";
   if (!c.tested.includes(distro)) return `Not tested on ${d.name} yet.`;
-  const required = data.inputs[name].inputs.filter((v) => v.required && !secret(v));
+  const required = data.inputs[name].inputs.filter((v) => v.required && !secret(v) && !roleOf(data, name, v.name));
   for (const v of required) if (!fieldKind(parseType(v.type))) return `Needs ${v.name}, which the builder can't ask for yet.`;
   for (const r of data.builder.requires[name] ?? []) {
     const why = unavailable(data, r, distro);
@@ -284,6 +284,10 @@ export function conflict(data, name, picks) {
 }
 
 export const secret = (v) => v.sensitive || v.ephemeral;
+
+/** A circuit's kinds of host from builder.json, such as k3s's servers and agents. */
+export const rolesOf = (data, name) => data.builder.roles?.[name] ?? [];
+const roleOf = (data, name, input) => rolesOf(data, name).find((r) => r.input === input);
 
 /** Boxes among the picks that still need ticking, as "circuit.input". */
 export function unticked(data, picks, values) {
@@ -361,7 +365,7 @@ export function readLink(data, hash) {
  *   hosts: "web1 203.0.113.10\n203.0.113.11",   one per line, name optional
  *   ssh: { user, key, knownHosts, become },
  *   picks: ["nginx", ...],
- *   values: { "nginx.port": "8080", "apache.vhosts": { key, fields }, ... },
+ *   values: { "nginx.port": "8080", "k3s.servers": "cp1 203.0.113.20", ... },
  *   network: "192.168.1.0/24",                    for private firewall ports
  * }
  *
@@ -381,22 +385,57 @@ export function generate(data, build) {
   }
   if (errors.length) return { errors };
 
-  // Hosts: "name address" or just "address" per line.
+  // Hosts: "name address" or just "address" per line. Returns { name: address }.
+  const parseHosts = (text, field, prefix) => {
+    const out = {};
+    (text ?? "").split("\n").map((l) => l.trim()).filter(Boolean).forEach((l, n) => {
+      const parts = l.split(/\s+/);
+      const [name, address] = parts.length === 1 ? [`${prefix}${n + 1}`, parts[0]] : parts;
+      if (parts.length > 2) return fail(field, `Write "name address" or just the address, not "${l}".`);
+      if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(name)) return fail(field, `"${name}" can't be a host name: use letters, digits, - and _.`);
+      if (out[name]) return fail(field, `${name} is there twice.`);
+      out[name] = address;
+    });
+    return out;
+  };
+
+  // Circuits with roles keep to their own hosts, so only the others use the shared list.
   const hosts = {};
-  (build.hosts ?? "").split("\n").map((l) => l.trim()).filter(Boolean).forEach((l, n) => {
-    const parts = l.split(/\s+/);
-    const [name, address] = parts.length === 1 ? [`host${n + 1}`, parts[0]] : parts;
-    if (parts.length > 2) return fail("hosts", `Write "name address" or just the address, not "${l}".`);
-    if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(name)) return fail("hosts", `"${name}" can't be a host name: use letters, digits, - and _.`);
-    if (hosts[name]) return fail("hosts", `${name} is there twice.`);
-    hosts[name] = { address, os: distro.os };
-  });
-  if (!Object.keys(hosts).length) fail("hosts", "Add at least one host.");
+  if (picks.some((p) => !rolesOf(data, p).length)) {
+    for (const [n, address] of Object.entries(parseHosts(build.hosts, "hosts", "host"))) hosts[n] = { address, os: distro.os };
+    if (!Object.keys(hosts).length) fail("hosts", "Add at least one host.");
+  }
+
+  const placed = {};
+  const claims = Object.values(hosts).map((h) => ({ address: h.address, owner: "the shared hosts", light: false }));
+  for (const name of picks) {
+    placed[name] = {};
+    const own = new Set();
+    for (const r of rolesOf(data, name)) {
+      const field = `${name}.${r.input}`;
+      const got = parseHosts(build.values?.[field], field, r.prefix);
+      const n = Object.keys(got).length;
+      if (n < (r.min ?? 0)) fail(field, `${name} needs ${r.one ? "a host" : "at least one host"} in ${r.input}.`);
+      if (r.one && n > 1) fail(field, `${r.input} takes one host.`);
+      if (r.odd && n % 2 === 0 && n > 0) fail(field, `${r.input} needs an odd number of hosts: ${r.oddWhy}`);
+      for (const a of Object.values(got)) {
+        if (own.has(a)) fail(field, `${a} is in ${name} twice. Each host has one role.`);
+        own.add(a);
+        claims.push({ address: a, owner: name, light: !!r.light, field });
+      }
+      if (n) placed[name][r.input] = got;
+    }
+  }
+  // Agents and clients can sit beside anything else. Anything heavier gets a host of its own.
+  for (const [i, c] of claims.entries()) {
+    const other = claims.slice(0, i).find((o) => o.address === c.address && o.owner !== c.owner && !o.light && !c.light);
+    if (other) fail(c.field ?? "hosts", `${c.address} is in both ${other.owner} and ${c.owner}. Give each its own host, since they can want the same ports.`);
+  }
 
   const ssh = build.ssh ?? {};
   const user = (ssh.user ?? "").trim() || "root";
   if (!/^[a-z_][a-z0-9_.-]*$/i.test(user)) fail("ssh.user", `"${user}" isn't a user name.`);
-  const shared = [["hosts", new Ref("local.hosts")]];
+  const shared = [];
   if (user !== "root") shared.push(["ssh_user", user]);
   if (ssh.key?.trim()) shared.push(["ssh_private_key_file", ssh.key.trim()]);
   if (ssh.knownHosts?.trim()) shared.push(["ssh_known_hosts_file", ssh.knownHosts.trim()]);
@@ -409,10 +448,10 @@ export function generate(data, build) {
   const closed = [];
   for (const name of picks) {
     const c = data.circuits[name];
-    const body = [...shared];
+    const body = [...(rolesOf(data, name).length ? Object.entries(placed[name]) : [["hosts", new Ref("local.hosts")]]), ...shared];
     const managed = name === "firewall" ? ["allow"] : [];
     for (const v of data.inputs[name].inputs) {
-      if (managed.includes(v.name)) continue;
+      if (managed.includes(v.name) || roleOf(data, name, v.name)) continue;
       if (wired.values[name] && v.name in wired.values[name]) {
         body.push([v.name, wired.values[name][v.name]]);
         continue;
@@ -477,17 +516,17 @@ export function generate(data, build) {
     files: {
       "main.tf": mainTf(distro, hosts, modules),
       ...(variables.length ? { "variables.tf": variablesTf(variables) } : {}),
-      "README.md": readme(data, distro, hosts, modules, variables, { fw: !!fw, open, closed, net }),
+      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length) }),
     },
   };
 }
 
 function mainTf(distro, hosts, modules) {
   let out = `# Written by the Circuit Builder at https://conn3x.org/build for ${distro.name}.\n`;
-  out += "# Each circuit is pinned to a release. Read its README before you apply.\n\n";
+  out += "# Each circuit is pinned to a release. Read its README before you apply.\n";
   const names = Object.keys(hosts);
   const w = Math.max(...names.map((n) => n.length));
-  out += `locals {\n  hosts = {\n${names.map((n) => `    ${n.padEnd(w)} = ${inline(hosts[n])}\n`).join("")}  }\n}\n`;
+  if (names.length) out += `\nlocals {\n  hosts = {\n${names.map((n) => `    ${n.padEnd(w)} = ${inline(hosts[n])}\n`).join("")}  }\n}\n`;
   for (const m of modules) {
     out += `\nmodule "${m.name}" {\n  source = ${hcl(`github.com/${m.c.repo}?ref=${m.c.version}`)}\n\n`;
     out += attrs(m.body, "  ");
@@ -511,14 +550,21 @@ function variablesTf(variables) {
     .join("\n");
 }
 
-function readme(data, distro, hosts, modules, variables, fw) {
-  const n = Object.keys(hosts).length;
+function readme(data, distro, n, placed, modules, variables, fw) {
   let out = "# Your Conn3x config\n\n";
   out += `Written by the Circuit Builder at https://conn3x.org/build, for ${distro.name} on ${n} host${n === 1 ? "" : "s"}. `;
   out += "It's configuration only: nothing has touched your servers yet, and nothing will until you run `conn3x apply` and say yes.\n\n";
   out += "## What's in it\n\n";
   for (const m of modules) {
     out += `- **${m.name}** ${m.c.version}: ${m.c.description} Docs: https://docs.conn3x.org/circuits/${m.name}\n`;
+  }
+  if (fw.roles) {
+    out += "\n## Which host does what\n\n";
+    for (const m of modules) {
+      const ps = Object.entries(placed[m.name]);
+      if (ps.length) out += `- **${m.name}**: ${ps.map(([r, h]) => `${r} on ${Object.keys(h).join(", ")}`).join("; ")}\n`;
+    }
+    out += "\nEvery other circuit in this config runs on all the hosts in `local.hosts`.\n";
   }
   out += "\n## Run it\n\n";
   out += "1. Install Conn3x: https://docs.conn3x.org/get-started\n";
@@ -532,6 +578,7 @@ function readme(data, distro, hosts, modules, variables, fw) {
   out += "5. See every step it would take, then apply:\n\n   ```sh\n   conn3x plan\n   conn3x apply\n   ```\n";
   if (fw.fw) {
     out += "\n## The firewall\n\n";
+    if (fw.roles) out += "It covers the hosts in `local.hosts` only. The hosts with roles above keep whatever firewall they have.\n\n";
     out += "SSH stays open. ";
     out += fw.open.length
       ? `It also opens ${fw.open.map((p) => `${p.port} (${p.circuit})`).join(", ")} to everyone.\n`
