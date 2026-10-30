@@ -1,0 +1,46 @@
+{
+  "name": "node-exporter",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "node_exporter_version",
+      "type": "string",
+      "default": "1.12.1",
+      "description": "node_exporter release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "b51d8a76aa2a9156a55d501aca6276fae09e262259a5e4e831d2c2222f084e63",
+        "arm64": "ad35b605f9954b9f1ffddf5ba054bdc5a98d790b9eae5291e1eeb83f1ecbd0e7"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's sha256sums.txt. Change these with node_exporter_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_port",
+      "type": "number",
+      "default": 9100,
+      "description": "Port node_exporter listens on, on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_args",
+      "type": "list(string)",
+      "default": [],
+      "description": "More command-line flags for node_exporter, such as [\"--collector.systemd\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

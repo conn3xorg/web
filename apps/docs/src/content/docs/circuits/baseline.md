@@ -108,4 +108,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-baseline/blob/v0.1.0
 
 - Repository: [conn3xorg/circuit-baseline](https://github.com/conn3xorg/circuit-baseline). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-baseline/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-baseline/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.1.0/examples/local).
-- Related circuits: [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap).
+- Related circuits: [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd).

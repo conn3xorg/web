@@ -1,0 +1,34 @@
+{
+  "name": "docker",
+  "version": "v0.1.1",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "daemon_config",
+      "type": "any",
+      "default": {},
+      "description": "Settings for /etc/docker/daemon.json, such as { log-driver = \"json-file\", log-opts = { max-size = \"10m\" } }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "docker_users",
+      "type": "list(string)",
+      "default": [],
+      "description": "Existing users to add to the docker group, so they can run docker without sudo.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stacks",
+      "type": "map(string)",
+      "default": {},
+      "description": "Compose files to run, by stack name. Each goes to /opt/stacks/NAME/compose.yaml and runs with docker compose up.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -146,4 +146,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-prometheus/blob/v0.1
 
 - Repository: [conn3xorg/circuit-prometheus](https://github.com/conn3xorg/circuit-prometheus). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-prometheus/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.0/examples/local).
-- Related circuits: [node_exporter](/circuits/node-exporter), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring).
+- Related circuits: [node_exporter](/circuits/node-exporter), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol).

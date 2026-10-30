@@ -1,0 +1,83 @@
+{
+  "name": "mysql",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "mysql_version",
+      "type": "string",
+      "default": "9.7",
+      "description": "MySQL long-term support series to install from MySQL's repository: \"9.7\" or \"8.4\". Changing it on a host that already runs MySQL switches the repository but doesn't upgrade the server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "bind_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Addresses MySQL listens on, comma-separated, such as \"127.0.0.1\", \"0.0.0.0\" or \"127.0.0.1,10.0.0.5\". Changing it restarts MySQL.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(string)",
+      "default": {},
+      "description": "Server settings for the [mysqld] section, such as { max_connections = \"200\", innodb_buffer_pool_size = \"1G\" }. They go to a zz-conn3x.cnf drop-in, and changing them restarts MySQL.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "users",
+      "type": "list(string)",
+      "default": [],
+      "description": "Accounts to create, one per entry in user_hosts. Each needs a password in user_passwords.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "user_passwords",
+      "type": "map(string)",
+      "default": {},
+      "description": "Password for each of users, by name. Pass it at run time with -var or TF_VAR_user_passwords; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "user_hosts",
+      "type": "list(string)",
+      "default": [
+        "localhost",
+        "127.0.0.1",
+        "::1"
+      ],
+      "description": "Hosts each of users may connect from, such as \"localhost\", \"10.0.0.%\" or \"10.0.0.0/255.255.255.0\". Every user gets one account per entry, with the same password and grants.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "databases",
+      "type": "list(string)",
+      "default": [],
+      "description": "Databases to create, such as [\"app\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "grants",
+      "type": "list(object({\n    user       = string\n    database   = string\n    privileges = optional(list(string), [\"ALL PRIVILEGES\"])\n  }))",
+      "default": [],
+      "description": "Privileges each of users gets on a database, such as { user = \"app\", database = \"app\" } for all of them, or privileges = [\"SELECT\"]. They apply to every one of the user's accounts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

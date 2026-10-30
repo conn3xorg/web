@@ -145,4 +145,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-qdrant/blob/v0.1.0/L
 
 - Repository: [conn3xorg/circuit-qdrant](https://github.com/conn3xorg/circuit-qdrant). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-qdrant/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.0/examples/local).
-- Related circuits: [Ollama](/circuits/ollama), [Caddy](/circuits/caddy), [Firewall](/circuits/firewall).
+- Related circuits: [Ollama](/circuits/ollama), [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [Agent box](/circuits/agentbox).

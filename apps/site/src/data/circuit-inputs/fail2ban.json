@@ -1,0 +1,70 @@
+{
+  "name": "fail2ban",
+  "version": "v0.2.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "sshd_port",
+      "type": "number",
+      "default": null,
+      "description": "Port sshd listens on, which the sshd jail bans on. When null, ssh_port. Set it when a port forward or NAT sits between Conn3x and the hosts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "bantime",
+      "type": "number",
+      "default": 3600,
+      "description": "Seconds an address stays banned. -1 bans it for good.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "findtime",
+      "type": "number",
+      "default": 600,
+      "description": "Window in seconds in which maxretry failures lead to a ban.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "maxretry",
+      "type": "number",
+      "default": 5,
+      "description": "Failures within findtime that ban an address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ignoreip",
+      "type": "list(string)",
+      "default": [],
+      "description": "Addresses and networks never banned, such as [\"192.168.1.0/24\"]. Loopback is always on the list.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "banaction",
+      "type": "string",
+      "default": "nftables",
+      "description": "fail2ban action that bans an address, from /etc/fail2ban/action.d, such as \"nftables\", \"firewallcmd-rich-rules\" or \"ufw\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "jails",
+      "type": "map(object({\n    enabled  = optional(bool, true)\n    port     = optional(string)\n    filter   = optional(string)\n    logpath  = optional(string)\n    backend  = optional(string)\n    maxretry = optional(number)\n  }))",
+      "default": {},
+      "description": "Extra jails, by name, such as { nginx-http-auth = { port = \"http,https\", logpath = \"/var/log/nginx/error.log\" } }. filter defaults to the jail's name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "name": "valkey",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "bind",
+      "type": "list(string)",
+      "default": [
+        "127.0.0.1",
+        "-::1"
+      ],
+      "description": "Addresses Valkey listens on, such as [\"0.0.0.0\"] or [\"127.0.0.1\", \"10.0.0.5\"]. A leading - lets Valkey start when that address isn't there. Changing it restarts Valkey.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 6379,
+      "description": "TCP port Valkey listens on. Changing it restarts Valkey.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "description": "Password every client must give with AUTH, set as requirepass for the default user. Pass it at run time with -var or TF_VAR_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "maxmemory",
+      "type": "string",
+      "default": "0",
+      "description": "Memory Valkey may use for data before maxmemory_policy applies, such as \"256mb\" or \"2gb\". \"0\" means no limit.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "maxmemory_policy",
+      "type": "string",
+      "default": "noeviction",
+      "description": "What Valkey does at maxmemory: noeviction refuses writes; allkeys-lru and the others evict keys, which suits a cache.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rdb",
+      "type": "bool",
+      "default": true,
+      "description": "Save RDB snapshots to /var/lib/valkey/dump.rdb, on Valkey's default save points and on shutdown, so data survives a restart.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "aof",
+      "type": "bool",
+      "default": false,
+      "description": "Log every write to the append-only file in /var/lib/valkey, fsynced once a second, so at most a second of writes is lost in a crash.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

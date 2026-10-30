@@ -1,0 +1,70 @@
+{
+  "name": "samba",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "workgroup",
+      "type": "string",
+      "default": "WORKGROUP",
+      "description": "Workgroup or NetBIOS domain name the server shows in. WORKGROUP is what Windows uses out of the box.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_string",
+      "type": "string",
+      "default": "Samba %v on %h",
+      "description": "Description the server gives clients. Samba expands %h to the host name and %v to its version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "min_protocol",
+      "type": "string",
+      "default": "SMB2",
+      "description": "Oldest SMB dialect the server accepts. SMB1 stays off at any setting here.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "netbios",
+      "type": "bool",
+      "default": false,
+      "description": "Run nmbd and listen on port 139, so older clients can find the server by NetBIOS name. Off, the server answers on 445 only.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "shares",
+      "type": "map(object({\n    path           = string\n    comment        = optional(string)\n    writable       = optional(bool, false)\n    browseable     = optional(bool, true)\n    guest_ok       = optional(bool, false)\n    valid_users    = optional(list(string), [])\n    create_mask    = optional(string, \"0664\")\n    directory_mask = optional(string, \"0775\")\n    owner          = optional(string)\n    group          = optional(string)\n    mode           = optional(string, \"0755\")\n  }))",
+      "default": {},
+      "description": "Shares, by name, such as { media = { path = \"/srv/media\", writable = true, valid_users = [\"alice\"] } }. The circuit creates each path with owner, group and mode.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "users",
+      "type": "list(string)",
+      "default": [],
+      "description": "Samba users, each with a password in user_passwords. A user needs a Unix account of the same name; the circuit creates one with no login shell when it's missing.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "user_passwords",
+      "type": "map(string)",
+      "default": {},
+      "description": "Password for each of users, by name. Pass it at run time with -var or TF_VAR_user_passwords; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

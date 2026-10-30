@@ -1,0 +1,109 @@
+{
+  "name": "openbao",
+  "version": "v0.2.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "openbao_version",
+      "type": "string",
+      "default": "2.7.2",
+      "description": "OpenBao release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x86_64": "582b1f3c2fdc5afd443b2d57a225ef654de75adea609fdb66731fd582a9cbc96",
+        "aarch64": "5b97bf816fa820e5e521abec1db19c6161fcca2f666cf4a84e335089c0e83edd"
+      },
+      "description": "SHA-256 of the linux_amd64 and linux_arm64 release tarballs, keyed x86_64 and aarch64, from the release's checksums.txt. Change these with openbao_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the API listens on. The default keeps OpenBao to the host itself. Any address other than loopback needs tls_cert_file and tls_key_file.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "api_port",
+      "type": "number",
+      "default": 8200,
+      "description": "Port of the API and UI. The cluster port, which raft uses, is the next one up.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_cert_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of the listener's certificate, in PEM, with any intermediates after it. When null, the listener runs plain HTTP, which only a loopback listen_address allows. The openbao user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_key_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of the listener's private key, in PEM. The openbao user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ui",
+      "type": "bool",
+      "default": true,
+      "description": "Serve the web UI on the API port, at /ui.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "initialize",
+      "type": "bool",
+      "default": false,
+      "description": "Initialise OpenBao on the first apply with one unseal key, and write the key and root token to /root/openbao-init.json, mode 0600. For labs and homelabs only: the key sits on the same disk as the data it protects. When false, run bao operator init yourself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "seal",
+      "type": "object({\n    type   = string\n    config = optional(map(string), {})\n  })",
+      "default": null,
+      "description": "Auto-unseal: a seal type, such as \"transit\" or \"awskms\", and its settings, written into a seal stanza in the config. The config and the plan show the settings, so pass tokens and credentials in environment instead. When null, OpenBao uses unseal keys.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": null,
+      "description": "Environment variables for the OpenBao server, such as BAO_TOKEN for a transit seal or a password a self_init request reads with eval_source = \"env\". Written to /etc/openbao/openbao.env, mode 0600; it never reaches state or the plan. Needs seal.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "self_init",
+      "type": "any",
+      "default": null,
+      "description": "OpenBao's self-initialisation: a list of initialize blocks, each with a name and a list of requests, each request with a name, operation and path and optionally data, token and allow_failure. They run once, in order, on the first start. Needs seal; not with initialize.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

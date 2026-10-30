@@ -1,0 +1,18 @@
+{
+  "name": "netdata",
+  "repo": "conn3xorg/circuit-netdata",
+  "description": "Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming.",
+  "version": "v0.1.0",
+  "tags": [
+    "netdata",
+    "metrics",
+    "monitoring"
+  ],
+  "tested": [
+    "rocky10",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Monitoring",
+  "official": true
+}

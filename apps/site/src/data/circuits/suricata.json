@@ -1,0 +1,19 @@
+{
+  "name": "suricata",
+  "repo": "conn3xorg/circuit-suricata",
+  "description": "Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json",
+  "version": "v0.1.0",
+  "tags": [
+    "suricata",
+    "ids",
+    "network-security"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Detection and response",
+  "official": true
+}

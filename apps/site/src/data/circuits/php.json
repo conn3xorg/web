@@ -1,0 +1,19 @@
+{
+  "name": "php",
+  "repo": "conn3xorg/circuit-php",
+  "description": "PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer.",
+  "version": "v0.1.0",
+  "tags": [
+    "php",
+    "php-fpm",
+    "lamp"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

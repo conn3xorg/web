@@ -1,0 +1,17 @@
+{
+  "name": "zeek",
+  "repo": "conn3xorg/circuit-zeek",
+  "description": "Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change.",
+  "version": "v0.1.0",
+  "tags": [
+    "zeek",
+    "network-monitoring",
+    "nsm"
+  ],
+  "tested": [
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Detection and response",
+  "official": true
+}

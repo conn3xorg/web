@@ -1,0 +1,95 @@
+{
+  "name": "matrix",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "synapse_version",
+      "type": "string",
+      "default": "v1.164.1",
+      "description": "Tag of the ghcr.io/element-hq/synapse image, such as \"v1.164.1\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_name",
+      "type": "string",
+      "description": "The domain in every user ID and room alias, such as \"example.com\" for @alice:example.com. It can never change once Synapse has started with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "public_baseurl",
+      "type": "string",
+      "description": "URL clients reach Synapse at through your reverse proxy, such as \"https://matrix.example.com/\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Synapse listens on. The default keeps it to the host itself, for a reverse proxy in front.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_port",
+      "type": "number",
+      "default": 8008,
+      "description": "Port Synapse serves the client and federation APIs on, in plain HTTP.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres",
+      "type": "object({\n    host     = optional(string, \"127.0.0.1\")\n    port     = optional(number, 5432)\n    database = optional(string, \"synapse\")\n    username = optional(string, \"synapse\")\n  })",
+      "default": null,
+      "description": "PostgreSQL to keep Synapse's data in, such as { host = \"db1\" }. The role and database must exist, the database with C collation. When null, Synapse uses SQLite in /var/lib/matrix-synapse, which is for trials only.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the postgres username. Needed with postgres. Pass it at run time with -var or TF_VAR_postgres_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "admin_user",
+      "type": "string",
+      "default": null,
+      "description": "Localpart of an admin user to create, such as \"admin\" for @admin:SERVER_NAME. When null, no user is created.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password the admin user is created with. Needed with admin_user. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "any",
+      "default": {},
+      "description": "Extra homeserver.yaml settings, merged over the circuit's at the top level, such as { enable_registration = true, registration_requires_token = true }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

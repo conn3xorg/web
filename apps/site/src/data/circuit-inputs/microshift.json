@@ -1,0 +1,58 @@
+{
+  "name": "microshift",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "release",
+      "type": "object({\n    tag    = string\n    sha256 = string\n  })",
+      "default": {
+        "tag": "4.20.0_g153ff0ca9_4.20.0_okd_scos.16",
+        "sha256": "536d308167124ab38c93f0c5a2cf3f57c63bb759dcb3412578a6e860388d32d2"
+      },
+      "description": "MicroShift release from github.com/microshift-io/microshift: the release tag and the SHA-256 of its microshift-rpms-x86_64.tgz.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dependency_rpms",
+      "type": "map(object({\n    url    = string\n    sha256 = string\n  }))",
+      "default": {
+        "cri-o": {
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-o-1.33.13-9.rhaos4.20.gitd6a41c4.el9.x86_64.rpm",
+          "sha256": "c048088d6e9c8c6f7a5672a891600e7e9732c5c0d427ab9c531288c470bd6e77"
+        },
+        "cri-tools": {
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-tools-1.33.0-7.el9.x86_64.rpm",
+          "sha256": "c75d5181ba107874f3748451d9648b3922eeab4911a47ee921edac125909e967"
+        },
+        "openshift-clients": {
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/openshift-clients-4.20.0-202610221619.p2.gef515cf.assembly.stream.el9.x86_64.rpm",
+          "sha256": "f45a43a0b62a31ff5d7594637b562ed4f98404379e2df523f0d933c34573d8f8"
+        },
+        "runc": {
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/runc-1.2.9-4.rhaos4.20.el9.x86_64.rpm",
+          "sha256": "96ebd3978e208696d089fd22ab64c4ee047dbfdc150e2ec5d103141117f07c3e"
+        },
+        "containernetworking-plugins": {
+          "url": "https://kojihub.stream.centos.org/kojifiles/packages/containernetworking-plugins/1.9.1/2.el9/x86_64/containernetworking-plugins-1.9.1-2.el9.x86_64.rpm",
+          "sha256": "0262866f7c1556dfa5be4a752e041df9758f87001e6ceb16477a6408c9d606df"
+        }
+      },
+      "description": "RPMs MicroShift needs that Rocky Linux 10 doesn't ship, by name: each one's URL and SHA-256. The defaults match the default release.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "config",
+      "type": "any",
+      "default": {},
+      "description": "Settings for /etc/microshift/config.yaml, such as { apiServer = { subjectAltNames = [\"203.0.113.10\"] } }. MicroShift restarts when they change.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

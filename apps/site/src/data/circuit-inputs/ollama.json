@@ -1,0 +1,55 @@
+{
+  "name": "ollama",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "ollama_version",
+      "type": "string",
+      "default": "0.40.13",
+      "description": "Ollama release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "c9490e0f520be21271d969e6703f012268b1d39f8b70dd58854e5bfef7a75bb6",
+        "arm64": "913d9a28da6da86d551ce4ca531457767bb14d511cbc1d5ca93e9b3b8b9a8666"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's sha256sum.txt. Change these with ollama_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1:11434",
+      "description": "Address and port the Ollama API listens on. The API has no authentication: \"0.0.0.0:11434\" lets anyone who can reach the host use it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "models",
+      "type": "list(string)",
+      "default": [],
+      "description": "Models to pull from the Ollama library, such as [\"llama3.2:3b\", \"qwen2.5:0.5b\"]. A model without a tag gets latest.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "Extra environment for the Ollama server, such as { OLLAMA_KEEP_ALIVE = \"30m\" }. Set the listen address with listen_address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}
