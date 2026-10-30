@@ -1,0 +1,55 @@
+{
+  "name": "cloudflared",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "cloudflared_version",
+      "type": "string",
+      "default": "2026.10.6",
+      "description": "cloudflared release to install, such as \"2026.10.6\". Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "1d356dac769d0dbf62ebe588c4034824bbff98d5790c2f844cc99e0e2f57462d",
+        "arm64": "0ae0e179475b2c77651a718d2b376e0151f4fca5954702a84f02843a4d5fcac0"
+      },
+      "description": "SHA-256 of the release binary for each architecture, from the release's notes. Change these with cloudflared_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tunnel_token",
+      "type": "string",
+      "default": null,
+      "description": "Token of the remotely managed tunnel to run, from the Cloudflare dashboard or API. Required on every plan and apply, unless quick_tunnel_url is set.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "quick_tunnel_url",
+      "type": "string",
+      "default": null,
+      "description": "Local URL to serve through a temporary trycloudflare.com Quick Tunnel instead of a named tunnel, such as \"http://localhost:8080\". Cloudflare offers Quick Tunnels for testing and development only. Takes the place of tunnel_token.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_args",
+      "type": "list(string)",
+      "default": [],
+      "description": "More flags for cloudflared tunnel, such as [\"--protocol=http2\"]. They land in the systemd unit, so they can't carry a token.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

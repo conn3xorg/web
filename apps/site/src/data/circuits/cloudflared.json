@@ -1,0 +1,19 @@
+{
+  "name": "cloudflared",
+  "repo": "conn3xorg/circuit-cloudflared",
+  "description": "Run a Cloudflare Tunnel from a pinned, checksummed cloudflared under systemd, with the token kept out of plan and state.",
+  "version": "v0.1.0",
+  "tags": [
+    "cloudflare",
+    "tunnel",
+    "zero-trust"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Networking and VPN",
+  "official": true
+}

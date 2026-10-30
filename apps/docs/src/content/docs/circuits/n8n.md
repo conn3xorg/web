@@ -236,4 +236,4 @@ n8n itself is not open source in the OSI sense. It's [fair-code](https://faircod
 
 - Repository: [conn3xorg/circuit-n8n](https://github.com/conn3xorg/circuit-n8n). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-n8n/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.0/examples/local).
-- Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit).
+- Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [Fleet](/circuits/fleet).

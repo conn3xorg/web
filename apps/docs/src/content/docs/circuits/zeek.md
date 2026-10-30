@@ -158,4 +158,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zeek/blob/v0.1.0/LIC
 
 - Repository: [conn3xorg/circuit-zeek](https://github.com/conn3xorg/circuit-zeek). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-zeek/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.0/examples/local).
-- Related circuits: [Suricata](/circuits/suricata), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor).
+- Related circuits: [Suricata](/circuits/suricata), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor), [Wazuh](/circuits/wazuh).

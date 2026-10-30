@@ -24,7 +24,11 @@
   "excluded": {
     "kubeadm": "kubeadm has control planes and workers, two kinds of host. Its README shows how to set them up.",
     "microshift": "MicroShift turns the whole box into an OpenShift node, with its router on 80 and 443. Give it a host of its own and follow its README.",
-    "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README."
+    "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README.",
+    "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
+    "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up."
   },
   "conflicts": [
     {
@@ -276,7 +280,11 @@
     "k3s": "Set TF_VAR_k3s_token to something like the output of openssl rand -hex 32, and keep it the same for the life of the cluster.",
     "velociraptor": "Set TF_VAR_velociraptor_client_nonce to something like the output of openssl rand -hex 16, and keep it the same for the life of the deployment. The GUI listens on the server itself, so reach it through an SSH tunnel or a proxy.",
     "freeipa": "The installer takes about ten minutes. Pass the same passwords on every plan as well as every apply. The README explains why.",
-    "zabbix": "The frontend listens on the server itself, on 127.0.0.1:8080, so reach it through an SSH tunnel or a proxy. Sign in as Admin with your admin password."
+    "zabbix": "The frontend listens on the server itself, on 127.0.0.1:8080, so reach it through an SSH tunnel or a proxy. Sign in as Admin with your admin password.",
+    "cloudflared": "Create the tunnel in the Cloudflare dashboard and set TF_VAR_cloudflared_tunnel_token to its token.",
+    "trivy": "Its vulnerability database takes 1.6 to 3.1 GB of disk. Reports stay on the host.",
+    "cinc": "Put your cookbooks on the host yourself and point repo_path at them. Set run_list to say which to run.",
+    "wazuh": "Set the three passwords as TF_VAR_ values. Nothing here makes a host or company compliant."
   },
   "wiring": {
     "github-runner": {
@@ -376,6 +384,16 @@
           "admin_password": "${admin_password}"
         }
       }
+    },
+    "cloudflared": {
+      "secrets": [
+        "tunnel_token"
+      ],
+      "values": {
+        "cloudflared": {
+          "tunnel_token": "${tunnel_token}"
+        }
+      }
     }
   },
   "mustTick": {
@@ -463,6 +481,23 @@
         "sameHost": true,
         "os": true,
         "help": "Hosts to run Zabbix agent 2 on. They can also run other circuits from this build, and the server can be one of them."
+      }
+    ],
+    "wazuh": [
+      {
+        "input": "server",
+        "label": "Server",
+        "prefix": "wazuh",
+        "min": 1,
+        "one": true,
+        "help": "Runs the manager, indexer and dashboard. Wazuh asks for 4 vCPUs, 8 GiB of memory and 50 GB of disk."
+      },
+      {
+        "input": "agents",
+        "label": "Agents",
+        "prefix": "agent",
+        "light": true,
+        "help": "Hosts that report to the server. They can also run other circuits from this build, but not the server, whose packages clash with the agent."
       }
     ]
   },

@@ -177,4 +177,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-lldap/blob/v0.1.0/LI
 
 - Repository: [conn3xorg/circuit-lldap](https://github.com/conn3xorg/circuit-lldap). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-lldap/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.0/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [Firewall](/circuits/firewall), [Users](/circuits/users), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical).
+- Related circuits: [Caddy](/circuits/caddy), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [Firewall](/circuits/firewall), [Users](/circuits/users), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).

@@ -1,0 +1,20 @@
+{
+  "name": "ciso-assistant",
+  "repo": "conn3xorg/circuit-ciso-assistant",
+  "description": "Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL. It helps you do the work; it doesn't make anyone compliant.",
+  "version": "v0.1.0",
+  "tags": [
+    "grc",
+    "compliance",
+    "soc2",
+    "iso27001"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Security and compliance",
+  "official": true
+}

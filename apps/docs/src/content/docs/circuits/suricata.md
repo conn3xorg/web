@@ -136,4 +136,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.0
 
 - Repository: [conn3xorg/circuit-suricata](https://github.com/conn3xorg/circuit-suricata). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-suricata/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.0/examples/local).
-- Related circuits: [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor).
+- Related circuits: [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor), [Wazuh](/circuits/wazuh).

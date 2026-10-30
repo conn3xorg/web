@@ -1,0 +1,139 @@
+{
+  "name": "fleet",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "fleet_version",
+      "type": "string",
+      "default": "4.94.0",
+      "description": "Fleet release to install, such as \"4.94.0\". Raising it stops Fleet, runs its database migrations and starts the new release. Change fleet_sha256 with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "fleet_sha256",
+      "type": "string",
+      "default": "c5a5e43b0ae7f9bafd60e9fed304d52a40e541db259cb02adae1d329ea21fd0e",
+      "description": "SHA-256 of fleet_v<version>_linux.tar.gz, from the release's checksums.txt.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Fleet listens on. Set it to \"0.0.0.0\" or a private address once setup is done, or hosts elsewhere can't enroll. Until setup is done, whoever reaches Fleet first can create its admin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8080,
+      "description": "TCP port Fleet listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_name",
+      "type": "string",
+      "default": "localhost",
+      "description": "Name or IP address osquery and browsers use to reach Fleet. It goes in the self-signed certificate. Changing it makes a new one.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls",
+      "type": "bool",
+      "default": true,
+      "description": "Serve HTTPS. Set it to false only behind a reverse proxy that handles TLS: osquery only talks to Fleet over TLS.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_cert_file",
+      "type": "string",
+      "default": null,
+      "description": "Certificate already on the host, readable by the fleet user. When null, the circuit makes a self-signed one for server_name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_key_file",
+      "type": "string",
+      "default": null,
+      "description": "Private key for tls_cert_file, already on the host, readable by the fleet user.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database_address",
+      "type": "string",
+      "default": "127.0.0.1:3306",
+      "description": "MySQL server as host:port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database_name",
+      "type": "string",
+      "default": "fleet",
+      "description": "MySQL database. It must exist already.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database_user",
+      "type": "string",
+      "default": "fleet",
+      "description": "MySQL user, with all privileges on database_name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database_password",
+      "type": "string",
+      "description": "Password for database_user. Pass it at run time with -var or TF_VAR_database_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "redis_address",
+      "type": "string",
+      "default": "127.0.0.1:6379",
+      "description": "Redis or Valkey server as host:port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "redis_password",
+      "type": "string",
+      "description": "Password for Redis or Valkey. Pass it at run time with -var or TF_VAR_redis_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "server_private_key",
+      "type": "string",
+      "description": "Key Fleet encrypts the secrets it stores with, at least 32 bytes, such as the output of openssl rand -base64 32. Keep a copy: secrets encrypted with it can't be read without it. Pass it at run time with -var or TF_VAR_server_private_key; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    }
+  ]
+}

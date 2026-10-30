@@ -139,4 +139,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.1.0/L
 
 - Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-podman/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift).
+- Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher).

@@ -1,0 +1,111 @@
+{
+  "name": "wazuh",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "server",
+      "type": "any",
+      "description": "The host that runs the Wazuh manager, indexer and dashboard together, as a map of one name to an address, or to a host object with an address and optional host_key, user, port, private_key_file, jump_hosts or os.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "agents",
+      "type": "any",
+      "default": {},
+      "description": "Hosts that run the Wazuh agent, by name, in the same form as server. The server can't be one: Wazuh's manager and agent packages conflict, and the manager already watches its own host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "wazuh_version",
+      "type": "string",
+      "default": "4.14.9",
+      "description": "Wazuh 4.x release to install on the server and the agents, without the package revision. Change filebeat_template_sha256 with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "filebeat_template_sha256",
+      "type": "string",
+      "default": "b2d182f49cc68957849e77fd2d79528fd2273ebaec1106c9661c9e320577a089",
+      "description": "SHA-256 of extensions/elasticsearch/7.x/wazuh-template.json in the Wazuh source at wazuh_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "manager_address",
+      "type": "string",
+      "default": null,
+      "description": "Address or name agents reach the manager on. When null, the server's address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dashboard_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the dashboard listens on. The default keeps it to the host itself, for a proxy or an SSH tunnel; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dashboard_port",
+      "type": "number",
+      "default": 443,
+      "description": "Port of the dashboard.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "api_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the Wazuh API, on port 55000, listens on. The default keeps it to the host itself; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "indexer_heap",
+      "type": "string",
+      "default": "4g",
+      "description": "JVM heap of the indexer, as both -Xms and -Xmx, such as \"1g\" or \"4g\". Wazuh advises half the host's memory, and no more than 32g. The default suits the 8 GiB host Wazuh asks for.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of admin, who signs in to the dashboard and the indexer. 8 to 64 characters with an uppercase letter, a lowercase letter, a digit and one of . * + ? -, and no other symbols. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan. Changing it sets the new one.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "api_password",
+      "type": "string",
+      "description": "Password of wazuh, the Wazuh API's administrator, under the same rules as admin_password. Ephemeral, like it. Changing it sets the new one.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "enrollment_password",
+      "type": "string",
+      "description": "Shared secret agents present to the manager to enroll, such as the output of openssl rand -hex 16. Ephemeral, like admin_password. Keep it the same between runs, or every agent's file changes with it.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    }
+  ]
+}
