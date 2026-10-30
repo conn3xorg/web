@@ -1,0 +1,106 @@
+{
+  "name": "cockpit",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "packages",
+      "type": "list(string)",
+      "default": [],
+      "description": "Extra Cockpit pages to install, such as [\"cockpit-podman\", \"cockpit-machines\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "backports",
+      "type": "bool",
+      "default": true,
+      "description": "On Debian and Ubuntu, install Cockpit from the release's backports, as Cockpit's own install guide does. On Debian, the circuit adds the backports repository when it's missing.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 9090,
+      "description": "TCP port Cockpit listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "address",
+      "type": "string",
+      "default": null,
+      "description": "IP address Cockpit listens on, such as \"127.0.0.1\" behind a reverse proxy. When null, every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "origins",
+      "type": "list(string)",
+      "default": [],
+      "description": "Other origins the browser may reach Cockpit from, such as [\"https://cockpit.example.com\"] behind a reverse proxy. Cockpit always accepts its own address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "login_title",
+      "type": "string",
+      "default": null,
+      "description": "Browser title for the login page. When null, Cockpit's default, the host name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "allow_unencrypted",
+      "type": "bool",
+      "default": false,
+      "description": "Accept plain HTTP from other hosts instead of redirecting it to HTTPS. Only for a reverse proxy that talks HTTP to Cockpit; Cockpit always accepts HTTP from localhost.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "behind_proxy",
+      "type": "bool",
+      "default": false,
+      "description": "Trust the X-Forwarded-Proto and X-Forwarded-For headers from a reverse proxy. Set it only when nothing but the proxy can reach Cockpit's port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_certificate",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of a PEM certificate, with its chain, for Cockpit to serve, such as \"/etc/letsencrypt/live/cockpit.example.com/fullchain.pem\". When null, Cockpit's self-signed certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_key",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of the unencrypted private key for tls_certificate, such as \"/etc/letsencrypt/live/cockpit.example.com/privkey.pem\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "root_login",
+      "type": "bool",
+      "default": false,
+      "description": "Let root log in to Cockpit with its password. When false, root is in /etc/cockpit/disallowed-users; log in as an administrator and switch to administrative access instead.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

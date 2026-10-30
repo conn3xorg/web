@@ -1,0 +1,129 @@
+{
+  "name": "openldap",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "base_dn",
+      "type": "string",
+      "description": "Base DN of the directory, such as \"dc=example,dc=com\". Its first part must be a dc=, which names the base entry. Set it before the first apply; changing it later isn't applied.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "organization",
+      "type": "string",
+      "default": null,
+      "description": "o attribute of the base entry. When null, the value of base_dn's first dc.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "root_dn",
+      "type": "string",
+      "default": null,
+      "description": "DN of the directory's administrator, which slapd lets do anything in base_dn. When null, cn=admin,BASE_DN.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "root_password",
+      "type": "string",
+      "description": "Password of root_dn, at least 8 characters. Pass it at run time with -var or TF_VAR_root_password; it never reaches state or the plan. Changing it sets the new one.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "schemas",
+      "type": "list(string)",
+      "default": [
+        "cosine",
+        "inetorgperson",
+        "nis"
+      ],
+      "description": "Schemas to load, in order, by the name of an LDIF file in slapd's schema directory, such as \"misc\" or \"dyngroup\". core is always loaded. Removing one from the list doesn't unload it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ous",
+      "type": "list(string)",
+      "default": [
+        "people",
+        "groups"
+      ],
+      "description": "Organizational units to create directly under base_dn, such as [\"people\", \"groups\"]. Each is added if it's missing; removing one from the list doesn't delete it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "entries_ldif",
+      "type": "string",
+      "default": null,
+      "description": "LDIF of more entries to add, such as file(\"people.ldif\"). Each entry is added if it's missing, and existing entries are left as they are.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ldap_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address slapd listens on for LDAP, and LDAPS when it's on. The default keeps it to the host itself; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ldap_port",
+      "type": "number",
+      "default": 389,
+      "description": "Port of the LDAP listener.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ldaps_port",
+      "type": "number",
+      "default": 636,
+      "description": "Port of the LDAPS listener, when TLS is on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_cert_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of a PEM certificate, with its chain. With tls_key_file, turns on LDAPS and StartTLS. slapd's user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_key_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of the PEM private key for tls_cert_file. slapd's user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "allow_anonymous",
+      "type": "bool",
+      "default": false,
+      "description": "Let clients search the directory without binding. Off by default: slapd refuses anonymous binds and asks every operation to authenticate first.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

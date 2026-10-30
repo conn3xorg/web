@@ -1,0 +1,82 @@
+{
+  "name": "presidio",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "services",
+      "type": "set(string)",
+      "default": [
+        "analyzer",
+        "anonymizer"
+      ],
+      "description": "Which of Presidio's services to run: \"analyzer\", which finds PII in text, and \"anonymizer\", which replaces what the analyzer found.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "presidio_version",
+      "type": "string",
+      "default": "2.2.366",
+      "description": "Tag of the ghcr.io/data-privacy-stack/presidio-analyzer and presidio-anonymizer images, such as \"2.2.366\". Change analyzer_digest and anonymizer_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "analyzer_digest",
+      "type": "string",
+      "default": "sha256:036d2f9b3c274fb36497383acef8f2d5aea528a014801c2c3040fb067990c79c",
+      "description": "Digest of presidio-analyzer for presidio_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "anonymizer_digest",
+      "type": "string",
+      "default": "sha256:b4d9ec900135c694b84353e03e1abd5127ccdfcd916d32db73002c28f0eaddc7",
+      "description": "Digest of presidio-anonymizer for presidio_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address both services listen on. Presidio has no authentication, so the default keeps it on the host. Anything else gets a warning on every plan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "analyzer_port",
+      "type": "number",
+      "default": 5002,
+      "description": "Port the analyzer listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "anonymizer_port",
+      "type": "number",
+      "default": 5001,
+      "description": "Port the anonymizer listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "analyzer_config",
+      "type": "string",
+      "default": null,
+      "description": "The analyzer's configuration as YAML, in Presidio's single-file format: supported_languages, default_score_threshold, and optional nlp_configuration and recognizer_registry sections. A recognizer_registry section replaces the built-in list of recognizers. When null, the image's defaults: English, with every built-in recognizer.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

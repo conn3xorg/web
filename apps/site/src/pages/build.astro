@@ -1,0 +1,722 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../layouts/Base.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import PageHero from "../components/PageHero.astro";
+import categoryList from "../data/categories.json";
+import builder from "../data/builder.json";
+
+type Circuit = { name: string; description: string; version: string; category: string; official: boolean };
+const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", { eager: true });
+const inputs = import.meta.glob("../data/circuit-inputs/*.json");
+const offered = new Set(Object.keys(inputs).map((p) => p.split("/").pop()!.replace(".json", "")));
+const all = Object.values(files).map((f) => f.default);
+const excluded = builder.excluded as Record<string, string>;
+const circuits = all
+  .filter((c) => c.official && offered.has(c.name) && !excluded[c.name])
+  .sort((a, b) => a.name.localeCompare(b.name));
+const groups = categoryList
+  .map((k) => [k, circuits.filter((c) => c.category === k)] as const)
+  .filter(([, cs]) => cs.length);
+const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name === n));
+---
+<Base
+  title="Circuit Builder: Conn3x"
+  description="Pick a distribution and the circuits you want, and get a Conn3x config with every circuit pinned, secrets kept out of it and the firewall opened for what you picked."
+  path="/build"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero label="Circuit Builder" title="Pick the parts. Get a config you can run.">
+      <p>
+        Choose a distribution and the circuits you want on a group of servers. You get a <code>main.tf</code> with each circuit pinned to its release, passwords kept out of it, and
+        the firewall opened for what you picked. It's written in your browser, and nothing you type
+        leaves it.
+      </p>
+    </PageHero>
+
+    <form class="wrap page" id="build" novalidate>
+      <noscript><p class="note">The builder needs JavaScript. Every circuit's README has a working example too.</p></noscript>
+
+      <section aria-labelledby="s-distro">
+        <h2 id="s-distro"><span>1</span> Distribution</h2>
+        <div class="chips" role="radiogroup" aria-labelledby="s-distro">
+          {builder.distros.map((d, i) => (
+            <label class="chip"><input type="radio" name="distro" value={d.id} checked={i === 0} /> {d.name}</label>
+          ))}
+        </div>
+      </section>
+
+      <section aria-labelledby="s-circuits">
+        <h2 id="s-circuits"><span>2</span> Circuits</h2>
+        <p class="sub">Two circuits that want the same port can't share a host, so picking one greys out the other and says why.</p>
+        {groups.map(([k, cs]) => (
+          <fieldset class="group">
+            <legend>{k}</legend>
+            <div class="chips">
+              {cs.map((c) => (
+                <label class="chip" title={c.description}><input type="checkbox" name="pick" value={c.name} /> {c.name}</label>
+              ))}
+            </div>
+            <ul class="why" data-why={k}></ul>
+          </fieldset>
+        ))}
+        {left.length > 0 && (
+          <details class="later">
+            <summary>Not in the builder yet ({left.length})</summary>
+            <ul>
+              {left.map(([n, why]) => (
+                <li><a href={`https://docs.conn3x.org/circuits/${n}`}>{n}</a>: {why}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </section>
+
+      <section aria-labelledby="s-hosts">
+        <h2 id="s-hosts"><span>3</span> Servers</h2>
+        <div class="fields">
+          <label class="field wide">
+            <span>Hosts, one per line</span>
+            <textarea id="hosts" rows="3" spellcheck="false" autocomplete="off" placeholder={"web1 203.0.113.10\nweb2 203.0.113.11"}></textarea>
+            <small>A name and an address, or just the address. Every circuit runs on all of them.</small>
+          </label>
+          <label class="field">
+            <span>SSH user</span>
+            <input id="ssh-user" type="text" placeholder="root" spellcheck="false" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Private key file</span>
+            <input id="ssh-key" type="text" placeholder="the SSH agent" spellcheck="false" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>known_hosts file</span>
+            <input id="ssh-known" type="text" placeholder="~/.ssh/known_hosts" spellcheck="false" autocomplete="off" />
+          </label>
+          <label class="check">
+            <input id="ssh-become" type="checkbox" />
+            <span>Use sudo. Tick this when the user isn't root.</span>
+          </label>
+          <label class="field wide" id="network-field" hidden>
+            <span>Your network, for the firewall</span>
+            <input id="network" type="text" placeholder="192.168.1.0/24" spellcheck="false" autocomplete="off" />
+            <small id="network-help"></small>
+          </label>
+        </div>
+      </section>
+
+      <section aria-labelledby="s-settings" id="settings-section" hidden>
+        <h2 id="s-settings"><span>4</span> Settings</h2>
+        <p class="sub">Only what each circuit can't do without. The rest is under More settings, with the circuit's own defaults.</p>
+        <div id="settings"></div>
+      </section>
+
+      <div class="go">
+        <button class="btn" type="submit" id="write">Write my config</button>
+        <span class="sub" id="count"></span>
+      </div>
+
+      <section id="out" aria-labelledby="s-out" hidden>
+        <h2 id="s-out">Your config</h2>
+        <div id="errors" class="errors" role="alert" hidden></div>
+        <div id="result" hidden>
+          <p class="sub">Save these in a folder, then follow README.md. Nothing has touched your servers yet.</p>
+          <div class="panel code">
+            <div class="tabs" role="tablist" aria-label="Files" id="tabs"></div>
+            <pre tabindex="0"><code id="code"></code></pre>
+          </div>
+          <div class="actions">
+            <button class="btn btn-ghost" type="button" id="copy">Copy this file</button>
+            <button class="btn" type="button" id="zip">Download all as a zip</button>
+          </div>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<script>
+  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip } from "../lib/builder.js";
+  import builder from "../data/builder.json";
+
+  const load = (g: Record<string, { default: any }>) =>
+    Object.fromEntries(Object.values(g).map((m) => [m.default.name, m.default]));
+  const data = {
+    builder,
+    circuits: load(import.meta.glob("../data/circuits/*.json", { eager: true })),
+    inputs: load(import.meta.glob("../data/circuit-inputs/*.json", { eager: true })),
+  };
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const form = $<HTMLFormElement>("build");
+  const picks = [...form.querySelectorAll<HTMLInputElement>('input[name="pick"]')];
+  const values: Record<string, any> = {};
+  let shown = false;
+  let files: Record<string, string> = {};
+  let current = "main.tf";
+
+  const distro = () => form.querySelector<HTMLInputElement>('input[name="distro"]:checked')!.value;
+  const picked = () => picks.filter((p) => p.checked).map((p) => p.value);
+
+  const el = (tag: string, props: Record<string, any> = {}, ...kids: (Node | string)[]) => {
+    const e = Object.assign(document.createElement(tag), props);
+    e.append(...kids);
+    return e;
+  };
+
+  // Grey out what can't be picked, and say why under each category.
+  function refresh() {
+    const d = distro();
+    const chosen = picked();
+    const extra = withRequired(data, chosen).filter((n) => !chosen.includes(n));
+    const why: Record<string, string[]> = {};
+    for (const p of picks) {
+      const reason = unavailable(data, p.value, d) ?? (p.checked ? null : conflict(data, p.value, chosen));
+      if (reason && p.checked) p.checked = false;
+      p.disabled = !!reason;
+      const cat = data.circuits[p.value].category;
+      if (reason) (why[cat] ??= []).push(`${p.value}: ${reason}`);
+      if (extra.includes(p.value)) (why[cat] ??= []).push(`${p.value} comes along: ${chosen.filter((c) => withRequired(data, [c]).includes(p.value)).join(", ")} needs it.`);
+    }
+    for (const ul of form.querySelectorAll<HTMLElement>("[data-why]")) {
+      ul.replaceChildren(...(why[ul.dataset.why!] ?? []).map((t) => el("li", {}, t)));
+    }
+    renderSettings(withRequired(data, picked()));
+  }
+
+  let rendered = "";
+  function renderSettings(names: string[]) {
+    const fw = names.includes("firewall");
+    const priv = names.flatMap((n) => (builder.ports as any)[n] ?? []).filter((p: any) => p.private);
+    $("network-field").hidden = !(fw && priv.length);
+    $("network-help").textContent = priv.length
+      ? `Opens ${names.flatMap((n) => ((builder.ports as any)[n] ?? []).filter((p: any) => p.private).map((p: any) => `${p.port} (${n})`)).join(", ")} to this network only. Leave it empty to keep them closed.`
+      : "";
+    $("count").dataset.n = names.length ? `${names.length} circuit${names.length === 1 ? "" : "s"}` : "";
+    const key = names.join(",");
+    if (key === rendered) return;
+    rendered = key;
+    $("settings-section").hidden = !names.length;
+    $("settings").replaceChildren(...names.map(card));
+  }
+
+  function field(circuit: string, v: any) {
+    const t = parseType(v.type);
+    const kind = fieldKind(t)!;
+    const k = `${circuit}.${v.name}`;
+    const id = `f-${circuit}-${v.name}`;
+    const shownDefault = v.default === undefined || v.default === null ? "" : typeof v.default === "object" ? JSON.stringify(v.default) : String(v.default);
+    const label = (extra?: string) => el("span", {}, el("code", {}, v.name), extra ? ` ${extra}` : "");
+    const help = el("small", {}, v.description);
+    if (kind === "bool") {
+      const box = el("input", { type: "checkbox", id, checked: values[k] ?? v.default ?? false }) as HTMLInputElement;
+      box.dataset.key = k;
+      return el("label", { className: "check" }, box, el("span", {}, el("code", {}, v.name), ` ${v.description}`));
+    }
+    if (kind === "entry") {
+      const raw = (values[k] ??= { key: "", fields: {} });
+      const name = el("input", { type: "text", id, value: raw.key, placeholder: "a name, such as site", spellcheck: false, autocomplete: "off" }) as HTMLInputElement;
+      name.dataset.key = k;
+      name.dataset.part = "key";
+      const box = el("fieldset", { className: "entry" }, el("legend", {}, el("code", {}, v.name), v.required ? "" : " (optional)"), help, el("label", { className: "field" }, el("span", {}, "Name"), name));
+      for (const f of t.of.fields) {
+        const fk = fieldKind(f.type);
+        const input = (fk === "bool"
+          ? el("input", { type: "checkbox", checked: !!raw.fields[f.name] })
+          : el(fk === "lines" ? "textarea" : "input", { value: raw.fields[f.name] ?? "", rows: 2, spellcheck: false, autocomplete: "off", placeholder: fk === "lines" ? "one per line" : f.optional ? "optional" : "" })) as HTMLInputElement;
+        input.dataset.key = k;
+        input.dataset.part = f.name;
+        box.append(el("label", { className: fk === "bool" ? "check" : "field" }, ...(fk === "bool" ? [input, el("span", {}, el("code", {}, f.name))] : [el("span", {}, el("code", {}, f.name), f.optional ? "" : " (needed)"), input])));
+      }
+      return box;
+    }
+    const choices: string[] | undefined = (builder as any).choices?.[circuit]?.[v.name];
+    if (choices) {
+      const sel = el("select", { id }, ...choices.map((c) => el("option", { value: c, selected: (values[k] ?? v.default) === c }, c))) as HTMLSelectElement;
+      sel.dataset.key = k;
+      return el("label", { className: "field" }, label(), sel, help);
+    }
+    const multi = kind === "lines" || kind === "pairs" || (kind === "string" && String(v.default ?? "").includes("\n"));
+    const input = el(multi ? "textarea" : "input", {
+      id,
+      value: values[k] ?? "",
+      placeholder: kind === "pairs" ? "name = value, one per line" : kind === "lines" ? "one per line" : shownDefault,
+      spellcheck: false,
+      autocomplete: "off",
+      rows: 3,
+      ...(kind === "number" ? { inputMode: "numeric" } : {}),
+    }) as HTMLInputElement;
+    input.dataset.key = k;
+    return el("label", { className: "field" }, label(v.required ? "(needed)" : ""), input, help);
+  }
+
+  function card(name: string) {
+    const c = data.circuits[name];
+    const wired: Record<string, unknown> = (wiring(data, withRequired(data, picked())).values as any)[name] ?? {};
+    const ins = data.inputs[name].inputs.filter((v: any) => !(name === "firewall" && v.name === "allow") && !(v.name in wired));
+    const needed = ins.filter((v: any) => v.required && !secret(v));
+    const secrets = ins.filter((v: any) => v.required && secret(v));
+    const more = ins.filter((v: any) => !v.required && !secret(v) && fieldKind(parseType(v.type)));
+    const elsewhere = ins.filter((v: any) => !v.required && (secret(v) || !fieldKind(parseType(v.type))));
+    const box = el("article", { className: "card" },
+      el("div", { className: "top" }, el("h3", {}, name), el("span", { className: "ver" }, c.version), el("a", { href: `https://docs.conn3x.org/circuits/${name}` }, "Docs")),
+      el("p", { className: "desc" }, c.description),
+    );
+    const hint = (builder.hints as any)[name];
+    if (hint) box.append(el("p", { className: "hint" }, hint));
+    const set = Object.keys(wired);
+    if (set.length) box.append(el("p", { className: "hint" }, "The builder sets ", ...set.flatMap((k, i) => [i ? ", " : "", el("code", {}, k)]), " to match your other picks."));
+    for (const v of needed) box.append(field(name, v));
+    for (const v of secrets) box.append(el("p", { className: "secret" }, el("code", {}, v.name), ` is a secret, so it isn't asked for here. You'll set it as `, el("code", {}, `TF_VAR_${varName(name, v.name)}`), " when you run it."));
+    if (!needed.length && !secrets.length) box.append(el("p", { className: "sub" }, "Nothing needed. It works with its defaults."));
+    if (more.length || elsewhere.length) {
+      const d = el("details", { className: "more" }, el("summary", {}, `More settings (${more.length})`), ...more.map((v: any) => field(name, v)));
+      if (elsewhere.length) d.append(el("p", { className: "sub" }, "Also takes ", ...elsewhere.flatMap((v: any, i: number) => [i ? ", " : "", el("code", {}, v.name)]), ". Set those in main.tf afterwards; the docs show how."));
+      box.append(d);
+    }
+    return box;
+  }
+
+  form.addEventListener("input", (e) => {
+    const t = e.target as HTMLInputElement;
+    const k = t.dataset.key;
+    if (k) {
+      const v = t.type === "checkbox" ? t.checked : t.value;
+      if (t.dataset.part === "key") values[k].key = v;
+      else if (t.dataset.part) values[k].fields[t.dataset.part] = v;
+      else values[k] = v;
+    }
+    if (t.name === "pick" || t.name === "distro") refresh();
+    gate();
+    if (shown) write();
+  });
+
+  // The button waits for boxes only a person may tick, such as a licence.
+  function gate() {
+    const left = unticked(data, picked(), values);
+    $<HTMLButtonElement>("write").disabled = left.length > 0;
+    $("count").textContent = left.length
+      ? `Tick ${left.map((k) => k.replace(".", "'s ")).join(" and ")} first.`
+      : $("count").dataset.n ?? "";
+  }
+
+  function build() {
+    return {
+      distro: distro(),
+      picks: picked(),
+      hosts: $<HTMLTextAreaElement>("hosts").value,
+      ssh: {
+        user: $<HTMLInputElement>("ssh-user").value,
+        key: $<HTMLInputElement>("ssh-key").value,
+        knownHosts: $<HTMLInputElement>("ssh-known").value,
+        become: $<HTMLInputElement>("ssh-become").checked,
+      },
+      values,
+      network: $("network-field").hidden ? "" : $<HTMLInputElement>("network").value,
+    };
+  }
+
+  // Comments, strings, attribute names and keywords; everything is escaped.
+  const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!);
+  const span = (cls: string, s: string) => `<span class="${cls}">${esc(s)}</span>`;
+  const tokens = /(#[^\n]*)|("(?:[^"\\\n]|\\.)*")|^([ \t]*)([A-Za-z_][\w-]*)(?=\s+=)|\b(module|locals|variable|true|false|null)\b/gm;
+  const highlight = (s: string) => {
+    let out = "";
+    let at = 0;
+    for (const m of s.matchAll(tokens)) {
+      const [all, c, str, sp, name, kw] = m;
+      out += esc(s.slice(at, m.index)) + (c ? span("c", c) : str ? span("s", str) : name ? esc(sp) + span("a", name) : span("k", kw));
+      at = m.index! + all.length;
+    }
+    return out + esc(s.slice(at));
+  };
+
+  function show(name: string) {
+    current = name;
+    for (const b of $("tabs").querySelectorAll<HTMLButtonElement>("button")) b.setAttribute("aria-selected", String(b.dataset.file === name));
+    const code = $("code");
+    if (name.endsWith(".tf")) code.innerHTML = highlight(files[name]);
+    else code.textContent = files[name];
+  }
+
+  function write() {
+    const r = generate(data, build());
+    $("out").hidden = false;
+    for (const f of form.querySelectorAll("[aria-invalid]")) f.removeAttribute("aria-invalid");
+    if (r.errors) {
+      $("result").hidden = true;
+      const box = $("errors");
+      box.hidden = false;
+      box.replaceChildren(
+        el("p", {}, "A few things to fix first:"),
+        el("ul", {}, ...r.errors.map(([f, msg]: [string, string]) => {
+          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
+          document.getElementById(target)?.setAttribute("aria-invalid", "true");
+          return el("li", {}, el("a", { href: `#${target}` }, f.includes(".") && f !== "ssh.user" ? f : f === "picks" ? "Circuits" : f), `: ${msg}`);
+        })),
+      );
+      return;
+    }
+    $("errors").hidden = true;
+    $("result").hidden = false;
+    files = r.files;
+    if (!files[current]) current = "main.tf";
+    $("tabs").replaceChildren(...Object.keys(files).map((f) => {
+      const b = el("button", { type: "button", role: "tab", textContent: f }) as HTMLButtonElement;
+      b.dataset.file = f;
+      b.addEventListener("click", () => show(f));
+      return b;
+    }));
+    show(current);
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    shown = true;
+    write();
+    $("out").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  $("copy").addEventListener("click", async () => {
+    const b = $("copy");
+    try {
+      await navigator.clipboard.writeText(files[current]);
+      b.textContent = "Copied";
+    } catch {
+      b.textContent = "Select and copy";
+    }
+    setTimeout(() => (b.textContent = "Copy this file"), 1500);
+  });
+
+  $("zip").addEventListener("click", () => {
+    const url = URL.createObjectURL(new Blob([zip(files)], { type: "application/zip" }));
+    const a = el("a", { href: url, download: "conn3x-config.zip" });
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  refresh();
+  gate();
+</script>
+
+<style is:global>
+  /* Global, because the script builds much of the form; everything sits under #build. */
+  #build {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.75rem;
+    padding-block: 3rem 5rem;
+  }
+  #build > * {
+    max-width: 58rem;
+  }
+  #build h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: clamp(1.4rem, 3vw, 1.75rem);
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+  #build h2 span {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--c-accent);
+    color: var(--c-accent-contrast);
+    font-size: 1rem;
+  }
+  #build .sub,
+  #build small {
+    color: var(--c-text-muted);
+    font-size: 0.875rem;
+  }
+  #build .sub {
+    margin: -0.5rem 0 1rem;
+  }
+  #build .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  #build .chip {
+    position: relative;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--c-border);
+    border-radius: 999px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    cursor: pointer;
+  }
+  #build .chip input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  #build .chip:hover {
+    border-color: var(--c-text-muted);
+  }
+  #build .chip:has(:checked) {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-contrast);
+  }
+  #build .chip:has(:disabled) {
+    color: var(--c-dim);
+    border-style: dashed;
+    cursor: not-allowed;
+  }
+  #build .chip:has(:disabled) input {
+    cursor: not-allowed;
+  }
+  #build .chip:has(:focus-visible) {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+  }
+  #build .group {
+    border: 0;
+    padding: 0;
+    margin: 0 0 1.25rem;
+  }
+  #build .group legend {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: 0.5rem;
+  }
+  #build .why {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+  }
+  #build .why:empty {
+    display: none;
+  }
+  #build .later {
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+  }
+  #build .later summary {
+    cursor: pointer;
+    color: var(--c-text);
+  }
+  #build .fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.25rem;
+  }
+  #build .field {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 0.9rem;
+    font-size: 0.9375rem;
+  }
+  #build .fields .field {
+    margin: 0;
+  }
+  #build .wide,
+  #build .fields .check {
+    grid-column: 1 / -1;
+  }
+  #build .field[hidden] {
+    display: none;
+  }
+  #build input[type="text"],
+  #build input:not([type]),
+  #build textarea {
+    width: 100%;
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--c-border-strong);
+    border-radius: 8px;
+    background: var(--c-bg);
+    color: var(--c-text);
+  }
+  #build textarea {
+    resize: vertical;
+  }
+  #build [aria-invalid="true"] {
+    border-color: var(--c-destroy) !important;
+  }
+  #build .check {
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    font-size: 0.9375rem;
+    margin-bottom: 0.9rem;
+  }
+  #build .check input {
+    accent-color: var(--c-accent);
+  }
+  #build .card {
+    border: 1px solid var(--c-border);
+    border-top: 3px solid var(--c-accent);
+    border-radius: 8px;
+    padding: 1.25rem;
+    background: var(--c-surface);
+    margin-bottom: 1.25rem;
+  }
+  #build .top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  #build .top h3 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  #build .ver {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--c-text-muted);
+  }
+  #build .top a {
+    margin-left: auto;
+    font-size: 0.875rem;
+  }
+  #build .desc {
+    margin: 0.35rem 0 0.9rem;
+    color: var(--c-text-muted);
+  }
+  #build .hint,
+  #build .secret {
+    font-size: 0.875rem;
+    border-left: 3px solid var(--c-accent);
+    padding: 0.4rem 0.75rem;
+    background: var(--c-raised);
+    margin: 0 0 1rem;
+  }
+  #build .secret {
+    border-color: var(--c-border-strong);
+  }
+  #build .entry {
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem 0.25rem;
+    margin: 0 0 1rem;
+  }
+  #build .entry legend {
+    padding: 0 0.35rem;
+  }
+  #build .entry small {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  #build .more summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: 0.75rem;
+  }
+  #build .go {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  #build .go .sub {
+    margin: 0;
+  }
+  #build .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  #build select {
+    font: inherit;
+    font-size: 0.875rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--c-border-strong);
+    border-radius: 8px;
+    background: var(--c-bg);
+    color: var(--c-text);
+  }
+  #build .btn {
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #build .errors {
+    border: 1px solid var(--c-destroy);
+    border-radius: 8px;
+    padding: 0.75rem 1.1rem;
+  }
+  #build .errors p {
+    margin: 0;
+    font-weight: 600;
+  }
+  #build .errors ul {
+    margin: 0.4rem 0 0;
+    padding-left: 1.2rem;
+  }
+  #build .tabs {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.5rem 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    overflow-x: auto;
+  }
+  #build .tabs button {
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    padding: 0.45rem 0.8rem;
+    border: 0;
+    border-radius: 6px 6px 0 0;
+    background: none;
+    color: var(--c-code-dim);
+    cursor: pointer;
+  }
+  #build .tabs button[aria-selected="true"] {
+    background: rgba(255, 255, 255, 0.07);
+    color: var(--c-code-text);
+  }
+  #build pre {
+    padding: 1rem 1.1rem;
+    overflow: auto;
+    max-height: 36rem;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+  #build pre .c {
+    color: var(--c-code-dim);
+  }
+  #build pre .s {
+    color: var(--c-code-add);
+  }
+  #build pre .k {
+    color: var(--c-code-change);
+  }
+  #build pre .a {
+    color: #9ccfff;
+  }
+  #build .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  #build .note {
+    border-left: 3px solid var(--c-accent);
+    padding-left: 0.75rem;
+  }
+  @media (max-width: 640px) {
+    #build .fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

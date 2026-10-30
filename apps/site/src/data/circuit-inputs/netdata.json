@@ -1,0 +1,151 @@
+{
+  "name": "netdata",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "netdata_version",
+      "type": "string",
+      "default": "2.12.2",
+      "description": "Netdata Agent release to install from Netdata's stable repository, such as \"2.12.2\". Raising it upgrades Netdata in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "bind_to",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Addresses Netdata's web server listens on, its [web] bind to, separated by spaces, such as \"127.0.0.1 ::1\" or \"*\" for every address. Children stream to this port too, so a parent needs an address they can reach.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 19999,
+      "description": "Port Netdata's web server listens on, its [web] default port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_mode",
+      "type": "string",
+      "default": "dbengine",
+      "description": "Where Netdata keeps metrics, its [db] db: \"dbengine\" on disk, \"ram\" in memory only, or \"none\", which keeps nothing and suits a child that streams everything to a parent.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "update_every",
+      "type": "number",
+      "default": 1,
+      "description": "Seconds between data collections, its [db] update every.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "retention",
+      "type": "list(object({\n    size = optional(string)\n    time = optional(string)\n  }))",
+      "default": [],
+      "description": "dbengine storage tiers, from per-second tier 0 up, each with an optional size and time limit, such as [{ size = \"2GiB\", time = \"14d\" }, { time = \"3mo\" }, { time = \"2y\" }]. The list's length sets the number of tiers. When empty, Netdata's defaults.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(map(string))",
+      "default": {},
+      "description": "More netdata.conf settings, by section, such as { ml = { enabled = \"no\" } }. Changing them restarts Netdata.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "collectors",
+      "type": "map(string)",
+      "default": {},
+      "description": "go.d collector configurations, by module name, each the YAML for /etc/netdata/go.d/NAME.conf, such as { nginx = file(\"nginx.conf\") }. They land in state as plain text, so keep passwords out of them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "telemetry",
+      "type": "bool",
+      "default": false,
+      "description": "Send Netdata anonymous usage statistics. When false, the circuit writes /etc/netdata/.opt-out-from-anonymous-statistics before Netdata first starts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stream_destination",
+      "type": "string",
+      "default": null,
+      "description": "Parent or parents these hosts stream their metrics to, its [stream] destination, such as \"10.0.0.5:19999\", or several separated by spaces, tried in order. Add :SSL to a destination for TLS. When null, the hosts don't stream.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stream_accept",
+      "type": "bool",
+      "default": false,
+      "description": "Make these hosts parents that accept streams from children presenting stream_api_key. Set bind_to so the children can reach them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stream_api_key",
+      "type": "string",
+      "default": null,
+      "description": "Key children and their parent share, a UUID such as the output of uuidgen. Required when stream_destination or stream_accept is set. Pass it at run time with -var or TF_VAR_stream_api_key; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "cloud_claim",
+      "type": "bool",
+      "default": false,
+      "description": "Connect the hosts to Netdata Cloud with cloud_token. Off by default: the Agent runs on its own and never talks to Netdata Cloud.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cloud_token",
+      "type": "string",
+      "default": null,
+      "description": "Claim token from your Netdata Cloud space. Required when cloud_claim is true. Pass it at run time with -var or TF_VAR_cloud_token; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "cloud_rooms",
+      "type": "list(string)",
+      "default": [],
+      "description": "IDs of the Netdata Cloud rooms to add the hosts to. When empty, the space's default room.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cloud_url",
+      "type": "string",
+      "default": "https://app.netdata.cloud",
+      "description": "Netdata Cloud URL to claim with.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

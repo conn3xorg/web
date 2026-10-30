@@ -1,0 +1,178 @@
+{
+  "name": "openwebui",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "openwebui_version",
+      "type": "string",
+      "default": "v0.12.5",
+      "description": "Tag of the ghcr.io/open-webui/open-webui image, such as \"v0.12.5\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:03443b8de6b617da9d900edd09b4bf1cb0ddbfdcba6afb42c548336a0b821ded",
+      "description": "Digest of the image for openwebui_version, such as \"sha256:0344...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Open WebUI listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port Open WebUI listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_email",
+      "type": "string",
+      "default": null,
+      "description": "Email of the first admin account, which Open WebUI creates at startup when it has no users yet. Set it with admin_password.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the first admin account. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "admin_name",
+      "type": "string",
+      "default": "Admin",
+      "description": "Display name of the first admin account.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "enable_signup",
+      "type": "bool",
+      "default": false,
+      "description": "Let people create their own accounts from the sign-in page. New accounts get default_user_role.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "default_user_role",
+      "type": "string",
+      "default": "pending",
+      "description": "Role of an account someone creates for themselves: \"pending\" waits for an admin to approve it, \"user\" can chat straight away.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "share_models_with_all_users",
+      "type": "bool",
+      "default": false,
+      "description": "Show every model to every user. When false, a user sees only the models an admin has given them, or their group, access to.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ollama_base_url",
+      "type": "string",
+      "default": "http://127.0.0.1:11434",
+      "description": "Address of the Ollama server, such as circuit-ollama's default \"http://127.0.0.1:11434\". When null, Open WebUI's Ollama connection is turned off.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ollama_models",
+      "type": "list(string)",
+      "default": [],
+      "description": "Ollama models Open WebUI offers, by full name and tag, such as [\"qwen2.5:0.5b\"]. When empty, every model Ollama has.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "openai_base_url",
+      "type": "string",
+      "default": null,
+      "description": "Address of an OpenAI-compatible API, such as a LiteLLM gateway at \"http://127.0.0.1:4000/v1\". When null, the OpenAI connection is turned off.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "openai_api_key",
+      "type": "string",
+      "default": null,
+      "description": "API key for openai_base_url. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "openai_models",
+      "type": "list(string)",
+      "default": [],
+      "description": "Model IDs Open WebUI offers from openai_base_url, such as [\"gpt-4o-mini\"]. Open WebUI lists exactly these without asking the server. When empty, whatever the server lists.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database_url",
+      "type": "string",
+      "default": null,
+      "description": "PostgreSQL connection URL, such as \"postgresql://openwebui:PASSWORD@127.0.0.1:5432/openwebui\". When null, Open WebUI uses SQLite in its volume. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "persistent_config",
+      "type": "bool",
+      "default": false,
+      "description": "Let settings changed in the admin panel outlive a restart. When false, every start takes them from this circuit again.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "offline_mode",
+      "type": "bool",
+      "default": true,
+      "description": "Set Open WebUI's OFFLINE_MODE: no model downloads from Hugging Face, no version checks and no pip installs for tools. The image already holds the default embedding and speech models.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of Open WebUI's environment variables, such as { WEBUI_URL = \"https://chat.example.com\", ENABLE_ADMIN_CHAT_ACCESS = \"false\" }. They go in the same root-only file as the passwords and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

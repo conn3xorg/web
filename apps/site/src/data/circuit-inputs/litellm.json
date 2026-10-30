@@ -1,0 +1,141 @@
+{
+  "name": "litellm",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "litellm_version",
+      "type": "string",
+      "default": "v1.106.6",
+      "description": "Tag of the ghcr.io/berriai/litellm image, such as \"v1.106.6\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:37e2dafb088a7723beb998590682957386dfc83ffea1848486f8e0e5cfac0b06",
+      "description": "Digest of the image for litellm_version, such as \"sha256:37e2...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_connection_uri",
+      "type": "string",
+      "description": "PostgreSQL connection URI, such as \"postgresql://litellm:PASSWORD@127.0.0.1:5432/litellm\". It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address LiteLLM listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 4000,
+      "description": "Port LiteLLM listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "models",
+      "type": "any",
+      "default": [],
+      "description": "LiteLLM's model_list: the models clients can ask for, each with a model_name and litellm_params, such as [{ model_name = \"gpt-4o\", litellm_params = { model = \"openai/gpt-4o\", api_key = \"os.environ/OPENAI_API_KEY\" } }]. It's written to config.yaml as it is, so give keys as os.environ/NAME references to api_keys.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "api_keys",
+      "type": "map(string)",
+      "default": {},
+      "description": "Provider credentials and other secret environment variables for LiteLLM, such as { OPENAI_API_KEY = \"sk-...\", ANTHROPIC_API_KEY = \"sk-ant-...\" }. Refer to each in models as os.environ/NAME. They go to a root-only env file on the host and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "log_prompts",
+      "type": "bool",
+      "default": false,
+      "description": "Store each request's messages and the model's answer in LiteLLM's spend logs, in PostgreSQL, where admins can read them in the UI. Off by default: the logs then hold who called which model, when, with how many tokens and at what cost, but not what was said.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "spend_logs",
+      "type": "bool",
+      "default": true,
+      "description": "Write a row per request to LiteLLM's spend logs. Budgets and key spend are tracked either way; turning this off loses the per-request history.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "default_key_budget",
+      "type": "number",
+      "default": null,
+      "description": "Budget in US dollars for a virtual key created without max_budget, such as 10. When null, such keys have no budget.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "max_key_budget",
+      "type": "number",
+      "default": null,
+      "description": "Largest max_budget, in US dollars, that /key/generate accepts. A request for more is refused. When null, there's no limit.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "budget_duration",
+      "type": "string",
+      "default": null,
+      "description": "How often a new key's budget resets when the request doesn't say, such as \"30d\" or \"7d\". When null, budgets don't reset.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "fetch_model_prices",
+      "type": "bool",
+      "default": false,
+      "description": "Fetch LiteLLM's model price list from GitHub each time it starts. When false, it uses the list in the image, which is as new as litellm_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "general_settings",
+      "type": "any",
+      "default": {},
+      "description": "More of LiteLLM's general_settings, such as { allowed_routes = [\"llm_api_routes\"] }. Merged over the circuit's own at the top level. Written to the plan, state and config.yaml, so no secrets: use os.environ/NAME.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "litellm_settings",
+      "type": "any",
+      "default": {},
+      "description": "More of LiteLLM's litellm_settings, such as { drop_params = false, success_callback = [\"prometheus\"] }. Merged over the circuit's own at the top level. Written to the plan, state and config.yaml, so no secrets.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "name": "zabbix",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "servers",
+      "type": "any",
+      "default": {},
+      "description": "Host to run the Zabbix server and frontend on, by name: a map of one name to an address, or to a host object with an address and optional host_key, user, port, private_key_file, jump_hosts or os. Empty for agents that report to a server you run elsewhere.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "agents",
+      "type": "any",
+      "default": {},
+      "description": "Hosts to run Zabbix agent 2 on, by name, in the same form as servers. Each name becomes the agent's Hostname, the name you give the host in Zabbix. A name can be in both servers and agents, so the server monitors itself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "zabbix_version",
+      "type": "string",
+      "default": "7.0.32-2",
+      "description": "Zabbix release and package revision to install, as Zabbix's Debian packages number them, such as \"7.0.32-2\". The release's first two numbers pick Zabbix's repository. Raising it upgrades every Zabbix package in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database",
+      "type": "object({\n    host = optional(string, \"127.0.0.1\")\n    port = optional(number, 5432)\n    name = optional(string, \"zabbix\")\n    user = optional(string, \"zabbix\")\n  })",
+      "default": {},
+      "description": "PostgreSQL database the server and frontend keep their data in. The role and an empty database it owns must exist, such as from circuit-postgres. The defaults suit PostgreSQL on the server host itself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "database_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the database user. Needed with servers. Pass it at run time with -var or TF_VAR_database_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password to give the frontend's Admin user in place of Zabbix's default, zabbix. When null, Admin keeps whatever password it has. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the frontend listens on. The default keeps it to the server host itself, for a reverse proxy or an SSH tunnel in front.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port the frontend serves on, in plain HTTP.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_address",
+      "type": "string",
+      "default": null,
+      "description": "Address the agents know the server by: they accept passive checks from it and send active checks to it. When null, the address of the host in servers.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "agent_psk",
+      "type": "bool",
+      "default": false,
+      "description": "Encrypt the agents' traffic with a pre-shared key. Each agent generates its own key, which never leaves the host; you register it with the server yourself. See the README.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

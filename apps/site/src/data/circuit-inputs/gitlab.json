@@ -1,0 +1,68 @@
+{
+  "name": "gitlab",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "external_url",
+      "type": "string",
+      "description": "Address people reach GitLab by, such as \"https://gitlab.example.com\". GitLab builds its links and clone URLs from it, and bundled NGINX listens on its scheme and port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "gitlab_version",
+      "type": "string",
+      "default": "19.5.3",
+      "description": "GitLab CE release to install, such as \"19.5.3\". Raising it upgrades GitLab in place. Follow GitLab's upgrade path: stop at each required release on the way.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "root_password",
+      "type": "string",
+      "description": "Password GitLab gives root when it first sets up its database. Pass it at run time with -var or TF_VAR_root_password; it never reaches state or the plan. Changing it later doesn't change root's password.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "letsencrypt",
+      "type": "bool",
+      "default": false,
+      "description": "Have GitLab get and renew a Let's Encrypt certificate for an https external_url. Needs public DNS for its host name and port 80 open to the internet.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "reverse_proxy",
+      "type": "object({\n    listen_port     = optional(number, 80)\n    trusted_proxies = optional(list(string), [])\n  })",
+      "default": null,
+      "description": "Set it when a proxy in front ends TLS: bundled NGINX then serves plain HTTP on listen_port, and trusts X-Forwarded-For from trusted_proxies, such as { trusted_proxies = [\"10.0.0.5/32\"] }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_config",
+      "type": "string",
+      "default": "",
+      "description": "More gitlab.rb settings, as Ruby, added at the end of the file, such as \"puma['worker_processes'] = 2\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "min_memory_mb",
+      "type": "number",
+      "default": 7500,
+      "description": "Memory, in MiB, a host needs before the circuit configures it. GitLab asks for 8 GB at the least; an 8 GB host reports a little less.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

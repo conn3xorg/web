@@ -1,0 +1,59 @@
+{
+  "name": "gitlab-runner",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "gitlab_url",
+      "type": "string",
+      "description": "Address of the GitLab instance the runners take jobs from, such as \"https://gitlab.example.com\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "runner_token",
+      "type": "string",
+      "description": "Runner authentication token, starting glrt-, from creating a runner in GitLab. Pass it at run time with -var or TF_VAR_runner_token; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "runner_version",
+      "type": "string",
+      "default": "19.5.2",
+      "description": "GitLab Runner release to install, such as \"19.5.2\". Raising it upgrades the runner in place. Keep it within a minor release or so of your GitLab.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "executor",
+      "type": "string",
+      "default": "shell",
+      "description": "How the runner runs jobs: \"shell\", on the host as the gitlab-runner user, or \"docker\", each job in a container, which needs Docker Engine on the host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "concurrent",
+      "type": "number",
+      "default": 1,
+      "description": "Most jobs each host runs at once.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "docker_image",
+      "type": "string",
+      "default": "alpine:3.24",
+      "description": "Image the docker executor runs a job in when its .gitlab-ci.yml names none.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}
