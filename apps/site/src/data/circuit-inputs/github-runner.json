@@ -1,0 +1,92 @@
+{
+  "name": "github-runner",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "github_url",
+      "type": "string",
+      "description": "Repository, organization or enterprise the runners register with, such as \"https://github.com/acme/app\" or \"https://github.com/acme\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "register",
+      "type": "bool",
+      "default": true,
+      "description": "Register runners that aren't registered yet, with registration_token. Set it to false once they are, so later plans don't need a token.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "registration_token",
+      "type": "string",
+      "default": null,
+      "description": "Registration token from GitHub's \"New self-hosted runner\" page or its API. It expires after an hour. Required when register is true.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "runners",
+      "type": "map(object({\n    name   = optional(string)\n    labels = optional(list(string), [])\n    group  = optional(string)\n  }))",
+      "default": {
+        "runner": {}
+      },
+      "description": "Runners to run on each host, by key. name defaults to HOST-KEY, labels are added to self-hosted, Linux and X64 or ARM64, and group is an organization's runner group.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "runner_version",
+      "type": "string",
+      "default": "2.338.2",
+      "description": "actions/runner release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x86_64": "baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40",
+        "aarch64": "670adb2f268fe21dcbb58b3db0e0aa9d5b3bddfe2c651481336e561ff86de945"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, x86_64 and aarch64, from the release notes. Change these with runner_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "auto_update",
+      "type": "bool",
+      "default": true,
+      "description": "Let each runner update itself when GitHub releases a new version. When false, update by raising runner_version, and do it within 30 days of each release or GitHub stops sending jobs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "user",
+      "type": "string",
+      "default": "github-runner",
+      "description": "System user the runners and their jobs run as. The circuit creates it, without sudo.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "install_dir",
+      "type": "string",
+      "default": "/opt/actions-runner",
+      "description": "Directory that holds the tarball and one directory per runner.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

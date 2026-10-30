@@ -1,0 +1,106 @@
+{
+  "name": "osquery",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "osquery_version",
+      "type": "string",
+      "default": "5.24.0",
+      "description": "osquery release to install, such as \"5.24.0\". Raising it upgrades osquery in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "options",
+      "type": "map(string)",
+      "default": {},
+      "description": "osquery options for the config's options section, such as { schedule_splay_percent = \"10\", host_identifier = \"uuid\" }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "map(object({\n    query    = string\n    interval = number\n    snapshot = optional(bool, false)\n  }))",
+      "default": {},
+      "description": "Scheduled queries, by name, such as { os_version = { query = \"SELECT * FROM os_version;\", interval = 3600 } }. interval is in seconds. snapshot = true logs the whole result each time to the snapshots log, rather than what changed to the results log.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "packs",
+      "type": "list(string)",
+      "default": [],
+      "description": "Query packs osquery ships, by name, such as [\"incident-response\", \"ossec-rootkit\"]. They're read from /opt/osquery/share/osquery/packs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "custom_packs",
+      "type": "map(object({\n    queries = map(object({\n      query    = string\n      interval = number\n      snapshot = optional(bool, false)\n    }))\n    platform  = optional(string)\n    discovery = optional(list(string))\n  }))",
+      "default": {},
+      "description": "Packs of your own, by name, written into the config. Each has queries, like schedule, and optionally platform, such as \"linux\", and discovery, a list of queries that must all return rows for the pack to run.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "file_paths",
+      "type": "map(list(string))",
+      "default": {},
+      "description": "File integrity monitoring: paths to watch, by category, such as { etc = [\"/etc/%%\"], ssh = [\"/root/.ssh/%%\"] }. % matches within a directory, %% recursively. When set, the circuit turns on file events and schedules a file_events query.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "file_events_interval",
+      "type": "number",
+      "default": 300,
+      "description": "Seconds between runs of the file_events query that logs file changes, when file_paths is set.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "log_rotate_size",
+      "type": "number",
+      "default": 26214400,
+      "description": "Size in bytes at which osquery rotates its results and snapshots logs in /var/log/osquery. The default is 25 MiB.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "log_rotate_max_files",
+      "type": "number",
+      "default": 25,
+      "description": "Rotated logs osquery keeps of each kind before deleting the oldest.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "fleet",
+      "type": "object({\n    address              = string\n    server_certs         = optional(string)\n    host_identifier      = optional(string, \"uuid\")\n    config_refresh       = optional(number, 10)\n    distributed_interval = optional(number, 10)\n  })",
+      "default": null,
+      "description": "A Fleet server to enroll with, such as { address = \"fleet.example.com:8080\", server_certs = \"/etc/osquery/fleet.pem\" }. server_certs is a CA bundle already on the host; when null, osquery's own bundle of public CAs. Fleet then supplies the config, and results go to Fleet as well as the local log. Needs enroll_secret.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "enroll_secret",
+      "type": "string",
+      "default": null,
+      "description": "Fleet enroll secret, when fleet is set. Pass it at run time with -var or TF_VAR_enroll_secret; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

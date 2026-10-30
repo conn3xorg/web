@@ -1,0 +1,58 @@
+{
+  "name": "suricata",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "suricata_series",
+      "type": "string",
+      "default": "8.0",
+      "description": "Suricata release series to install from OISF's repositories. Hosts get the latest release in it and keep up with it on upgrades.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "interfaces",
+      "type": "list(string)",
+      "default": [],
+      "description": "Network interfaces Suricata watches with AF_PACKET, such as [\"eth0\"] or [\"ens3\", \"ens4\"]. When empty, the interface each host's default IPv4 route leaves by.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "home_net",
+      "type": "list(string)",
+      "default": [
+        "192.168.0.0/16",
+        "10.0.0.0/8",
+        "172.16.0.0/12"
+      ],
+      "description": "Networks Suricata treats as yours, HOME_NET in its rules. Everything else is EXTERNAL_NET.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rule_sources",
+      "type": "list(string)",
+      "default": [
+        "et/open"
+      ],
+      "description": "suricata-update sources to enable, such as [\"et/open\", \"oisf/trafficid\"]. suricata-update list-sources shows them all.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "custom_rules",
+      "type": "list(string)",
+      "default": [],
+      "description": "Your own rules, one per item, such as [\"alert dns any any -> any any (msg:\\\"Lookup of example.org\\\"; dns.query; content:\\\"example.org\\\"; nocase; sid:1000001; rev:1;)\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

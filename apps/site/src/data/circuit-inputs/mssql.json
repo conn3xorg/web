@@ -1,0 +1,77 @@
+{
+  "name": "mssql",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "accept_eula",
+      "type": "bool",
+      "description": "Whether you accept the SQL Server licence terms, and those of the ODBC driver when install_tools is on. Read them first; the circuit won't set SQL Server up unless this is true.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "edition",
+      "type": "string",
+      "default": "Developer",
+      "description": "Edition to set up, as MSSQL_PID: \"Developer\", \"EnterpriseDeveloper\" or \"StandardDeveloper\" for non-production use, \"Express\" for small production databases, \"Evaluation\" for a 180-day trial, or \"Standard\", \"Enterprise\" or \"EnterpriseCore\", which need a licence you've bought. Changing it restarts SQL Server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "sa_password",
+      "type": "string",
+      "description": "Password for the sa login. Pass it at run time with -var or TF_VAR_sa_password; it never reaches state or the plan. SQL Server wants 8 to 128 characters from at least three of: capitals, small letters, digits and symbols. Changing it restarts SQL Server.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "tcp_port",
+      "type": "number",
+      "default": 1433,
+      "description": "TCP port SQL Server listens on. Changing it restarts SQL Server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IPv4 address SQL Server listens on, such as \"127.0.0.1\", \"10.0.0.5\" or \"0.0.0.0\" for every address. Changing it restarts SQL Server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "memory_limit_mb",
+      "type": "number",
+      "default": null,
+      "description": "Physical memory SQL Server may use, in MB. When null, SQL Server takes 80% of the host's memory. Changing it restarts SQL Server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(string)",
+      "default": {},
+      "description": "Other mssql-conf settings, as section.name, such as { \"sqlagent.enabled\" = \"true\", \"filelocation.defaultbackupdir\" = \"/srv/backup\" }. Changing them restarts SQL Server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "install_tools",
+      "type": "bool",
+      "default": true,
+      "description": "Install sqlcmd and bcp from mssql-tools18, with the Microsoft ODBC driver they need.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

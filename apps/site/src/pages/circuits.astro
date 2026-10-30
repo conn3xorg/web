@@ -55,7 +55,8 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <span class="visually-hidden">Search circuits</span>
           <input id="q" type="search" placeholder="Search circuits" autocomplete="off" />
         </label>
-        <a class="btn" href="#share">Share yours</a>
+        <a class="btn" href="/build">Build a config</a>
+        <a class="btn btn-ghost" href="#share">Share yours</a>
       </div>
       <div class="filters" role="group" aria-label="Filter by category">
         <button type="button" class="chip" data-cat="" aria-pressed="true">All <span>{circuits.length}</span></button>

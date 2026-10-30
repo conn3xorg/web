@@ -1,0 +1,70 @@
+{
+  "name": "zeek",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "zeek_series",
+      "type": "string",
+      "default": "9.0",
+      "description": "Zeek release line to install, such as \"9.0\". The host gets the newest release on that line. X.0 lines are Zeek's long-term support releases.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "interface",
+      "type": "string",
+      "default": "eth0",
+      "description": "Network interface Zeek listens on. A host object's interface overrides it for that host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "networks",
+      "type": "list(string)",
+      "default": [],
+      "description": "Networks Zeek treats as local, in CIDR notation, such as [\"192.168.1.0/24\"]. Private address space counts as local without being listed.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "json_logs",
+      "type": "bool",
+      "default": true,
+      "description": "Write Zeek's logs as JSON, one object per line, instead of tab-separated values.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "log_rotation_interval",
+      "type": "number",
+      "default": 3600,
+      "description": "Seconds between log rotations. Each rotation moves the current logs into a dated directory under /opt/zeek/logs. 0 turns rotation off.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "log_expire_days",
+      "type": "number",
+      "default": 30,
+      "description": "Days rotated logs are kept before zeekctl cron deletes them. 0 keeps them for good.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "local_zeek",
+      "type": "string",
+      "default": "",
+      "description": "Zeek script lines loaded after the package's local.zeek, such as \"@load policy/protocols/conn/mac-logging\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

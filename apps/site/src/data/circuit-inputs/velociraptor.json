@@ -1,0 +1,115 @@
+{
+  "name": "velociraptor",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "server",
+      "type": "any",
+      "description": "The host that runs the Velociraptor server and its GUI, as a map of one name to an address, or to a host object with an address and optional host_key, user, port, private_key_file or jump_hosts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "clients",
+      "type": "any",
+      "default": {},
+      "description": "Hosts that run the Velociraptor client, by name, in the same form as server. A client can be the server's own address under another name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "velociraptor_version",
+      "type": "string",
+      "default": "0.77.3",
+      "description": "Velociraptor release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x86_64": "c2c4eb585f16b622cd57de04995a7a13c076ee455bc2a828fd9243cec2ccfed8",
+        "aarch64": "f28e097c98bee125bf65adfe64937c9699b4d77742b7ab12f186a065298e72c3"
+      },
+      "description": "SHA-256 of the gzipped Linux binary for each architecture, x86_64 and aarch64, from the release page. Change these with velociraptor_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_url",
+      "type": "string",
+      "default": null,
+      "description": "URL clients reach the server on, with the trailing slash, such as \"https://dfir.example.com:8000/\". When null, https://SERVER_ADDRESS:FRONTEND_PORT/.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "frontend_address",
+      "type": "string",
+      "default": "0.0.0.0",
+      "description": "Address the server listens on for clients.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "frontend_port",
+      "type": "number",
+      "default": 8000,
+      "description": "Port the server listens on for clients.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "gui_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the GUI listens on. The default keeps it to the host itself, for a proxy or an SSH tunnel; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "gui_port",
+      "type": "number",
+      "default": 8889,
+      "description": "Port of the GUI.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": "admin",
+      "description": "Name of the GUI user the circuit creates with the administrator role.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of the admin user, at least 8 characters. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan. Changing it sets the new one.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "client_nonce",
+      "type": "string",
+      "description": "Shared secret every client presents to the server, such as the output of openssl rand -hex 16. Keep it the same for the life of the deployment: a client with another nonce is turned away. It never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    }
+  ]
+}

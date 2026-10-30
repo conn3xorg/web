@@ -1,0 +1,78 @@
+{
+  "name": "agentbox",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "user",
+      "type": "string",
+      "default": "dev",
+      "description": "Login name of the account you and your agents work as. Its home is /home/USER.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ssh_keys",
+      "type": "list(string)",
+      "description": "Public keys that can log in as user, in authorized_keys format, such as [file(\"~/.ssh/id_ed25519.pub\")].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "git_name",
+      "type": "string",
+      "default": null,
+      "description": "git's user.name for user, which commits are made under. When null, left as it is.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "git_email",
+      "type": "string",
+      "default": null,
+      "description": "git's user.email for user. When null, left as it is.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "node_major",
+      "type": "number",
+      "default": 26,
+      "description": "Node.js major release to install from NodeSource. 26 is the current LTS release.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "npm_packages",
+      "type": "list(string)",
+      "default": [],
+      "description": "npm packages to install globally as user, such as [\"@anthropic-ai/claude-code\", \"@openai/codex\"]. Nothing is installed by default.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "workspace",
+      "type": "string",
+      "default": null,
+      "description": "Directory for your checkouts, owned by user: relative to the home directory, such as \"code\", or absolute. When null, repos are cloned into the home directory.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "repos",
+      "type": "list(string)",
+      "default": [],
+      "description": "Repositories to clone once into workspace over HTTPS, such as [\"https://github.com/example/app.git\"]. Each lands in a directory named after the repository.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}
