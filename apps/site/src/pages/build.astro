@@ -80,10 +80,10 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       <section aria-labelledby="s-hosts">
         <h2 id="s-hosts"><span>3</span> Servers</h2>
         <div class="fields">
-          <label class="field wide">
+          <label class="field wide" id="hosts-field">
             <span>Hosts, one per line</span>
             <textarea id="hosts" rows="3" spellcheck="false" autocomplete="off" placeholder={"web1 203.0.113.10\nweb2 203.0.113.11"}></textarea>
-            <small>A name and an address, or just the address. Every circuit runs on all of them.</small>
+            <small>A name and an address, or just the address. Every circuit runs on all of them, except the ones that ask for hosts by role.</small>
           </label>
           <label class="field">
             <span>SSH user</span>
@@ -144,7 +144,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 </Base>
 
 <script>
-  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip, linkFor, readLink } from "../lib/builder.js";
+  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip, linkFor, readLink, rolesOf } from "../lib/builder.js";
   import builder from "../data/builder.json";
 
   const load = (g: Record<string, { default: any }>) =>
@@ -195,6 +195,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
   let rendered = "";
   function renderSettings(names: string[]) {
     const fw = names.includes("firewall");
+    $("hosts-field").hidden = names.length > 0 && names.every((n) => rolesOf(data, n).length);
     const priv = names.flatMap((n) => (builder.ports as any)[n] ?? []).filter((p: any) => p.private);
     $("network-field").hidden = !(fw && priv.length);
     $("network-help").textContent = priv.length
@@ -258,10 +259,18 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     return el("label", { className: "field" }, label(v.required ? "(needed)" : ""), input, help);
   }
 
+  function roleField(circuit: string, r: any) {
+    const k = `${circuit}.${r.input}`;
+    const input = el("textarea", { id: `f-${circuit}-${r.input}`, value: values[k] ?? "", rows: 3, spellcheck: false, autocomplete: "off", placeholder: `${r.prefix}1 203.0.113.10` }) as HTMLTextAreaElement;
+    input.dataset.key = k;
+    return el("label", { className: "field" }, el("span", {}, `${r.label}${r.one ? "" : ", one per line"}`, r.min ? " (needed)" : ""), input, el("small", {}, r.help));
+  }
+
   function card(name: string) {
     const c = data.circuits[name];
     const wired: Record<string, unknown> = (wiring(data, withRequired(data, picked())).values as any)[name] ?? {};
-    const ins = data.inputs[name].inputs.filter((v: any) => !(name === "firewall" && v.name === "allow") && !(v.name in wired));
+    const roles = rolesOf(data, name);
+    const ins = data.inputs[name].inputs.filter((v: any) => !(name === "firewall" && v.name === "allow") && !(v.name in wired) && !roles.some((r: any) => r.input === v.name));
     const needed = ins.filter((v: any) => v.required && !secret(v));
     const secrets = ins.filter((v: any) => v.required && secret(v));
     const more = ins.filter((v: any) => !v.required && !secret(v) && fieldKind(parseType(v.type)));
@@ -274,9 +283,10 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     if (hint) box.append(el("p", { className: "hint" }, hint));
     const set = Object.keys(wired);
     if (set.length) box.append(el("p", { className: "hint" }, "The builder sets ", ...set.flatMap((k, i) => [i ? ", " : "", el("code", {}, k)]), " to match your other picks."));
+    for (const r of roles) box.append(roleField(name, r));
     for (const v of needed) box.append(field(name, v));
     for (const v of secrets) box.append(el("p", { className: "secret" }, el("code", {}, v.name), ` is a secret, so it isn't asked for here. You'll set it as `, el("code", {}, `TF_VAR_${varName(name, v.name)}`), " when you run it."));
-    if (!needed.length && !secrets.length) box.append(el("p", { className: "sub" }, "Nothing needed. It works with its defaults."));
+    if (!needed.length && !secrets.length && !roles.length) box.append(el("p", { className: "sub" }, "Nothing needed. It works with its defaults."));
     if (more.length || elsewhere.length) {
       const d = el("details", { className: "more" }, el("summary", {}, `More settings (${more.length})`), ...more.map((v: any) => field(name, v)));
       if (elsewhere.length) d.append(el("p", { className: "sub" }, "Also takes ", ...elsewhere.flatMap((v: any, i: number) => [i ? ", " : "", el("code", {}, v.name)]), ". Set those in main.tf afterwards; the docs show how."));
