@@ -327,6 +327,30 @@ export function wiring(data, picks) {
 const ident = (s) => s.replace(/-/g, "_");
 export const varName = (circuit, input) => `${ident(circuit)}_${input}`;
 
+// --- Links ------------------------------------------------------------------
+
+/** The page address fragment for a build: its distribution and picks, nothing typed. */
+export function linkFor(distro, picks) {
+  return `#distro=${encodeURIComponent(distro)}&picks=${picks.map(encodeURIComponent).join(",")}`;
+}
+
+/**
+ * Reads a fragment from linkFor(), or returns null when it isn't one. A link
+ * can be edited or out of date, so a pick that can't be offered, or that
+ * clashes with an earlier one, is dropped rather than trusted.
+ */
+export function readLink(data, hash) {
+  const q = new URLSearchParams(hash.replace(/^#/, ""));
+  const distro = q.get("distro");
+  if (!data.builder.distros.some((d) => d.id === distro)) return null;
+  const picks = [];
+  for (const n of (q.get("picks") ?? "").split(",").filter(Boolean)) {
+    if (picks.includes(n) || unavailable(data, n, distro) || conflict(data, n, picks)) continue;
+    picks.push(n);
+  }
+  return { distro, picks };
+}
+
 // --- Generation -------------------------------------------------------------
 
 /**
