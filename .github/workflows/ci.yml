@@ -83,6 +83,8 @@ jobs:
           mkdir -p bin && tar -xzf "$file" -C bin conn3x
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
       - run: conn3x version
+      # Builds that create servers read the public key while validating.
+      - run: mkdir -p ~/.ssh && ssh-keygen -q -t ed25519 -N '' -f ~/.ssh/id_ed25519
       - run: node scripts/builder-combos.mjs "$RUNNER_TEMP/builds"
       - name: Validate every build
         working-directory: ${{ runner.temp }}/builds
