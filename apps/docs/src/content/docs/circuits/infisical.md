@@ -182,4 +182,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-infisical/blob/v0.1.
 
 - Repository: [conn3xorg/circuit-infisical](https://github.com/conn3xorg/circuit-infisical). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-infisical/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.0/examples/local).
-- Related circuits: [PostgreSQL](/circuits/postgres), [Valkey](/circuits/valkey), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao).
+- Related circuits: [PostgreSQL](/circuits/postgres), [Valkey](/circuits/valkey), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao).

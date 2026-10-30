@@ -1,0 +1,19 @@
+{
+  "name": "freeipa",
+  "repo": "conn3xorg/circuit-freeipa",
+  "description": "FreeIPA server on Rocky or Fedora, with clients on Debian, Ubuntu, Fedora and Rocky. Sets FQDNs, installs unattended, enrols over SSSD.",
+  "version": "v0.1.0",
+  "tags": [
+    "freeipa",
+    "kerberos",
+    "identity"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Identity and secrets",
+  "official": true
+}
