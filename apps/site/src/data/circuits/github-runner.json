@@ -1,0 +1,19 @@
+{
+  "name": "github-runner",
+  "repo": "conn3xorg/circuit-github-runner",
+  "description": "GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner.",
+  "version": "v0.1.0",
+  "tags": [
+    "github-actions",
+    "ci",
+    "runner"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

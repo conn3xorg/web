@@ -1,0 +1,18 @@
+{
+  "name": "openldap",
+  "repo": "conn3xorg/circuit-openldap",
+  "description": "OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds.",
+  "version": "v0.1.0",
+  "tags": [
+    "openldap",
+    "ldap",
+    "directory"
+  ],
+  "tested": [
+    "rocky10",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Identity and secrets",
+  "official": true
+}
