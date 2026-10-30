@@ -26,6 +26,13 @@ const people = await Promise.all(
   }),
 );
 
+// A few recent ones; the newest go at the top.
+const givingBack = [
+  ["k3s-io/k3s", "Why a kernel config check didn't fire on Linux 6.18, and the symbol that makes it work.", "https://github.com/k3s-io/k3s/pull/14074#issuecomment-6515270209"],
+  ["data-privacy-stack/presidio", "A review confirming the fix for an allow list that dropped real findings, email addresses included.", "https://github.com/data-privacy-stack/presidio/pull/2417#pullrequestreview-5708080373"],
+  ["linux-audit/audit-userspace", "The reproduction a maintainer asked for: a denial that aureport silently left out.", "https://github.com/linux-audit/audit-userspace/pull/546#issuecomment-6514983651"],
+  ["BerriAI/litellm", "Tracing a reported Langfuse 404 back through the code to a likely cause.", "https://github.com/BerriAI/litellm/issues/43032#issuecomment-6514983923"],
+] as const;
 const categories = [
   ["Q&A", "q-a", "Stuck on something? Ask here, and answer when you can."],
   ["Ideas", "ideas", "Features you'd like Conn3x to have."],
@@ -110,6 +117,26 @@ const categories = [
           News also goes out on the <a href="/blog">blog</a> (<a href="/rss.xml">RSS</a>) and on X at{" "}
           <a href="https://x.com/conn3xone">@conn3xone</a>. Found a security problem? Email{" "}
           <a href="mailto:security@conn3x.org">security@conn3x.org</a> instead of opening an issue.
+        </p>
+      </section>
+
+      <section aria-labelledby="giving">
+        <h2 class="sub" id="giving">Giving back</h2>
+        <p class="intro">
+          Every circuit stands on someone else's project. So we give time back to those projects, a little
+          every day: answering a maintainer's question with a reproduction, reviewing a small pull request
+          nobody has got to yet, reporting what we find while we build. AI, security and compliance projects
+          come first. We work inside each project's own contribution rules, and where a project's rules say
+          no, we leave it be.
+        </p>
+        <ul class="talk">
+          {givingBack.map(([repo, d, url]) => (
+            <li><a href={url}>{repo}</a><span>{d}</span></li>
+          ))}
+        </ul>
+        <p class="fine">
+          Know a project one of our circuits uses that could do with a hand? Tell us in{" "}
+          <a href={discuss}>Discussions</a>.
         </p>
       </section>
 
