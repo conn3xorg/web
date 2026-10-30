@@ -46,6 +46,8 @@ export const samples = {
   "k3s.servers": "server1 203.0.113.20\nserver2 203.0.113.21\nserver3 203.0.113.22",
   "k3s.agents": "agent1 203.0.113.23",
   "keepalived.virtual_ips": "10.0.0.100/24",
+  "wazuh.server": "siem 203.0.113.60",
+  "wazuh.agents": "client1 203.0.113.10",
   "zabbix.servers": "zabbix 203.0.113.50",
   "zabbix.agents": "zabbix 203.0.113.50\nclient1 203.0.113.10",
   "velociraptor.server": "dfir 203.0.113.40",
@@ -89,6 +91,8 @@ export const combos = [
   { distro: "rocky10", picks: ["k3s", "velociraptor", "nginx", "firewall"] },
   { distro: "debian13", picks: ["zabbix", "postgres", "caddy"] },
   { distro: "rocky10", picks: ["freeipa", "velociraptor", "caddy", "auto-updates"] },
+  { distro: "ubuntu2404", picks: ["wazuh", "nodejs", "perl", "trivy", "cloudflared", "nginx"] },
+  { distro: "debian13", picks: ["cinc", "nodejs", "trivy"] },
   // Names rather than addresses, since these servers get created.
   { distro: "debian13", picks: ["nginx", "fail2ban", "firewall"], cloud: { adminCidrs: "203.0.113.7/32", tags: "web" }, hosts: "web1\nweb2" },
   {

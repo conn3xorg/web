@@ -120,4 +120,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-keepalived/blob/v0.1
 
 - Repository: [conn3xorg/circuit-keepalived](https://github.com/conn3xorg/circuit-keepalived). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-keepalived/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.0/examples/local).
-- Related circuits: [HAProxy](/circuits/haproxy), [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale).
+- Related circuits: [HAProxy](/circuits/haproxy), [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale), [Cloudflare Tunnel](/circuits/cloudflared).

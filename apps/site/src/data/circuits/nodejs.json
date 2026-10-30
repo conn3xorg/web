@@ -1,0 +1,19 @@
+{
+  "name": "nodejs",
+  "repo": "conn3xorg/circuit-nodejs",
+  "description": "One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions.",
+  "version": "v0.1.0",
+  "tags": [
+    "nodejs",
+    "npm",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

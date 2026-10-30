@@ -1,0 +1,87 @@
+{
+  "name": "trivy",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "trivy_version",
+      "type": "string",
+      "default": "0.76.1",
+      "description": "Trivy release to install from GitHub. Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "c7cbe3137fb8a48a17574bede3dd6beb16742d1e9772929940fc90082c39d9c0",
+        "arm64": "e174dff2a6dba5e3ae41f8d0537a6324405bd08132497340304c6b20e0f16a1f"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's trivy_<version>_checksums.txt. Change these with trivy_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "severity",
+      "type": "list(string)",
+      "default": [
+        "HIGH",
+        "CRITICAL"
+      ],
+      "description": "Severities to report, from UNKNOWN, LOW, MEDIUM, HIGH and CRITICAL.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "targets",
+      "type": "list(string)",
+      "default": [
+        "/"
+      ],
+      "description": "Absolute paths to scan, each with a report of its own. The default is the host's whole root filesystem.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "skip_dirs",
+      "type": "list(string)",
+      "default": [],
+      "description": "Directories to leave out of the scan, as absolute paths or globs, such as network mounts or \"/var/lib/containers\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": "daily",
+      "description": "When the scan timer runs, as a systemd OnCalendar expression such as \"daily\" or \"Sun 03:00\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "keep",
+      "type": "number",
+      "default": 7,
+      "description": "Number of scans to keep under /var/lib/conn3x-trivy. Older ones are deleted after each scan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "run_now",
+      "type": "bool",
+      "default": false,
+      "description": "Scan during the apply: on the first apply, and again whenever the scan's settings change. The first scan downloads Trivy's database.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

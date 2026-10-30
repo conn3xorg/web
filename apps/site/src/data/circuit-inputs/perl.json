@@ -1,0 +1,25 @@
+{
+  "name": "perl",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "distro_modules",
+      "type": "object({\n    debian = optional(list(string), [])\n    redhat = optional(list(string), [])\n  })",
+      "default": {},
+      "description": "Perl modules to install from the distribution's packages, as package names for each family, such as { debian = [\"libtry-tiny-perl\"], redhat = [\"perl-Try-Tiny\"] }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cpan_modules",
+      "type": "map(string)",
+      "default": {},
+      "description": "Perl modules to install from CPAN with cpanm, by name, each at an exact version, such as { \"Text::Trim\" = \"1.04\" }. Installs a compiler and make too.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

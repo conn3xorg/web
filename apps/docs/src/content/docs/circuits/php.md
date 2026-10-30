@@ -249,4 +249,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-php/blob/v0.1.1/LICE
 
 - Repository: [conn3xorg/circuit-php](https://github.com/conn3xorg/circuit-php). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-php/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-php/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.1/examples/local).
-- Related circuits: [Apache httpd](/circuits/apache), [nginx](/circuits/nginx), [MySQL](/circuits/mysql), [MariaDB](/circuits/mariadb), [Users](/circuits/users), [Java](/circuits/java), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner).
+- Related circuits: [Apache httpd](/circuits/apache), [nginx](/circuits/nginx), [MySQL](/circuits/mysql), [MariaDB](/circuits/mariadb), [Users](/circuits/users), [Java](/circuits/java), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl).

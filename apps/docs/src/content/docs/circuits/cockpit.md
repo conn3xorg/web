@@ -159,4 +159,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cockpit/blob/v0.1.0/
 
 - Repository: [conn3xorg/circuit-cockpit](https://github.com/conn3xorg/circuit-cockpit). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-cockpit/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-cockpit/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [certbot](/circuits/certbot), [Apache httpd](/circuits/apache), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [n8n](/circuits/n8n).
+- Related circuits: [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [certbot](/circuits/certbot), [Apache httpd](/circuits/apache), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [n8n](/circuits/n8n), [Fleet](/circuits/fleet).

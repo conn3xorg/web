@@ -1,0 +1,37 @@
+{
+  "name": "nodejs",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "node_version",
+      "type": "string",
+      "default": "26.13.0",
+      "description": "Node.js release to install, such as \"26.13.0\". Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x64": "5848553868b402d3fabb5b09270649977780a390f832155721025a08b5104455",
+        "arm64": "439e9c438acdf6a6ffe47418da709153d66c4bed812e30a473faacb107dd2791"
+      },
+      "description": "SHA-256 of the linux-x64 and linux-arm64 .tar.gz tarballs, from the release's SHASUMS256.txt. Change these with node_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "global_packages",
+      "type": "map(string)",
+      "default": {},
+      "description": "npm packages to install globally, by name, each at an exact version, such as { semver = \"7.8.5\" }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

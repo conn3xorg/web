@@ -1,0 +1,19 @@
+{
+  "name": "perl",
+  "repo": "conn3xorg/circuit-perl",
+  "description": "Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm.",
+  "version": "v0.1.0",
+  "tags": [
+    "perl",
+    "cpan",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}
