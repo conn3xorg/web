@@ -54,8 +54,9 @@
         <li data-n="1">Is the key real? The master key stays on the host and only makes keys.</li>
         <li data-n="2">Is the model on the key's list? If not, <code>403</code>.</li>
         <li data-n="3">Is there budget left? US dollars, reset by <code>budget_duration</code>.</li>
-        <li data-n="4">Send it on, with the provider key from a root-only file.</li>
-        <li data-n="5">Write a spend-log row to PostgreSQL. Prompts stay out unless <code>log_prompts = true</code>.</li>
+        <li data-n="4">With <code>guardrails</code>, mask names and emails through Presidio. Presidio down? <code>500</code>.</li>
+        <li data-n="5">Send it on, with the provider key from a root-only file.</li>
+        <li data-n="6">Write a spend-log row to PostgreSQL, and with <code>langfuse_url</code>, a trace to Langfuse. Prompts stay out unless <code>log_prompts = true</code>.</li>
       </ul>
     </div>
     <div class="wire"><span class="arrow">→</span></div>

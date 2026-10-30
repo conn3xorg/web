@@ -16,7 +16,7 @@ That's tracing, and [Langfuse](https://langfuse.com) is the open-source platform
 
 <figure>
   <a href="/media/blog/an-audit-trail-for-every-prompt/trace.png">
-    <img src="/media/blog/an-audit-trail-for-every-prompt/trace.png" width="1600" height="1818" loading="lazy" decoding="async" alt="An audit trail for every prompt. Your apps send traces with Langfuse's SDKs over OpenTelemetry, and your people use the web UI through Caddy. On one 4 GB host, on loopback only, langfuse-web on port 3000, langfuse-worker, ClickHouse and MinIO run as systemd services, with PostgreSQL and Valkey beside them. Keys are made on the host by the first apply. A trace holds the prompt, response, tokens, cost and latency." />
+    <img src="/media/blog/an-audit-trail-for-every-prompt/trace.png" width="1600" height="1939" loading="lazy" decoding="async" alt="An audit trail for every prompt. The LiteLLM gateway sends a trace of every call, your apps send traces with Langfuse's SDKs over OpenTelemetry, and your people use the web UI through Caddy. On one 4 GB host, on loopback only, langfuse-web on port 3000, langfuse-worker, ClickHouse and MinIO run as systemd services, with PostgreSQL and Valkey beside them. Keys are made on the host by the first apply. A trace holds the prompt, response, tokens, cost and latency." />
   </a>
   <figcaption>Four services from the circuit, two you bring, and every key made on the host.</figcaption>
 </figure>
@@ -24,12 +24,12 @@ That's tracing, and [Langfuse](https://langfuse.com) is the open-source platform
 <details>
 <summary>Read the diagram as text</summary>
 
-- **Coming in:** your apps, with Langfuse's Python or JavaScript SDKs and the project's `pk-lf-` and `sk-lf-` keys, send traces over OpenTelemetry. Your people use the web UI through Caddy; sign-up is off and the owner invites everyone else.
+- **Coming in:** the LiteLLM gateway, with `langfuse_url`, sends a trace of every call. Your apps, with Langfuse's Python or JavaScript SDKs and the project's `pk-lf-` and `sk-lf-` keys, send traces over OpenTelemetry. Your people use the web UI through Caddy; sign-up is off and the owner invites everyone else.
 - **On one 4 GB host, loopback only:** `langfuse-web` on `:3000` takes traces and serves the UI, with telemetry off. `langfuse-worker` on `:3030` moves queued events into ClickHouse. ClickHouse 26.8 LTS on `:8123` and `:9000` holds the traces. MinIO on `:9002`, Chainguard's build of the open-source server, holds raw events.
 - **You bring:** PostgreSQL for users, projects and keys (circuit-postgres), and Valkey for the queue, with `noeviction` (circuit-valkey).
 - **Keys:** `/etc/langfuse/keys.env` holds `NEXTAUTH_SECRET`, `SALT`, `ENCRYPTION_KEY` and the ClickHouse and MinIO passwords, made on the host by the first apply and never in your plan or state. Back it up.
 - **A trace holds:** the prompt, the response, tokens, cost and latency.
-- **Know this:** it keeps the prompts, which is the point and also a store of everything anyone typed. And the upstream `minio/minio` repository was archived in April 2026; this runs Chainguard's AGPL fork, pinned by digest.
+- **Know this:** it can keep the prompts, which is the point and also a store of everything anyone typed. And the upstream `minio/minio` repository was archived in April 2026; this runs Chainguard's AGPL fork, pinned by digest.
 - **Tested:** on 4 GB droplets with Ubuntu, Debian, Rocky Linux and Fedora, sign-up was refused, a trace over OTLP was readable within three seconds, a wrong secret key got a `401`, and the trace was still there after a reboot.
 
 </details>
@@ -138,11 +138,29 @@ That's also why the README opens with a warning worth repeating. Back up `/etc/l
 
 Langfuse 4 takes traces over OpenTelemetry at `/api/public/otel/v1/traces`, which the current Python and JavaScript SDKs use. One thing to know if you're moving an old integration: the older `/api/public/ingestion` endpoint and the v1 traces API refuse trace data on a new Langfuse 4 install. Langfuse has a [migration guide](https://langfuse.com/integrations/native/opentelemetry/migration-to-v4).
 
-What about the gateway from earlier in this series? Your apps can send traces today. Having LiteLLM send them for every request is the obvious next step, and it's one we haven't tested, so it isn't in this post as if it worked.
+## Every gateway call, traced
+
+Your apps can send traces themselves. But if they already go through the [LiteLLM gateway](/blog/one-gateway-for-every-model), there's a shorter way: circuit-litellm v0.2.0 sends a trace of every call for them. From its [README](https://github.com/conn3xorg/circuit-litellm#traces-in-langfuse):
+
+```hcl
+module "litellm" {
+  # ...as above, and:
+  langfuse_url = "http://127.0.0.1:3000"
+  api_keys = {
+    OPENAI_API_KEY      = var.openai_api_key
+    LANGFUSE_PUBLIC_KEY = "pk-lf-gateway"
+    LANGFUSE_SECRET_KEY = var.langfuse_secret_key
+  }
+}
+```
+
+The project's keys go in `api_keys`, so they reach the host's env file and never the plan or state. LiteLLM sends OpenTelemetry, which is what Langfuse 4 takes; LiteLLM's older `langfuse` callback uses the ingestion API a new Langfuse 4 install refuses.
+
+What a trace holds follows LiteLLM's `log_prompts`. Off, the default, its input and output read `redacted-by-litellm`, with the model, tokens, cost and timing all there. On, they hold the prompt and the answer, and with the [Presidio guardrail](/blog/scrub-it-before-the-model-sees-it) in place, the prompt is the masked one: `<PERSON>`, not the name. We tested exactly that on an Ubuntu 24.04 droplet with 8 GB, running LiteLLM, Presidio and Langfuse together. Each request showed up in Langfuse as a generation within seconds, and the project keys weren't in the state.
 
 ## Two things to know before you start
 
-**It keeps the prompts.** That's the whole point of a trace, and it's the opposite of the choice the LiteLLM gateway makes by default. A Langfuse full of traces is also a searchable copy of everything anyone typed into your AI features, customer details included. Keep sign-up off, keep the invite list short, and if [Presidio](/blog/scrub-it-before-the-model-sees-it) is in your stack, think about what it should see before Langfuse does.
+**It can keep the prompts.** That's the whole point of a trace from your own SDK, and it's the opposite of the choice the LiteLLM gateway makes by default. A Langfuse full of traces is also a searchable copy of everything anyone typed into your AI features, customer details included. Keep sign-up off, keep the invite list short, and if [Presidio](/blog/scrub-it-before-the-model-sees-it) is in your stack, think about what it should see before Langfuse does.
 
 **About MinIO.** Langfuse's own Docker Compose file runs MinIO as its S3 store, from Chainguard's image, and so does this circuit. You should know that the upstream `minio/minio` repository was archived in April 2026 and says it's no longer maintained. Chainguard keeps building the open-source server from its own fork, under the AGPL v3, and that's what runs here, pinned by digest. Langfuse also documents SeaweedFS; the circuit doesn't offer it yet.
 
@@ -164,7 +182,6 @@ Rocky turned up one surprise worth passing on: its cloud image runs Cockpit on p
 - **No direct media uploads.** MinIO stays on loopback, so tracing works, but SDKs that upload images, audio or files straight to the store need it reachable from outside. That's not supported yet.
 - **No backups.** PostgreSQL, the ClickHouse and MinIO volumes, and `keys.env` all matter; see [circuit-restic](https://github.com/conn3xorg/circuit-restic).
 - **No licensed extras.** Langfuse's add-on features that need a licence key, and an LLM for evaluations, are yours to add through `environment`.
-- **No LiteLLM wiring yet.** As above: apps send traces, the gateway doesn't, until we've tested it.
 - **Upgrades are untested.** Moving from one `langfuse_version` to the next hasn't been tried yet.
 
 ## Try it, and that's the series

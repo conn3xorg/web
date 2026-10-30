@@ -56,7 +56,7 @@
       <div class="ask">"Who asked, which model answered, and what did it cost?"</div>
       <div class="ans"><ul>
         <li><b>circuit-litellm</b> a spend-log row per request, prompts left out by default <span class="pill tested">TESTED</span></li>
-        <li><b>circuit-langfuse</b> every prompt, answer, cost and latency, as traces on your host <span class="pill tested">TESTED</span></li>
+        <li><b>circuit-langfuse</b> a trace of every gateway call, with <code>langfuse_url</code> <span class="pill tested">TESTED</span></li>
       </ul></div>
     </div>
 
@@ -65,7 +65,7 @@
       <div class="ask">"What stops a customer's details reaching a model?"</div>
       <div class="ans"><ul>
         <li><b>circuit-presidio</b> finds and masks names, emails, cards; best effort, not a guarantee <span class="pill tested">TESTED</span></li>
-        <li><b>LiteLLM guardrail</b> Presidio on every request through the gateway <span class="pill coming">COMING</span></li>
+        <li><b>circuit-litellm guardrails</b> Presidio masks every request before the model; a 500 if it's down <span class="pill tested">TESTED</span></li>
       </ul></div>
     </div>
 
@@ -91,7 +91,6 @@
 
   <div class="legend">
     <span><span class="pill tested">TESTED</span>the circuit's README says how</span>
-    <span><span class="pill coming">COMING</span>not shipped yet</span>
   </div>
 
   <div class="key">

@@ -24,7 +24,7 @@ A layer is still worth having. It just has to be one of the things standing betw
 
 <figure>
   <a href="/media/blog/scrub-it-before-the-model-sees-it/scrub.png">
-    <img src="/media/blog/scrub-it-before-the-model-sees-it/scrub.png" width="1600" height="1688" loading="lazy" decoding="async" alt="Scrub it before the model sees it. Step 1, the prompt: My name is David Johnson and my email is david@example.com. Step 2, the analyzer on 127.0.0.1:5002 finds PERSON from 11 to 24 and EMAIL_ADDRESS from 41 to 58. Step 3, the anonymizer on 127.0.0.1:5001 returns My name is <PERSON> and my email is <EMAIL_ADDRESS>. Custom recognizers add a deny list and a pattern. Running it on every LiteLLM request is marked coming. A warning quotes Presidio's maintainers: there is no guarantee it will find all sensitive information." />
+    <img src="/media/blog/scrub-it-before-the-model-sees-it/scrub.png" width="1600" height="1679" loading="lazy" decoding="async" alt="Scrub it before the model sees it. Step 1, the prompt: My name is David Johnson and my email is david@example.com. Step 2, the analyzer on 127.0.0.1:5002 finds PERSON from 11 to 24 and EMAIL_ADDRESS from 41 to 58. Step 3, the anonymizer on 127.0.0.1:5001 returns My name is <PERSON> and my email is <EMAIL_ADDRESS>. Custom recognizers add a deny list and a pattern. In circuit-litellm, it masks every request through the gateway. A warning quotes Presidio's maintainers: there is no guarantee it will find all sensitive information." />
   </a>
   <figcaption>The same sentence CI checks on all four distributions.</figcaption>
 </figure>
@@ -39,7 +39,7 @@ A layer is still worth having. It just has to be one of the things standing betw
 - **Your own words:** a deny list in `analyzer_config` finds exact words, such as the code names `Bluebird` and `Quillfeather`, as `PROJECT_CODENAME`.
 - **Your own formats:** a pattern finds anything a regular expression can describe, such as `\bEMP-\d{6}\b`, as `EMPLOYEE_ID`.
 - **Out of the box:** English, with spaCy's large model for names and places, and patterns and checksums for emails, phone numbers and cards.
-- **Coming:** running it on every request through LiteLLM, which needs an input circuit-litellm doesn't have yet.
+- **In the gateway:** circuit-litellm's `guardrails` input runs it on every request before the model; if Presidio is down, the request fails with a `500`.
 - **Best effort:** in its maintainers' words, "there is no guarantee that Presidio will find all sensitive information".
 
 </details>
@@ -125,9 +125,45 @@ One thing catches people out. A `recognizer_registry` section replaces the built
 
 ## Where it belongs
 
-Calling Presidio by hand is fine for a script. Where it really earns its keep is in the path every prompt already takes, and in this series that's the [LiteLLM gateway](/blog/one-gateway-for-every-model). LiteLLM has a Presidio guardrail built in: every request goes to the analyzer first, and what it finds is masked, or the request refused, before anything reaches the model. Anything that talks to LiteLLM, Open WebUI included, would get the same masking.
+Calling Presidio by hand is fine for a script. Where it really earns its keep is in the path every prompt already takes, and in this series that's the [LiteLLM gateway](/blog/one-gateway-for-every-model). LiteLLM has a Presidio guardrail built in: every request goes to the analyzer first, and what it finds is masked, or the request refused, before anything reaches the model. Anything that talks to LiteLLM, Open WebUI included, gets the same masking.
 
-We'd like to tell you that's one apply away. It isn't yet. circuit-litellm v0.1.0 writes LiteLLM's `config.yaml` itself and has no input for the guardrails section, so the pairing the Presidio README describes needs a new release of circuit-litellm first. We haven't tested the two together, and we won't call it done until we have.
+Since v0.2.0, circuit-litellm has a `guardrails` input for exactly this. With Presidio on the same host, both services are on loopback, where LiteLLM reaches them. From the [circuit-litellm README](https://github.com/conn3xorg/circuit-litellm#masking-pii-with-presidio):
+
+```hcl
+module "presidio" {
+  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.0"
+
+  hosts                = { gateway = "192.168.1.50" }
+  ssh_private_key_file = "~/.ssh/id_ed25519"
+}
+
+module "litellm" {
+  # ...as above, with module.presidio added to depends_on, and:
+  guardrails = [{
+    guardrail_name = "presidio-pii"
+    litellm_params = {
+      guardrail                    = "presidio"
+      mode                         = "pre_call"
+      default_on                   = true
+      presidio_analyzer_api_base   = "http://127.0.0.1:5002"
+      presidio_anonymizer_api_base = "http://127.0.0.1:5001"
+      presidio_language            = "en"
+      pii_entities_config = {
+        PERSON        = "MASK"
+        EMAIL_ADDRESS = "MASK"
+        PHONE_NUMBER  = "MASK"
+        CREDIT_CARD   = "BLOCK"
+      }
+    }
+  }]
+}
+```
+
+`default_on = true` runs it on every request, and `pre_call` checks what goes to the model. `MASK` swaps the text for a placeholder; `BLOCK` refuses the request. The code names and employee IDs you taught the analyzer go in the same map.
+
+Here's what we saw. In CI on all four distributions, and on a 4 GB Rocky Linux 10 droplet with SELinux enforcing, a message with a name and an email address reached the provider, a stand-in for the test, as `My name is <PERSON> and my email is <EMAIL_ADDRESS>`, and after a reboot it still did. Then we stopped the analyzer. LiteLLM answered `500`, and nothing reached the provider. When the guardrail can't check a prompt, the prompt doesn't go.
+
+Two things in LiteLLM's docs we haven't tested: checking the model's answer as well (`post_call`), and `output_parse_pii`, which puts the original values back into the answer. Nor have we tested `BLOCK` refusing a request; what was tested is masking.
 
 ## What we tested
 
@@ -140,7 +176,6 @@ By hand, on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux en
 - **It doesn't guarantee anything.** See the top of this post. Then read it again before you write a policy that leans on it.
 - **No authentication.** Anyone who can reach Presidio's ports can send it text, so it stays on loopback, and every plan warns you if you set `listen_address` to anything else. For other hosts, put [circuit-caddy](https://github.com/conn3xorg/circuit-caddy) in front with a password; the README has the config.
 - **English only.** The image ships spaCy's English model and no other. Pattern recognizers don't need a model, so you can find Italian fiscal codes in English text. Names in German text need a German model, and this image doesn't have one.
-- **No guardrail wiring yet.** As above: the LiteLLM pairing needs circuit-litellm to grow an input first.
 - **Upgrades are untested.** Moving from one `presidio_version` to the next hasn't been tried yet.
 
 ## Try it

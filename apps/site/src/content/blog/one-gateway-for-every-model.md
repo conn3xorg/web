@@ -16,7 +16,7 @@ This is the second post in a series on [running AI you can account for](/blog/ai
 
 <figure>
   <a href="/media/blog/one-gateway-for-every-model/gateway.png">
-    <img src="/media/blog/one-gateway-for-every-model/gateway.png" width="1600" height="1703" loading="lazy" decoding="async" alt="One gateway, every model. Team, personal and app keys go to LiteLLM on 127.0.0.1:4000, which checks the key, the model list and the budget, sends the request on with the provider key from a root-only file, and writes a spend-log row. Behind it sit gpt-4o, claude-sonnet and a local Ollama model. A spend-log table shows a successful claude-sonnet request and a gpt-4o request refused with 403, neither with the prompt stored." />
+    <img src="/media/blog/one-gateway-for-every-model/gateway.png" width="1600" height="1760" loading="lazy" decoding="async" alt="One gateway, every model. Team, personal and app keys go to LiteLLM on 127.0.0.1:4000, which checks the key, the model list and the budget, masks personal data through Presidio if you set guardrails, sends the request on with the provider key from a root-only file, and writes a spend-log row and, with langfuse_url, a Langfuse trace. Behind it sit gpt-4o, claude-sonnet and a local Ollama model. A spend-log table shows a successful claude-sonnet request and a gpt-4o request refused with 403, neither with the prompt stored." />
   </a>
   <figcaption>Every request takes the same path, and leaves the same kind of row behind.</figcaption>
 </figure>
@@ -25,7 +25,7 @@ This is the second post in a series on [running AI you can account for](/blog/ai
 <summary>Read the diagram as text</summary>
 
 - **Keys in:** a team key for `research`, limited to `claude-sonnet` with a budget of 50; a personal key, `alice-laptop`, on that team; and a key for an app such as Open WebUI, which uses `http://127.0.0.1:4000/v1` as its OpenAI base URL.
-- **LiteLLM on `127.0.0.1:4000`**, in order: checks the key is real (the master key stays on the host and only makes keys), checks the model is on the key's list and answers `403` if not, checks there's budget left in US dollars, sends the request on with the provider key from a root-only file, and writes a spend-log row to PostgreSQL, without the prompt unless `log_prompts = true`.
+- **LiteLLM on `127.0.0.1:4000`**, in order: checks the key is real (the master key stays on the host and only makes keys), checks the model is on the key's list and answers `403` if not, checks there's budget left in US dollars, masks names and emails through Presidio when `guardrails` is set (and answers `500` if Presidio is down), sends the request on with the provider key from a root-only file, and writes a spend-log row to PostgreSQL and, with `langfuse_url`, a trace to Langfuse, without the prompt unless `log_prompts = true`.
 - **Models out:** `gpt-4o` through OpenAI, `claude-sonnet` through Anthropic, and `local`, `qwen2.5:0.5b` in Ollama on `127.0.0.1:11434`, which never leaves the box.
 - **Spend log:** a successful `claude-sonnet` request with tokens counted and priced, and a `gpt-4o` request logged as a failure with `403`. Neither stores the prompt.
 - **Stays on the host:** `LITELLM_MASTER_KEY` and `LITELLM_SALT_KEY` in `/etc/litellm/keys.env`, and the provider keys in a root-only env file.
@@ -70,7 +70,7 @@ module "postgres" {
 }
 
 module "litellm" {
-  source = "github.com/conn3xorg/circuit-litellm?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-litellm?ref=v0.2.0"
 
   depends_on = [module.postgres]
 
@@ -159,9 +159,17 @@ module "litellm" {
 
 We tried it on an Ubuntu 24.04 droplet with 4 GB of memory, with `smollm2:135m` as the local model. A team key limited to it got an answer through LiteLLM.
 
+## Masking and tracing
+
+Two inputs arrived in v0.2.0, and both are about knowing what went where. `guardrails` sends every request through [Presidio](https://github.com/conn3xorg/circuit-presidio) before a model sees it, so `My name is David Johnson` reaches the provider as `My name is <PERSON>`; if Presidio is down, the request fails with a `500` instead of going out unmasked. The post on Presidio, in two weeks, has the whole configuration.
+
+`langfuse_url` sends a trace of every call to a [Langfuse](https://github.com/conn3xorg/circuit-langfuse) you run, with the model, tokens, cost and timing. What the trace holds follows `log_prompts`: off, the input and output read `redacted-by-litellm`; on, they hold the prompt after any masking, and the answer.
+
 ## What we tested
 
 CI applies the example to Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with PostgreSQL on the same host, and checks the second plan has no changes. Then it runs a stand-in for an OpenAI-compatible provider, so no real API key is involved, and checks the things this post leans on: a wrong master key can't make keys, a budget over `max_key_budget` is refused, a key made for one model can use it and gets a `403` for the other, and the request lands in the spend logs with a price and without its content. After a restart, the same key still works.
+
+Since v0.2.0, CI also checks that a message with a name and an email address reaches the stand-in masked by the Presidio guardrail. On a Rocky Linux 10 droplet, LiteLLM refused the request with a `500` when Presidio's analyzer was stopped. On an Ubuntu 24.04 droplet with 8 GB, beside Presidio and Langfuse, every request showed up in Langfuse within seconds, with model, tokens and cost.
 
 By hand, on a 2 GB Rocky Linux 10 droplet with SELinux enforcing and on the Ubuntu droplet above, port 4000 didn't answer from outside, LiteLLM came back on its own after each of two reboots, and the plan stayed clean.
 
@@ -171,7 +179,6 @@ By hand, on a 2 GB Rocky Linux 10 droplet with SELinux enforcing and on the Ubun
 - **No teams or keys for you.** The circuit sets defaults; making teams and keys is LiteLLM's API or its admin UI at `/ui`.
 - **No Redis.** One LiteLLM doesn't need it. Several behind a load balancer do, to share rate limits and budgets.
 - **No backups.** Back up PostgreSQL and `/etc/litellm/keys.env`, separately. Lose the salt key and LiteLLM can't read the provider credentials it stored in its database, and it must never change once you've added a model.
-- **No guardrails yet.** LiteLLM can run every request through Presidio before it reaches a model, but circuit-litellm v0.1.0 writes `config.yaml` itself and has no input for LiteLLM's guardrails section. That's on the list.
 - **Prices go stale.** The circuit prices requests from the list in the image, so nothing is fetched at start. A model newer than your `litellm_version` counts as free until you upgrade or give it prices yourself.
 - **Upgrades are untested.** Moving from one `litellm_version` to the next hasn't been tried yet.
 

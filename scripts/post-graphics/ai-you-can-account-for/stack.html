@@ -39,7 +39,7 @@
 <div class="page">
   <span class="label"><b>CONN3X</b> · OPEN WEBUI · LITELLM · PRESIDIO · OLLAMA · LANGFUSE</span>
   <h1>A private AI stack you can account for</h1>
-  <p class="lede">Hardened hosts. Only Caddy faces the network; everything behind it listens on <code>127.0.0.1</code>. Every request passes one gateway that knows who sent it, checks what's in it, and writes it down.</p>
+  <p class="lede">Hardened hosts. Only Caddy faces the network; everything behind it listens on <code>127.0.0.1</code>. Every request passes one gateway that knows who sent it, masks what shouldn't leave, and writes it down twice.</p>
 
   <div class="users">
     <div class="box"><h2>People</h2><p>Open WebUI in the browser, with an account an admin made.</p></div>
@@ -62,14 +62,14 @@
         <div class="dark"><h3>Ollama<span>:11434</span></h3><p>Local models on the CPU. Prompts never leave the box.</p></div>
       </div>
       <div class="side">
-        <div class="up"><span class="arrow">↕</span>guardrail, before the model (coming)</div>
+        <div class="up"><span class="arrow">↕</span>guardrail, before the model</div>
       </div>
       <div class="row2">
         <div class="stack-col"><div class="box" style="padding: 16px 20px;"><h2 style="font-size: 24px;">PostgreSQL</h2><p style="font-size: 18px;">LiteLLM's keys and spend logs, Open WebUI's chats if you choose, Langfuse's users and projects.</p></div></div>
         <div></div>
-        <div class="dark"><h3>Presidio<span>:5002 · :5001</span></h3><p>Finds names, emails and card numbers and masks them. Best effort. Wiring it into LiteLLM as a guardrail is coming.</p></div>
+        <div class="dark"><h3>Presidio<span>:5002 · :5001</span></h3><p>Masks names and emails before the model sees them. If it's down, LiteLLM refuses with <code>500</code>. Best effort.</p></div>
         <div></div>
-        <div class="dark"><h3>Langfuse<span>:3000</span></h3><p>Traces from your apps over OpenTelemetry: prompt, answer, tokens, cost, latency. Sign-up off.</p></div>
+        <div class="dark"><h3>Langfuse<span>:3000</span></h3><p>A trace of every LiteLLM call over OpenTelemetry: model, tokens, cost, timing. Sign-up off.</p></div>
       </div>
     </div>
 

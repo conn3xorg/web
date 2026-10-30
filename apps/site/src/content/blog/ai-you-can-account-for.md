@@ -24,7 +24,7 @@ None of them tells you to install anything. They're about risk, roles, policies 
 
 <figure>
   <a href="/media/blog/ai-you-can-account-for/map.png">
-    <img src="/media/blog/ai-you-can-account-for/map.png" width="1600" height="1868" loading="lazy" decoding="async" alt="Six questions, and what answers them. Data residency: circuit-ollama and circuit-openwebui. Access and budgets: circuit-litellm and circuit-openwebui. Audit trail: circuit-litellm and circuit-langfuse. Personal data: circuit-presidio, with the LiteLLM guardrail coming. Change evidence: conn3x plan, conn3x drift, pinned images and state encryption. Host hardening: baseline, hardening and firewall circuits, and circuit-caddy." />
+    <img src="/media/blog/ai-you-can-account-for/map.png" width="1600" height="1868" loading="lazy" decoding="async" alt="Six questions, and what answers them. Data residency: circuit-ollama and circuit-openwebui. Access and budgets: circuit-litellm and circuit-openwebui. Audit trail: circuit-litellm and circuit-langfuse. Personal data: circuit-presidio, also as a LiteLLM guardrail. Change evidence: conn3x plan, conn3x drift, pinned images and state encryption. Host hardening: baseline, hardening and firewall circuits, and circuit-caddy." />
   </a>
   <figcaption>Green means the circuit's README says how it was tested. Orange means it isn't shipped yet.</figcaption>
 </figure>
@@ -34,8 +34,8 @@ None of them tells you to install anything. They're about risk, roles, policies 
 
 1. **Data residency.** "Where do the prompts go, and who else sees them?" circuit-ollama runs models on your host with its API on `127.0.0.1`. circuit-openwebui turns off telemetry and sharing, and has no OpenAI connection unless you add one.
 2. **Access and budgets.** "Who can use which model, and how much can they spend?" circuit-litellm gives each team or person a key, a list of models and a budget in dollars; asking for a model outside the list gets a `403`. circuit-openwebui keeps sign-up shut and shows users only the models an admin gives them.
-3. **Audit trail.** "Who asked, which model answered, and what did it cost?" circuit-litellm writes a spend-log row for every request, with the prompt left out by default. circuit-langfuse keeps every prompt, answer, token count, cost and latency your apps send it, as traces on your own host.
-4. **Personal data.** "What stops a customer's details reaching a model?" circuit-presidio finds and masks names, emails and card numbers, on a best-effort basis. Running it on every request through LiteLLM is coming, not shipped.
+3. **Audit trail.** "Who asked, which model answered, and what did it cost?" circuit-litellm writes a spend-log row for every request, with the prompt left out by default, and with `langfuse_url` it sends a trace of every call to circuit-langfuse on your own host.
+4. **Personal data.** "What stops a customer's details reaching a model?" circuit-presidio finds and masks names, emails and card numbers, on a best-effort basis. Set as a guardrail in circuit-litellm, it masks every request through the gateway before the model sees it.
 5. **Change evidence.** "What changed, when, and is it still true today?" `conn3x plan` shows every change as a diff, `conn3x drift` exits 2 when someone changed something by hand, images are pinned by tag and digest, and OpenTofu's state encryption works as it does there.
 6. **Host hardening.** "Is the machine underneath locked down?" circuit-baseline, circuit-hardening and circuit-firewall leave key-only SSH and nothing else open. circuit-caddy puts TLS in front, so the services stay on loopback.
 
@@ -47,9 +47,9 @@ None of them tells you to install anything. They're about risk, roles, policies 
 
 **Who can use what?** [circuit-litellm](https://github.com/conn3xorg/circuit-litellm) puts one gateway in front of every model, local or hosted. Each team gets its own key, its own model list and a budget in US dollars. In testing, a key made for one model got a `403` for the other, and a request for a budget over the limit got a `400`. Provider keys stay on the host, so when someone leaves, you delete their key instead of rotating the real one.
 
-**Who asked, and what did it cost?** LiteLLM writes a row for every request: which key and team, which model, when, how many tokens, what it cost, and whether it worked. Refused requests are logged too. What it leaves out, by default, is the conversation. That's a choice you can flip, and next week's post is about making it on purpose. When you do want the conversation kept, [circuit-langfuse](https://github.com/conn3xorg/circuit-langfuse) runs Langfuse on your own host: your apps send it traces over OpenTelemetry, and every prompt, answer, cost and latency lands somewhere you can search and nobody else can read.
+**Who asked, and what did it cost?** LiteLLM writes a row for every request: which key and team, which model, when, how many tokens, what it cost, and whether it worked. Refused requests are logged too. What it leaves out, by default, is the conversation. That's a choice you can flip, and next week's post is about making it on purpose. For more than a row, [circuit-langfuse](https://github.com/conn3xorg/circuit-langfuse) runs Langfuse on your own host, and one input in circuit-litellm sends it a trace of every call through the gateway: model, tokens, cost and timing, and the masked prompt too if you choose to keep it.
 
-**What stops personal data reaching the model?** [circuit-presidio](https://github.com/conn3xorg/circuit-presidio) runs Presidio, the open-source PII detector first built at Microsoft, as two small services on loopback. It finds names, email addresses, phone numbers and card numbers and swaps them for placeholders. It's best effort, and its maintainers say so before we do. Running it on every request through LiteLLM needs a setting circuit-litellm doesn't have yet; that's next.
+**What stops personal data reaching the model?** [circuit-presidio](https://github.com/conn3xorg/circuit-presidio) runs Presidio, the open-source PII detector first built at Microsoft, as two small services on loopback. It finds names, email addresses, phone numbers and card numbers and swaps them for placeholders. It's best effort, and its maintainers say so before we do. Since circuit-litellm v0.2.0 it can sit inside the gateway as a guardrail: in testing, a prompt with a name and an email address arrived upstream as `My name is <PERSON> and my email is <EMAIL_ADDRESS>`, and with Presidio stopped, LiteLLM refused the request with a `500` rather than send it unmasked.
 
 **What changed, and is it still true?** This one's Conn3x itself. Every change goes through `conn3x plan` first, so bumping LiteLLM to a new release shows up as a new image digest in a unit file, in a diff someone can review. `conn3x drift` reads every host again on a schedule and [exits 2](/blog/catch-the-3am-fix) when something was changed by hand. And the secrets stay out of the record: provider keys, database passwords and admin passwords reach the hosts through ephemeral inputs and never touch your plan, your state or your CI logs. For the rest of the state, OpenTofu's [state encryption](https://opentofu.org/docs/language/state/encryption/) works in Conn3x as it does there.
 
@@ -61,9 +61,9 @@ Put together, it looks like this. One door, one gateway every request goes throu
 
 <figure>
   <a href="/media/blog/ai-you-can-account-for/stack.png">
-    <img src="/media/blog/ai-you-can-account-for/stack.png" width="1600" height="1964" loading="lazy" decoding="async" alt="A private AI stack you can account for. People, apps and admins reach one hardened host over HTTPS through Caddy. Behind it, on 127.0.0.1 only, Open WebUI talks to LiteLLM, which talks to Ollama. Presidio sits beside LiteLLM as a guardrail, marked coming, and Langfuse keeps traces.  PostgreSQL keeps LiteLLM's keys and spend logs. Baseline, hardening and firewall circuits lock down the host. Hosted models sit behind the same gateway only if you add them." />
+    <img src="/media/blog/ai-you-can-account-for/stack.png" width="1600" height="1965" loading="lazy" decoding="async" alt="A private AI stack you can account for. People, apps and admins reach one hardened host over HTTPS through Caddy. Behind it, on 127.0.0.1 only, Open WebUI talks to LiteLLM, which talks to Ollama. Presidio masks personal data as LiteLLM's guardrail before the model, and LiteLLM sends a trace of every call to Langfuse. PostgreSQL keeps LiteLLM's keys and spend logs. Baseline, hardening and firewall circuits lock down the host. Hosted models sit behind the same gateway only if you add them." />
   </a>
-  <figcaption>The guardrail link is the one piece not shipped yet. Everything else is a circuit you can apply today.</figcaption>
+  <figcaption>Every box is a circuit you can apply today.</figcaption>
 </figure>
 
 <details>
@@ -72,8 +72,8 @@ Put together, it looks like this. One door, one gateway every request goes throu
 - **Who comes in:** people through Open WebUI in a browser, apps and scripts with a LiteLLM key of their own, and admins handing out access through LiteLLM's key API and Open WebUI's admin panel. All of it over HTTPS on port 443.
 - **The hosts:** Debian, Ubuntu, Fedora or Rocky Linux. Caddy holds the certificate and, with SSH, is the only thing that answers from outside.
 - **On loopback only:** Open WebUI on `:8080` talks to LiteLLM on `:4000`, which talks to Ollama on `:11434`. LiteLLM checks the key, the model list and the budget, and writes a spend-log row for every request. PostgreSQL keeps LiteLLM's keys and spend logs, Open WebUI's chats if you choose, and Langfuse's users and projects.
-- **Tracing:** Langfuse on `:3000` takes traces from your apps over OpenTelemetry, with the prompt, answer, tokens, cost and latency of each call. Sign-up is off.
-- **Coming:** Presidio on `:5002` and `:5001` as a guardrail that LiteLLM calls before the model.
+- **Guardrail:** LiteLLM sends every request to Presidio on `:5002` and `:5001` first, and the model gets the masked text. If Presidio is down, the request fails with a `500`.
+- **Tracing:** LiteLLM sends a trace of every call to Langfuse on `:3000` over OpenTelemetry, and your apps can send their own. Sign-up is off.
 - **Underneath:** circuit-baseline, circuit-hardening and circuit-firewall.
 - **Leaving the box:** only prompts to hosted models you add yourself, through the same gateway. Their keys stay in a root-only file on the host. LiteLLM sends no telemetry when self-hosted. Open WebUI's telemetry, update check and community sharing are off, and so is Langfuse's telemetry.
 - **Around all of it:** `conn3x plan` for every change, `conn3x drift` for hand edits, and state encryption for what's in state.
@@ -110,7 +110,7 @@ It doesn't make you compliant. No circuit is certified against NIST's framework,
 
 It doesn't decide which rules apply to you. That depends on what your system does, where your users are and what role you play, and it's a question for someone who reads regulations for a living.
 
-And one piece isn't here yet. Running Presidio on every request through LiteLLM needs an input circuit-litellm doesn't have yet. It's marked in the diagrams, and it isn't in any post as if it worked. Nor is sending LiteLLM's requests to Langfuse: your apps can send traces today, but we haven't tested the gateway doing it for them.
+And it doesn't promise more than was tested. The Presidio guardrail was tested masking what goes to the model; checking the model's answers too (`post_call`), or putting the original values back into them (`output_parse_pii`), hasn't been tested. And Presidio is best effort however it's wired in.
 
 ## The rest of the series
 

@@ -32,10 +32,11 @@
 <div class="page">
   <span class="label"><b>CONN3X</b> · CIRCUIT-LANGFUSE</span>
   <h1>An audit trail for every prompt</h1>
-  <p class="lede">Langfuse 4 on one 4 GB host: the web server, a worker, ClickHouse for traces and MinIO for raw events, each a systemd service, all on loopback. Your apps send traces over OpenTelemetry.</p>
+  <p class="lede">Langfuse 4 on one 4 GB host: the web server, a worker, ClickHouse for traces and MinIO for raw events, each a systemd service, all on loopback. The LiteLLM gateway and your apps send traces over OpenTelemetry.</p>
 
   <div class="map">
     <div class="apps">
+      <div class="box"><span class="k">THE GATEWAY</span><h2 style="font-size: 26px;">LiteLLM</h2><p><code>langfuse_url</code>: a trace of every call. Prompts read <code>redacted-by-litellm</code> unless you keep them.</p></div>
       <div class="box"><span class="k">YOUR APPS</span><h2 style="font-size: 26px;">Langfuse SDKs</h2><p>Python or JavaScript, with the project's <code>pk-lf-</code> and <code>sk-lf-</code> keys.</p></div>
       <div class="box"><span class="k">YOUR PEOPLE</span><h2 style="font-size: 26px;">The web UI</h2><p>Through Caddy. Sign-up off; the owner invites everyone else.</p></div>
     </div>
@@ -71,13 +72,13 @@
   </div>
 
   <div class="note">
-    <div class="box"><span class="k">KNOW THIS</span><h2>It keeps the prompts</h2><p>That's the point of a trace, and it's also a store of everything anyone typed. Decide who can sign in.</p></div>
+    <div class="box"><span class="k">KNOW THIS</span><h2>It can keep the prompts</h2><p>That's the point of a trace, and it's also a store of everything anyone typed. Decide who can sign in.</p></div>
     <div class="box"><span class="k">KNOW THIS TOO</span><h2>minio/minio is archived</h2><p>Upstream stopped in April 2026. This runs Chainguard's AGPL fork, pinned by digest.</p></div>
   </div>
 
   <div class="key">
     <h3>Tested</h3>
-    <p>On 4 GB droplets with Ubuntu, Debian, Rocky Linux and Fedora: sign-up refused, a trace over OTLP readable within three seconds, a wrong secret key a <code>401</code>, and the trace still there after a reboot.</p>
+    <p>On 4 GB droplets with Ubuntu, Debian, Rocky Linux and Fedora: sign-up refused, a trace over OTLP readable within three seconds, a wrong secret key a <code>401</code>, the trace still there after a reboot. LiteLLM's calls arrived as generations within seconds.</p>
   </div>
   <div class="bottom">
     <img src="../../../apps/site/src/brand/logo.svg" alt="">
