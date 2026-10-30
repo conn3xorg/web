@@ -46,7 +46,7 @@ function quote(s) {
 
 // An object on one line, for the elements of a list.
 function inline(v) {
-  if (v === null || typeof v !== "object" || Array.isArray(v)) return hcl(v);
+  if (v === null || typeof v !== "object" || Array.isArray(v) || v instanceof Ref) return hcl(v);
   return `{ ${Object.entries(v).map(([k, x]) => `${key(k)} = ${inline(x)}`).join(", ")} }`;
 }
 
@@ -367,6 +367,8 @@ export function readLink(data, hash) {
  *   picks: ["nginx", ...],
  *   values: { "nginx.port": "8080", "k3s.servers": "cp1 203.0.113.20", ... },
  *   network: "192.168.1.0/24",                    for private firewall ports
+ *   cloud: { region, size, adminCidrs, publicKey, tags }, create the hosts on
+ *     DigitalOcean; hosts and role hosts are then names, one per line
  * }
  *
  * Returns { files } or { errors: [[field, message], ...] }.
@@ -385,11 +387,29 @@ export function generate(data, build) {
   }
   if (errors.length) return { errors };
 
-  // Hosts: "name address" or just "address" per line. Returns { name: address }.
+  const cloud = build.cloud;
+  const image = cloud && data.builder.cloud.images[distro.id];
+  if (cloud && !image) fail("cloud", `DigitalOcean has no ${distro.name} image.`);
+  // The droplet's address and host key aren't known until it exists, so os stands in for its facts.
+  const created = (n) => ({
+    address: new Ref(`digitalocean_droplet.host[${quote(n)}].ipv4_address`),
+    host_key: new Ref(`tls_private_key.host[${quote(n)}].public_key_openssh`),
+    os: distro.os,
+  });
+
+  // Hosts: "name address" or just "address" per line, or just a name when
+  // they're being created. Returns { name: address }, or { name: name }.
   const parseHosts = (text, field, prefix) => {
     const out = {};
     (text ?? "").split("\n").map((l) => l.trim()).filter(Boolean).forEach((l, n) => {
       const parts = l.split(/\s+/);
+      if (cloud) {
+        // Droplet names can't hold an underscore.
+        if (parts.length > 1 || !/^[A-Za-z][A-Za-z0-9-]*$/.test(l)) return fail(field, `Write just a name for each new server, with letters, digits and -, not "${l}".`);
+        if (out[l]) return fail(field, `${l} is there twice.`);
+        out[l] = l;
+        return;
+      }
       const [name, address] = parts.length === 1 ? [`${prefix}${n + 1}`, parts[0]] : parts;
       if (parts.length > 2) return fail(field, `Write "name address" or just the address, not "${l}".`);
       if (!/^[A-Za-z][A-Za-z0-9_-]*$/.test(name)) return fail(field, `"${name}" can't be a host name: use letters, digits, - and _.`);
@@ -402,12 +422,12 @@ export function generate(data, build) {
   // Circuits with roles keep to their own hosts, so only the others use the shared list.
   const hosts = {};
   if (picks.some((p) => !rolesOf(data, p).length)) {
-    for (const [n, address] of Object.entries(parseHosts(build.hosts, "hosts", "host"))) hosts[n] = { address, os: distro.os };
+    for (const [n, address] of Object.entries(parseHosts(build.hosts, "hosts", "host"))) hosts[n] = cloud ? created(n) : { address, os: distro.os };
     if (!Object.keys(hosts).length) fail("hosts", "Add at least one host.");
   }
 
   const placed = {};
-  const claims = Object.values(hosts).map((h) => ({ address: h.address, owner: "the shared hosts", light: false }));
+  const claims = Object.entries(hosts).map(([n, h]) => ({ address: cloud ? n : h.address, owner: "the shared hosts", light: false }));
   for (const name of picks) {
     placed[name] = {};
     const own = new Set();
@@ -424,7 +444,13 @@ export function generate(data, build) {
         claims.push({ address: a, owner: name, light: !!r.light, field });
       }
       // A circuit that reads these hosts after another finishes can't look up the distribution, so it's told.
-      if (n) placed[name][r.input] = r.os ? Object.fromEntries(Object.entries(got).map(([h, address]) => [h, new Ref(inline({ address, os: distro.os }))])) : got;
+      if (n) {
+        placed[name][r.input] = cloud
+          ? Object.fromEntries(Object.keys(got).map((h) => [h, new Ref(inline(created(h)))]))
+          : r.os
+            ? Object.fromEntries(Object.entries(got).map(([h, address]) => [h, new Ref(inline({ address, os: distro.os }))]))
+            : got;
+      }
     }
   }
   // Agents and clients can sit beside anything else. Anything heavier gets a host of its own.
@@ -434,13 +460,14 @@ export function generate(data, build) {
   }
 
   const ssh = build.ssh ?? {};
-  const user = (ssh.user ?? "").trim() || "root";
+  // DigitalOcean's images log in as root.
+  const user = cloud ? "root" : (ssh.user ?? "").trim() || "root";
   if (!/^[a-z_][a-z0-9_.-]*$/i.test(user)) fail("ssh.user", `"${user}" isn't a user name.`);
   const shared = [];
   if (user !== "root") shared.push(["ssh_user", user]);
   if (ssh.key?.trim()) shared.push(["ssh_private_key_file", ssh.key.trim()]);
-  if (ssh.knownHosts?.trim()) shared.push(["ssh_known_hosts_file", ssh.knownHosts.trim()]);
-  if (ssh.become) shared.push(["ssh_become", true]);
+  if (ssh.knownHosts?.trim() && !cloud) shared.push(["ssh_known_hosts_file", ssh.knownHosts.trim()]);
+  if (ssh.become && !cloud) shared.push(["ssh_become", true]);
 
   const wired = wiring(data, picks);
   const variables = [...wired.secrets];
@@ -508,6 +535,14 @@ export function generate(data, build) {
 
   const net = (build.network ?? "").trim();
   if (net && !/^[0-9a-fA-F:.]+\/\d{1,3}$/.test(net)) fail("network", `"${net}" isn't a network such as 192.168.1.0/24.`);
+  let admin = [];
+  if (cloud) {
+    admin = (cloud.adminCidrs ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
+    if (!admin.length) fail("cloud.adminCidrs", "Say which addresses can reach SSH, such as 203.0.113.7/32.");
+    for (const a of admin) if (!/^[0-9a-fA-F:.]+\/\d{1,3}$/.test(a)) fail("cloud.adminCidrs", `"${a}" isn't an address such as 203.0.113.7/32.`);
+    if (!/^[a-z0-9]+$/.test(cloud.region?.trim() || "lon1")) fail("cloud.region", `"${cloud.region}" isn't a region such as lon1.`);
+    if (!/^[a-z0-9-]+$/.test(cloud.size?.trim() || "s-2vcpu-4gb")) fail("cloud.size", `"${cloud.size}" isn't a size such as s-2vcpu-4gb.`);
+  }
   if (errors.length) return { errors };
 
   const fw = modules.find((m) => m.name === "firewall");
@@ -521,16 +556,66 @@ export function generate(data, build) {
 
   return {
     files: {
-      "main.tf": mainTf(distro, hosts, modules),
+      "main.tf": mainTf(distro, hosts, modules, cloud && {
+        image,
+        names: [...new Set(claims.map((c) => c.address))].sort(),
+        region: cloud.region?.trim() || "lon1",
+        size: cloud.size?.trim() || "s-2vcpu-4gb",
+        admin,
+        publicKey: cloud.publicKey?.trim() || "~/.ssh/id_ed25519.pub",
+        tags: (cloud.tags ?? "").split("\n").map((l) => l.trim()).filter(Boolean),
+        open: [...new Set(open.map((p) => p.port))].map((port) => ({ port, from: ["0.0.0.0/0", "::/0"] })),
+        closed: net ? [...new Set(closed.map((p) => p.port))].map((port) => ({ port, from: [net] })) : [],
+      }),
       ...(variables.length ? { "variables.tf": variablesTf(variables) } : {}),
-      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length) }),
+      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length), cloud: !!cloud }),
     },
   };
 }
 
-function mainTf(distro, hosts, modules) {
+// Droplets, their host keys and a cloud firewall, the way the private AI box example does it.
+function cloudTf(c) {
+  let out = `\nterraform {\n  required_providers {\n`;
+  out += `    digitalocean = { source = "digitalocean/digitalocean", version = "~> 2.0" }\n`;
+  out += `    tls          = { source = "hashicorp/tls", version = "~> 4.0" }\n`;
+  out += `  }\n}\n`;
+  out += `\n# Each droplet's SSH host key, made here and installed by cloud-init, so\n# Conn3x can check it on the very first connection.\n`;
+  out += `resource "tls_private_key" "host" {\n  for_each  = toset(${hcl(c.names)})\n  algorithm = "ED25519"\n}\n`;
+  out += `\nresource "digitalocean_ssh_key" "admin" {\n  name       = "conn3x"\n  public_key = trimspace(file(pathexpand(${hcl(c.publicKey)})))\n}\n`;
+  out += `\nresource "digitalocean_droplet" "host" {\n  for_each = tls_private_key.host\n\n`;
+  out += attrs([
+    ["name", new Ref("each.key")],
+    ["image", c.image],
+    ["region", c.region],
+    ["size", c.size],
+    ...(c.tags.length ? [["tags", c.tags]] : []),
+    ["ssh_keys", new Ref("[digitalocean_ssh_key.admin.id]")],
+  ], "  ");
+  out += `\n  user_data = "#cloud-config\\n\${yamlencode({\n    ssh_deletekeys = true\n    ssh_keys = {\n      ed25519_private = each.value.private_key_openssh\n      ed25519_public  = each.value.public_key_openssh\n    }\n  })}"\n}\n`;
+  const rule = (kind, protocol, port, addrs) =>
+    `\n  ${kind}_rule {\n${attrs([["protocol", protocol], ...(port ? [["port_range", port]] : []), [`${kind === "inbound" ? "source" : "destination"}_addresses`, addrs]], "    ")}  }\n`;
+  const everywhere = ["0.0.0.0/0", "::/0"];
+  out += `\n# SSH from your addresses, what your picks serve, and the droplets to each other.\n`;
+  out += `resource "digitalocean_firewall" "hosts" {\n  name        = "conn3x"\n  droplet_ids = [for d in digitalocean_droplet.host : d.id]\n`;
+  out += rule("inbound", "tcp", "22", c.admin);
+  for (const p of [...c.open, ...c.closed]) {
+    const [port, protocol] = p.port.split("/");
+    out += rule("inbound", protocol, port, p.from);
+  }
+  for (const protocol of ["tcp", "udp"]) {
+    out += `\n  inbound_rule {\n    protocol           = ${hcl(protocol)}\n    port_range         = "1-65535"\n    source_droplet_ids = [for d in digitalocean_droplet.host : d.id]\n  }\n`;
+  }
+  out += rule("outbound", "tcp", "1-65535", everywhere);
+  out += rule("outbound", "udp", "1-65535", everywhere);
+  out += rule("outbound", "icmp", null, everywhere);
+  out += `}\n`;
+  return out;
+}
+
+function mainTf(distro, hosts, modules, cloud) {
   let out = `# Written by the Circuit Builder at https://conn3x.org/build for ${distro.name}.\n`;
   out += "# Each circuit is pinned to a release. Read its README before you apply.\n";
+  if (cloud) out += cloudTf(cloud);
   const names = Object.keys(hosts);
   const w = Math.max(...names.map((n) => n.length));
   if (names.length) out += `\nlocals {\n  hosts = {\n${names.map((n) => `    ${n.padEnd(w)} = ${inline(hosts[n])}\n`).join("")}  }\n}\n`;
@@ -560,7 +645,9 @@ function variablesTf(variables) {
 function readme(data, distro, n, placed, modules, variables, fw) {
   let out = "# Your Conn3x config\n\n";
   out += `Written by the Circuit Builder at https://conn3x.org/build, for ${distro.name} on ${n} host${n === 1 ? "" : "s"}. `;
-  out += "It's configuration only: nothing has touched your servers yet, and nothing will until you run `conn3x apply` and say yes.\n\n";
+  out += fw.cloud
+    ? "It's configuration only: nothing exists yet. `conn3x apply` creates the droplets on DigitalOcean, once you say yes, and they cost money until you run `conn3x destroy`.\n\n"
+    : "It's configuration only: nothing has touched your servers yet, and nothing will until you run `conn3x apply` and say yes.\n\n";
   out += "## What's in it\n\n";
   for (const m of modules) {
     out += `- **${m.name}** ${m.c.version}: ${m.c.description} Docs: https://docs.conn3x.org/circuits/${m.doc ?? m.name}\n`;
@@ -575,7 +662,9 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   }
   out += "\n## Run it\n\n";
   out += "1. Install Conn3x: https://docs.conn3x.org/get-started\n";
-  out += "2. Log in to each host with `ssh` once, so its key is in your known_hosts. Conn3x checks it.\n";
+  out += fw.cloud
+    ? "2. Set your DigitalOcean token: `export DIGITALOCEAN_TOKEN=...`. Conn3x makes each droplet's SSH host key and checks it from the first connection. If the apply says `SSH Key is already in use`, that public key is already in your account: remove it there, or use another key.\n"
+    : "2. Log in to each host with `ssh` once, so its key is in your known_hosts. Conn3x checks it.\n";
   if (variables.length) {
     out += "3. Set the secrets. They stay in your shell, never in a file:\n\n   ```sh\n";
     for (const v of variables) out += `   export TF_VAR_${v.name}='...'\n`;
@@ -595,6 +684,10 @@ function readme(data, distro, n, placed, modules, variables, fw) {
         ? `\nThese open to ${fw.net} only: ${fw.closed.map((p) => `${p.port} (${p.circuit})`).join(", ")}.\n`
         : `\nThese stay closed, since they're meant for your own network: ${fw.closed.map((p) => `${p.port} (${p.circuit})`).join(", ")}. Add them to \`allow\` with \`from\` set to your network.\n`;
     }
+  }
+  if (fw.cloud) {
+    out += "\n## The state file\n\n";
+    out += "It holds each droplet's private SSH host key, so turn on state encryption, or store it where you'd store a secret: https://opentofu.org/docs/language/state/encryption/\n";
   }
   const hints = modules.map((m) => data.builder.hints[m.name] && `- **${m.name}**: ${data.builder.hints[m.name]}`).filter(Boolean);
   if (hints.length) out += `\n## Worth knowing\n\n${hints.join("\n")}\n`;
