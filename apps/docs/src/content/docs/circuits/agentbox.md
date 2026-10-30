@@ -143,4 +143,4 @@ Moving `node_major` from 24 to 26 was tried by hand on Debian 13 and Rocky Linux
 
 - Repository: [conn3xorg/circuit-agentbox](https://github.com/conn3xorg/circuit-agentbox). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-agentbox/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.0/examples/local).
-- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Users](/circuits/users), [Ollama](/circuits/ollama), [Qdrant](/circuits/qdrant).
+- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Users](/circuits/users), [Ollama](/circuits/ollama), [Qdrant](/circuits/qdrant), [Open WebUI](/circuits/openwebui), [LiteLLM](/circuits/litellm), [Presidio](/circuits/presidio), [Langfuse](/circuits/langfuse).
