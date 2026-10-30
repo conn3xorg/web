@@ -23,6 +23,15 @@ If you've written a circuit for something you run, other people probably run it 
 
 Not ready to publish? Post what you have in the [Circuits](https://github.com/conn3xorg/conn3x/discussions/categories/circuits) category. Rough is fine, and that's where people ask for the ones they'd like to see.
 
+## Write with us
+
+Good writers are harder to find than good developers, and they're what we need most. All of this was written by the people who built the software, and it reads that way in places. You don't need to know Go, OpenTofu or Ansible: you can edit in the browser, and we check every fact before it goes out.
+
+- **Technical writers:** every circuit's README has its own issue listing where to start, and the docs still need a style guide and a glossary.
+- **Content writers:** posts about real jobs Conn3x does, social drafts from what we've published, and an honest read of the website.
+
+It's all under the [writers wanted label](https://github.com/search?q=org%3Aconn3xorg+label%3A%22writers+wanted%22+state%3Aopen&type=issues). Not sure where to begin? Say what you like writing in [Discussions](https://github.com/conn3xorg/conn3x/discussions).
+
 ## Improve the docs
 
 Every page here has an **Edit page** link at the bottom. It opens the page's Markdown on GitHub, where you can change it and open a pull request from the browser. Typos, a step that didn't work as written, an example that's missing: all welcome.
