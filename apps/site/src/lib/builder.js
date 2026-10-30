@@ -663,7 +663,7 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   out += "\n## Run it\n\n";
   out += "1. Install Conn3x: https://docs.conn3x.org/get-started\n";
   out += fw.cloud
-    ? "2. Set your DigitalOcean token: `export DIGITALOCEAN_TOKEN=...`. Conn3x makes each droplet's SSH host key and checks it from the first connection.\n"
+    ? "2. Set your DigitalOcean token: `export DIGITALOCEAN_TOKEN=...`. Conn3x makes each droplet's SSH host key and checks it from the first connection. If the apply says `SSH Key is already in use`, that public key is already in your account: remove it there, or use another key.\n"
     : "2. Log in to each host with `ssh` once, so its key is in your known_hosts. Conn3x checks it.\n";
   if (variables.length) {
     out += "3. Set the secrets. They stay in your shell, never in a file:\n\n   ```sh\n";
