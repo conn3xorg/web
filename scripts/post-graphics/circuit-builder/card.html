@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Circuit Builder: social card</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  /* One card, four sizes: #card 1200x630, #x 1200x675, #square 1080x1080, #tall 1080x1350. */
+  html, body { overflow: hidden; }
+  body { color: var(--text); font-variant-ligatures: none; }
+  .frame { padding: 56px 68px; height: 100vh; display: grid; grid-template-rows: auto auto 1fr; gap: 28px; }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .top img { height: 42px; }
+  .label { font-family: var(--mono); font-size: 19px; letter-spacing: 0.14em; color: var(--muted); }
+  .label b { color: var(--accent); font-weight: 600; }
+  h1 { font-size: 62px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; }
+  h1 span { color: var(--accent); }
+  .show { align-self: end; display: grid; grid-template-columns: 0.82fr 44px 1.3fr; align-items: stretch; }
+  .panel { background: var(--ink-3); border: 2px solid var(--line); padding: 18px 20px; }
+  .tag { display: block; font-family: var(--mono); font-size: 14px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 18px; padding: 5px 13px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--text); }
+  .chip.on { background: var(--accent); border-color: var(--accent); color: var(--ink-3); font-weight: 600; }
+  .chip.off { border-style: dashed; color: var(--dim); }
+  .why { font-family: var(--mono); font-size: 14px; color: var(--muted); margin-top: 12px; line-height: 1.45; }
+  .why b { color: var(--accent); font-weight: 500; }
+  .arrow { display: grid; place-items: center; color: var(--accent); font-size: 34px; font-family: var(--mono); }
+  pre { font-family: var(--mono); font-size: 15px; line-height: 1.5; color: var(--text); white-space: pre; }
+  .k { color: var(--accent); } .s { color: var(--add); } .c { color: var(--dim); }
+  .extra { display: none; }
+
+  body.square .frame, body.tall .frame { padding: 64px 64px; gap: 34px; grid-template-rows: auto auto 1fr auto; }
+  body.square h1, body.tall h1 { font-size: 76px; }
+  body.square .show, body.tall .show { grid-template-columns: 1fr; grid-template-rows: auto 40px auto; align-self: center; }
+  body.square .arrow, body.tall .arrow { transform: rotate(90deg); }
+  body.square .chip, body.tall .chip { font-size: 21px; }
+  body.square pre, body.tall pre { font-size: 18px; }
+  body.square .why, body.tall .why { font-size: 16px; }
+  body.square .extra, body.tall .extra { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 18px; color: var(--muted); }
+  body.square .extra b, body.tall .extra b { color: var(--add); font-weight: 500; }
+  body.tall .frame { padding: 80px 64px; }
+  body.tall h1 { font-size: 78px; margin-top: 40px; }
+  body.tall pre { font-size: 19px; }
+  .sq, .tl { display: none; }
+  body.square .sq, body.tall .sq, body.tall .tl { display: inline; }
+  h1 { margin-top: 18px; }
+</style>
+</head>
+<body class="grid-dark">
+<div class="frame">
+  <div class="top"><img src="../../../apps/site/src/brand/logo-dark.svg" alt=""><span class="label"><b>CIRCUIT BUILDER</b> · CONN3X.ORG/BUILD</span></div>
+  <h1>Pick the parts.<br><span>Get a config you can run.</span></h1>
+  <div class="show">
+    <div class="panel">
+      <span class="tag">ROCKY LINUX 10 · YOUR PICKS</span>
+      <div class="chips">
+        <span class="chip on">nginx</span><span class="chip on">docker</span><span class="chip on">fail2ban</span><span class="chip on">firewall</span><span class="chip off">apache</span><span class="chip off">caddy</span>
+      </div>
+      <p class="why"><b>apache:</b> Can't go with nginx: both want ports 80 and 443.</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="panel">
+      <span class="tag">MAIN.TF</span>
+<pre><span class="sq"><span class="tl"><span class="k">locals</span> {
+  hosts = {
+    web1 = { address = <span class="s">"203.0.113.10"</span>, os = <span class="s">"rocky"</span> }
+    web2 = { address = <span class="s">"203.0.113.11"</span>, os = <span class="s">"rocky"</span> }
+  }
+}
+
+</span></span><span class="k">module</span> <span class="s">"nginx"</span> {
+  source = <span class="s">"github.com/conn3xorg/circuit-nginx?ref=v0.1.0"</span>
+  <span class="c">...</span>
+}<span class="sq">
+
+<span class="k">module</span> <span class="s">"firewall"</span> {
+  source = <span class="s">"github.com/conn3xorg/circuit-firewall?ref=v0.2.0"</span>
+  <span class="c">...</span>
+  allow = [
+    { port = <span class="s">"80/tcp"</span> },
+  ]
+}</span></pre>
+    </div>
+  </div>
+  <div class="extra"><span>Written in your browser. Nothing you type leaves it.</span><span><b>71</b> configs checked in CI</span></div>
+</div>
+<script>
+  const f = location.hash.slice(1) || "card";
+  document.body.classList.add(f);
+</script>
+</body>
+</html>

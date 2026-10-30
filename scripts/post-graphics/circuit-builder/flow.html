@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Circuit Builder: the flow</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--navy); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .label b { color: var(--rust); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--navy-muted); max-width: 1240px; }
+  code { font-family: var(--mono); font-size: 0.86em; }
+  .steps { margin-top: 56px; display: grid; grid-template-columns: 1fr 36px 1fr 36px 1fr 36px 1.15fr; align-items: stretch; }
+  .arrow { display: grid; place-items: center; font-family: var(--mono); color: var(--rust); font-size: 34px; }
+  .step { background: var(--paper-2); border: 2px solid var(--paper-line); border-top: 8px solid var(--navy); padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .step.out { background: var(--ink); color: var(--text); border-color: var(--ink); border-top-color: var(--accent); }
+  .n { font-family: var(--mono); font-size: 18px; letter-spacing: 0.14em; color: var(--navy-muted); }
+  .out .n { color: var(--muted); }
+  h2 { font-size: 36px; letter-spacing: -0.02em; font-weight: 800; line-height: 1.05; }
+  .out h2 { color: var(--accent); }
+  .step p { font-size: 21px; line-height: 1.4; color: var(--navy-muted); }
+  .out p { color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-size: 18px; padding: 5px 12px; border-radius: 999px; border: 2px solid var(--paper-line); background: var(--paper); }
+  .chip.on { background: var(--accent); border-color: var(--accent); color: var(--ink-3); font-weight: 600; }
+  .chip.off { border-style: dashed; color: #93a1b3; background: transparent; }
+  .field { font-family: var(--mono); font-size: 17px; border: 2px solid var(--paper-line); background: var(--paper); padding: 7px 10px; line-height: 1.4; }
+  .field i { font-style: normal; color: var(--navy-muted); font-size: 14px; display: block; letter-spacing: 0.06em; }
+  .file { font-family: var(--mono); font-size: 19px; border: 2px solid var(--line); background: var(--ink-3); padding: 9px 12px; display: flex; justify-content: space-between; gap: 10px; }
+  .file small { color: var(--muted); font-size: 15px; }
+  .file.zip { border-color: var(--accent); color: var(--accent); }
+  .band { margin-top: 36px; background: var(--ink); color: var(--text); padding: 26px 32px; display: flex; justify-content: space-between; align-items: center; font-size: 25px; }
+  .band b { color: var(--add); font-weight: 600; }
+  .band span:last-child { font-family: var(--mono); font-size: 20px; color: var(--muted); }
+  .bottom { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-light">
+<div class="page">
+  <span class="label"><b>CIRCUIT BUILDER</b> · CONN3X.ORG/BUILD</span>
+  <h1>Three steps to a config</h1>
+  <p class="lede">Choose a distribution, the circuits you want and the few values they can't do without. Out comes a config you read, keep and run yourself.</p>
+
+  <div class="steps">
+    <div class="step">
+      <span class="n">STEP 1</span><h2>Distribution</h2>
+      <div class="chips"><span class="chip on">Rocky Linux 10</span><span class="chip">Fedora 45</span><span class="chip">Ubuntu 24.04</span><span class="chip">Debian 13</span></div>
+      <p>Circuits not tested on it grey out, with the reason.</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <span class="n">STEP 2</span><h2>Circuits</h2>
+      <div class="chips"><span class="chip on">nginx</span><span class="chip on">docker</span><span class="chip on">fail2ban</span><span class="chip on">firewall</span><span class="chip off">apache</span><span class="chip off">keepalived</span></div>
+      <p>56 circuits in 14 categories. Pick one and whatever clashes with it greys out.</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step">
+      <span class="n">STEP 3</span><h2>Settings</h2>
+      <div class="field"><i>HOSTS</i>web1 203.0.113.10<br>web2 203.0.113.11</div>
+      <div class="field"><i>SSH USER · KEY</i>deploy<br>~/.ssh/id_ed25519</div>
+      <p>Only the inputs each circuit needs. The rest wait under More settings.</p>
+    </div>
+    <div class="arrow">→</div>
+    <div class="step out">
+      <span class="n">YOUR FILES</span><h2>Ready to run</h2>
+      <div class="file">main.tf <small>pinned</small></div>
+      <div class="file">variables.tf <small>secrets</small></div>
+      <div class="file">README.md <small>run steps</small></div>
+      <div class="file zip">conn3x-config.zip</div>
+    </div>
+  </div>
+
+  <div class="band"><span>Written in your browser. <b>Nothing you type leaves it.</b></span><span>conn3x init · plan · apply</span></div>
+
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>conn3x.org/build</span>
+  </div>
+</div>
+</body>
+</html>
