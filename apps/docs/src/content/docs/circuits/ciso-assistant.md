@@ -1,6 +1,6 @@
 ---
 title: CISO Assistant
-description: "Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL. It helps you do the work; it doesn't make anyone compliant."
+description: "Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-ciso-assistant at v0.1.0. -->
