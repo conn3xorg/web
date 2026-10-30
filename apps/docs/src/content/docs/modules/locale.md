@@ -65,3 +65,7 @@ A step lowers to the `conn3x_locale` resource, one instance per host, and connec
 ## Removal
 
 A `locale` step has no `on_remove`. When you delete it, Conn3x stops managing the locale and leaves the host as it is.
+
+## From Ansible
+
+`conn3x convert ansible` leaves `community.general.locale_gen` as a TODO. `locale_gen` only generates a locale, while a `locale` step also makes it the host's `LANG`, so a conversion would change something your playbook never asked for. Use a `locale` step if you do want it as the system locale.

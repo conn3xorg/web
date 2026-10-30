@@ -16,5 +16,6 @@ Work through them in order if you're new. Each one builds on the ones before it,
 | 5 | [Keep secrets out of state](/tutorials/secrets) | 10 minutes | The container from tutorial 1 |
 | 6 | [Catch drift in CI](/tutorials/drift-in-ci) | 15 minutes | A GitHub repository and a remote state backend |
 | 7 | [Migrate an Ansible playbook](/tutorials/migrate-ansible) | 15 minutes | A playbook, or the one on the page |
+| 8 | [Manage BigQuery and catch changes](/tutorials/bigquery) | 10 minutes | A Google Cloud project. Costs effectively nothing. |
 
 [Get started](/get-started) is a shorter version of tutorials 1 and 2 in one page. The [guides](/guides/provision-and-configure) explain single tasks without the walkthrough, and the [circuit language](/reference/circuits) and [CLI](/reference/cli) reference pages hold every argument and option.
