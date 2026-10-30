@@ -1,7 +1,7 @@
 ---
 title: "Windows is next"
 description: "Conn3x puts the cloud and the Linux servers in it into one plan. The next stretch of work does the same for Windows, with Azure examples we'll test end to end. Here's the order, and why."
-date: 2026-11-11
+date: 2026-12-20
 author: James Conway
 ---
 
@@ -19,7 +19,7 @@ You can already create Azure resources with Conn3x, because it runs the same `ha
 
 ## Why Windows before network devices
 
-Until today the README said network devices came first. We swapped them because Windows servers have the same gap Linux servers had: a VM from one tool, its configuration from another. Closing it there is the same job Conn3x already does, on a new kind of host. Network devices are a different shape of problem, and they come straight after.
+Network devices used to be first on the list. We swapped them because Windows servers have the same gap Linux servers had: a VM from one tool, its configuration from another. Closing it there is the same job Conn3x already does, on a new kind of host. Network devices are a different shape of problem, and they come straight after.
 
 ## Tell us what you'd configure first
 
