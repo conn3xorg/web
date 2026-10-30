@@ -131,4 +131,4 @@ Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/loca
 
 - Repository: [conn3xorg/circuit-users](https://github.com/conn3xorg/circuit-users). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-users/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-users/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.0/examples/local).
-- Related circuits: [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical).
+- Related circuits: [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical).

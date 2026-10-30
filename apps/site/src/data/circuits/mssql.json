@@ -1,0 +1,17 @@
+{
+  "name": "mssql",
+  "repo": "conn3xorg/circuit-mssql",
+  "description": "SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state.",
+  "version": "v0.1.0",
+  "tags": [
+    "mssql",
+    "sql-server",
+    "database"
+  ],
+  "tested": [
+    "rocky10",
+    "ubuntu2404"
+  ],
+  "category": "Databases and caches",
+  "official": true
+}

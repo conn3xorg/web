@@ -46,6 +46,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [PostgreSQL](/circuits/postgres) | Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state. | v0.2.0 |
 | [MariaDB](/circuits/mariadb) | MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would. | v0.1.0 |
 | [MySQL](/circuits/mysql) | MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state. | v0.1.0 |
+| [SQL Server](/circuits/mssql) | SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state. | v0.1.0 |
 | [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.1.0 |
 | [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.1.0 |
 | [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.1.0 |
@@ -116,6 +117,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Users](/circuits/users) | Creates users, groups and their SSH keys from one map, with optional passwordless sudo. | v0.1.0 |
 | [LLDAP](/circuits/lldap) | LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state. | v0.1.0 |
 | [OpenLDAP](/circuits/openldap) | OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds. | v0.1.0 |
+| [FreeIPA](/circuits/freeipa) | FreeIPA server on Rocky or Fedora, with clients on Debian, Ubuntu, Fedora and Rocky. Sets FQDNs, installs unattended, enrols over SSSD. | v0.1.0 |
 | [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.1.0 |
 | [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.2.0 |
 | [Infisical](/circuits/infisical) | Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host. | v0.1.0 |
