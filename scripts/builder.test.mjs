@@ -8,7 +8,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { hcl, parseType, fieldKind, convert, unavailable, conflict, withRequired, generate, unticked, zip } from "../apps/site/src/lib/builder.js";
+import { hcl, parseType, fieldKind, convert, unavailable, conflict, withRequired, generate, unticked, zip, linkFor, readLink } from "../apps/site/src/lib/builder.js";
 import { load, builds } from "./builder-combos.mjs";
 
 const data = load();
@@ -192,4 +192,14 @@ test("zip is a well-formed archive", () => {
   assert.equal(v.getUint32(end, true), 0x06054b50);
   assert.equal(v.getUint16(end + 10, true), 2);
   assert.equal(v.getUint32(14, true), 0x8cdc1683, "crc32 of x");
+});
+
+test("a link carries picks only, and can't smuggle in a bad build", () => {
+  assert.equal(linkFor("rocky10", ["nginx", "grafana"]), "#distro=rocky10&picks=nginx,grafana");
+  assert.deepEqual(readLink(data, linkFor("rocky10", ["nginx", "grafana"])), { distro: "rocky10", picks: ["nginx", "grafana"] });
+  assert.deepEqual(readLink(data, "#distro=rocky10&picks="), { distro: "rocky10", picks: [] });
+  assert.deepEqual(readLink(data, "#distro=rocky10&picks=nginx,apache,nginx"), { distro: "rocky10", picks: ["nginx"] }, "the clash and the repeat go");
+  assert.deepEqual(readLink(data, "#distro=rocky10&picks=k3s,lastrack,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
+  assert.equal(readLink(data, "#distro=nope&picks=nginx"), null);
+  assert.equal(readLink(data, "#hosts"), null, "a link inside the page isn't a build");
 });

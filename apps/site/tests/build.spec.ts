@@ -43,3 +43,20 @@ test("waits for a person to accept the SQL Server licence", async ({ page }) => 
   await eula.uncheck();
   await expect(page.locator("#write")).toBeDisabled();
 });
+
+test("a link brings the picks back, and nothing typed", async ({ page }) => {
+  await page.goto("/build");
+  await page.locator('input[name=distro][value="ubuntu2404"]').check({ force: true });
+  await page.locator('input[name=pick][value="nginx"]').check({ force: true });
+  await page.fill("#hosts", "web1 203.0.113.10");
+  await expect(page).toHaveURL(/#distro=ubuntu2404&picks=nginx$/);
+
+  await page.goto("about:blank");
+  await page.goto("/build#distro=ubuntu2404&picks=nginx,apache,mssql");
+  await expect(page.locator('input[name=distro][value="ubuntu2404"]')).toBeChecked();
+  await expect(page.locator('input[name=pick][value="nginx"]')).toBeChecked();
+  await expect(page.locator('input[name=pick][value="apache"]')).not.toBeChecked();
+  await expect(page.locator("#hosts")).toHaveValue("");
+  await expect(page.locator("#f-mssql-accept_eula")).not.toBeChecked();
+  await expect(page.locator("#write")).toBeDisabled();
+});

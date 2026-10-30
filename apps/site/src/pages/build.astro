@@ -117,8 +117,10 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 
       <div class="go">
         <button class="btn" type="submit" id="write">Write my config</button>
+        <button class="btn btn-ghost" type="button" id="share">Copy a link to these picks</button>
         <span class="sub" id="count"></span>
       </div>
+      <p class="sub share-note">The link holds your distribution and picks. Nothing you've typed goes in it, and whoever opens it still ticks any licence for themselves.</p>
 
       <section id="out" aria-labelledby="s-out" hidden>
         <h2 id="s-out">Your config</h2>
@@ -142,7 +144,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 </Base>
 
 <script>
-  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip } from "../lib/builder.js";
+  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip, linkFor, readLink } from "../lib/builder.js";
   import builder from "../data/builder.json";
 
   const load = (g: Record<string, { default: any }>) =>
@@ -292,7 +294,10 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       else if (t.dataset.part) values[k].fields[t.dataset.part] = v;
       else values[k] = v;
     }
-    if (t.name === "pick" || t.name === "distro") refresh();
+    if (t.name === "pick" || t.name === "distro") {
+      refresh();
+      history.replaceState(null, "", linkFor(distro(), picked()));
+    }
     gate();
     if (shown) write();
   });
@@ -401,6 +406,33 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
 
+  $("share").addEventListener("click", async () => {
+    const b = $("share");
+    const url = new URL(linkFor(distro(), picked()), location.href).href;
+    try {
+      await navigator.clipboard.writeText(url);
+      b.textContent = "Link copied";
+    } catch {
+      b.textContent = "Copy it from the address bar";
+    }
+    setTimeout(() => (b.textContent = "Copy a link to these picks"), 1500);
+  });
+
+  // Links inside the page, such as an error's, change the fragment too. Those aren't builds.
+  function openLink() {
+    const link = readLink(data, location.hash);
+    if (!link) return;
+    form.querySelector<HTMLInputElement>(`input[name="distro"][value="${link.distro}"]`)!.checked = true;
+    for (const p of picks) p.checked = link.picks.includes(p.value);
+  }
+  addEventListener("hashchange", () => {
+    openLink();
+    refresh();
+    gate();
+    if (shown) write();
+  });
+
+  openLink();
   refresh();
   gate();
 </script>
@@ -625,8 +657,12 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
   }
   #build .go {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
+  }
+  #build .share-note {
+    margin: -2rem 0 0;
   }
   #build .go .sub {
     margin: 0;
