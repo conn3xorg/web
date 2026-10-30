@@ -151,7 +151,7 @@ A builder that writes broken configs would be worse than no builder. So the site
 
 Validate runs each circuit's own validation rules on the values, so a bad sample value fails the job as surely as bad syntax does. If any one of the 71 fails, the job fails. Unit tests sit underneath: the escaping, including attempts to break out of a string, the type of every input of every circuit, the conflicts, the secrets, the firewall and the zip format, and a check that circuits left out of the builder can't be generated.
 
-What validate can't do is apply. It proves the config is well formed and the values are ones the circuits accept. The circuits themselves are applied to real hosts in their own CI, on the distributions they list.
+What validate can't do is apply. It proves the config is well formed and the values are ones the circuits accept. The circuits themselves are applied for real: each one's CI applies it to a systemd container of every distribution it lists and checks that it works, and each was run on cloud servers before its first release.
 
 ## What it doesn't do yet
 
