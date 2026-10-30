@@ -1,0 +1,63 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Who can do what in Open WebUI: diagram</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+<style>
+  .flow { margin-top: 56px; display: grid; grid-template-columns: 300px 80px 1fr 80px 360px; align-items: center; }
+  .host { border: 3px solid var(--navy); padding: 20px; background: rgba(19, 35, 58, 0.03); }
+  .host > .k { color: var(--navy); }
+  .ui { outline: 4px solid var(--accent); outline-offset: -4px; }
+  .backs { display: grid; gap: 14px; }
+  .opt { border: 3px dashed var(--accent); background: rgba(255, 122, 46, 0.06); padding: 16px 20px; }
+  .opt h3 { font-size: 24px; font-weight: 800; }
+  .opt p { font-size: 18px; line-height: 1.4; color: var(--navy-muted); margin-top: 4px; }
+  .rules { margin-top: 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .rule { background: var(--paper-2); border: 2px solid var(--paper-line); border-top: 8px solid var(--navy); padding: 24px 26px; }
+  .rule .q { font-family: var(--mono); font-size: 17px; letter-spacing: 0.12em; color: var(--rust); font-weight: 600; }
+  .rule h2 { font-size: 34px; letter-spacing: -0.02em; font-weight: 800; margin: 8px 0 10px; }
+  .rule p { font-size: 21px; line-height: 1.45; color: var(--navy-muted); }
+  .rule code { color: var(--navy); }
+  .rule .knob { margin-top: 12px; font-family: var(--mono); font-size: 17px; color: var(--navy); background: var(--paper); border: 1px solid var(--paper-line); padding: 8px 12px; }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CIRCUIT-OPENWEBUI · CIRCUIT-OLLAMA</span>
+  <h1>Who can do what</h1>
+  <p class="lede">Open WebUI on your host, with every setting that matters starting closed. Here's where each one lands, and the input that opens it if you want it open.</p>
+
+  <div class="flow">
+    <div class="box"><span class="k">YOUR BROWSER</span><h2 style="font-size: 28px;">The chat page</h2><p>Through Caddy with TLS, or <code>ssh -L 8080:127.0.0.1:8080</code>.</p></div>
+    <div class="wire"><span class="arrow">→</span></div>
+    <div class="host">
+      <span class="k">ONE HOST · LOOPBACK ONLY</span>
+      <div class="dark ui"><h3>Open WebUI<span>127.0.0.1:8080</span></h3><p>Accounts, model access and chats. <code>WEBUI_SECRET_KEY</code> made on the host by the first apply; never in plan or state.</p></div>
+    </div>
+    <div class="wire"><span class="arrow">→</span></div>
+    <div class="backs">
+      <div class="dark"><h3>Ollama<span>:11434</span></h3><p>The default. Prompts stay on the box.</p></div>
+      <div class="opt"><h3>LiteLLM, if you add it</h3><p><code>openai_base_url</code>. Prompts go wherever the gateway sends them.</p></div>
+    </div>
+  </div>
+
+  <div class="rules">
+    <div class="rule"><span class="q">WHO CAN SIGN UP?</span><h2>Nobody</h2><p>The first admin is made from your inputs before the port opens, so no stranger gets there first. Everyone else, an admin adds.</p><div class="knob">enable_signup = false</div></div>
+    <div class="rule"><span class="q">WHICH MODELS DO PEOPLE SEE?</span><h2>None, until given</h2><p>Admins see every model. A user sees only what an admin grants them or their group in the admin panel.</p><div class="knob">share_models_with_all_users = false</div></div>
+    <div class="rule"><span class="q">WHERE ARE THE CHATS?</span><h2>On your host</h2><p>SQLite in the <code>open-webui</code> volume, or PostgreSQL with <code>database_url</code>. Admins can read chats unless you turn that off.</p><div class="knob">ENABLE_ADMIN_CHAT_ACCESS = "false"</div></div>
+    <div class="rule"><span class="q">WHAT LEAVES THE BOX?</span><h2>Only prompts you route out</h2><p>Telemetry, the update check and community sharing are off. With no OpenAI address set, the <code>api.openai.com</code> default is turned off too.</p><div class="knob">offline_mode = true</div></div>
+  </div>
+
+  <div class="key">
+    <h3>Tested</h3>
+    <p>Sign-up refused with <code>403</code>, the circuit's admin signed in, sessions survived a restart. On a 4 GB Ubuntu droplet a chat with <code>qwen2.5:0.5b</code> got an answer; port 8080 didn't answer from outside.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/circuit-openwebui</span>
+  </div>
+</div>
+</body>
+</html>
