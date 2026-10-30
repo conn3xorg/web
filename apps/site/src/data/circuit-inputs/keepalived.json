@@ -1,0 +1,78 @@
+{
+  "name": "keepalived",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "virtual_ips",
+      "type": "list(string)",
+      "description": "Floating IPv4 addresses with their prefix length, such as [\"10.0.0.100/24\"]. The master holds all of them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "interface",
+      "type": "string",
+      "default": null,
+      "description": "Network interface the floating addresses go on and VRRP adverts go out of, such as \"eth1\". When null, each host's default route interface. A host object's interface overrides it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "virtual_router_id",
+      "type": "number",
+      "default": 51,
+      "description": "VRRP router ID, 1 to 255. Every keepalived group on the same network needs its own.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "advert_int",
+      "type": "number",
+      "default": 1,
+      "description": "Seconds between the master's adverts. A backup takes over after about three missed ones.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "nopreempt",
+      "type": "bool",
+      "default": false,
+      "description": "Keep the floating addresses where they are when a higher-priority host comes back, instead of moving them back to it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "auth_pass",
+      "type": "string",
+      "default": null,
+      "description": "VRRP password, up to 8 characters, the same on every host. It keeps strays out rather than attackers: VRRP sends it in the clear. When null, no authentication.",
+      "sensitive": true,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "track_script",
+      "type": "object({\n    script   = string\n    interval = optional(number, 2)\n    fall     = optional(number, 2)\n    rise     = optional(number, 2)\n    weight   = optional(number, 0)\n  })",
+      "default": null,
+      "description": "A command keepalived runs every interval seconds, such as \"/usr/bin/systemctl is-active --quiet haproxy\". After fall failures in a row, a weight of 0 puts the host in FAULT so it gives up the addresses; another weight adds to its priority instead. rise passes in a row bring it back.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "notify_script",
+      "type": "string",
+      "default": null,
+      "description": "Absolute path of a script on each host that keepalived runs on every state change, with the arguments INSTANCE, the instance name, conn3x, the new state, MASTER, BACKUP or FAULT, and the priority. The circuit doesn't write it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

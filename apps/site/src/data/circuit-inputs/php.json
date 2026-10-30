@@ -1,0 +1,70 @@
+{
+  "name": "php",
+  "version": "v0.1.1",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "php_version",
+      "type": "string",
+      "default": null,
+      "description": "PHP version to install, such as \"8.4\". When null, the distribution's own: 8.4 on Debian 13, 8.3 on Ubuntu 24.04 and Rocky Linux 10, 8.5 on Fedora 45. Any other version comes from Ondřej Surý's repository on Debian and Ubuntu, and Remi's modular repository on the Red Hat family.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extensions",
+      "type": "list(string)",
+      "default": [],
+      "description": "PHP extensions to install, by the name PHP knows them by, such as [\"mysqli\", \"gd\", \"intl\"]. The circuit picks each distribution's package.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ini",
+      "type": "map(string)",
+      "default": {},
+      "description": "php.ini settings to override, such as { memory_limit = \"256M\", upload_max_filesize = \"64M\" }. They apply to PHP-FPM and the command line.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "pools",
+      "type": "map(object({\n    user              = optional(string)\n    group             = optional(string)\n    listen            = optional(string)\n    listen_owner      = optional(string)\n    listen_group      = optional(string)\n    listen_mode       = optional(string, \"0660\")\n    pm                = optional(string, \"dynamic\")\n    max_children      = optional(number, 5)\n    start_servers     = optional(number, 2)\n    min_spare_servers = optional(number, 1)\n    max_spare_servers = optional(number, 3)\n    max_requests      = optional(number, 0)\n    settings          = optional(map(string), {})\n  }))",
+      "default": {},
+      "description": "PHP-FPM pools, by name. Each runs as user and group, the web server's user by default, and listens on a socket, by default /run/php/NAME.sock on Debian and Ubuntu or /run/php-fpm/NAME.sock on the Red Hat family, or on listen, a socket path or an address and port. A pool named www replaces the distribution's own.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "install_composer",
+      "type": "bool",
+      "default": false,
+      "description": "Install Composer as /usr/local/bin/composer.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "composer_version",
+      "type": "string",
+      "default": "2.11.0",
+      "description": "Composer release to install. Change composer_sha256 with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "composer_sha256",
+      "type": "string",
+      "default": "9674f12a2a181100d889ebfd0b4510805b3e94cea57869b14b383753d602599b",
+      "description": "SHA-256 of composer.phar for composer_version, as published at https://getcomposer.org/download/VERSION/composer.phar.sha256sum.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

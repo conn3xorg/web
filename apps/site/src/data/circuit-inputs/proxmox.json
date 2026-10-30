@@ -1,0 +1,25 @@
+{
+  "name": "proxmox",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "domain",
+      "type": "string",
+      "default": null,
+      "description": "DNS domain for the nodes, such as \"lab.example.com\". When set, each node's hostname is its name under this domain, and /etc/hosts lists both.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "default": "pve-no-subscription",
+      "description": "Proxmox VE package repository: \"pve-no-subscription\", or \"pve-enterprise\", which needs a subscription key on each node.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

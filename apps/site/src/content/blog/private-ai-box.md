@@ -5,6 +5,7 @@ date: 2026-11-04
 author: James Conway
 image: /media/blog/private-ai-box/card.png
 imageAlt: "A laptop opening an SSH tunnel to a droplet where Ollama and Qdrant listen on 127.0.0.1 only."
+series: "AI you can account for"
 ---
 
 You've got notes you'd like to ask questions of. Runbooks, meeting notes, the wiki page nobody has touched since spring. Any hosted chatbot will read them for you, and that's exactly the catch: paste them in and they live on someone else's servers now.

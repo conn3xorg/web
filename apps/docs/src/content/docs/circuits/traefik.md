@@ -140,4 +140,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-traefik/blob/v0.1.0/
 
 - Repository: [conn3xorg/circuit-traefik](https://github.com/conn3xorg/circuit-traefik). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-traefik/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [nginx](/circuits/nginx), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [certbot](/circuits/certbot).
+- Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [nginx](/circuits/nginx), [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [certbot](/circuits/certbot).

@@ -1,0 +1,88 @@
+{
+  "name": "openscap",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "profile",
+      "type": "string",
+      "default": "cis_level1_server",
+      "description": "Profile to scan against: cis_level1_server, cis_level2_server, stig or standard, which the circuit maps to each distribution's own profile ID, or any profile ID in the host's content, such as \"anssi_bp28_high\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "content_version",
+      "type": "string",
+      "default": "0.1.82",
+      "description": "SCAP Security Guide release from ComplianceAsCode to scan with on Ubuntu, Debian and Fedora. Rocky Linux uses its own scap-security-guide package.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "content_sha256",
+      "type": "string",
+      "default": "765e84bdce7f9055f9b9c2dd0ee2b713d4255f8eec94eac6d35ea4973c28919c",
+      "description": "SHA-256 of scap-security-guide-<content_version>.zip. Change it with content_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": "Sun 03:00",
+      "description": "When the scan timer runs, as a systemd OnCalendar expression such as \"Sun 03:00\" or \"daily\". null leaves out the timer.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "keep",
+      "type": "number",
+      "default": 8,
+      "description": "Number of scans to keep under /var/lib/conn3x-scap. Older ones are deleted after each scan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "run_now",
+      "type": "bool",
+      "default": false,
+      "description": "Scan during the apply: on the first apply, and again whenever the scan's settings change. A scan takes minutes.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "skip_rules",
+      "type": "list(string)",
+      "default": [],
+      "description": "Rules to leave out of the profile, by ID, such as [\"sshd_disable_root_login\"]. The circuit writes a tailoring file that turns them off.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tailoring",
+      "type": "string",
+      "default": null,
+      "description": "Contents of your own XCCDF tailoring file, such as file(\"tailoring.xml\"). Set profile to the ID of the tailored profile in it. Can't be used with skip_rules.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "remediate",
+      "type": "bool",
+      "default": false,
+      "description": "Fix what the profile finds, once per host and profile. This changes SSH, PAM, the firewall and more. Try it on a throwaway host first.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

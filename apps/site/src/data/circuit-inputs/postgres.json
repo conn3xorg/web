@@ -1,0 +1,91 @@
+{
+  "name": "postgres",
+  "version": "v0.2.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "postgres_version",
+      "type": "number",
+      "default": 18,
+      "description": "PostgreSQL major version to install, from 14 to 18.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_addresses",
+      "type": "string",
+      "default": "localhost",
+      "description": "Addresses PostgreSQL listens on, comma-separated, such as \"localhost\", \"*\" or \"127.0.0.1,10.0.0.5\". Changing it restarts PostgreSQL.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(string)",
+      "default": {},
+      "description": "postgresql.conf settings, such as { shared_buffers = \"256MB\", max_connections = \"200\" }. They go to conf.d/conn3x.conf, and changing them restarts PostgreSQL.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "hba",
+      "type": "list(object({\n    type     = string\n    database = string\n    user     = string\n    address  = optional(string)\n    method   = string\n  }))",
+      "default": [
+        {
+          "type": "local",
+          "database": "all",
+          "user": "all",
+          "method": "peer"
+        },
+        {
+          "type": "host",
+          "database": "all",
+          "user": "all",
+          "address": "127.0.0.1/32",
+          "method": "scram-sha-256"
+        },
+        {
+          "type": "host",
+          "database": "all",
+          "user": "all",
+          "address": "::1/128",
+          "method": "scram-sha-256"
+        }
+      ],
+      "description": "pg_hba.conf rules, in order. A rule letting postgres in over the local socket with peer always comes first. Changing them reloads PostgreSQL.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "users",
+      "type": "list(string)",
+      "default": [],
+      "description": "Roles to create with LOGIN. Each needs a password in user_passwords.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "user_passwords",
+      "type": "map(string)",
+      "default": {},
+      "description": "Password for each of users, by name. Pass it at run time with -var or TF_VAR_user_passwords; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "databases",
+      "type": "map(string)",
+      "default": {},
+      "description": "Databases to create, each mapped to its owner, such as { app = \"app\" }. The owner must be one of users or an existing role.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

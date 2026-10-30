@@ -1,0 +1,88 @@
+{
+  "name": "jellyfin",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "jellyfin_version",
+      "type": "string",
+      "default": "12.4",
+      "description": "Jellyfin release to run, such as \"12.4\". On Debian and Ubuntu it pins the jellyfin-server and jellyfin-web packages; on Rocky Linux and Fedora, the tag of the docker.io/jellyfin/jellyfin image.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "media_dirs",
+      "type": "list(string)",
+      "default": [],
+      "description": "Directories holding your media, such as [\"/srv/media/movies\"]. The circuit checks the jellyfin user can read each one and never changes them. On Rocky Linux and Fedora each is mounted read-only into the container at the same path.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8096,
+      "description": "HTTP port Jellyfin listens on, on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "data_dir",
+      "type": "string",
+      "default": "/var/lib/jellyfin",
+      "description": "Directory for Jellyfin's database, metadata and plugins. On Rocky Linux and Fedora it also holds Jellyfin's configuration and logs, which Debian and Ubuntu keep in /etc/jellyfin and /var/log/jellyfin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cache_dir",
+      "type": "string",
+      "default": "/var/cache/jellyfin",
+      "description": "Directory for Jellyfin's cache: transcodes, images and the like. It can grow large.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "hardware_acceleration",
+      "type": "bool",
+      "default": false,
+      "description": "Let Jellyfin use the host's GPU for transcoding: adds the jellyfin user to the render and video groups and, in the container, passes /dev/dri through when the host has it. Pick the method in Jellyfin's dashboard afterwards.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_groups",
+      "type": "list(string)",
+      "default": [],
+      "description": "More groups for the jellyfin user, such as [\"media\"], so it can read media owned by that group. The groups must exist. The circuit only adds groups, never removes one.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": null,
+      "description": "Name of the administrator to create in place of Jellyfin's setup wizard. When null, the wizard waits for whoever opens Jellyfin first.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password for admin_username. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

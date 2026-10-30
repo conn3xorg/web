@@ -1,0 +1,182 @@
+{
+  "name": "langfuse",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "langfuse_version",
+      "type": "string",
+      "default": "4.72.0",
+      "description": "Tag of the docker.io/langfuse/langfuse and docker.io/langfuse/langfuse-worker images, such as \"4.72.0\". Change web_image_digest and worker_image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "web_image_digest",
+      "type": "string",
+      "default": "sha256:c311fd9db4b69f6514fdcb1b86a2a105d5a4ed51fbf0ded033ff2722459c804a",
+      "description": "Digest of docker.io/langfuse/langfuse for langfuse_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "worker_image_digest",
+      "type": "string",
+      "default": "sha256:aa1724b989a00f1e4ca9930709202489c73deaaf2f1116bbd3d71c77edb8fedb",
+      "description": "Digest of docker.io/langfuse/langfuse-worker for langfuse_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "clickhouse_version",
+      "type": "string",
+      "default": "26.8.36.3",
+      "description": "Tag of the docker.io/clickhouse/clickhouse-server image, such as \"26.8.36.3\". Langfuse 4 needs ClickHouse 25.12 or later. Change clickhouse_image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "clickhouse_image_digest",
+      "type": "string",
+      "default": "sha256:d426d2f612e1e189c90f9a3f8dcd85a03c6851273833817a296bb327e63aa7a7",
+      "description": "Digest of docker.io/clickhouse/clickhouse-server for clickhouse_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "minio_image_digest",
+      "type": "string",
+      "default": "sha256:e234321fd3abff7fb968b0674056e883b702aa1ad93a0d4d795cb6c21fa46407",
+      "description": "Digest of cgr.dev/chainguard/minio:latest to run. Chainguard's free tier publishes only the latest tag, so the digest is the pin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "public_url",
+      "type": "string",
+      "description": "The address people and SDKs reach Langfuse at, such as \"https://langfuse.example.com\". Langfuse sets it as NEXTAUTH_URL and builds sign-in redirects and links from it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "database_url",
+      "type": "string",
+      "description": "PostgreSQL connection URI, such as \"postgresql://langfuse:PASSWORD@127.0.0.1:5432/langfuse\". It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "redis_url",
+      "type": "string",
+      "description": "Redis or Valkey URL, such as \"redis://:PASSWORD@127.0.0.1:6379\". The server needs maxmemory-policy noeviction. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "organization",
+      "type": "string",
+      "default": "default",
+      "description": "ID and name of the organization Langfuse creates on its first start, such as \"homelab\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "project",
+      "type": "string",
+      "default": "default",
+      "description": "ID and name of the project Langfuse creates in that organization, such as \"chatbot\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_email",
+      "type": "string",
+      "description": "Email address of the first user, who owns the organization and signs in with admin_password.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of the first user. It reaches the host in a root-only file and never the plan or state. Langfuse sets it only when it creates the user.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "project_public_key",
+      "type": "string",
+      "default": null,
+      "description": "Public API key Langfuse gives the project, such as \"pk-lf-...\". Set it with project_secret_key, or leave both null and create keys in the web interface.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "project_secret_key",
+      "type": "string",
+      "default": null,
+      "description": "Secret API key that goes with project_public_key, such as \"sk-lf-...\".",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "signup",
+      "type": "bool",
+      "default": false,
+      "description": "Let anyone who can reach Langfuse create an account. Off by default, so only the first user and the people they invite get in.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the Langfuse web server listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 3000,
+      "description": "Port the Langfuse web server listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "min_memory_mb",
+      "type": "number",
+      "default": 3500,
+      "description": "Memory, in MiB, a host needs before the circuit configures it. The whole stack wants 4 GB; a 4 GB host reports a little less.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of Langfuse's environment variables for the web and worker containers, such as { SMTP_CONNECTION_URL = \"smtps://...\", EMAIL_FROM_ADDRESS = \"langfuse@example.com\" }. They go in root-only files and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

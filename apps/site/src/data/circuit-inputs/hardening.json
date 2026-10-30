@@ -1,0 +1,103 @@
+{
+  "name": "hardening",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "sshd_settings",
+      "type": "map(string)",
+      "default": {},
+      "description": "sshd keywords to add to the built-in settings or replace them, such as { AllowTcpForwarding = \"yes\" }. A null value leaves that keyword out of the drop-in.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "sshd_moduli_minimum",
+      "type": "number",
+      "default": 3071,
+      "description": "Remove Diffie-Hellman group exchange primes smaller than this many bits from /etc/ssh/moduli. 0 leaves the file alone.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "sysctl",
+      "type": "map(string)",
+      "default": {},
+      "description": "Kernel parameters to add to the built-in settings or replace them, by name. A null value leaves that parameter out.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "disabled_modules",
+      "type": "list(string)",
+      "default": [
+        "cramfs",
+        "freevxfs",
+        "hfs",
+        "hfsplus",
+        "jffs2",
+        "dccp",
+        "rds",
+        "sctp",
+        "tipc"
+      ],
+      "description": "Kernel modules modprobe refuses to load. An empty list leaves the circuit's modprobe file with only its header.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "core_dumps",
+      "type": "bool",
+      "default": false,
+      "description": "Allow core dumps. When false, the circuit turns them off for login sessions, setuid programs and systemd-coredump.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "login_umask",
+      "type": "string",
+      "default": "027",
+      "description": "UMASK in /etc/login.defs, which pam_umask and useradd read. null leaves the line alone.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cron_permissions",
+      "type": "bool",
+      "default": true,
+      "description": "Take group and other access off /etc/crontab and the /etc/cron.* directories that exist.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "remove_packages",
+      "type": "list(string)",
+      "default": [
+        "xinetd",
+        "openbsd-inetd",
+        "inetutils-inetd",
+        "telnetd",
+        "inetutils-telnetd",
+        "telnet-server",
+        "rsh-server",
+        "rsh-redone-server",
+        "ypserv",
+        "nis",
+        "talkd",
+        "tftp-server",
+        "tftpd-hpa"
+      ],
+      "description": "Packages to remove when installed. Names a distribution doesn't have are skipped.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

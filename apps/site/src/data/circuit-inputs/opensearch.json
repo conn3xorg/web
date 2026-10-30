@@ -1,0 +1,96 @@
+{
+  "name": "opensearch",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "opensearch_version",
+      "type": "string",
+      "default": "3.9.0",
+      "description": "OpenSearch 3.x release to install, such as \"3.9.0\". Raising it upgrades OpenSearch in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password for OpenSearch's admin user, set when OpenSearch first installs. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "cluster_name",
+      "type": "string",
+      "default": "opensearch",
+      "description": "cluster.name. Changing it on a node with data makes OpenSearch refuse to start, since the data belongs to the old cluster.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IP address OpenSearch listens on, its network.host. \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_port",
+      "type": "number",
+      "default": 9200,
+      "description": "Port of the REST API, its http.port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "heap_size",
+      "type": "string",
+      "default": "1g",
+      "description": "JVM heap, set as both -Xms and -Xmx, such as \"512m\" or \"4g\". Half the host's memory is the usual choice, up to about 31g.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(string)",
+      "default": {},
+      "description": "More opensearch.yml settings, such as { \"indices.query.bool.max_clause_count\" = \"4096\" }. Changing them restarts OpenSearch.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_certificate",
+      "type": "string",
+      "default": null,
+      "description": "PEM certificate for OpenSearch's REST and transport layers, in place of the demo one. Set it with tls_private_key and tls_ca_certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_ca_certificate",
+      "type": "string",
+      "default": null,
+      "description": "PEM certificate of the CA that signed tls_certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_private_key",
+      "type": "string",
+      "default": null,
+      "description": "PKCS#8 PEM private key of tls_certificate. Pass it at run time; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

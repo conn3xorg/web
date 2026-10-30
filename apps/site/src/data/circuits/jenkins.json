@@ -1,0 +1,19 @@
+{
+  "name": "jenkins",
+  "repo": "conn3xorg/circuit-jenkins",
+  "description": "Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard.",
+  "version": "v0.1.0",
+  "tags": [
+    "jenkins",
+    "ci",
+    "jcasc"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

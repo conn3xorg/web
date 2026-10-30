@@ -1,0 +1,76 @@
+{
+  "name": "infisical",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "infisical_version",
+      "type": "string",
+      "default": "v0.167.4",
+      "description": "Tag of the docker.io/infisical/infisical image, such as \"v0.167.4\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:80a3bb51bee4092b7332d000506d5740ba57b1c4d48550e50746fe9c5209715d",
+      "description": "Digest of the image for infisical_version, such as \"sha256:80a3...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "site_url",
+      "type": "string",
+      "description": "The address people and clients reach Infisical at, such as \"https://secrets.example.com\". Infisical uses it for CORS, links in emails and SSO redirects.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "db_connection_uri",
+      "type": "string",
+      "description": "PostgreSQL connection URI, such as \"postgres://infisical:PASSWORD@127.0.0.1:5432/infisical\". It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "redis_url",
+      "type": "string",
+      "description": "Redis or Valkey URL, such as \"redis://:PASSWORD@127.0.0.1:6379\". It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Infisical listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port Infisical listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of Infisical's environment variables, such as { SMTP_HOST = \"smtp.example.com\", SMTP_PASSWORD = \"...\", TELEMETRY_ENABLED = \"false\" }. They go in the same root-only file as the connection settings and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

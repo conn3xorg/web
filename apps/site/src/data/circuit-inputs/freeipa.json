@@ -1,0 +1,138 @@
+{
+  "name": "freeipa",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "server",
+      "type": "any",
+      "description": "The FreeIPA server, as a map of one name to an address, or to a host object with an address and optional host_key, user, port, private_key_file, jump_hosts, os, hostname or ip.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "clients",
+      "type": "any",
+      "default": {},
+      "description": "Hosts to enrol as FreeIPA clients, by name, in the same form as server. A name can't be both the server and a client.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "domain",
+      "type": "string",
+      "description": "DNS domain of the FreeIPA deployment, such as ipa.example.com. Hosts are named <name>.<domain> unless a host object sets hostname.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "realm",
+      "type": "string",
+      "default": null,
+      "description": "Kerberos realm. When null, the domain in upper case.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of FreeIPA's admin user, set when the server is installed. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "ds_password",
+      "type": "string",
+      "description": "Password of the LDAP Directory Manager, set when the server is installed. Pass it at run time with -var or TF_VAR_ds_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "enroll_principal",
+      "type": "string",
+      "default": "admin",
+      "description": "User clients enrol as, with enroll_password. Clients listed in client_otps use their one-time password instead.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "enroll_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of enroll_principal. When null, admin_password. Pass it at run time; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "client_otps",
+      "type": "map(string)",
+      "default": {},
+      "description": "One-time enrolment passwords, by client name, from ipa host-add --random or --password. A client listed here joins with its own instead of enroll_principal.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "setup_dns",
+      "type": "bool",
+      "default": false,
+      "description": "Run FreeIPA's integrated DNS server, BIND, on the server, with a zone for domain.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dns_forwarders",
+      "type": "list(string)",
+      "default": [],
+      "description": "Upstream DNS servers the integrated DNS forwards to, with setup_dns. When empty, the ones in the server's /etc/resolv.conf.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "manage_hosts_file",
+      "type": "bool",
+      "default": true,
+      "description": "Set each host's name to its fully qualified name and map the names of the host and the server to their addresses in /etc/hosts. FreeIPA needs both to resolve. Turn it off when your DNS already does that.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "mkhomedir",
+      "type": "bool",
+      "default": true,
+      "description": "Create a home directory when a FreeIPA user first logs in to a client.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_options",
+      "type": "list(string)",
+      "default": [],
+      "description": "Extra arguments to ipa-server-install, such as [\"--no-ntp\"] or [\"--setup-kra\"]. Don't put passwords here: they would land in state.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "client_options",
+      "type": "list(string)",
+      "default": [],
+      "description": "Extra arguments to ipa-client-install, such as [\"--no-ntp\"]. Don't put passwords here: they would land in state.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

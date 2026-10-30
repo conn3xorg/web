@@ -1,0 +1,15 @@
+{
+  "name": "users",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "users",
+      "type": "map(object({\n    uid    = optional(number)\n    shell  = optional(string, \"/bin/bash\")\n    home   = optional(string)\n    groups = optional(list(string))\n    keys   = optional(list(string), [])\n    sudo   = optional(bool, false)\n  }))",
+      "description": "The accounts to manage, keyed by login name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    }
+  ]
+}

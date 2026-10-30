@@ -1,0 +1,19 @@
+{
+  "name": "velociraptor",
+  "repo": "conn3xorg/circuit-velociraptor",
+  "description": "Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state.",
+  "version": "v0.1.0",
+  "tags": [
+    "velociraptor",
+    "dfir",
+    "edr"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Detection and response",
+  "official": true
+}

@@ -1,0 +1,81 @@
+{
+  "name": "pihole",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "pihole_version",
+      "type": "string",
+      "default": "2026.10.0",
+      "description": "Tag of the docker.io/pihole/pihole image, such as \"2026.10.0\". Each tag pins Pi-hole's core, web interface and FTL together.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "web_password",
+      "type": "string",
+      "description": "Password for the web interface and the API. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "upstream_dns",
+      "type": "list(string)",
+      "default": [
+        "9.9.9.9",
+        "149.112.112.112"
+      ],
+      "description": "DNS servers Pi-hole forwards allowed queries to, as addresses, optionally with #port, such as [\"192.168.1.1\", \"127.0.0.1#5335\"]. The default is Quad9.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listening_mode",
+      "type": "string",
+      "default": "LOCAL",
+      "description": "Which queries Pi-hole answers: LOCAL (devices on the host's own subnets), SINGLE (only those arriving on interface), BIND (binds to interface only), ALL (anyone who can reach port 53) or NONE.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "interface",
+      "type": "string",
+      "default": null,
+      "description": "Network interface for SINGLE and BIND, such as \"eth0\". When null, Pi-hole picks the interface of the default route.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "blocklists",
+      "type": "list(string)",
+      "default": [],
+      "description": "Blocklist URLs to add next to Pi-hole's default list, such as [\"https://big.oisd.nl\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "local_dns_records",
+      "type": "map(string)",
+      "default": {},
+      "description": "Local DNS records, names to IP addresses, such as { \"nas.home.arpa\" = \"192.168.1.20\" }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "web_port",
+      "type": "string",
+      "default": null,
+      "description": "Where the web interface listens, in Pi-hole's webserver.port syntax, such as \"8080\" or \"127.0.0.1:8080\". When null, Pi-hole's default: 80 and 443 with a self-signed certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

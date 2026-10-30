@@ -1,0 +1,61 @@
+{
+  "name": "auditd",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "presets",
+      "type": "list(string)",
+      "default": [],
+      "description": "Sample rule files from the audit package to copy into /etc/audit/rules.d, by name without .rules, such as [\"11-loginuid\", \"30-stig\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rules",
+      "type": "list(string)",
+      "default": [],
+      "description": "Your own audit rules, one per line in auditctl syntax, such as [\"-w /etc/sudoers -p wa -k sudoers\"]. They go in /etc/audit/rules.d/50-conn3x.rules.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "immutable",
+      "type": "bool",
+      "default": false,
+      "description": "Lock the rules with -e 2 once they load. Changing them afterwards takes a reboot.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "backlog_limit",
+      "type": "number",
+      "default": 8192,
+      "description": "Audit messages the kernel buffers while auditd catches up (-b).",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "failure_mode",
+      "type": "number",
+      "default": 1,
+      "description": "What the kernel does when it can't record an event (-f): 0 nothing, 1 logs to the kernel log, 2 panics.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "auditd_conf",
+      "type": "map(string)",
+      "default": {},
+      "description": "Settings for /etc/audit/auditd.conf, such as { max_log_file = \"50\", num_logs = \"10\" }. Settings left out keep their current value.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

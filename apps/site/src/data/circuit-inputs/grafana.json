@@ -1,0 +1,96 @@
+{
+  "name": "grafana",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "grafana_version",
+      "type": "string",
+      "default": "13.3.0",
+      "description": "Grafana OSS release to install, such as \"13.3.0\". Raising it upgrades Grafana in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password for Grafana's admin user. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "http_addr",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IP address Grafana listens on, its [server] http_addr. \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_port",
+      "type": "number",
+      "default": 3000,
+      "description": "Port Grafana listens on, its [server] http_port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "domain",
+      "type": "string",
+      "default": null,
+      "description": "[server] domain, the name people reach Grafana by, such as \"grafana.example.com\". When null, Grafana's default, localhost.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "root_url",
+      "type": "string",
+      "default": null,
+      "description": "[server] root_url, the full URL people reach Grafana at, such as \"https://grafana.example.com/\". Set it when Grafana sits behind a proxy. When null, Grafana builds it from domain and http_port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "analytics",
+      "type": "bool",
+      "default": false,
+      "description": "Send Grafana Labs anonymous usage statistics and check grafana.com for new versions of Grafana and plugins.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(map(string))",
+      "default": {},
+      "description": "More grafana.ini settings, by section, such as { users = { default_theme = \"light\" } }. Changing them restarts Grafana.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "datasources",
+      "type": "list(object({\n    name       = string\n    type       = string\n    url        = string\n    access     = optional(string, \"proxy\")\n    is_default = optional(bool, false)\n    uid        = optional(string)\n    json_data  = optional(any)\n  }))",
+      "default": [],
+      "description": "Datasources to provision, such as [{ name = \"Prometheus\", type = \"prometheus\", url = \"http://127.0.0.1:9090\", is_default = true }]. One removed from the list is removed from Grafana.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dashboards_dir",
+      "type": "string",
+      "default": null,
+      "description": "Local directory of dashboard JSON files, such as \"${path.root}/dashboards\". Each *.json file is copied to each host and provisioned. When null, no dashboards.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "apache",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "vhosts",
+      "type": "map(object({\n    server_name     = string\n    aliases         = optional(list(string), [])\n    port            = optional(number)\n    document_root   = optional(string)\n    proxy_pass      = optional(string)\n    tls_certificate = optional(string)\n    tls_key         = optional(string)\n    extra           = optional(string, \"\")\n  }))",
+      "description": "Virtual hosts, by a name of your choosing. Each answers for server_name and aliases on port, and serves files from document_root or proxies to proxy_pass, with TLS when tls_certificate and tls_key are set.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "modules",
+      "type": "list(string)",
+      "default": [],
+      "description": "Apache modules to turn on, by name without mod_, such as [\"headers\", \"rewrite\"]. proxy, proxy_http and ssl are added when a virtual host needs them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_config",
+      "type": "string",
+      "default": "",
+      "description": "Further Apache directives for the server as a whole, written before the virtual hosts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "java",
+  "repo": "conn3xorg/circuit-java",
+  "description": "OpenJDK or Eclipse Temurin 21 or 25 on Debian, Ubuntu, Fedora and Rocky, set as the default java with JAVA_HOME exported.",
+  "version": "v0.1.0",
+  "tags": [
+    "java",
+    "openjdk",
+    "temurin"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

@@ -1,0 +1,105 @@
+{
+  "name": "couchdb",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "couchdb_version",
+      "type": "string",
+      "default": "3.5.3",
+      "description": "CouchDB release to install, such as \"3.5.3\". Raising it upgrades CouchDB in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": "admin",
+      "description": "Name of CouchDB's server admin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password for CouchDB's server admin. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "bind_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IP address CouchDB listens on, its [chttpd] bind_address. \"0.0.0.0\" listens on every IPv4 address, \"::\" on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 5984,
+      "description": "Port CouchDB listens on, its [chttpd] port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "require_valid_user",
+      "type": "bool",
+      "default": false,
+      "description": "Refuse every request that doesn't log in, even GET /. obsidian_livesync turns it on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cors_origins",
+      "type": "list(string)",
+      "default": [],
+      "description": "Origins allowed to call CouchDB from a browser, such as [\"https://app.example.com\"], or [\"*\"] for any. Empty turns CORS off, unless obsidian_livesync is on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cors_credentials",
+      "type": "bool",
+      "default": false,
+      "description": "Let browsers send cookies and Authorization headers with cross-origin requests. CouchDB doesn't allow it with the \"*\" origin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cors_headers",
+      "type": "list(string)",
+      "default": [],
+      "description": "Request headers allowed on cross-origin requests. When empty, CouchDB's default: accept, authorization, content-type, origin and referer.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "obsidian_livesync",
+      "type": "bool",
+      "default": false,
+      "description": "Apply the settings the Self-hosted LiveSync plugin for Obsidian asks for: require_valid_user, CORS for the Obsidian apps with credentials, and larger request and document limits.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(map(string))",
+      "default": {},
+      "description": "More CouchDB ini settings, by section, such as { couchdb = { max_dbs_open = \"1000\" } }. The circuit's own settings win over the same keys here.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

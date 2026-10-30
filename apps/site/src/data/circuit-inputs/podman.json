@@ -1,0 +1,43 @@
+{
+  "name": "podman",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "containers",
+      "type": "map(object({\n    image       = string\n    ports       = optional(list(string), [])\n    volumes     = optional(list(string), [])\n    environment = optional(map(string), {})\n    extra       = optional(list(string), [])\n    auto_update = optional(bool, false)\n  }))",
+      "default": {},
+      "description": "Containers to run as systemd services through Quadlet, by name. Each becomes /etc/containers/systemd/NAME.container and the service NAME.service.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "secrets",
+      "type": "map(map(string))",
+      "default": {},
+      "description": "Secret environment variables by container name, such as { app = { DB_PASSWORD = \"...\" } }. They go to /etc/containers/env/NAME.env with mode 0600 and never reach state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "registries",
+      "type": "list(string)",
+      "default": [],
+      "description": "Registries to search for short image names, such as [\"docker.io\"]. Give one: with two or more, Podman refuses short names when it has no terminal to ask on, as under systemd. When empty, the distribution's own setting stays.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "auto_update_timer",
+      "type": "bool",
+      "default": false,
+      "description": "Start podman-auto-update.timer, which pulls new images for containers with auto_update once a day and restarts them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

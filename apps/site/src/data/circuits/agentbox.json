@@ -1,0 +1,19 @@
+{
+  "name": "agentbox",
+  "repo": "conn3xorg/circuit-agentbox",
+  "description": "Remote dev box for coding agents: key-only user, git, tmux, ripgrep, Node.js LTS, agent CLIs via npm. Works with Orca or plain SSH.",
+  "version": "v0.1.0",
+  "tags": [
+    "ai",
+    "agents",
+    "devbox"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "AI",
+  "official": true
+}

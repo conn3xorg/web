@@ -1,0 +1,111 @@
+{
+  "name": "restic",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "restic_version",
+      "type": "string",
+      "default": "0.19.1",
+      "description": "restic release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x86_64": "f415415624dcc452f2a02b8c33641791a8c6d6d3b65bbb3543fcf9a25151585c",
+        "aarch64": "a5f64aaab53d51e311fa3829124c5b703f2d14cf187d8640b6be3b2b49376465"
+      },
+      "description": "SHA-256 of the linux_amd64 and linux_arm64 .bz2 release files, by architecture, x86_64 and aarch64, from the release's SHA256SUMS. Change these with restic_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "Repository to back up to, as restic takes it: a local path, or sftp:, rest:, s3:, b2:, azure:, gs: or rclone: followed by the location.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "password",
+      "type": "string",
+      "description": "Password the repository is encrypted with. Kept out of the plan and state. Lose it and the backups can't be read.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "Environment variables the backend needs, such as { AWS_ACCESS_KEY_ID = \"...\", AWS_SECRET_ACCESS_KEY = \"...\" }. Kept out of the plan and state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "paths",
+      "type": "list(string)",
+      "default": [
+        "/etc",
+        "/home",
+        "/root"
+      ],
+      "description": "Absolute paths to back up.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "excludes",
+      "type": "list(string)",
+      "default": [],
+      "description": "Patterns restic skips, one per line in an --exclude-file, such as [\"/home/*/.cache\", \"*.tmp\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": "daily",
+      "description": "When the backup runs, as a systemd calendar expression, such as \"daily\" or \"*-*-* 02:30:00\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "randomized_delay",
+      "type": "string",
+      "default": "1h",
+      "description": "Longest random delay systemd adds to each run, as a systemd time span such as \"30min\" or \"0\", so hosts on the same schedule don't all start at once.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "retention",
+      "type": "object({\n    keep_last    = optional(number)\n    keep_hourly  = optional(number)\n    keep_daily   = optional(number, 7)\n    keep_weekly  = optional(number, 4)\n    keep_monthly = optional(number, 12)\n    keep_yearly  = optional(number)\n  })",
+      "default": {},
+      "description": "Snapshots restic forget keeps after each backup, before it prunes the rest. Null keeps every snapshot. A keep of 0 or null is left out.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "check_schedule",
+      "type": "string",
+      "default": null,
+      "description": "When restic check verifies the repository, as a systemd calendar expression such as \"Sun *-*-* 04:00:00\". When null, it doesn't.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

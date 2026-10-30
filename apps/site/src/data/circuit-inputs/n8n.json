@@ -1,0 +1,133 @@
+{
+  "name": "n8n",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "n8n_version",
+      "type": "string",
+      "default": "2.45.6",
+      "description": "Tag of the n8n image, such as \"2.45.6\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:45edf89655fd66dd55ea9336c1791ad14777599fdbf6c5aec6db583ede99a40b",
+      "description": "Digest of the image for n8n_version, such as \"sha256:45ed...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "ghcr.io/n8n-io/n8n",
+      "description": "Where to pull n8n's image from. \"ghcr.io/n8n-io/n8n\" serves the same image, by the same digest, without Docker Hub's pull limits.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address n8n listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 5678,
+      "description": "Port n8n listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "public_url",
+      "type": "string",
+      "default": null,
+      "description": "The address people and webhook callers reach n8n at, such as \"https://n8n.example.com\". It sets N8N_HOST, N8N_PROTOCOL, WEBHOOK_URL and N8N_EDITOR_BASE_URL, and an https address turns on secure cookies. When null, n8n builds its URLs from listen_address and port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "proxy_hops",
+      "type": "number",
+      "default": 1,
+      "description": "How many reverse proxies stand in front of n8n. n8n trusts that many X-Forwarded-For entries for the client's address. Set 0 when people reach n8n directly.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres",
+      "type": "object({\n    host     = optional(string, \"127.0.0.1\")\n    port     = optional(number, 5432)\n    database = optional(string, \"n8n\")\n    username = optional(string, \"n8n\")\n    schema   = optional(string, \"public\")\n  })",
+      "default": null,
+      "description": "PostgreSQL to keep n8n's data in, such as { host = \"db1\" }. The role and database must exist. When null, n8n uses SQLite in /var/lib/n8n.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the postgres username. Needed with postgres. Pass it at run time with -var or TF_VAR_postgres_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "owner",
+      "type": "object({\n    email      = string\n    first_name = optional(string, \"Instance\")\n    last_name  = optional(string, \"Owner\")\n  })",
+      "default": null,
+      "description": "The owner account to create on the first start, such as { email = \"you@example.com\" }. When null, n8n asks for one the first time you open it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "owner_password",
+      "type": "string",
+      "default": null,
+      "description": "Password the owner is created with. Needed with owner. n8n wants 8 to 64 characters with a digit and an uppercase letter. Pass it at run time with -var or TF_VAR_owner_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "executions_prune",
+      "type": "bool",
+      "default": true,
+      "description": "Delete old execution data, so the database doesn't grow without end. Sets EXECUTIONS_DATA_PRUNE.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "executions_max_age",
+      "type": "number",
+      "default": 336,
+      "description": "Hours to keep finished executions for before pruning deletes them. Sets EXECUTIONS_DATA_MAX_AGE. The default is two weeks, as in n8n.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of n8n's environment variables, such as { GENERIC_TIMEZONE = \"Europe/London\", N8N_SMTP_PASS = \"...\" }. They go in a root-only env file and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

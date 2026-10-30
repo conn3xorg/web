@@ -1,0 +1,159 @@
+{
+  "name": "keycloak",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "keycloak_version",
+      "type": "string",
+      "default": "26.8.1",
+      "description": "Keycloak release to install, such as \"26.8.1\". Change keycloak_sha256 with it. Raising it installs the new release beside the old one and upgrades Keycloak in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "keycloak_sha256",
+      "type": "string",
+      "default": "4e2740b181faa2ea623a1c2ecf00855935311e546046e2f857615a47ed24cbe8",
+      "description": "SHA-256 of keycloak-VERSION.tar.gz. Change it with keycloak_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "java_version",
+      "type": "number",
+      "default": 25,
+      "description": "OpenJDK release to run Keycloak on, from the distribution's packages: 21 or 25. Fedora 45 packages only 25.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": "admin",
+      "description": "Name of the temporary admin Keycloak creates in the master realm on its first start.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of the temporary admin, set on Keycloak's first start only. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "hostname",
+      "type": "string",
+      "default": null,
+      "description": "Address people reach Keycloak by, as a URL such as \"https://auth.example.com\" or a bare host name. Keycloak builds its links and token issuers from it. When null, Keycloak takes it from each request, with hostname-strict=false, which is fine for a lab and wrong for anything public.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "proxy_headers",
+      "type": "string",
+      "default": "xforwarded",
+      "description": "Which headers from a reverse proxy Keycloak trusts for the client's address and scheme: \"xforwarded\", \"forwarded\", or null when nothing sits in front of it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_host",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Keycloak listens on, for HTTP or HTTPS and its management port. The default keeps it to the host itself, for a proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port of plain HTTP, used when tls_certificate_file is null.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "https_port",
+      "type": "number",
+      "default": 8443,
+      "description": "Port of HTTPS, used with tls_certificate_file.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "management_port",
+      "type": "number",
+      "default": 9000,
+      "description": "Port of Keycloak's management interface, which serves /health and /metrics.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_certificate_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of a PEM certificate chain. When set, Keycloak serves HTTPS on https_port and turns plain HTTP off. The keycloak user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_key_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of the PEM private key of tls_certificate_file. The keycloak user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres",
+      "type": "object({\n    host     = optional(string, \"127.0.0.1\")\n    port     = optional(number, 5432)\n    database = optional(string, \"keycloak\")\n    username = optional(string, \"keycloak\")\n  })",
+      "default": null,
+      "description": "PostgreSQL to keep Keycloak's data in, such as { host = \"db1\" }. The database and role must exist. When null, Keycloak uses its dev-file database in /var/lib/keycloak, which is for labs and trials only.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the postgres username. Needed with postgres. Pass it at run time with -var or TF_VAR_postgres_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "metrics_enabled",
+      "type": "bool",
+      "default": false,
+      "description": "Serve Prometheus metrics on the management port at /metrics. Changing it rebuilds Keycloak.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "heap_size",
+      "type": "string",
+      "default": null,
+      "description": "JVM heap, set as both -Xms and -Xmx, such as \"512m\" or \"1g\". When null, Keycloak sizes it at 70% of the host's memory.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

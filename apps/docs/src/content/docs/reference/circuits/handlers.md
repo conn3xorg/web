@@ -41,6 +41,7 @@ handler "NAME" {
   service {
     name   = EXPRESSION
     action = "restart" | "reload"   # optional
+    serial = BOOL                   # optional
   }
 }
 ```
@@ -51,6 +52,7 @@ A handler block takes one label, the handler's name, and contains exactly one `s
 | --- | --- | --- |
 | `name` | Yes | The systemd unit to act on, such as `"nginx"` or `"nginx.service"`. |
 | `action` | No | `"restart"` or `"reload"`. Defaults to `"restart"`. |
+| `serial` | No | `true` to act on one host at a time. Defaults to `false`. See [One host at a time](#one-host-at-a-time). |
 
 A handler takes no other arguments or blocks.
 
@@ -119,6 +121,25 @@ A handler also runs on a host the first time Conn3x applies it there: when the c
 A plan shows a handler that will run as a `conn3x_service_action` instance to be replaced. Changing only a handler's `name` or `action` updates the recorded settings and doesn't run it.
 
 Handlers in the same circuit have no order among themselves. A handler doesn't run when you remove it, and removing a handler changes nothing on the host. Refresh doesn't read anything for a handler, so a handler never shows drift.
+
+## One host at a time
+
+A handler acts on every host that changed at once. For most services that's what you want, and it's quickest. For a cluster it can take the whole thing down: restart two of three etcd members together and the third can't keep quorum on its own.
+
+Set `serial = true` and Conn3x restarts or reloads that unit on one host at a time, starting the next only when `systemctl` has returned for the last:
+
+```hcl
+handler "restart" {
+  service {
+    name   = "k3s"
+    serial = true
+  }
+}
+```
+
+For a `Type=notify` unit, `systemctl restart` returns once the service reports it's ready, so each host is back before the next goes down. For other unit types it returns once the process has started, which may be before the service answers.
+
+Serial handlers on the same unit wait for each other across every circuit in the configuration, so the handlers for a cluster's first server and the servers that join it take turns too. Handlers on different units still run at the same time.
 
 ## How handlers are built
 

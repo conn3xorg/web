@@ -1,0 +1,106 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Six questions, and what answers them: control-to-circuit map</title>
+<link rel="stylesheet" href="series.css">
+<style>
+  .sheet h1 { font-size: 72px; }
+  .rows { margin-top: 56px; display: grid; gap: 14px; }
+  .head, .row { display: grid; grid-template-columns: 300px 380px 1fr; gap: 14px; }
+  .head span { font-family: var(--mono); font-size: 17px; letter-spacing: 0.12em; color: var(--navy-muted); padding: 0 4px; }
+  .row > div { padding: 20px 22px; }
+  .theme { background: var(--ink); color: var(--text); }
+  .theme b { display: block; font-family: var(--mono); font-size: 16px; letter-spacing: 0.12em; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .theme h2 { font-size: 30px; line-height: 1.1; letter-spacing: -0.02em; font-weight: 800; }
+  .ask { background: var(--paper-2); border: 2px solid var(--paper-line); font-size: 24px; line-height: 1.35; font-style: italic; color: var(--navy); display: flex; align-items: center; }
+  .ans { background: var(--paper-2); border: 2px solid var(--paper-line); border-left: 8px solid var(--accent); }
+  .ans ul { list-style: none; display: grid; gap: 8px; }
+  .ans li { font-size: 21px; line-height: 1.4; color: var(--navy-muted); }
+  .ans li b { color: var(--navy); font-family: var(--mono); font-size: 19px; font-weight: 600; }
+  .ans .pill { font-size: 13px; padding: 1px 7px; margin-left: 6px; }
+  .legend { margin-top: 28px; font-size: 21px; line-height: 1.5; color: var(--navy-muted); display: flex; gap: 32px; flex-wrap: wrap; }
+  .legend .pill { margin: 0 8px 0 0; }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · AI YOU CAN ACCOUNT FOR</span>
+  <h1>Six questions, and what answers them</h1>
+  <p class="lede">NIST's AI RMF, ISO/IEC 42001 and the EU AI Act don't name tools. But once a review gets down to the running system, these are the questions that come up, and these are the parts that answer them.</p>
+
+  <div class="rows">
+    <div class="head"><span>THEME</span><span>WHAT YOU GET ASKED</span><span>WHAT ANSWERS IT</span></div>
+
+    <div class="row">
+      <div class="theme"><b>01</b><h2>Data residency</h2></div>
+      <div class="ask">"Where do the prompts go, and who else sees them?"</div>
+      <div class="ans"><ul>
+        <li><b>circuit-ollama</b> models on your host, API on 127.0.0.1 <span class="pill tested">TESTED</span></li>
+        <li><b>circuit-openwebui</b> telemetry and sharing off; no OpenAI connection unless you add one <span class="pill tested">TESTED</span></li>
+      </ul></div>
+    </div>
+
+    <div class="row">
+      <div class="theme"><b>02</b><h2>Access and budgets</h2></div>
+      <div class="ask">"Who can use which model, and how much can they spend?"</div>
+      <div class="ans"><ul>
+        <li><b>circuit-litellm</b> a key per team or person, model lists, dollar budgets; wrong model gets 403 <span class="pill tested">TESTED</span></li>
+        <li><b>circuit-openwebui</b> sign-up shut, admin made before the port opens, models granted per user <span class="pill tested">TESTED</span></li>
+      </ul></div>
+    </div>
+
+    <div class="row">
+      <div class="theme"><b>03</b><h2>Audit trail</h2></div>
+      <div class="ask">"Who asked, which model answered, and what did it cost?"</div>
+      <div class="ans"><ul>
+        <li><b>circuit-litellm</b> a spend-log row per request, prompts left out by default <span class="pill tested">TESTED</span></li>
+        <li><b>circuit-langfuse</b> a trace of every gateway call, with <code>langfuse_url</code> <span class="pill tested">TESTED</span></li>
+      </ul></div>
+    </div>
+
+    <div class="row">
+      <div class="theme"><b>04</b><h2>Personal data</h2></div>
+      <div class="ask">"What stops a customer's details reaching a model?"</div>
+      <div class="ans"><ul>
+        <li><b>circuit-presidio</b> finds and masks names, emails, cards; best effort, not a guarantee <span class="pill tested">TESTED</span></li>
+        <li><b>circuit-litellm guardrails</b> Presidio masks every request before the model; a 500 if it's down <span class="pill tested">TESTED</span></li>
+      </ul></div>
+    </div>
+
+    <div class="row">
+      <div class="theme"><b>05</b><h2>Change evidence</h2></div>
+      <div class="ask">"What changed, when, and is it still true today?"</div>
+      <div class="ans"><ul>
+        <li><b>conn3x plan</b> every change as a diff, cloud and hosts in one</li>
+        <li><b>conn3x drift</b> exits 2 when someone changed it by hand</li>
+        <li><b>pins</b> images by tag and digest; state encryption from OpenTofu</li>
+      </ul></div>
+    </div>
+
+    <div class="row">
+      <div class="theme"><b>06</b><h2>Host hardening</h2></div>
+      <div class="ask">"Is the machine underneath locked down?"</div>
+      <div class="ans"><ul>
+        <li><b>baseline · hardening · firewall</b> key-only SSH, ufw, nothing open but SSH <span class="pill tested">TESTED</span></li>
+        <li><b>circuit-caddy</b> TLS in front, so services stay on loopback</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <span><span class="pill tested">TESTED</span>the circuit's README says how</span>
+  </div>
+
+  <div class="key">
+    <h3>Helps you meet it</h3>
+    <p>None of this makes a system compliant, and no circuit is certified against any framework. It gives you parts that do what they say, and a record of what you ran.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>conn3x.org/blog/ai-you-can-account-for</span>
+  </div>
+</div>
+</body>
+</html>

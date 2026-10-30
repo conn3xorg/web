@@ -13,13 +13,18 @@ type Circuit = {
   version: string;
   tags: string[];
   tested: string[];
+  category: string;
   official: boolean;
 };
+import categoryList from "../data/categories.json";
 
 const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", { eager: true });
 const circuits = Object.values(files)
   .map((f) => f.default)
   .sort((a, b) => Number(b.official) - Number(a.official) || a.name.localeCompare(b.name));
+
+const counts = Object.fromEntries(categoryList.map((k) => [k, circuits.filter((c) => c.category === k).length]));
+const categories = categoryList.filter((k) => counts[k] > 0);
 
 const distro: Record<string, string> = {
   rocky10: "Rocky 10",
@@ -50,13 +55,20 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <span class="visually-hidden">Search circuits</span>
           <input id="q" type="search" placeholder="Search circuits" autocomplete="off" />
         </label>
-        <a class="btn" href="#share">Share yours</a>
+        <a class="btn" href="/build">Build a config</a>
+        <a class="btn btn-ghost" href="#share">Share yours</a>
+      </div>
+      <div class="filters" role="group" aria-label="Filter by category">
+        <button type="button" class="chip" data-cat="" aria-pressed="true">All <span>{circuits.length}</span></button>
+        {categories.map((k) => (
+          <button type="button" class="chip" data-cat={k} aria-pressed="false">{k} <span>{counts[k]}</span></button>
+        ))}
       </div>
     </PageHero>
     <div class="wrap page">
     <ol class="grid" id="list">
       {circuits.map((c) => (
-        <li class="card" data-text={`${c.name} ${c.description} ${c.tags.join(" ")}`.toLowerCase()}>
+        <li class="card" data-cat={c.category} data-text={`${c.name} ${c.description} ${c.tags.join(" ")}`.toLowerCase()}>
           <div class="top">
             <h2><a href={`https://github.com/${c.repo}`}>{c.name}</a></h2>
             {c.official && <span class="badge">Official</span>}
@@ -128,16 +140,26 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
   const q = document.getElementById("q") as HTMLInputElement;
   const cards = [...document.querySelectorAll<HTMLElement>("#list > li")];
   const none = document.getElementById("none")!;
-  q.addEventListener("input", () => {
+  const chips = [...document.querySelectorAll<HTMLButtonElement>(".chip")];
+  let cat = "";
+  const apply = () => {
     const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
     let shown = 0;
     for (const c of cards) {
-      const hit = words.every((w) => c.dataset.text!.includes(w));
+      const hit = (!cat || c.dataset.cat === cat) && words.every((w) => c.dataset.text!.includes(w));
       c.hidden = !hit;
       if (hit) shown++;
     }
     none.hidden = shown > 0;
-  });
+  };
+  q.addEventListener("input", apply);
+  for (const b of chips) {
+    b.addEventListener("click", () => {
+      cat = b.dataset.cat!;
+      for (const o of chips) o.setAttribute("aria-pressed", String(o === b));
+      apply();
+    });
+  }
   for (const b of document.querySelectorAll<HTMLButtonElement>(".copy")) {
     b.addEventListener("click", async () => {
       try {
@@ -171,7 +193,55 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
+    margin: 2rem 0 1.25rem;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-bottom: 2rem;
+  }
+  .chip {
+    font: inherit;
+    font-size: 0.875rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--c-border);
+    border-radius: 999px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    cursor: pointer;
+  }
+  .chip span {
+    color: var(--c-text-muted);
+    margin-left: 0.25rem;
+  }
+  .chip:hover {
+    border-color: var(--c-text-muted);
+  }
+  .chip[aria-pressed="true"] {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-contrast);
+  }
+  .chip[aria-pressed="true"] span {
+    color: inherit;
+  }
+  .chip:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+  }
+  /* One swipeable row on phones, so the list isn't pushed off screen. */
+  @media (max-width: 640px) {
+    .filters {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-inline: -1rem;
+      padding-inline: 1rem;
+    }
+    .chip {
+      flex: none;
+    }
   }
   .search {
     flex: 1 1 18rem;

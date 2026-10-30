@@ -58,6 +58,47 @@ jobs:
           pnpm exec playwright install --with-deps chromium
           pnpm exec playwright test
 
+  # Every config the Circuit Builder can write for the CI builds, made by the
+  # same code as the page, has to pass conn3x validate, which also checks the
+  # values against each circuit's own rules.
+  builder:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - name: Install Conn3x
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release view -R conn3xorg/conn3x --json tagName -q .tagName)
+          file="conn3x_${tag#v}_linux_amd64.tar.gz"
+          cd "$RUNNER_TEMP"
+          curl -sSfLO "https://github.com/conn3xorg/conn3x/releases/download/$tag/$file"
+          curl -sSfLO "https://github.com/conn3xorg/conn3x/releases/download/$tag/checksums.txt"
+          grep " $file\$" checksums.txt | sha256sum -c -
+          mkdir -p bin && tar -xzf "$file" -C bin conn3x
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+      - run: conn3x version
+      - run: node scripts/builder-combos.mjs "$RUNNER_TEMP/builds"
+      - name: Validate every build
+        working-directory: ${{ runner.temp }}/builds
+        run: |
+          conn3x fmt -check -recursive .
+          failed=""
+          for d in */; do
+            echo "::group::${d%/}"
+            (cd "$d" && conn3x init -backend=false -no-color > /dev/null && conn3x validate -no-color) || failed="$failed ${d%/}"
+            echo "::endgroup::"
+          done
+          if [ -n "$failed" ]; then
+            echo "::error::These builds don't validate:$failed"
+            exit 1
+          fi
+
   lighthouse:
     runs-on: ubuntu-24.04
     steps:

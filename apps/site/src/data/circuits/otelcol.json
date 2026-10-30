@@ -1,0 +1,19 @@
+{
+  "name": "otelcol",
+  "repo": "conn3xorg/circuit-otelcol",
+  "description": "OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live",
+  "version": "v0.1.0",
+  "tags": [
+    "opentelemetry",
+    "otel",
+    "observability"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Monitoring",
+  "official": true
+}

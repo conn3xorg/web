@@ -1,0 +1,69 @@
+{
+  "name": "certbot",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "certs",
+      "type": "map(list(string))",
+      "description": "Certificates to get, by name, each with the domains it covers, such as { example = [\"example.com\", \"www.example.com\"] }. Every host gets every certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "default": null,
+      "description": "Email address for the ACME account. When null, the account is registered without one.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "method",
+      "type": "string",
+      "default": "standalone",
+      "description": "How certbot answers the HTTP challenge: \"standalone\" runs its own server on port 80, \"webroot\" writes files under webroot_path for a web server already on port 80, \"nginx\" uses the running nginx.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "webroot_path",
+      "type": "string",
+      "default": "/var/www/html",
+      "description": "Directory your web server serves on port 80, for method = \"webroot\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "staging",
+      "type": "bool",
+      "default": false,
+      "description": "Use Let's Encrypt's staging server, whose certificates browsers don't trust and whose rate limits are far higher.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "acme_server",
+      "type": "string",
+      "default": null,
+      "description": "ACME directory URL of another certificate authority. When null, Let's Encrypt.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "deploy_hook",
+      "type": "string",
+      "default": null,
+      "description": "Shell command to run after a certificate is issued or renewed, such as \"systemctl reload nginx\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

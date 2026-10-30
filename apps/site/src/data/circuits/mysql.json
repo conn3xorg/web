@@ -1,0 +1,18 @@
+{
+  "name": "mysql",
+  "repo": "conn3xorg/circuit-mysql",
+  "description": "MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state.",
+  "version": "v0.1.0",
+  "tags": [
+    "mysql",
+    "database",
+    "sql"
+  ],
+  "tested": [
+    "rocky10",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Databases and caches",
+  "official": true
+}

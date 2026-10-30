@@ -126,4 +126,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-caddy/blob/v0.2.1/LI
 
 - Repository: [conn3xorg/circuit-caddy](https://github.com/conn3xorg/circuit-caddy). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-caddy/tags) list every release.
 - Examples: [examples/gcp](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/gcp), [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [nginx](/circuits/nginx), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot).
+- Related circuits: [Firewall](/circuits/firewall), [nginx](/circuits/nginx), [Apache httpd](/circuits/apache), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot).

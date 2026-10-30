@@ -1,0 +1,88 @@
+{
+  "name": "tailscale",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "join",
+      "type": "bool",
+      "default": true,
+      "description": "Join the hosts to the tailnet with auth_key. When false, the circuit installs Tailscale and leaves the hosts logged out.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "auth_key",
+      "type": "string",
+      "default": null,
+      "description": "Tailscale auth key the hosts join the tailnet with, such as tskey-auth-.... Required when join is true.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "hostname",
+      "type": "string",
+      "default": null,
+      "description": "Name for the node in the tailnet. When null, Tailscale uses the host's name. Meant for a single host: every host gets the same name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "advertise_routes",
+      "type": "list(string)",
+      "default": [],
+      "description": "Subnets to offer the tailnet as a subnet router, such as [\"192.168.1.0/24\"]. Turns on IP forwarding.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "advertise_exit_node",
+      "type": "bool",
+      "default": false,
+      "description": "Offer the hosts as exit nodes. Turns on IP forwarding.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "accept_routes",
+      "type": "bool",
+      "default": false,
+      "description": "Use subnet routes other nodes advertise.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ssh",
+      "type": "bool",
+      "default": false,
+      "description": "Run Tailscale SSH, so the tailnet's access rules decide who can log in over SSH from the tailnet.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tags",
+      "type": "list(string)",
+      "default": [],
+      "description": "ACL tags to advertise when joining, such as [\"tag:server\"]. The auth key must be allowed to apply them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_args",
+      "type": "list(string)",
+      "default": [],
+      "description": "More flags for tailscale up, such as [\"--shields-up\"]. Used only when joining.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

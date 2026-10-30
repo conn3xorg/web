@@ -1,0 +1,18 @@
+{
+  "name": "zabbix",
+  "repo": "conn3xorg/circuit-zabbix",
+  "description": "Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK.",
+  "version": "v0.1.0",
+  "tags": [
+    "zabbix",
+    "monitoring",
+    "agents"
+  ],
+  "tested": [
+    "rocky10",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Monitoring",
+  "official": true
+}

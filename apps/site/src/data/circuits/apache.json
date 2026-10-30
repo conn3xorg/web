@@ -1,0 +1,19 @@
+{
+  "name": "apache",
+  "repo": "conn3xorg/circuit-apache",
+  "description": "Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload.",
+  "version": "v0.1.0",
+  "tags": [
+    "apache",
+    "httpd",
+    "web"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Web and proxies",
+  "official": true
+}

@@ -1,0 +1,426 @@
+{
+  "distros": [
+    {
+      "id": "rocky10",
+      "name": "Rocky Linux 10",
+      "os": "rocky"
+    },
+    {
+      "id": "fedora45",
+      "name": "Fedora 45",
+      "os": "fedora"
+    },
+    {
+      "id": "ubuntu2404",
+      "name": "Ubuntu 24.04",
+      "os": "ubuntu"
+    },
+    {
+      "id": "debian13",
+      "name": "Debian 13",
+      "os": "debian"
+    }
+  ],
+  "excluded": {
+    "kubeadm": "kubeadm has control planes and workers, two kinds of host. Its README shows how to set them up.",
+    "microshift": "MicroShift turns the whole box into an OpenShift node, with its router on 80 and 443. Give it a host of its own and follow its README.",
+    "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README.",
+    "zabbix": "Zabbix has a server and the agents that report to it, two kinds of host. Its README shows how to set them up."
+  },
+  "conflicts": [
+    {
+      "circuits": [
+        "nginx",
+        "apache",
+        "caddy",
+        "traefik",
+        "haproxy",
+        "pihole",
+        "gitlab"
+      ],
+      "reason": "both want ports 80 and 443"
+    },
+    {
+      "circuits": [
+        "pihole",
+        "adguardhome",
+        "unbound",
+        "bind"
+      ],
+      "reason": "both answer DNS on port 53"
+    },
+    {
+      "circuits": [
+        "grafana",
+        "forgejo",
+        "adguardhome",
+        "monitoring",
+        "langfuse"
+      ],
+      "reason": "both want port 3000"
+    },
+    {
+      "circuits": [
+        "jenkins",
+        "keycloak",
+        "infisical",
+        "gitlab",
+        "openwebui"
+      ],
+      "reason": "both want port 8080"
+    },
+    {
+      "circuits": [
+        "prometheus",
+        "monitoring",
+        "cockpit",
+        "gitlab"
+      ],
+      "reason": "both want port 9090"
+    },
+    {
+      "circuits": [
+        "node-exporter",
+        "gitlab"
+      ],
+      "reason": "both run node_exporter on port 9100"
+    },
+    {
+      "circuits": [
+        "keycloak",
+        "langfuse"
+      ],
+      "reason": "both want port 9000"
+    },
+    {
+      "circuits": [
+        "mysql",
+        "mariadb"
+      ],
+      "reason": "both are a MySQL server on port 3306, and their packages replace each other"
+    },
+    {
+      "circuits": [
+        "keepalived",
+        "firewall"
+      ],
+      "reason": "circuit-firewall has no rule for VRRP, so every host would claim the floating address"
+    }
+  ],
+  "requires": {
+    "monitoring": [
+      "docker"
+    ],
+    "infisical": [
+      "postgres",
+      "valkey"
+    ],
+    "litellm": [
+      "postgres"
+    ],
+    "langfuse": [
+      "postgres",
+      "valkey"
+    ]
+  },
+  "ports": {
+    "nginx": [
+      {
+        "port": "80/tcp",
+        "input": "port"
+      }
+    ],
+    "apache": [
+      {
+        "port": "80/tcp"
+      }
+    ],
+    "caddy": [
+      {
+        "port": "80/tcp"
+      },
+      {
+        "port": "443/tcp"
+      }
+    ],
+    "traefik": [
+      {
+        "port": "80/tcp"
+      },
+      {
+        "port": "443/tcp"
+      }
+    ],
+    "certbot": [
+      {
+        "port": "80/tcp"
+      }
+    ],
+    "bind": [
+      {
+        "port": "53/tcp"
+      },
+      {
+        "port": "53/udp"
+      }
+    ],
+    "pihole": [
+      {
+        "port": "53/tcp"
+      },
+      {
+        "port": "53/udp"
+      },
+      {
+        "port": "80/tcp",
+        "private": true
+      },
+      {
+        "port": "443/tcp",
+        "private": true
+      }
+    ],
+    "adguardhome": [
+      {
+        "port": "53/tcp"
+      },
+      {
+        "port": "53/udp"
+      }
+    ],
+    "wireguard": [
+      {
+        "port": "51820/udp",
+        "input": "listen_port"
+      }
+    ],
+    "jellyfin": [
+      {
+        "port": "8096/tcp",
+        "input": "port",
+        "private": true
+      }
+    ],
+    "node-exporter": [
+      {
+        "port": "9100/tcp",
+        "input": "listen_port",
+        "private": true
+      }
+    ],
+    "monitoring": [
+      {
+        "port": "3000/tcp",
+        "private": true
+      }
+    ],
+    "samba": [
+      {
+        "port": "445/tcp",
+        "private": true
+      }
+    ],
+    "nfs": [
+      {
+        "port": "2049/tcp",
+        "private": true
+      }
+    ],
+    "gitlab": [
+      {
+        "port": "80/tcp"
+      },
+      {
+        "port": "443/tcp"
+      }
+    ],
+    "cockpit": [
+      {
+        "port": "9090/tcp",
+        "input": "port",
+        "private": true
+      }
+    ]
+  },
+  "hints": {
+    "apache": "Name a virtual host and give it a folder to serve or an app to proxy to.",
+    "certbot": "Its standalone method needs port 80 free. With a web server on the host, set method to webroot or nginx.",
+    "cockpit": "Logs in with the server's own passwords, so the firewall keeps 9090 to your own network.",
+    "couchdb": "Listens on 127.0.0.1:5984, for a proxy such as Caddy in front.",
+    "firewall": "Keeps SSH open, then opens the ports your other picks listen on. The README it writes lists each one.",
+    "forgejo": "Keeps its data in SQLite and listens on 127.0.0.1:3000, for a proxy such as Caddy in front. Its README shows PostgreSQL.",
+    "github-runner": "Needs a registration token from the repository's runner settings. You set it as a secret when you run it, and the README says where to get one.",
+    "gitlab": "Wants a host with 8 GB of memory, and keeps ports 80, 443, 8080, 9090 and 9100 for itself.",
+    "gitlab-runner": "The runner token comes from GitLab's runner settings. The docker executor needs docker on the host too.",
+    "grafana": "Listens on 127.0.0.1:3000 unless you set http_addr.",
+    "haproxy": "Doesn't open the ports your frontends use. Add them to the firewall yourself.",
+    "infisical": "Brings PostgreSQL and Valkey along and points Infisical at them. Use letters and digits for both passwords, since they go into URLs. Listens on 127.0.0.1:8080, for a proxy in front.",
+    "jenkins": "Listens on 127.0.0.1:8080, for a proxy such as Caddy in front.",
+    "keepalived": "Give it two or more hosts on the same network.",
+    "keycloak": "Listens on 127.0.0.1:8080 and keeps its data in a file meant for trials. Its README shows PostgreSQL.",
+    "langfuse": "Brings PostgreSQL and Valkey along and points Langfuse at them. Runs ClickHouse and MinIO beside it on ports 8123, 9000 and 9002, and wants about 4 GB of memory. Listens on 127.0.0.1:3000.",
+    "litellm": "Brings PostgreSQL along and points LiteLLM at it. Use letters and digits for the password, since it goes into a URL. Add your models and API keys in main.tf afterwards; the README shows how.",
+    "lldap": "Listens on 127.0.0.1 only, for a proxy in front.",
+    "matrix": "Listens on 127.0.0.1:8008 for a proxy in front. server_name can never change once Synapse has started.",
+    "monitoring": "Runs on Docker, so circuit-docker comes with it. On Rocky Linux, Cockpit can hold port 9090.",
+    "mssql": "x86-64 only. Read Microsoft's licence terms before you tick accept_eula. The sa password is a secret you set when you run it.",
+    "n8n": "Listens on 127.0.0.1:5678 for a proxy in front. Set public_url, or its webhook links point at localhost.",
+    "netdata": "The dashboard listens on 127.0.0.1:19999. Open an SSH tunnel to see it.",
+    "openldap": "Listens on 127.0.0.1:389 only. Set ldap_address to serve other hosts.",
+    "openwebui": "Listens on 127.0.0.1:8080 and talks to Ollama on the same host, so pick ollama too, or set openai_base_url.",
+    "otelcol": "Doesn't open 4317 or 4318. For a gateway, add them to the firewall yourself.",
+    "php": "Runs PHP-FPM on a Unix socket. Pick nginx or Apache too, and point it at the socket as the README shows.",
+    "presidio": "Answers on 127.0.0.1:5001 and 5002, for apps on the same host.",
+    "prometheus": "On Rocky Linux, Cockpit can hold port 9090, and Prometheus won't start beside it.",
+    "wireguard": "Give it two or more hosts. Each one peers with the others.",
+    "zeek": "Set interface to the network card Zeek should watch.",
+    "k3s": "Set TF_VAR_k3s_token to something like the output of openssl rand -hex 32, and keep it the same for the life of the cluster.",
+    "velociraptor": "Set TF_VAR_velociraptor_client_nonce to something like the output of openssl rand -hex 16, and keep it the same for the life of the deployment. The GUI listens on the server itself, so reach it through an SSH tunnel or a proxy.",
+    "freeipa": "The installer takes about ten minutes. Pass the same passwords on every plan as well as every apply. The README explains why."
+  },
+  "wiring": {
+    "github-runner": {
+      "secrets": [
+        "registration_token"
+      ],
+      "values": {
+        "github-runner": {
+          "registration_token": "${registration_token}"
+        }
+      }
+    },
+    "infisical": {
+      "secrets": [
+        "db_password"
+      ],
+      "values": {
+        "postgres": {
+          "users": [
+            "infisical"
+          ],
+          "databases": {
+            "infisical": "infisical"
+          },
+          "user_passwords": {
+            "infisical": "${db_password}"
+          }
+        },
+        "infisical": {
+          "db_connection_uri": "postgres://infisical:${db_password}@127.0.0.1:5432/infisical",
+          "redis_url": "redis://:${valkey.password}@127.0.0.1:6379"
+        }
+      }
+    },
+    "langfuse": {
+      "secrets": [
+        "db_password"
+      ],
+      "values": {
+        "postgres": {
+          "users": [
+            "langfuse"
+          ],
+          "databases": {
+            "langfuse": "langfuse"
+          },
+          "user_passwords": {
+            "langfuse": "${db_password}"
+          }
+        },
+        "langfuse": {
+          "database_url": "postgresql://langfuse:${db_password}@127.0.0.1:5432/langfuse",
+          "redis_url": "redis://:${valkey.password}@127.0.0.1:6379"
+        }
+      }
+    },
+    "litellm": {
+      "secrets": [
+        "db_password"
+      ],
+      "values": {
+        "postgres": {
+          "users": [
+            "litellm"
+          ],
+          "databases": {
+            "litellm": "litellm"
+          },
+          "user_passwords": {
+            "litellm": "${db_password}"
+          }
+        },
+        "litellm": {
+          "db_connection_uri": "postgresql://litellm:${db_password}@127.0.0.1:5432/litellm"
+        }
+      }
+    }
+  },
+  "mustTick": {
+    "mssql": [
+      "accept_eula"
+    ]
+  },
+  "choices": {
+    "mssql": {
+      "edition": [
+        "Developer",
+        "EnterpriseDeveloper",
+        "StandardDeveloper",
+        "Express"
+      ]
+    }
+  },
+  "roles": {
+    "k3s": [
+      {
+        "input": "servers",
+        "label": "Servers",
+        "prefix": "server",
+        "min": 1,
+        "odd": true,
+        "oddWhy": "embedded etcd loses quorum with two, so one or three is the usual choice.",
+        "help": "Run the control plane and embedded etcd. The first name in sorted order starts the cluster."
+      },
+      {
+        "input": "agents",
+        "label": "Agents",
+        "prefix": "agent",
+        "help": "Run your workloads and join through the first server. Leave it empty for servers only."
+      }
+    ],
+    "freeipa": [
+      {
+        "input": "server",
+        "label": "Server",
+        "prefix": "ipa",
+        "min": 1,
+        "one": true,
+        "help": "Runs the FreeIPA server. It's named <name>.<domain>, so pick the name with that in mind."
+      },
+      {
+        "input": "clients",
+        "label": "Clients",
+        "prefix": "client",
+        "light": true,
+        "help": "Hosts to enrol. They can also run other circuits from this build."
+      }
+    ],
+    "velociraptor": [
+      {
+        "input": "server",
+        "label": "Server",
+        "prefix": "dfir",
+        "min": 1,
+        "one": true,
+        "help": "Runs the Velociraptor server and its GUI."
+      },
+      {
+        "input": "clients",
+        "label": "Clients",
+        "prefix": "client",
+        "light": true,
+        "help": "Hosts that report to the server. They can also run other circuits from this build."
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "nfs",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "exports",
+      "type": "map(object({\n    clients = list(object({\n      host    = string\n      options = optional(list(string), [\"ro\"])\n    }))\n    owner = optional(string)\n    group = optional(string)\n    mode  = optional(string, \"0755\")\n  }))",
+      "default": {},
+      "description": "Exports, by path, such as { \"/srv/nfs/media\" = { clients = [{ host = \"192.168.1.0/24\", options = [\"rw\"] }] } }. The circuit creates each path with owner, group and mode.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "nfs_v3",
+      "type": "bool",
+      "default": false,
+      "description": "Serve NFSv3 as well as NFSv4. Off, the server speaks NFSv4 only and needs just TCP 2049. Changing it restarts the NFS server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

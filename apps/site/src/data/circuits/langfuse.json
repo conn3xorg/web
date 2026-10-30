@@ -1,0 +1,19 @@
+{
+  "name": "langfuse",
+  "repo": "conn3xorg/circuit-langfuse",
+  "description": "Langfuse LLM observability on one host: prompts, costs and evals traced into ClickHouse, keys generated on the host, sign-up off.",
+  "version": "v0.1.0",
+  "tags": [
+    "langfuse",
+    "llm-observability",
+    "ai-governance"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "AI",
+  "official": true
+}
