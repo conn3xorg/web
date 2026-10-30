@@ -1,0 +1,84 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What the agent box sets up: diagram</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+<style>
+  .map { display: grid; grid-template-columns: 340px 150px 1fr; align-items: center; margin-top: 56px; }
+  .clients { display: grid; gap: 14px; }
+  .client { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 18px 20px; }
+  .client h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  .client p { font-size: 19px; line-height: 1.4; color: var(--navy-muted); margin-top: 4px; }
+  .client pre { margin-top: 10px; font-size: 16px; }
+  .host { border: 3px solid var(--navy); background: rgba(19, 35, 58, 0.03); padding: 22px; border-top: 8px solid var(--accent); }
+  .host > .k { color: var(--navy); }
+  .user { margin-top: 12px; border: 2px dashed var(--navy-muted); padding: 18px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .agents { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .agent { font-family: var(--mono); font-size: 19px; background: var(--paper-2); color: var(--navy); padding: 8px 12px; border: 2px solid var(--paper-line); }
+  .agent .pill { font-size: 12px; padding: 1px 6px; margin-left: 6px; }
+  .tool { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 12px 14px; font-size: 19px; line-height: 1.35; color: var(--navy-muted); }
+  .tool b { display: block; font-family: var(--mono); font-size: 18px; color: var(--navy); margin-bottom: 2px; }
+  .never { margin-top: 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .never .box { border-left: 8px solid var(--rust); }
+  .never h2 { font-size: 26px; }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CIRCUIT-AGENTBOX</span>
+  <h1>A box for your coding agents</h1>
+  <p class="lede">One ordinary user you reach with your SSH key, the tools agents expect, and the agents you list. Your laptop stays cool, and the session is still there in the morning.</p>
+
+  <div class="map">
+    <div class="clients">
+      <div class="client"><h2>Plain SSH and tmux</h2><pre>ssh dev@203.0.113.10
+tmux new -A -s agents
+cd ~/code/app &amp;&amp; claude</pre></div>
+      <div class="client"><h2>Orca</h2><p>Makes git worktrees on the box and brings its own server. Needs SSH port forwarding.</p></div>
+    </div>
+    <div class="wire"><span class="arrow">→</span>SSH :22<br>key only<br>for dev</div>
+    <div class="host">
+      <span class="k">YOUR HOST · UBUNTU, DEBIAN, ROCKY LINUX OR FEDORA</span>
+      <div class="grid2">
+        <div class="tool"><b>git · tmux · rg · jq</b>and a C toolchain, so native npm packages build</div>
+        <div class="tool"><b>Node.js 26 LTS</b>from NodeSource, signed, same on all four distributions</div>
+      </div>
+      <div class="user">
+        <span class="k">USER dev · NO PASSWORD · NO SUDO</span>
+        <div class="dark"><h3>~/.local/bin<span>npm_packages</span></h3>
+          <div class="agents">
+            <span class="agent">claude <span class="pill tested" style="color:#7fd3a7">RAN ON DROPLETS</span></span>
+            <span class="agent">codex</span>
+            <span class="agent">gemini</span>
+            <span class="agent">anything with a command</span>
+          </div>
+          <p style="margin-top: 10px;">Each signs itself in the first time you run it, and keeps that in the user's home.</p>
+        </div>
+        <div class="grid2">
+          <div class="tool"><b>~/code/app</b>repos cloned once, then they're yours and the agents'</div>
+          <div class="tool"><b>git config</b>your name and email on every commit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="never">
+    <div class="box"><span class="k">NEVER</span><h2>Sees a key</h2><p>No API key, token or subscription passes through Conn3x, your plan or your state.</p></div>
+    <div class="box"><span class="k">NEVER</span><h2>Opens a port</h2><p>No service listens on the network. <code>sshd_config</code> is left alone.</p></div>
+    <div class="box"><span class="k">NEVER</span><h2>Gives sudo</h2><p>Add it yourself with circuit-users, after thinking about what an agent with root can do.</p></div>
+  </div>
+
+  <div class="key">
+    <h3>Tested</h3>
+    <p>Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45 in CI. On droplets, <code>claude --version</code> ran as <code>dev</code>, an SSH local forward opened as Orca needs, and a reboot left the plan clean.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/circuit-agentbox</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>An audit trail for every prompt: social card</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+</head>
+<body class="card grid-dark">
+<div class="frame">
+  <div class="top"><img src="../../../apps/site/src/brand/logo-dark.svg" alt=""><span class="label"><b>LANGFUSE</b> · TRACES · OTLP</span></div>
+  <h1>An audit trail for every prompt.<br><span>On your host, not theirs.</span></h1>
+  <div class="route">
+    <div class="node"><span class="tag">YOUR APP · SDK</span>POST /api/public/otel<br>/v1/traces</div>
+    <div class="arrow">→</div>
+    <div class="node hot"><span class="tag">LANGFUSE 4 · 127.0.0.1:3000</span>sign-up off <span class="ok">✓</span><br>wrong key → 401 <span class="ok">✓</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><span class="tag">CLICKHOUSE · ON LOOPBACK</span>prompt · answer · cost<br>readable in &lt; 3 s <span class="ok">✓</span></div>
+  </div>
+  <div class="foot"><span>conn3x.org/blog</span><b>github.com/conn3xorg/circuit-langfuse</b></div>
+</div>
+</body>
+</html>

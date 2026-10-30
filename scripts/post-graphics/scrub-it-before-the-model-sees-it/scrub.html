@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How Presidio scrubs a prompt: diagram</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+<style>
+  .steps { margin-top: 56px; display: grid; gap: 0; }
+  .step { display: grid; grid-template-columns: 90px 1fr; gap: 24px; align-items: stretch; }
+  .num { background: var(--ink); color: var(--accent); font-family: var(--mono); font-size: 34px; font-weight: 700; display: grid; place-items: center; }
+  .body { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 22px 26px; }
+  .body .k { margin-bottom: 8px; }
+  .body h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+  .text { font-family: var(--mono); font-size: 25px; line-height: 1.5; color: var(--navy); }
+  .pii { background: rgba(255, 122, 46, 0.22); border-bottom: 3px solid var(--accent); padding: 0 2px; }
+  .ph { background: rgba(127, 211, 167, 0.35); border-bottom: 3px solid #1d7a4c; padding: 0 2px; }
+  .finds { display: flex; gap: 14px; flex-wrap: wrap; }
+  .find { font-family: var(--mono); font-size: 20px; background: var(--ink); color: var(--text); padding: 10px 14px; }
+  .find b { color: var(--accent); font-weight: 600; }
+  .gap { height: 14px; margin-left: 45px; border-left: 3px solid var(--rust); }
+  .own { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .warn { margin-top: 40px; border: 4px solid var(--rust); background: rgba(184, 67, 11, 0.06); padding: 26px 32px; }
+  .warn .k { color: var(--rust); font-weight: 600; }
+  .warn blockquote { font-size: 27px; line-height: 1.45; color: var(--navy); font-style: italic; }
+  .warn p { font-size: 21px; color: var(--navy-muted); margin-top: 10px; }
+  .where { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CIRCUIT-PRESIDIO</span>
+  <h1>Scrub it before the model sees it</h1>
+  <p class="lede">Two small services on <code>127.0.0.1</code>. The analyzer finds personal data; the anonymizer swaps it for placeholders. This is the test CI runs on every distribution.</p>
+
+  <div class="steps">
+    <div class="step"><div class="num">1</div><div class="body"><span class="k">THE PROMPT SOMEONE WROTE</span>
+      <div class="text">My name is <span class="pii">David Johnson</span> and my email is <span class="pii">david@example.com</span></div></div></div>
+    <div class="gap"></div>
+    <div class="step"><div class="num">2</div><div class="body"><span class="k">ANALYZER · 127.0.0.1:5002 · /analyze</span><h2>Finds it</h2>
+      <div class="finds"><span class="find"><b>PERSON</b> 11–24</span><span class="find"><b>EMAIL_ADDRESS</b> 41–58</span><span class="find">each with a score</span></div></div></div>
+    <div class="gap"></div>
+    <div class="step"><div class="num">3</div><div class="body"><span class="k">ANONYMIZER · 127.0.0.1:5001 · /anonymize</span><h2>Replaces it</h2>
+      <div class="text">My name is <span class="ph">&lt;PERSON&gt;</span> and my email is <span class="ph">&lt;EMAIL_ADDRESS&gt;</span></div></div></div>
+  </div>
+
+  <div class="own">
+    <div class="box"><span class="k">YOUR OWN WORDS · DENY LIST</span><h2>PROJECT_CODENAME</h2><p>Exact words, such as <code>Bluebird</code> and <code>Quillfeather</code>, set in <code>analyzer_config</code>.</p></div>
+    <div class="box"><span class="k">YOUR OWN FORMATS · PATTERN</span><h2>EMPLOYEE_ID</h2><p>Anything a regular expression can describe, such as <code>\bEMP-\d{6}\b</code>.</p></div>
+  </div>
+
+  <div class="where">
+    <div class="dark"><h3>What it knows out of the box</h3><p>English, with spaCy's large model for names and places, and patterns and checksums for emails, phones and cards.</p></div>
+    <div class="dark soon" style="border-color: var(--rust);"><h3>On every LiteLLM request<span class="pill coming">COMING</span></h3><p>LiteLLM has a Presidio guardrail. circuit-litellm needs an input for it first.</p></div>
+  </div>
+
+  <div class="warn">
+    <span class="k">BEST EFFORT, NOT A GUARANTEE · PRESIDIO'S MAINTAINERS</span>
+    <blockquote>"because it is using automated detection mechanisms, there is no guarantee that Presidio will find all sensitive information."</blockquote>
+    <p>It will miss some names and flag some things that aren't personal data. Treat it as one layer.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/circuit-presidio</span>
+  </div>
+</div>
+</body>
+</html>

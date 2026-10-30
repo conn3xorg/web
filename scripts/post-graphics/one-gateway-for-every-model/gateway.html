@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One gateway for every model: diagram</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+<style>
+  .map { display: grid; grid-template-columns: 360px 90px 1fr 90px 340px; align-items: center; margin-top: 56px; }
+  .col { display: grid; gap: 14px; }
+  .key { margin-top: 0; }
+  .who { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 18px 20px; }
+  .who b { display: block; font-family: var(--mono); font-size: 16px; letter-spacing: 0.12em; color: var(--navy-muted); margin-bottom: 4px; }
+  .who h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  .who p { font-family: var(--mono); font-size: 17px; line-height: 1.5; color: var(--navy-muted); margin-top: 6px; }
+  .gw { border: 4px solid var(--accent); background: var(--ink); color: var(--text); padding: 26px; }
+  .gw h2 { font-size: 40px; font-weight: 800; letter-spacing: -0.02em; }
+  .gw h2 span { font-family: var(--mono); font-size: 22px; color: var(--accent); margin-left: 8px; }
+  .checks { list-style: none; margin-top: 18px; display: grid; gap: 10px; }
+  .checks li { font-size: 21px; line-height: 1.35; color: var(--muted); padding-left: 38px; position: relative; }
+  .checks li::before { content: attr(data-n); position: absolute; left: 0; top: 1px; font-family: var(--mono); font-size: 16px; color: var(--ink); background: var(--accent); width: 26px; height: 26px; display: grid; place-items: center; font-weight: 700; }
+  .checks code { color: var(--text); }
+  .model { background: var(--ink); color: var(--text); padding: 16px 20px; }
+  .model h3 { font-family: var(--mono); font-size: 22px; font-weight: 600; }
+  .model p { font-size: 18px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+  .model.local { border-left: 8px solid #7fd3a7; }
+  .model.hosted { border-left: 8px solid var(--accent); }
+  .log { margin-top: 40px; }
+  .log table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 19px; background: var(--paper-2); }
+  .log th { text-align: left; font-weight: 600; font-size: 15px; letter-spacing: 0.12em; color: var(--navy-muted); padding: 12px 14px; border-bottom: 2px solid var(--paper-line); }
+  .log td { padding: 12px 14px; border-bottom: 1px solid var(--paper-line); color: var(--navy); }
+  .log td.bad { color: var(--rust); font-weight: 600; }
+  .log td.good { color: #1d7a4c; font-weight: 600; }
+  .log td.off { color: var(--navy-muted); font-style: italic; }
+  .vault { margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CIRCUIT-LITELLM</span>
+  <h1>One gateway, every model</h1>
+  <p class="lede">Everyone gets a key of their own. Behind the one address sit whichever models you choose, hosted or local, and the real provider keys never leave the host.</p>
+
+  <div class="map">
+    <div class="col">
+      <div class="who"><b>TEAM KEY</b><h2>research</h2><p>models: claude-sonnet<br>max_budget: 50</p></div>
+      <div class="who"><b>PERSONAL KEY</b><h2>alice-laptop</h2><p>team: research<br>sk-…</p></div>
+      <div class="who"><b>APP KEY</b><h2>Open WebUI</h2><p>openai_base_url:<br>127.0.0.1:4000/v1</p></div>
+    </div>
+    <div class="wire"><span class="arrow">→</span>key</div>
+    <div class="gw">
+      <h2>LiteLLM<span>127.0.0.1:4000</span></h2>
+      <ul class="checks">
+        <li data-n="1">Is the key real? The master key stays on the host and only makes keys.</li>
+        <li data-n="2">Is the model on the key's list? If not, <code>403</code>.</li>
+        <li data-n="3">Is there budget left? US dollars, reset by <code>budget_duration</code>.</li>
+        <li data-n="4">Send it on, with the provider key from a root-only file.</li>
+        <li data-n="5">Write a spend-log row to PostgreSQL. Prompts stay out unless <code>log_prompts = true</code>.</li>
+      </ul>
+    </div>
+    <div class="wire"><span class="arrow">→</span></div>
+    <div class="col">
+      <div class="model hosted"><h3>gpt-4o</h3><p>openai/gpt-4o</p></div>
+      <div class="model hosted"><h3>claude-sonnet</h3><p>anthropic/claude-sonnet-4-5</p></div>
+      <div class="model local"><h3>local</h3><p>ollama_chat/qwen2.5:0.5b on 127.0.0.1:11434. Never leaves the box.</p></div>
+    </div>
+  </div>
+
+  <div class="log">
+    <span class="k">WHAT A SPEND-LOG ROW HOLDS · ILLUSTRATIVE</span>
+    <table>
+      <tr><th>KEY</th><th>TEAM</th><th>MODEL</th><th>TOKENS</th><th>COST</th><th>STATUS</th><th>PROMPT</th></tr>
+      <tr><td>alice-laptop</td><td>research</td><td>claude-sonnet</td><td>counted</td><td>priced</td><td class="good">success</td><td class="off">not stored</td></tr>
+      <tr><td>alice-laptop</td><td>research</td><td>gpt-4o</td><td>–</td><td>–</td><td class="bad">failure · 403</td><td class="off">not stored</td></tr>
+    </table>
+  </div>
+
+  <div class="vault">
+    <div class="box"><span class="k">STAYS ON THE HOST</span><p><code>LITELLM_MASTER_KEY</code> and <code>LITELLM_SALT_KEY</code>, made by the first apply in <code>/etc/litellm/keys.env</code>. Provider keys in a root-only env file, from ephemeral inputs.</p></div>
+    <div class="box"><span class="k">NEVER IN YOUR PLAN OR STATE</span><p>The database password, <code>OPENAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>. A plain-text <code>api_key</code> in <code>models</code> fails the plan.</p></div>
+  </div>
+
+  <div class="key" style="margin-top: 40px;">
+    <h3>Tested</h3>
+    <p>On Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13: a wrong master key refused, a budget over <code>max_key_budget</code> refused, the wrong model a <code>403</code>, the request priced in the spend logs without its content, and the same key working after a restart.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/circuit-litellm</span>
+  </div>
+</div>
+</body>
+</html>

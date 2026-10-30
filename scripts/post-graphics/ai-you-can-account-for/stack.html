@@ -1,0 +1,100 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A governed private-AI stack: diagram</title>
+<link rel="stylesheet" href="series.css">
+<style>
+  .users { margin-top: 56px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .users .box { padding: 18px 22px; }
+  .users .box h2 { font-size: 26px; margin-bottom: 4px; }
+  .users .box p { font-size: 19px; }
+  .down { text-align: center; font-family: var(--mono); color: var(--rust); font-size: 18px; padding: 10px 0; }
+  .down .arrow { font-size: 40px; display: block; line-height: 1; }
+  .host { border: 3px solid var(--navy); background: rgba(19, 35, 58, 0.03); padding: 22px; }
+  .host > .k { color: var(--navy); }
+  .caddy { border-top: 8px solid var(--accent); }
+  .lo { margin-top: 14px; border: 2px dashed var(--navy-muted); padding: 18px; }
+  .lane { display: grid; grid-template-columns: 1fr 64px 1.25fr 64px 1fr; align-items: stretch; }
+  .lane .wire { display: grid; place-items: center; }
+  .side { display: grid; grid-template-columns: 1fr 64px 1.25fr 64px 1fr; margin-top: 14px; }
+  .side .up { grid-column: 3; text-align: center; font-family: var(--mono); color: var(--rust); font-size: 17px; line-height: 1.2; }
+  .side .up .arrow { font-size: 34px; display: block; }
+  .row2 { display: grid; grid-template-columns: 1fr 64px 1.25fr 64px 1fr; }
+  .stack-col { display: grid; gap: 12px; }
+  .hardening { margin-top: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .layer { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 14px 16px; font-size: 20px; line-height: 1.35; color: var(--navy-muted); }
+  .layer b { display: block; font-family: var(--mono); font-size: 19px; color: var(--navy); margin-bottom: 4px; }
+  .out { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .cloud { border: 3px dashed var(--accent); padding: 18px 22px; background: rgba(255, 122, 46, 0.06); }
+  .cloud h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+  .cloud p { font-size: 19px; line-height: 1.45; color: var(--navy-muted); margin-top: 4px; }
+  .conn3x { margin-top: 14px; background: var(--paper-2); border: 2px solid var(--paper-line); border-left: 8px solid var(--navy); padding: 18px 22px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .conn3x div { font-size: 19px; line-height: 1.4; color: var(--navy-muted); }
+  .conn3x b { display: block; font-family: var(--mono); font-size: 19px; color: var(--navy); }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · OPEN WEBUI · LITELLM · PRESIDIO · OLLAMA · LANGFUSE</span>
+  <h1>A private AI stack you can account for</h1>
+  <p class="lede">Hardened hosts. Only Caddy faces the network; everything behind it listens on <code>127.0.0.1</code>. Every request passes one gateway that knows who sent it, checks what's in it, and writes it down.</p>
+
+  <div class="users">
+    <div class="box"><h2>People</h2><p>Open WebUI in the browser, with an account an admin made.</p></div>
+    <div class="box"><h2>Apps and scripts</h2><p>Any OpenAI client, with a LiteLLM key of their own.</p></div>
+    <div class="box"><h2>Admins</h2><p>LiteLLM's key API and Open WebUI's admin panel hand out access.</p></div>
+  </div>
+  <div class="down"><span class="arrow">↓</span>HTTPS :443</div>
+
+  <div class="host">
+    <span class="k">YOUR HOSTS · DEBIAN, UBUNTU, FEDORA OR ROCKY LINUX</span>
+    <div class="dark caddy"><h3>Caddy<span>:443</span></h3><p>TLS certificate in front. With SSH, the only thing that answers from outside the host.</p></div>
+
+    <div class="lo">
+      <span class="k">LOOPBACK ONLY · 127.0.0.1</span>
+      <div class="lane">
+        <div class="dark"><h3>Open WebUI<span>:8080</span></h3><p>Sign-up shut. Users see only the models they're given.</p></div>
+        <div class="wire"><span class="arrow">→</span></div>
+        <div class="dark" style="outline: 4px solid var(--accent); outline-offset: -4px;"><h3>LiteLLM<span>:4000</span></h3><p>A key per team. Model lists, dollar budgets, a <code>403</code> for the wrong model, and a spend-log row for every request.</p></div>
+        <div class="wire"><span class="arrow">→</span></div>
+        <div class="dark"><h3>Ollama<span>:11434</span></h3><p>Local models on the CPU. Prompts never leave the box.</p></div>
+      </div>
+      <div class="side">
+        <div class="up"><span class="arrow">↕</span>guardrail, before the model (coming)</div>
+      </div>
+      <div class="row2">
+        <div class="stack-col"><div class="box" style="padding: 16px 20px;"><h2 style="font-size: 24px;">PostgreSQL</h2><p style="font-size: 18px;">LiteLLM's keys and spend logs, Open WebUI's chats if you choose, Langfuse's users and projects.</p></div></div>
+        <div></div>
+        <div class="dark"><h3>Presidio<span>:5002 · :5001</span></h3><p>Finds names, emails and card numbers and masks them. Best effort. Wiring it into LiteLLM as a guardrail is coming.</p></div>
+        <div></div>
+        <div class="dark"><h3>Langfuse<span>:3000</span></h3><p>Traces from your apps over OpenTelemetry: prompt, answer, tokens, cost, latency. Sign-up off.</p></div>
+      </div>
+    </div>
+
+    <div class="hardening">
+      <div class="layer"><b>baseline</b>chrony, time zone, key-only SSH</div>
+      <div class="layer"><b>hardening</b>tighter SSH and kernel settings</div>
+      <div class="layer"><b>firewall</b>ufw denies everything incoming you didn't allow</div>
+    </div>
+  </div>
+
+  <div class="out">
+    <div class="cloud"><h2>Hosted models, only if you add them</h2><p>OpenAI, Anthropic and the rest sit behind the same gateway. Their keys stay in a root-only file on the host, never in your plan or state.</p></div>
+    <div class="cloud" style="border-color: var(--navy-muted); background: transparent;"><h2>What doesn't leave</h2><p>LiteLLM sends no telemetry when self-hosted. Open WebUI's telemetry, update check and community sharing are off, and so is Langfuse's telemetry.</p></div>
+  </div>
+
+  <div class="conn3x">
+    <div><b>conn3x plan</b>Every change to cloud and hosts, as one diff to review.</div>
+    <div><b>conn3x drift</b>Exits 2 when someone changed the box by hand.</div>
+    <div><b>state</b>Secrets kept out by ephemeral inputs; encrypt the rest with OpenTofu's state encryption.</div>
+  </div>
+
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>conn3x.org/blog/ai-you-can-account-for</span>
+  </div>
+</div>
+</body>
+</html>
