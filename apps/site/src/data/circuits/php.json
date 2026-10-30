@@ -2,7 +2,7 @@
   "name": "php",
   "repo": "conn3xorg/circuit-php",
   "description": "PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "php",
     "php-fpm",

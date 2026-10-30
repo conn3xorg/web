@@ -3,19 +3,19 @@ title: PHP-FPM
 description: "PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-php at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-php at v0.1.1. -->
 
 A Conn3x circuit that installs PHP with PHP-FPM, the extensions you name, your php.ini settings and your FPM pools. Put it next to [circuit-apache](/circuits/apache) or [circuit-nginx](/circuits/nginx), and [circuit-mysql](/circuits/mysql) or [circuit-mariadb](/circuits/mariadb), and you have a LAMP or LEMP stack described in one place.
 
 PHP looks different on every distribution. Debian 13 calls the MySQL driver `php8.4-mysql` and keeps pools in `/etc/php/8.4/fpm/pool.d`; Rocky Linux calls it `php-mysqlnd` and keeps pools in `/etc/php-fpm.d`. The service is `php8.4-fpm` on one and `php-fpm` on the other, and so is the binary that tests the config. You name extensions the way PHP does, `mysqli` or `pdo_pgsql`, and the circuit finds the package. Every change shows up in `conn3x plan` as a diff, and PHP-FPM's own config test runs before each reload, so a broken pool fails the apply while the running PHP-FPM carries on with the pools it has.
 
-You get your distribution's PHP unless you ask for another version. Then it comes from the repositories most people use for that: [Ondřej Surý's](https://deb.sury.org/) on Debian and Ubuntu, and [Remi Collet's](https://rpms.remirepo.net/) on Rocky Linux, AlmaLinux, RHEL and Fedora. Their signing keys ship with the circuit, in [files](https://github.com/conn3xorg/circuit-php/tree/v0.1.0/files).
+You get your distribution's PHP unless you ask for another version. Then it comes from the repositories most people use for that: [Ondřej Surý's](https://deb.sury.org/) on Debian and Ubuntu, and [Remi Collet's](https://rpms.remirepo.net/) on Rocky Linux, AlmaLinux, RHEL and Fedora. Their signing keys ship with the circuit, in [files](https://github.com/conn3xorg/circuit-php/tree/v0.1.1/files).
 
 ## Usage
 
 ```hcl
 module "php" {
-  source = "github.com/conn3xorg/circuit-php?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-php?ref=v0.1.1"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +52,7 @@ hosts = {
 }
 ```
 
-To try it with Apache on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.0/examples/local).
+To try it with Apache on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.1/examples/local).
 
 ### With Apache
 
@@ -159,7 +159,7 @@ The keys ship for Debian 12 and 13, Ubuntu 22.04 and 24.04, Enterprise Linux 10 
 On each host, in order:
 
 1. With `php_version` set, adds Surý's or Remi's repository, as above.
-2. Installs PHP-FPM and the command-line PHP, then a package for each extension in `extensions`. Many extensions are built into a package the circuit installs anyway, such as `ctype` or `openssl`, and that's fine.
+2. Installs PHP-FPM and the command-line PHP, then a package for each extension in `extensions`. Many extensions are built into a package the circuit installs anyway, such as `ctype` or `openssl`, and that's fine. Each extension package restarts a running PHP-FPM as it installs, and a handful in a row can trip systemd's start limit; when that happens, the circuit clears it and starts PHP-FPM again.
 3. Writes the `ini` settings to a file that loads after the distribution's own: `/etc/php/VERSION/mods-available/conn3x.ini`, linked into the `fpm` and `cli` `conf.d` as `99-conn3x.ini`, on Debian and Ubuntu; `/etc/php.d/99-conn3x.ini` on the Red Hat family. They apply to PHP-FPM and to `php` on the command line.
 4. Writes a file for each pool in the pool directory, `NAME.conf`. On Debian and Ubuntu, points `php` at this version, and stops and disables any other version's PHP-FPM.
 5. With `install_composer`, downloads Composer's `composer.phar` for `composer_version` to `/usr/local/bin/composer` and checks its SHA-256 against `composer_sha256`.
@@ -235,18 +235,18 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.0/examples/local) to each on amd64 with the distribution's PHP and Apache from circuit-apache, checks that the second plan has no changes, that PHP-FPM is running and the pool's socket belongs to the web server's user, fetches a PHP page through Apache that prints PHP's version and whether `mysqli` is loaded, and checks the extensions, an ini setting on the command line and `composer --version`. The CI containers run with SELinux off.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.1/examples/local) to each on amd64 with the distribution's PHP and Apache from circuit-apache, checks that the second plan has no changes, that PHP-FPM is running and the pool's socket belongs to the web server's user, fetches a PHP page through Apache that prints PHP's version and whether `mysqli` is loaded, and checks the extensions, an ini setting on the command line and `composer --version`. The CI containers run with SELinux off.
 
-By hand, on arm64 containers of all four: switched each to another version and back with a plan that had no changes after each: Debian 13 from 8.4 to Surý's 8.5, Ubuntu 24.04 from 8.3 to Surý's 8.5 and back, Rocky Linux 10 from 8.3 to Remi's 8.5, and Fedora 45 from 8.5 down to Remi's 8.4. The PHP page through Apache showed the new version each time. An unknown pool directive stopped the apply with PHP-FPM's error while the running PHP-FPM kept serving. Adding a pool on a TCP port and taking it out again deleted its file and reloaded PHP-FPM. On Ubuntu 24.04, circuit-nginx with the server block from [With nginx](#with-nginx) served the PHP page.
+By hand, on arm64 containers of all four: switched each to another version and back with a plan that had no changes after each: Debian 13 from 8.4 to Surý's 8.5, Ubuntu 24.04 from 8.3 to Surý's 8.5 and back, Rocky Linux 10 from 8.3 to Remi's 8.5, and Fedora 45 from 8.5 down to Remi's 8.4. The PHP page through Apache showed the new version each time. With PHP-FPM stopped by systemd's start limit, installing another extension cleared it and started PHP-FPM again. An unknown pool directive stopped the apply with PHP-FPM's error while the running PHP-FPM kept serving. Adding a pool on a TCP port and taking it out again deleted its file and reloaded PHP-FPM. On Ubuntu 24.04, circuit-nginx with the server block from [With nginx](#with-nginx) served the PHP page.
 
 On Ubuntu 24.04 and Rocky Linux 10 droplets (1 vCPU, 1 GB), with circuit-apache given a `for_each` as above, the example's checks passed and the second plan had no changes. Rocky Linux ran with SELinux enforcing: PHP-FPM ran confined as `httpd_t`, its socket was labelled `httpd_var_run_t`, Apache reached it, and the audit log had no denials. After a reboot, both came back serving the page, with a plan that had no changes. Then both moved to 8.5, Ubuntu from Surý's PPA and Rocky Linux from Remi's repository, and served the page again with no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-php/blob/v0.1.0/LICENSE). PHP itself is under the PHP License, and Composer under MIT.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-php/blob/v0.1.1/LICENSE). PHP itself is under the PHP License, and Composer under MIT.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-php](https://github.com/conn3xorg/circuit-php). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-php/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-php/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-php](https://github.com/conn3xorg/circuit-php). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-php/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-php/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-php/tree/v0.1.1/examples/local).
 - Related circuits: [Apache httpd](/circuits/apache), [nginx](/circuits/nginx), [MySQL](/circuits/mysql), [MariaDB](/circuits/mariadb), [Users](/circuits/users), [Java](/circuits/java), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner).
