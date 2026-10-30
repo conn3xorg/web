@@ -176,4 +176,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-gitlab/blob/v0.1.0/L
 
 - Repository: [conn3xorg/circuit-gitlab](https://github.com/conn3xorg/circuit-gitlab). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-gitlab/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [Cockpit](/circuits/cockpit).
+- Related circuits: [Firewall](/circuits/firewall), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n).

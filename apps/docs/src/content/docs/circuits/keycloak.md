@@ -190,4 +190,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-keycloak/blob/v0.1.0
 
 - Repository: [conn3xorg/circuit-keycloak](https://github.com/conn3xorg/circuit-keycloak). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-keycloak/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-keycloak/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.1.0/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [certbot](/circuits/certbot), [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical).
+- Related circuits: [Caddy](/circuits/caddy), [certbot](/circuits/certbot), [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical).

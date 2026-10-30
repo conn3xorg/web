@@ -1,0 +1,19 @@
+{
+  "name": "n8n",
+  "repo": "conn3xorg/circuit-n8n",
+  "description": "Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply.",
+  "version": "v0.1.0",
+  "tags": [
+    "n8n",
+    "automation",
+    "workflows"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Platforms",
+  "official": true
+}

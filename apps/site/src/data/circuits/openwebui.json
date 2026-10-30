@@ -1,0 +1,19 @@
+{
+  "name": "openwebui",
+  "repo": "conn3xorg/circuit-openwebui",
+  "description": "Open WebUI in Podman: private chat for Ollama or a gateway, first admin from code, sign-up closed, per-user model access, no telemetry",
+  "version": "v0.1.0",
+  "tags": [
+    "open-webui",
+    "chat",
+    "ollama"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "AI",
+  "official": true
+}

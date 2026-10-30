@@ -1,0 +1,19 @@
+{
+  "name": "litellm",
+  "repo": "conn3xorg/circuit-litellm",
+  "description": "Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-team keys, model allow-lists, budgets and spend logs.",
+  "version": "v0.1.0",
+  "tags": [
+    "litellm",
+    "llm-gateway",
+    "ai-governance"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "AI",
+  "official": true
+}
