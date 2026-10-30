@@ -474,5 +474,12 @@
         "role": "servers"
       }
     ]
+  },
+  "cloud": {
+    "images": {
+      "rocky10": "rockylinux-10-x64",
+      "ubuntu2404": "ubuntu-24-04-x64",
+      "debian13": "debian-13-x64"
+    }
   }
 }

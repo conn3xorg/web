@@ -258,3 +258,30 @@ test("zabbix brings its database to the server's host, and sets a password", () 
   assert.match(r.files["README.md"], /docs\.conn3x\.org\/circuits\/postgres/);
   assert.equal(unavailable(data, "zabbix", "fedora45"), "Not tested on Fedora 45 yet.");
 });
+
+test("creating servers writes droplets and keeps typed text in strings", () => {
+  const cloud = { adminCidrs: "203.0.113.7/32", tags: 'a"}' };
+  const r = generate(data, { ...base, distro: "debian13", hosts: "web1", picks: ["nginx"], cloud });
+  assert.ok(!r.errors, JSON.stringify(r.errors));
+  const main = r.files["main.tf"];
+  assert.match(main, /image\s+= "debian-13-x64"/);
+  assert.match(main, /address = digitalocean_droplet\.host\["web1"\]\.ipv4_address/);
+  assert.match(main, /host_key = tls_private_key\.host\["web1"\]\.public_key_openssh/);
+  assert.match(main, /port_range\s+= "80"/);
+  assert.ok(main.includes('tags     = ["a\\"}"]'));
+  assert.ok(!main.includes("DIGITALOCEAN_TOKEN") && !main.includes("ssh_user"), "no token, and DigitalOcean logs in as root");
+  assert.match(r.files["README.md"], /cost money until you run `conn3x destroy`/);
+});
+
+test("creating servers refuses what can't work", () => {
+  const err = (b) => (generate(data, { ...base, picks: ["nginx"], hosts: "web1", cloud: { adminCidrs: "203.0.113.7/32" }, ...b }).errors ?? []).map((e) => e[1]).join(" ");
+  assert.equal(err({}), "");
+  assert.match(err({ distro: "fedora45" }), /no Fedora 45 image/);
+  assert.match(err({ cloud: {} }), /which addresses can reach SSH/);
+  assert.match(err({ cloud: { adminCidrs: "everyone" } }), /isn't an address/);
+  assert.match(err({ hosts: "web1 203.0.113.1" }), /just a name/);
+  assert.match(err({ hosts: "web_1" }), /just a name/);
+  assert.match(err({ cloud: { adminCidrs: "203.0.113.7/32", region: 'x" evil' } }), /isn't a region/);
+  // One name in two heavy roles is one droplet, so the same rule as addresses applies.
+  assert.match(err({ picks: ["k3s", "nginx"], values: { "k3s.servers": "web1" } }), /in both/);
+});

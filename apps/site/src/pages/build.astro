@@ -80,12 +80,43 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       <section aria-labelledby="s-hosts">
         <h2 id="s-hosts"><span>3</span> Servers</h2>
         <div class="fields">
+          <fieldset class="group wide">
+            <legend>Where are they?</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="where" value="own" checked /> I have them already</label>
+              <label class="chip"><input type="radio" name="where" value="digitalocean" /> Create them on DigitalOcean</label>
+            </div>
+          </fieldset>
+          <div class="fields wide" id="cloud-fields" hidden>
+            <label class="field wide">
+              <span>Addresses that can reach SSH, one per line (needed)</span>
+              <textarea id="cloud-admin" rows="2" spellcheck="false" autocomplete="off" placeholder="203.0.113.7/32"></textarea>
+              <small>Your own public address, as a network. The cloud firewall keeps everyone else off port 22.</small>
+            </label>
+            <label class="field">
+              <span>Region</span>
+              <input id="cloud-region" type="text" placeholder="lon1" spellcheck="false" autocomplete="off" />
+            </label>
+            <label class="field">
+              <span>Size</span>
+              <input id="cloud-size" type="text" placeholder="s-2vcpu-4gb" spellcheck="false" autocomplete="off" />
+            </label>
+            <label class="field">
+              <span>Public key file</span>
+              <input id="cloud-key" type="text" placeholder="~/.ssh/id_ed25519.pub" spellcheck="false" autocomplete="off" />
+            </label>
+            <label class="field">
+              <span>Tags, one per line</span>
+              <textarea id="cloud-tags" rows="1" spellcheck="false" autocomplete="off"></textarea>
+            </label>
+            <small class="wide">Droplets cost money until you run <code>conn3x destroy</code>. Your token never goes in the config: you set it in your shell when you run it.</small>
+          </div>
           <label class="field wide" id="hosts-field">
-            <span>Hosts, one per line</span>
+            <span id="hosts-label">Hosts, one per line</span>
             <textarea id="hosts" rows="3" spellcheck="false" autocomplete="off" placeholder={"web1 203.0.113.10\nweb2 203.0.113.11"}></textarea>
-            <small>A name and an address, or just the address. Every circuit runs on all of them, except the ones that ask for hosts by role.</small>
+            <small id="hosts-help">A name and an address, or just the address. Every circuit runs on all of them, except the ones that ask for hosts by role.</small>
           </label>
-          <label class="field">
+          <label class="field" data-own>
             <span>SSH user</span>
             <input id="ssh-user" type="text" placeholder="root" spellcheck="false" autocomplete="off" />
           </label>
@@ -93,11 +124,11 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
             <span>Private key file</span>
             <input id="ssh-key" type="text" placeholder="the SSH agent" spellcheck="false" autocomplete="off" />
           </label>
-          <label class="field">
+          <label class="field" data-own>
             <span>known_hosts file</span>
             <input id="ssh-known" type="text" placeholder="~/.ssh/known_hosts" spellcheck="false" autocomplete="off" />
           </label>
-          <label class="check">
+          <label class="check" data-own>
             <input id="ssh-become" type="checkbox" />
             <span>Use sudo. Tick this when the user isn't root.</span>
           </label>
@@ -163,6 +194,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
   let files: Record<string, string> = {};
   let current = "main.tf";
 
+  const creating = () => form.querySelector<HTMLInputElement>('input[name="where"]:checked')!.value !== "own";
   const distro = () => form.querySelector<HTMLInputElement>('input[name="distro"]:checked')!.value;
   const picked = () => picks.filter((p) => p.checked).map((p) => p.value);
 
@@ -197,7 +229,13 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     const fw = names.includes("firewall");
     $("hosts-field").hidden = names.length > 0 && names.every((n) => rolesOf(data, n).length);
     const priv = names.flatMap((n) => (builder.ports as any)[n] ?? []).filter((p: any) => p.private);
-    $("network-field").hidden = !(fw && priv.length);
+    $("network-field").hidden = !((fw || creating()) && priv.length);
+    $("cloud-fields").hidden = !creating();
+    for (const e of form.querySelectorAll<HTMLElement>("[data-own]")) e.hidden = creating();
+    $("hosts-help").textContent = creating()
+      ? "A name for each new server. Every circuit runs on all of them, except the ones that ask for hosts by role."
+      : "A name and an address, or just the address. Every circuit runs on all of them, except the ones that ask for hosts by role.";
+    for (const e of form.querySelectorAll<HTMLTextAreaElement>("[data-role]")) e.placeholder = creating() ? `${e.dataset.role}1` : `${e.dataset.role}1 203.0.113.10`;
     $("network-help").textContent = priv.length
       ? `Opens ${names.flatMap((n) => ((builder.ports as any)[n] ?? []).filter((p: any) => p.private).map((p: any) => `${p.port} (${n})`)).join(", ")} to this network only. Leave it empty to keep them closed.`
       : "";
@@ -263,6 +301,8 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     const k = `${circuit}.${r.input}`;
     const input = el("textarea", { id: `f-${circuit}-${r.input}`, value: values[k] ?? "", rows: 3, spellcheck: false, autocomplete: "off", placeholder: `${r.prefix}1 203.0.113.10` }) as HTMLTextAreaElement;
     input.dataset.key = k;
+    input.dataset.role = r.prefix;
+    if (creating()) input.placeholder = `${r.prefix}1`;
     return el("label", { className: "field" }, el("span", {}, `${r.label}${r.one ? "" : ", one per line"}`, r.min ? " (needed)" : ""), input, el("small", {}, r.help));
   }
 
@@ -304,6 +344,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       else if (t.dataset.part) values[k].fields[t.dataset.part] = v;
       else values[k] = v;
     }
+    if (t.name === "where") refresh();
     if (t.name === "pick" || t.name === "distro") {
       refresh();
       history.replaceState(null, "", linkFor(distro(), picked()));
@@ -334,6 +375,15 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       },
       values,
       network: $("network-field").hidden ? "" : $<HTMLInputElement>("network").value,
+      cloud: creating()
+        ? {
+            adminCidrs: $<HTMLTextAreaElement>("cloud-admin").value,
+            region: $<HTMLInputElement>("cloud-region").value,
+            size: $<HTMLInputElement>("cloud-size").value,
+            publicKey: $<HTMLInputElement>("cloud-key").value,
+            tags: $<HTMLTextAreaElement>("cloud-tags").value,
+          }
+        : undefined,
     };
   }
 
@@ -371,9 +421,9 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       box.replaceChildren(
         el("p", {}, "A few things to fix first:"),
         el("ul", {}, ...r.errors.map(([f, msg]: [string, string]) => {
-          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
+          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f === "cloud.adminCidrs" ? "cloud-admin" : f === "cloud.region" ? "cloud-region" : f === "cloud.size" ? "cloud-size" : f === "cloud" ? "s-distro" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
           document.getElementById(target)?.setAttribute("aria-invalid", "true");
-          return el("li", {}, el("a", { href: `#${target}` }, f.includes(".") && f !== "ssh.user" ? f : f === "picks" ? "Circuits" : f), `: ${msg}`);
+          return el("li", {}, el("a", { href: `#${target}` }, f.includes(".") && f !== "ssh.user" && !f.startsWith("cloud") ? f : f === "cloud" ? "Distribution" : f.startsWith("cloud") ? f.slice(6) : f === "picks" ? "Circuits" : f), `: ${msg}`);
         })),
       );
       return;
@@ -573,8 +623,13 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
   #build .fields .check {
     grid-column: 1 / -1;
   }
-  #build .field[hidden] {
+  #build .field[hidden],
+  #build .check[hidden],
+  #build .fields[hidden] {
     display: none;
+  }
+  #build .fields > .group {
+    margin: 0;
   }
   #build input[type="text"],
   #build input:not([type]),

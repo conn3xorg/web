@@ -89,6 +89,16 @@ export const combos = [
   { distro: "rocky10", picks: ["k3s", "velociraptor", "nginx", "firewall"] },
   { distro: "debian13", picks: ["zabbix", "postgres", "caddy"] },
   { distro: "rocky10", picks: ["freeipa", "velociraptor", "caddy", "auto-updates"] },
+  // Names rather than addresses, since these servers get created.
+  { distro: "debian13", picks: ["nginx", "fail2ban", "firewall"], cloud: { adminCidrs: "203.0.113.7/32", tags: "web" }, hosts: "web1\nweb2" },
+  {
+    distro: "ubuntu2404",
+    picks: ["k3s", "zabbix", "grafana"],
+    cloud: { adminCidrs: "203.0.113.7/32", region: "ams3", size: "s-4vcpu-8gb" },
+    network: "10.0.0.0/8",
+    hosts: "graphs",
+    values: { "k3s.servers": "server1", "k3s.agents": "agent1", "zabbix.servers": "mon", "zabbix.agents": "mon\nagent1" },
+  },
 ];
 
 /** Every build CI validates: [folder name, build]. */

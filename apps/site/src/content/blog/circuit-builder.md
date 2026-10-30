@@ -155,7 +155,7 @@ What validate can't do is apply. It proves the config is well formed and the val
 
 ## What it doesn't do yet
 
-It doesn't create cloud servers; you bring the machines. And kubeadm isn't in it yet, because joining its control planes and workers takes more than a list of hosts.
+It can create your servers on DigitalOcean, but not on other clouds yet. And kubeadm isn't in it yet, because joining its control planes and workers takes more than a list of hosts.
 
 Forgejo, Keycloak, Matrix and LLDAP work without a database circuit, on SQLite or a file meant for trials, so the builder doesn't wire PostgreSQL to them. Their hints point at the README, which shows how.
 

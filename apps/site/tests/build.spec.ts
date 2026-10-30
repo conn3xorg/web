@@ -73,3 +73,17 @@ test("asks for k3s hosts by role, and drops the shared list", async ({ page }) =
   await expect(page.locator("#code")).toContainText('cp1 = "203.0.113.20"');
   await expect(page.locator("#code")).not.toContainText("local.hosts");
 });
+
+test("can create the servers on DigitalOcean", async ({ page }) => {
+  await page.goto("/build");
+  await expect(page.locator("#cloud-fields")).toBeHidden();
+  await page.locator('input[name=where][value="digitalocean"]').check({ force: true });
+  await expect(page.locator("#cloud-fields")).toBeVisible();
+  await expect(page.locator("#ssh-user")).toBeHidden();
+  await page.locator('input[name=pick][value="nginx"]').check({ force: true });
+  await page.fill("#hosts", "web1");
+  await page.click("#write");
+  await expect(page.locator("#errors")).toContainText("which addresses can reach SSH");
+  await page.fill("#cloud-admin", "203.0.113.7/32");
+  await expect(page.locator("#code")).toContainText('resource "digitalocean_droplet" "host"');
+});
