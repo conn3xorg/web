@@ -1,0 +1,89 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What circuit-langfuse runs: diagram</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+<style>
+  .map { display: grid; grid-template-columns: 300px 110px 1fr; align-items: center; margin-top: 56px; }
+  .apps { display: grid; gap: 14px; }
+  .host { border: 3px solid var(--navy); background: rgba(19, 35, 58, 0.03); padding: 22px; border-top: 8px solid var(--accent); }
+  .host > .k { color: var(--navy); }
+  .lo { margin-top: 12px; border: 2px dashed var(--navy-muted); padding: 18px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .web { outline: 4px solid var(--accent); outline-offset: -4px; }
+  .bring { background: var(--paper-2); border: 2px solid var(--paper-line); padding: 14px 16px; }
+  .bring h3 { font-size: 24px; font-weight: 800; }
+  .bring h3 span { font-family: var(--mono); font-size: 18px; color: var(--rust); margin-left: 6px; font-weight: 600; }
+  .bring p { font-size: 18px; line-height: 1.4; color: var(--navy-muted); margin-top: 4px; }
+  .keys { margin-top: 12px; background: var(--paper-2); border: 2px solid var(--paper-line); border-left: 8px solid var(--navy); padding: 14px 18px; font-size: 19px; line-height: 1.45; color: var(--navy-muted); }
+  .keys code { color: var(--navy); }
+  .holds { margin-top: 40px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .hold { background: var(--ink); color: var(--text); padding: 18px; text-align: center; font-family: var(--mono); font-size: 20px; }
+  .hold small { display: block; font-size: 14px; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 6px; }
+  .note { margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .note .box { border-left: 8px solid var(--rust); }
+  .note h2 { font-size: 26px; }
+</style>
+</head>
+<body class="sheet grid-light">
+<div class="page">
+  <span class="label"><b>CONN3X</b> · CIRCUIT-LANGFUSE</span>
+  <h1>An audit trail for every prompt</h1>
+  <p class="lede">Langfuse 4 on one 4 GB host: the web server, a worker, ClickHouse for traces and MinIO for raw events, each a systemd service, all on loopback. The LiteLLM gateway and your apps send traces over OpenTelemetry.</p>
+
+  <div class="map">
+    <div class="apps">
+      <div class="box"><span class="k">THE GATEWAY</span><h2 style="font-size: 26px;">LiteLLM</h2><p><code>langfuse_url</code>: a trace of every call. Prompts read <code>redacted-by-litellm</code> unless you keep them.</p></div>
+      <div class="box"><span class="k">YOUR APPS</span><h2 style="font-size: 26px;">Langfuse SDKs</h2><p>Python or JavaScript, with the project's <code>pk-lf-</code> and <code>sk-lf-</code> keys.</p></div>
+      <div class="box"><span class="k">YOUR PEOPLE</span><h2 style="font-size: 26px;">The web UI</h2><p>Through Caddy. Sign-up off; the owner invites everyone else.</p></div>
+    </div>
+    <div class="wire"><span class="arrow">→</span>OTLP<br>over<br>HTTPS</div>
+    <div class="host">
+      <span class="k">ONE HOST · 4 GB · DEBIAN, UBUNTU, FEDORA OR ROCKY LINUX</span>
+      <div class="lo">
+        <span class="k">LOOPBACK ONLY · 127.0.0.1</span>
+        <div class="row">
+          <div class="dark web"><h3>langfuse-web<span>:3000</span></h3><p>Takes traces, serves the UI. Telemetry off.</p></div>
+          <div class="dark"><h3>langfuse-worker<span>:3030</span></h3><p>Moves queued events into ClickHouse.</p></div>
+        </div>
+        <div class="row">
+          <div class="dark"><h3>ClickHouse<span>:8123 · :9000</span></h3><p>26.8 LTS. The traces themselves.</p></div>
+          <div class="dark"><h3>MinIO<span>:9002</span></h3><p>Chainguard's build of the open-source server. Raw events.</p></div>
+        </div>
+        <div class="row">
+          <div class="bring"><h3>PostgreSQL<span>you bring</span></h3><p>Users, projects, keys. circuit-postgres.</p></div>
+          <div class="bring"><h3>Valkey<span>you bring</span></h3><p>The queue, with <code>noeviction</code>. circuit-valkey.</p></div>
+        </div>
+      </div>
+      <div class="keys"><code>/etc/langfuse/keys.env</code>: <code>NEXTAUTH_SECRET</code>, <code>SALT</code>, <code>ENCRYPTION_KEY</code> and the ClickHouse and MinIO passwords, made on the host by the first apply. Never in your plan or state. Back it up.</div>
+    </div>
+  </div>
+
+  <span class="k" style="margin-top: 40px;">WHAT A TRACE HOLDS</span>
+  <div class="holds" style="margin-top: 0;">
+    <div class="hold"><small>IN</small>prompt</div>
+    <div class="hold"><small>OUT</small>response</div>
+    <div class="hold"><small>USAGE</small>tokens</div>
+    <div class="hold"><small>MONEY</small>cost</div>
+    <div class="hold"><small>TIME</small>latency</div>
+  </div>
+
+  <div class="note">
+    <div class="box"><span class="k">KNOW THIS</span><h2>It can keep the prompts</h2><p>That's the point of a trace, and it's also a store of everything anyone typed. Decide who can sign in.</p></div>
+    <div class="box"><span class="k">KNOW THIS TOO</span><h2>minio/minio is archived</h2><p>Upstream stopped in April 2026. This runs Chainguard's AGPL fork, pinned by digest.</p></div>
+  </div>
+
+  <div class="key">
+    <h3>Tested</h3>
+    <p>On 4 GB droplets with Ubuntu, Debian, Rocky Linux and Fedora: sign-up refused, a trace over OTLP readable within three seconds, a wrong secret key a <code>401</code>, the trace still there after a reboot. LiteLLM's calls arrived as generations within seconds.</p>
+  </div>
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo.svg" alt="">
+    <span>github.com/conn3xorg/circuit-langfuse</span>
+  </div>
+</div>
+</body>
+</html>

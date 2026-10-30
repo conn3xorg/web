@@ -13,6 +13,8 @@ const blog = defineCollection({
     author: z.string().default("The Conn3x team"),
     image: z.string().optional(),
     imageAlt: z.string().optional(),
+    // Posts that share a series name list each other once they are live.
+    series: z.string().optional(),
   }),
 });
 

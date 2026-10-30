@@ -1,0 +1,24 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scrub it before the model sees it: social card</title>
+<link rel="stylesheet" href="../ai-you-can-account-for/series.css">
+<style>.hl { color: var(--accent); }</style>
+</head>
+<body class="card grid-dark">
+<div class="frame">
+  <div class="top"><img src="../../../apps/site/src/brand/logo-dark.svg" alt=""><span class="label"><b>PRESIDIO</b> · PII · BEST EFFORT</span></div>
+  <h1>Scrub it before the model sees it.<br><span>Names out. Placeholders in.</span></h1>
+  <div class="route">
+    <div class="node"><span class="tag">IN</span>My name is <span class="hl">David Johnson</span><br>…<span class="hl">david@example.com</span></div>
+    <div class="arrow">→</div>
+    <div class="node hot"><span class="tag">PRESIDIO :5002 · :5001</span>PERSON 11–24<br>EMAIL_ADDRESS 41–58</div>
+    <div class="arrow">→</div>
+    <div class="node"><span class="tag">OUT</span>My name is <span class="ok">&lt;PERSON&gt;</span><br>…<span class="ok">&lt;EMAIL_ADDRESS&gt;</span></div>
+  </div>
+  <div class="foot"><span>conn3x.org/blog</span><b>github.com/conn3xorg/circuit-presidio</b></div>
+</div>
+</body>
+</html>
