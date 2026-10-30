@@ -46,6 +46,8 @@ export const samples = {
   "k3s.servers": "server1 203.0.113.20\nserver2 203.0.113.21\nserver3 203.0.113.22",
   "k3s.agents": "agent1 203.0.113.23",
   "keepalived.virtual_ips": "10.0.0.100/24",
+  "zabbix.servers": "zabbix 203.0.113.50",
+  "zabbix.agents": "zabbix 203.0.113.50\nclient1 203.0.113.10",
   "velociraptor.server": "dfir 203.0.113.40",
   "velociraptor.clients": "client1 203.0.113.10\nclient2 203.0.113.20",
   "langfuse.public_url": "https://langfuse.example.com",
@@ -85,6 +87,7 @@ export const combos = [
   { distro: "fedora45", picks: ["langfuse", "litellm", "infisical", "caddy"] },
   { distro: "ubuntu2404", picks: ["mssql", "caddy", "firewall"], values: { "mssql.edition": "Express" } },
   { distro: "rocky10", picks: ["k3s", "velociraptor", "nginx", "firewall"] },
+  { distro: "debian13", picks: ["zabbix", "postgres", "caddy"] },
   { distro: "rocky10", picks: ["freeipa", "velociraptor", "caddy", "auto-updates"] },
 ];
 

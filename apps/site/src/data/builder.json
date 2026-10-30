@@ -24,8 +24,7 @@
   "excluded": {
     "kubeadm": "kubeadm has control planes and workers, two kinds of host. Its README shows how to set them up.",
     "microshift": "MicroShift turns the whole box into an OpenShift node, with its router on 80 and 443. Give it a host of its own and follow its README.",
-    "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README.",
-    "zabbix": "Zabbix has a server and the agents that report to it, two kinds of host. Its README shows how to set them up."
+    "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README."
   },
   "conflicts": [
     {
@@ -276,7 +275,8 @@
     "zeek": "Set interface to the network card Zeek should watch.",
     "k3s": "Set TF_VAR_k3s_token to something like the output of openssl rand -hex 32, and keep it the same for the life of the cluster.",
     "velociraptor": "Set TF_VAR_velociraptor_client_nonce to something like the output of openssl rand -hex 16, and keep it the same for the life of the deployment. The GUI listens on the server itself, so reach it through an SSH tunnel or a proxy.",
-    "freeipa": "The installer takes about ten minutes. Pass the same passwords on every plan as well as every apply. The README explains why."
+    "freeipa": "The installer takes about ten minutes. Pass the same passwords on every plan as well as every apply. The README explains why.",
+    "zabbix": "The frontend listens on the server itself, on 127.0.0.1:8080, so reach it through an SSH tunnel or a proxy. Sign in as Admin with your admin password."
   },
   "wiring": {
     "github-runner": {
@@ -353,6 +353,29 @@
           "db_connection_uri": "postgresql://litellm:${db_password}@127.0.0.1:5432/litellm"
         }
       }
+    },
+    "zabbix": {
+      "secrets": [
+        "db_password",
+        "admin_password"
+      ],
+      "values": {
+        "zabbix_postgres": {
+          "users": [
+            "zabbix"
+          ],
+          "databases": {
+            "zabbix": "zabbix"
+          },
+          "user_passwords": {
+            "zabbix": "${db_password}"
+          }
+        },
+        "zabbix": {
+          "database_password": "${db_password}",
+          "admin_password": "${admin_password}"
+        }
+      }
     }
   },
   "mustTick": {
@@ -420,6 +443,35 @@
         "prefix": "client",
         "light": true,
         "help": "Hosts that report to the server. They can also run other circuits from this build."
+      }
+    ],
+    "zabbix": [
+      {
+        "input": "servers",
+        "label": "Server",
+        "prefix": "zabbix",
+        "min": 1,
+        "one": true,
+        "os": true,
+        "help": "Runs the Zabbix server, its frontend and the PostgreSQL database they need."
+      },
+      {
+        "input": "agents",
+        "label": "Agents",
+        "prefix": "agent",
+        "light": true,
+        "sameHost": true,
+        "os": true,
+        "help": "Hosts to run Zabbix agent 2 on. They can also run other circuits from this build, and the server can be one of them."
+      }
+    ]
+  },
+  "companions": {
+    "zabbix": [
+      {
+        "as": "zabbix_postgres",
+        "circuit": "postgres",
+        "role": "servers"
       }
     ]
   }

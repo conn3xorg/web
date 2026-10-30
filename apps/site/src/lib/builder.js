@@ -250,7 +250,7 @@ export function unavailable(data, name, distro) {
   if (!c.tested.includes(distro)) return `Not tested on ${d.name} yet.`;
   const required = data.inputs[name].inputs.filter((v) => v.required && !secret(v) && !roleOf(data, name, v.name));
   for (const v of required) if (!fieldKind(parseType(v.type))) return `Needs ${v.name}, which the builder can't ask for yet.`;
-  for (const r of data.builder.requires[name] ?? []) {
+  for (const r of [...(data.builder.requires[name] ?? []), ...(data.builder.companions?.[name] ?? []).map((co) => co.circuit)]) {
     const why = unavailable(data, r, distro);
     if (why) return `Needs ${r}: ${why}`;
   }
@@ -419,11 +419,12 @@ export function generate(data, build) {
       if (r.one && n > 1) fail(field, `${r.input} takes one host.`);
       if (r.odd && n % 2 === 0 && n > 0) fail(field, `${r.input} needs an odd number of hosts: ${r.oddWhy}`);
       for (const a of Object.values(got)) {
-        if (own.has(a)) fail(field, `${a} is in ${name} twice. Each host has one role.`);
+        if (own.has(a) && !r.sameHost) fail(field, `${a} is in ${name} twice. Each host has one role.`);
         own.add(a);
         claims.push({ address: a, owner: name, light: !!r.light, field });
       }
-      if (n) placed[name][r.input] = got;
+      // A circuit that reads these hosts after another finishes can't look up the distribution, so it's told.
+      if (n) placed[name][r.input] = r.os ? Object.fromEntries(Object.entries(got).map(([h, address]) => [h, new Ref(inline({ address, os: distro.os }))])) : got;
     }
   }
   // Agents and clients can sit beside anything else. Anything heavier gets a host of its own.
@@ -496,7 +497,13 @@ export function generate(data, build) {
       const port = set ? `${set[1]}/${p.port.split("/")[1]}` : p.port;
       (p.private ? closed : open).push({ port, circuit: name });
     }
-    modules.push({ name, c, body, needs: data.builder.requires[name] ?? [] });
+    // A second copy of a circuit that goes with one role's hosts, such as the database on Zabbix's server.
+    const companions = data.builder.companions?.[name] ?? [];
+    for (const co of companions) {
+      const coBody = [["hosts", placed[name][co.role]], ...shared, ...Object.entries(wired.values[co.as] ?? {})];
+      modules.push({ name: co.as, doc: co.circuit, c: data.circuits[co.circuit], body: coBody, needs: [] });
+    }
+    modules.push({ name, c, body, needs: [...(data.builder.requires[name] ?? []), ...companions.map((co) => co.as)] });
   }
 
   const net = (build.network ?? "").trim();
@@ -556,12 +563,12 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   out += "It's configuration only: nothing has touched your servers yet, and nothing will until you run `conn3x apply` and say yes.\n\n";
   out += "## What's in it\n\n";
   for (const m of modules) {
-    out += `- **${m.name}** ${m.c.version}: ${m.c.description} Docs: https://docs.conn3x.org/circuits/${m.name}\n`;
+    out += `- **${m.name}** ${m.c.version}: ${m.c.description} Docs: https://docs.conn3x.org/circuits/${m.doc ?? m.name}\n`;
   }
   if (fw.roles) {
     out += "\n## Which host does what\n\n";
     for (const m of modules) {
-      const ps = Object.entries(placed[m.name]);
+      const ps = Object.entries(placed[m.name] ?? {});
       if (ps.length) out += `- **${m.name}**: ${ps.map(([r, h]) => `${r} on ${Object.keys(h).join(", ")}`).join("; ")}\n`;
     }
     out += "\nEvery other circuit in this config runs on all the hosts in `local.hosts`.\n";
