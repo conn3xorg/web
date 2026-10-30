@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- Copyright (c) The Conn3x Authors. SPDX-License-Identifier: MPL-2.0 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Circuit Builder: what it won't let you do</title>
+<link rel="stylesheet" href="../why-conn3x/shared.css">
+<style>
+  body { width: 1600px; color: var(--text); font-variant-ligatures: none; }
+  .page { padding: 88px 96px 72px; }
+  .label { font-family: var(--mono); font-size: 22px; letter-spacing: 0.14em; color: var(--muted); }
+  .label b { color: var(--accent); font-weight: 600; }
+  h1 { font-size: 80px; line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin: 28px 0 24px; }
+  h1 span { color: var(--accent); }
+  .lede { font-size: 32px; line-height: 1.4; color: var(--muted); max-width: 1240px; }
+  code { font-family: var(--mono); font-size: 0.84em; color: var(--text); }
+  .grid { margin-top: 52px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .rule { background: var(--ink-3); border: 2px solid var(--line); border-left: 8px solid var(--accent); padding: 24px 28px; }
+  .rule h2 { font-size: 32px; letter-spacing: -0.02em; font-weight: 800; line-height: 1.1; }
+  .rule h2 s { text-decoration-color: var(--accent); text-decoration-thickness: 3px; color: var(--muted); }
+  .rule p { font-size: 22px; line-height: 1.42; color: var(--muted); margin-top: 10px; }
+  .ex { margin-top: 14px; font-family: var(--mono); font-size: 17px; line-height: 1.5; color: var(--text); background: var(--ink-2); border: 1px solid var(--line); padding: 10px 14px; }
+  .ex .c { color: var(--dim); } .ex .s { color: var(--add); } .ex .k { color: var(--accent); }
+  .band { margin-top: 28px; background: var(--paper); color: var(--navy); padding: 26px 32px; display: flex; justify-content: space-between; align-items: center; font-size: 25px; }
+  .band b { color: var(--rust); }
+  .band code { color: var(--navy); }
+  .band span:last-child { font-family: var(--mono); font-size: 20px; color: var(--navy-muted); }
+  .bottom { margin-top: 48px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 20px; color: var(--muted); }
+  .bottom img { height: 34px; }
+</style>
+</head>
+<body class="grid-dark">
+<div class="page">
+  <span class="label"><b>CIRCUIT BUILDER</b> · THE GUARD RAILS</span>
+  <h1>What it <span>won't</span> let you do</h1>
+  <p class="lede">Each of these would break a server or leave one open. The builder stops it before a line is written, and tells you why.</p>
+
+  <div class="grid">
+    <div class="rule"><h2>Put two things on one port</h2>
+      <p>80 and 443, DNS on 53, 3000, 8080, 9090, 9100 and 3306. Pick one and its rivals grey out.</p>
+      <div class="ex"><span class="c">apache:</span> Can't go with nginx: both want ports 80 and 443.</div></div>
+    <div class="rule"><h2>Use a circuit on an untested distro</h2>
+      <p>A circuit is offered only on the distributions its own CI tests.</p>
+      <div class="ex"><span class="c">zeek:</span> Not tested on Rocky Linux 10 yet.</div></div>
+    <div class="rule"><h2>Type a password into the page</h2>
+      <p>Secrets become variables in <code>variables.tf</code>. You set them in your shell; main.tf only points at them.</p>
+      <div class="ex">export <span class="k">TF_VAR_valkey_password</span>=<span class="s">'...'</span></div></div>
+    <div class="rule"><h2>Forget what a circuit needs</h2>
+      <p>Pick Infisical and PostgreSQL and Valkey come along, wired with the role, database and URLs it expects.</p>
+      <div class="ex">depends_on = [module.postgres, module.valkey]</div></div>
+    <div class="rule"><h2>Open more than you use</h2>
+      <p>With the firewall picked, it opens only what your picks listen on. LAN-only ports like Samba's 445 open to a network you name, or stay shut.</p>
+      <div class="ex">{ port = <span class="s">"80/tcp"</span> },</div></div>
+    <div class="rule"><h2>Run unpinned or unofficial code</h2>
+      <p>Only official circuits, each pinned to its release. No raw HCL: every value you type is escaped by one tested function.</p>
+      <div class="ex">source = <span class="s">"github.com/conn3xorg/circuit-nginx?ref=v0.1.0"</span></div></div>
+  </div>
+
+  <div class="band"><span>Checked in CI: <b>65 circuits alone and 20 combinations</b> run through <code>conn3x validate</code>.</span><span>85 configs</span></div>
+
+  <div class="bottom">
+    <img src="../../../apps/site/src/brand/logo-dark.svg" alt="">
+    <span>conn3x.org/build</span>
+  </div>
+</div>
+</body>
+</html>
