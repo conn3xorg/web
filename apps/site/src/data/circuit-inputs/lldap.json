@@ -1,0 +1,134 @@
+{
+  "name": "lldap",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "lldap_version",
+      "type": "string",
+      "default": "0.6.3",
+      "description": "LLDAP release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x86_64": "e80b50ef39be61de9f1d75182b1e1fa5d82c672261c7e34fd8ffec5455ed3883",
+        "aarch64": "3843e3fde8dff0d2a16c51f62ec2ed318916e722857d20daa61d9175a2b7c020"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, x86_64 and aarch64, from the release page. Change these with lldap_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "base_dn",
+      "type": "string",
+      "description": "Base DN of the directory, such as \"dc=example,dc=com\". Users live under ou=people and groups under ou=groups beneath it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "ldap_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the LDAP server, and LDAPS if it's on, listens on. The default keeps it to the host itself; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ldap_port",
+      "type": "number",
+      "default": 3890,
+      "description": "Port of the LDAP server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the web interface listens on. The default keeps it to the host itself, for a proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_port",
+      "type": "number",
+      "default": 17170,
+      "description": "Port of the web interface and its API.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": "admin",
+      "description": "Name of the admin user LLDAP creates on its first start. It binds as uid=NAME,ou=people,BASE_DN.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_email",
+      "type": "string",
+      "default": null,
+      "description": "Email address of the admin user, set when LLDAP creates it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of the admin user, at least 8 characters. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan. Changing it sets the new one.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "database_url",
+      "type": "string",
+      "default": null,
+      "description": "PostgreSQL or MySQL URL to keep LLDAP's data in, such as \"postgres://lldap:PASSWORD@127.0.0.1/lldap\". The database must exist. When null, SQLite in /var/lib/lldap. It never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "ldaps_cert_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of a PEM certificate, with its chain, for LDAPS. With ldaps_key_file, turns LDAPS on. The lldap user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ldaps_key_file",
+      "type": "string",
+      "default": null,
+      "description": "Path on the host of the PEM private key for ldaps_cert_file. The lldap user must be able to read it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ldaps_port",
+      "type": "number",
+      "default": 6360,
+      "description": "Port of the LDAPS server, when it's on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

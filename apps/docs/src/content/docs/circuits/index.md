@@ -46,6 +46,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [PostgreSQL](/circuits/postgres) | Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state. | v0.2.0 |
 | [MariaDB](/circuits/mariadb) | MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would. | v0.1.0 |
 | [MySQL](/circuits/mysql) | MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state. | v0.1.0 |
+| [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.1.0 |
 | [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.1.0 |
 | [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.1.0 |
 
@@ -57,6 +58,8 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.1.0 |
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.1.0 |
 | [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.0 |
+| [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.0 |
+| [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.1.0 |
 
 ### Containers and Kubernetes
 
@@ -95,6 +98,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [fail2ban](/circuits/fail2ban) | Bans addresses that keep failing SSH logins, through nftables, with room for jails of your own. | v0.2.0 |
 | [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.2.0 |
 | [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.0 |
+| [auditd](/circuits/auditd) | Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability | v0.1.0 |
 
 ### Storage and backup
 
@@ -112,6 +116,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [LLDAP](/circuits/lldap) | LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state. | v0.1.0 |
 | [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.1.0 |
 | [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.2.0 |
+| [Infisical](/circuits/infisical) | Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host. | v0.1.0 |
 
 ### AI
 
@@ -119,6 +124,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | --- | --- | --- |
 | [Ollama](/circuits/ollama) | Runs local LLMs with Ollama from the official release, with the models you name pulled and kept. | v0.1.1 |
 | [Qdrant](/circuits/qdrant) | Runs the Qdrant vector database from its official release under systemd, on loopback until you open it, with an optional API key. | v0.1.0 |
+| [Agent box](/circuits/agentbox) | Remote dev box for coding agents: key-only user, git, tmux, ripgrep, Node.js LTS, agent CLIs via npm. Works with Orca or plain SSH. | v0.1.0 |
 
 ### Platforms
 
@@ -126,12 +132,15 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | --- | --- | --- |
 | [Proxmox VE](/circuits/proxmox) | Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included. | v0.1.0 |
 | [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.1.0 |
+| [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.0 |
+| [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.1.0 |
 
 ### Build and runtimes
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Java](/circuits/java) | OpenJDK or Eclipse Temurin 21 or 25 on Debian, Ubuntu, Fedora and Rocky, set as the default java with JAVA_HOME exported. | v0.1.0 |
+| [PHP-FPM](/circuits/php) | PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer. | v0.1.0 |
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.1.0 |
 
 ### Communication and media
@@ -140,3 +149,12 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | --- | --- | --- |
 | [Matrix Synapse](/circuits/matrix) | Synapse Matrix homeserver under Podman, behind your reverse proxy, with host-generated secrets and SQLite or Postgres. | v0.1.0 |
 | [Jellyfin](/circuits/jellyfin) | Jellyfin media server: official apt repo or Podman image, read-only media, GPU groups, optional admin that skips the setup wizard. | v0.1.0 |
+
+### Detection and response
+
+| Circuit | What it does | Version |
+| --- | --- | --- |
+| [Suricata](/circuits/suricata) | Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json | v0.1.0 |
+| [Zeek](/circuits/zeek) | Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change. | v0.1.0 |
+| [osquery](/circuits/osquery) | osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment. | v0.1.0 |
+| [Velociraptor](/circuits/velociraptor) | Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state. | v0.1.0 |

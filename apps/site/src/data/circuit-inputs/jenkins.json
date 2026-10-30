@@ -1,0 +1,123 @@
+{
+  "name": "jenkins",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "jenkins_version",
+      "type": "string",
+      "default": "2.580.2",
+      "description": "Jenkins LTS release to install, such as \"2.580.2\". Raising it upgrades Jenkins in place.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "java_version",
+      "type": "number",
+      "default": 25,
+      "description": "OpenJDK release to run Jenkins on, from the distribution's packages: 21 or 25, the two Jenkins supports. Fedora 45 packages only 25.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "plugin_manager_version",
+      "type": "string",
+      "default": "2.15.0",
+      "description": "Release of Jenkins' plugin installation manager tool, which installs the plugins. Change plugin_manager_sha256 with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "plugin_manager_sha256",
+      "type": "string",
+      "default": "a86853ec2e2933f37a4b471ba65099b61e03c87a80c2ef8fe2315eb135672d43",
+      "description": "SHA-256 of jenkins-plugin-manager-VERSION.jar. Change it with plugin_manager_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "plugins",
+      "type": "map(string)",
+      "default": {},
+      "description": "Plugins to install, by ID, with the version of each, such as { timestamper = \"1.30\", git = \"latest\" }. configuration-as-code is always installed; list it to pick its version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "plugins_file",
+      "type": "string",
+      "default": null,
+      "description": "Local path of a plugins.txt, one ID:VERSION per line, installed as well as plugins. When null, none.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": "admin",
+      "description": "ID of the Jenkins user JCasC creates with admin_password.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of admin_username, set by JCasC on every start of Jenkins. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "casc",
+      "type": "any",
+      "default": {},
+      "description": "More Jenkins Configuration as Code, as an object written to casc.yaml, such as { jenkins = { numExecutors = 0 } }. The circuit sets jenkins.securityRealm and jenkins.authorizationStrategy itself, and unclassified.location.url when url is set.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "url",
+      "type": "string",
+      "default": null,
+      "description": "Address people reach Jenkins by, such as \"https://ci.example.com/\". Jenkins builds the links in its emails and build statuses from it. When null, Jenkins leaves it empty and warns about it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Jenkins listens on. The default keeps it to the host itself, for a proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port Jenkins serves HTTP on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "heap_size",
+      "type": "string",
+      "default": null,
+      "description": "JVM heap, set as both -Xms and -Xmx, such as \"1g\". When null, Java sizes it at a quarter of the host's memory.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

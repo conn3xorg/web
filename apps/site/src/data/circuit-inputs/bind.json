@@ -1,0 +1,63 @@
+{
+  "name": "bind",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "zones",
+      "type": "map(object({\n    type = string\n    records = optional(list(object({\n      name  = string\n      type  = string\n      ttl   = optional(number)\n      value = string\n    })), [])\n    primaries      = optional(list(string), [])\n    key            = optional(string)\n    allow_transfer = optional(list(string), [])\n    also_notify    = optional(list(string), [])\n  }))",
+      "default": {},
+      "description": "Zones BIND serves, by name, such as { \"example.com\" = { type = \"primary\", records = [...] } }. A primary holds records; a secondary copies the zone from its primaries.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tsig_keys",
+      "type": "map(string)",
+      "default": {},
+      "description": "TSIG keys for zone transfers, by name, with each key's base64 secret, as tsig-keygen prints it. They use hmac-sha256. The config is written with content_wo when any are set, so the secrets stay out of state and the plan.",
+      "sensitive": true,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "soa",
+      "type": "object({\n    mname   = optional(string)\n    rname   = optional(string, \"hostmaster\")\n    refresh = optional(number, 3600)\n    retry   = optional(number, 900)\n    expire  = optional(number, 1209600)\n    minimum = optional(number, 300)\n  })",
+      "default": {},
+      "description": "SOA fields for primary zones. mname defaults to the zone's first NS record at the apex. rname is the contact's mailbox with the @ as a dot, such as \"hostmaster.example.com.\", or a name relative to the zone. The serial is set on the host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "default_ttl",
+      "type": "number",
+      "default": 3600,
+      "description": "TTL, in seconds, for records that don't give their own.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_on",
+      "type": "list(string)",
+      "default": [
+        "any"
+      ],
+      "description": "Addresses BIND answers on, port 53. \"any\" means every IPv4 and IPv6 address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "recursion",
+      "type": "bool",
+      "default": false,
+      "description": "Answer recursive queries too, for localhost and the host's own networks only. Off, BIND answers only for its own zones and refuses everything else. For a resolver, circuit-unbound is the better fit.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

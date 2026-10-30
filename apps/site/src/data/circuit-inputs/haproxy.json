@@ -1,0 +1,61 @@
+{
+  "name": "haproxy",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "frontends",
+      "type": "map(object({\n    bind            = string\n    mode            = optional(string, \"http\")\n    tls_pem         = optional(string)\n    default_backend = string\n  }))",
+      "default": {},
+      "description": "Frontends, by name. Each listens on bind, such as \"*:80\" or \"10.0.0.5:443\", in mode http or tcp, and sends traffic to default_backend. tls_pem, a PEM file or directory on the host, turns TLS on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "backends",
+      "type": "map(object({\n    servers    = map(string)\n    balance    = optional(string, \"roundrobin\")\n    check      = optional(bool, true)\n    check_path = optional(string)\n  }))",
+      "default": {},
+      "description": "Backends, by name. servers maps each server's name to its address and port. check turns health checks on; check_path makes them HTTP requests for that path instead of a TCP connect.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "timeouts",
+      "type": "object({\n    connect = optional(string, \"5s\")\n    client  = optional(string, \"30s\")\n    server  = optional(string, \"30s\")\n  })",
+      "default": {},
+      "description": "How long HAProxy waits to connect to a server, and for the client or server to send something before it closes the connection. Raise client and server for long-lived TCP connections, such as databases.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stats",
+      "type": "object({\n    bind = optional(string, \"127.0.0.1:8404\")\n    uri  = optional(string, \"/stats\")\n    user = optional(string, \"admin\")\n  })",
+      "default": null,
+      "description": "HAProxy's stats page. null leaves it off; {} turns it on at http://127.0.0.1:8404/stats.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stats_password",
+      "type": "string",
+      "default": null,
+      "description": "Password for the stats page, with stats.user. When null, the page has no login, so keep it on 127.0.0.1.",
+      "sensitive": true,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "selinux_connect_any",
+      "type": "bool",
+      "default": true,
+      "description": "On hosts with SELinux on, turn on the haproxy_connect_any boolean, so HAProxy can listen on and connect to any port. Set false to keep the policy's port list and label ports yourself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

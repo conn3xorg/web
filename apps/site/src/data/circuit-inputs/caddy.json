@@ -1,0 +1,25 @@
+{
+  "name": "caddy",
+  "version": "v0.2.1",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "sites",
+      "type": "map(object({\n    reverse_proxy = optional(list(string), [])\n    root          = optional(string)\n    extra         = optional(string, \"\")\n  }))",
+      "default": {},
+      "description": "Sites to serve, by site address such as \"example.com\" or \":8080\". Each proxies to reverse_proxy upstreams or serves files from root, plus any extra Caddyfile lines.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "default": null,
+      "description": "Email address for the ACME account Caddy gets certificates with.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

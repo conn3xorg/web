@@ -152,4 +152,4 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 - Repository: [conn3xorg/circuit-jenkins](https://github.com/conn3xorg/circuit-jenkins). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-jenkins/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-jenkins/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.1.0/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [Java](/circuits/java).
+- Related circuits: [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [Java](/circuits/java), [PHP-FPM](/circuits/php).

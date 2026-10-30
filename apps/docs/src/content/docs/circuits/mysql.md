@@ -163,4 +163,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mysql/blob/v0.1.0/LI
 
 - Repository: [conn3xorg/circuit-mysql](https://github.com/conn3xorg/circuit-mysql). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-mysql/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-mysql/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.1.0/examples/local).
-- Related circuits: [MariaDB](/circuits/mariadb), [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch).
+- Related circuits: [MariaDB](/circuits/mariadb), [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch).

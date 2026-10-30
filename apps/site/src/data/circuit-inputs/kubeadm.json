@@ -1,0 +1,103 @@
+{
+  "name": "kubeadm",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "control_planes",
+      "type": "any",
+      "description": "Control plane nodes, by name: a map of names to addresses, or to host objects with an address and optional host_key, user, port, private_key_file or jump_hosts. Names become node names. The first name in sorted order runs kubeadm init.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "workers",
+      "type": "any",
+      "default": {},
+      "description": "Worker nodes, by name, in the same form as control_planes. A name can't be both a control plane and a worker.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "first_control_plane",
+      "type": "string",
+      "default": null,
+      "description": "Control plane that runs kubeadm init. When null, the first name in sorted order. Keep it the same for the life of the cluster: adding a control plane whose name sorts first would otherwise run kubeadm init on it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "join_token",
+      "type": "string",
+      "description": "Bootstrap token nodes join with, in kubeadm's form: 6 and 16 characters from a-z and 0-9, joined by a dot. kubeadm token generate makes one.",
+      "sensitive": false,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "certificate_key",
+      "type": "string",
+      "description": "Key that encrypts the control plane certificates kubeadm shares with joining control planes: 64 hex characters, such as from kubeadm certs certificate-key.",
+      "sensitive": false,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "kubernetes_version",
+      "type": "string",
+      "default": "1.37",
+      "description": "Kubernetes minor version, such as \"1.37\". Nodes get the newest patch release of it from pkgs.k8s.io.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "control_plane_endpoint",
+      "type": "string",
+      "default": null,
+      "description": "Address and port of the Kubernetes API, such as a load balancer or a virtual IP. When null, the first control plane's address and port 6443.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "pod_cidr",
+      "type": "string",
+      "default": "10.244.0.0/16",
+      "description": "Pod network. The default is the one Flannel expects.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "service_cidr",
+      "type": "string",
+      "default": "10.96.0.0/12",
+      "description": "Service network.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cni_manifest_url",
+      "type": "string",
+      "default": "https://github.com/flannel-io/flannel/releases/download/v0.28.10/kube-flannel.yml",
+      "description": "Manifest of the pod network to apply after kubeadm init. Set null to install one yourself, as with Cilium's CLI or a Helm chart.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ignore_preflight_errors",
+      "type": "list(string)",
+      "default": [],
+      "description": "kubeadm preflight checks to treat as warnings, such as [\"SystemVerification\"]. Swap is always one, since the kubelet runs with failSwapOn false.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

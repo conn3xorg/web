@@ -1,0 +1,73 @@
+{
+  "name": "prometheus",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "prometheus_version",
+      "type": "string",
+      "default": "3.15.1",
+      "description": "Prometheus release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "6a726885328ad9efebbf36e876ce2fb6225468a71fd1e7ce3ba666d5f4d97a84",
+        "arm64": "ceb6d21493c37ca0b4513b147642797c68cf39a0f50a444d50e1e80c74f21b26"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's sha256sums.txt. Change these with prometheus_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1:9090",
+      "description": "Address and port Prometheus serves its UI and API on. \":9090\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "scrape_interval",
+      "type": "string",
+      "default": "15s",
+      "description": "How often Prometheus scrapes every target and evaluates rules, such as \"15s\" or \"1m\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "retention",
+      "type": "string",
+      "default": "15d",
+      "description": "How long Prometheus keeps samples before deleting them, such as \"15d\" or \"90d\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "scrape_targets",
+      "type": "map(list(string))",
+      "default": {},
+      "description": "Scrape jobs: a map of job names to lists of HOST:PORT targets, such as { node = [\"10.0.0.5:9100\"] }. Prometheus always scrapes itself as the prometheus job.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_args",
+      "type": "list(string)",
+      "default": [],
+      "description": "More command-line flags for Prometheus, such as [\"--web.enable-admin-api\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

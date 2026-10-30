@@ -1,0 +1,52 @@
+{
+  "name": "baseline",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "timezone",
+      "type": "string",
+      "default": "UTC",
+      "description": "IANA time zone, such as Europe/Dublin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "chrony_set_clock",
+      "type": "bool",
+      "default": true,
+      "description": "Let chronyd set the system clock. Set to false in containers, and on VMs whose hypervisor sets the clock, so chronyd runs with -x.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "sysctl",
+      "type": "map(string)",
+      "default": {
+        "net.ipv4.tcp_syncookies": "1",
+        "net.ipv4.conf.all.accept_redirects": "0",
+        "net.ipv4.conf.default.accept_redirects": "0",
+        "net.ipv4.conf.all.send_redirects": "0",
+        "net.ipv4.icmp_echo_ignore_broadcasts": "1"
+      },
+      "description": "Kernel parameters to set, by name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "sshd_settings",
+      "type": "map(string)",
+      "default": {
+        "PasswordAuthentication": "no",
+        "PermitRootLogin": "prohibit-password"
+      },
+      "description": "sshd settings to write to /etc/ssh/sshd_config.d/00-conn3x-baseline.conf, by keyword.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

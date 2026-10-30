@@ -134,4 +134,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-proxmox/blob/v0.1.0/
 
 - Repository: [conn3xorg/circuit-proxmox](https://github.com/conn3xorg/circuit-proxmox). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-proxmox/tags) list every release.
 - Examples: [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.0/examples/lxc), [examples/single-node](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.0/examples/single-node).
-- Related circuits: [Tailscale](/circuits/tailscale), [Automatic updates](/circuits/auto-updates), [Forgejo](/circuits/forgejo).
+- Related circuits: [Tailscale](/circuits/tailscale), [Automatic updates](/circuits/auto-updates), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit).

@@ -1,0 +1,16 @@
+{
+  "name": "firewall",
+  "version": "v0.2.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "allow",
+      "type": "list(object({\n    port = string\n    from = optional(string)\n  }))",
+      "default": [],
+      "description": "Ports to open, each with its protocol, such as { port = \"443/tcp\" }, or { port = \"5432/tcp\", from = \"10.0.0.0/8\" } to open it to one address or network only.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

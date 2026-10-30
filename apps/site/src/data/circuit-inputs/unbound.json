@@ -1,0 +1,100 @@
+{
+  "name": "unbound",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "interfaces",
+      "type": "list(string)",
+      "default": [
+        "127.0.0.1",
+        "::1"
+      ],
+      "description": "Addresses unbound listens on, port 53. \"0.0.0.0\" and \"::\" mean every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "access_control",
+      "type": "list(object({\n    cidr   = string\n    action = string\n  }))",
+      "default": [
+        {
+          "cidr": "127.0.0.0/8",
+          "action": "allow"
+        },
+        {
+          "cidr": "::1/128",
+          "action": "allow"
+        }
+      ],
+      "description": "Who may query, as a list of { cidr, action }, such as { cidr = \"192.168.1.0/24\", action = \"allow\" }. Networks not listed are refused. The most specific match wins.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "forwarders",
+      "type": "list(string)",
+      "default": [],
+      "description": "Upstream resolvers to send every query to, in unbound's forward-addr form, such as \"9.9.9.9#dns.quad9.net\". When empty, unbound resolves from the root servers itself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "forward_tls",
+      "type": "bool",
+      "default": false,
+      "description": "Send queries to forwarders over DNS over TLS, on port 853 unless a forwarder gives its own. Give each forwarder a #name to check its certificate against.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "local_zones",
+      "type": "map(string)",
+      "default": {},
+      "description": "Zones unbound answers itself, by name, with their type, such as { \"home.arpa.\" = \"static\" }. A static zone answers from local_data and says any other name in it doesn't exist.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "local_data",
+      "type": "list(string)",
+      "default": [],
+      "description": "Records unbound answers with, in zone file form, such as [\"nas.home.arpa. A 192.168.1.10\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "msg_cache_size",
+      "type": "string",
+      "default": "16m",
+      "description": "Memory for cached answers, such as \"16m\" or \"256m\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rrset_cache_size",
+      "type": "string",
+      "default": "32m",
+      "description": "Memory for cached records. Unbound suggests twice msg_cache_size.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "use_as_system_resolver",
+      "type": "bool",
+      "default": false,
+      "description": "Point the host's own lookups at unbound on 127.0.0.1, through systemd-resolved where it runs, and keep NetworkManager from changing that.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

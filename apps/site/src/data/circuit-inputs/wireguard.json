@@ -1,0 +1,61 @@
+{
+  "name": "wireguard",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "network",
+      "type": "string",
+      "default": "10.77.0.0/24",
+      "description": "Network the tunnel addresses come from, such as \"10.77.0.0/24\". Hosts without a tunnel_ip are numbered from it in order of name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "hub",
+      "type": "string",
+      "default": null,
+      "description": "Name of the host the others connect through. When null, every host connects to every other.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_port",
+      "type": "number",
+      "default": 51820,
+      "description": "UDP port WireGuard listens on, on every host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "persistent_keepalive",
+      "type": "number",
+      "default": 0,
+      "description": "Seconds between keepalive packets to each peer, such as 25, which keeps a NAT mapping open for a host behind one. 0 sends none.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "mtu",
+      "type": "number",
+      "default": null,
+      "description": "MTU of the wg0 interface. When null, wg-quick works it out from the route to each endpoint.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_peers",
+      "type": "map(object({\n    public_key  = string\n    tunnel_ip   = string\n    allowed_ips = optional(list(string), [])\n    endpoint    = optional(string)\n  }))",
+      "default": {},
+      "description": "Peers Conn3x doesn't manage, such as laptops and phones, by name. Each has its own public key and tunnel_ip, and optionally networks behind it in allowed_ips and an endpoint. They peer with every host, or with the hub alone.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

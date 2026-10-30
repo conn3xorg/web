@@ -1,0 +1,105 @@
+{
+  "name": "monitoring",
+  "version": "v0.2.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "grafana_admin_password",
+      "type": "string",
+      "description": "Password for Grafana's admin user. Grafana reads it only on its first start.",
+      "sensitive": false,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "targets",
+      "type": "map(list(string))",
+      "default": {},
+      "description": "Scrape targets by job name, as host:port, such as { node = [\"10.0.0.11:9100\", \"10.0.0.12:9100\"] }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "scrape_interval",
+      "type": "string",
+      "default": "30s",
+      "description": "How often Prometheus scrapes each target.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "retention",
+      "type": "string",
+      "default": "15d",
+      "description": "How long Prometheus keeps samples, such as \"15d\" or \"6w\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "prometheus_listen",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Prometheus's port is published on. It has no login, so the default keeps it on the host; reach it through Grafana or an SSH tunnel.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "prometheus_port",
+      "type": "number",
+      "default": 9090,
+      "description": "Host port Prometheus is published on. Rocky Linux, AlmaLinux and RHEL cloud images often run Cockpit on 9090; pick another port there, such as 9091.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "grafana_listen",
+      "type": "string",
+      "default": "0.0.0.0",
+      "description": "Address Grafana's port 3000 is published on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cadvisor",
+      "type": "bool",
+      "default": true,
+      "description": "Run cAdvisor too, so Prometheus has metrics for every container on the host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "prometheus_version",
+      "type": "string",
+      "default": "v3.15.0",
+      "description": "Tag of the prom/prometheus image.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "grafana_version",
+      "type": "string",
+      "default": "13.2.4",
+      "description": "Tag of the grafana/grafana image.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cadvisor_version",
+      "type": "string",
+      "default": "v0.60.6",
+      "description": "Tag of the ghcr.io/google/cadvisor image.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

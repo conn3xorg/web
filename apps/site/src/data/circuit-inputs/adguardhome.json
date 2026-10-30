@@ -1,0 +1,147 @@
+{
+  "name": "adguardhome",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "adguardhome_version",
+      "type": "string",
+      "default": "0.107.79",
+      "description": "AdGuard Home release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "c48f4a43000665484c5ec28177de11a004759b620dae8f77b2aabefc9ef3687f",
+        "arm64": "3f7893c18e8aaadc456d0452839190561c306ca95175a2254958be80a769c1ae"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's checksums.txt. Change these with adguardhome_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_username",
+      "type": "string",
+      "default": "admin",
+      "description": "User name for the web interface and the API.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password for the web interface and the API. It reaches the host in a root-only file, is hashed there with bcrypt, and never reaches the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "web_address",
+      "type": "string",
+      "default": "127.0.0.1:3000",
+      "description": "Address and port of the web interface and the API. \"0.0.0.0:3000\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dns_bind_hosts",
+      "type": "list(string)",
+      "default": [
+        "0.0.0.0"
+      ],
+      "description": "Addresses AdGuard Home answers DNS on, port 53. \"0.0.0.0\" means every address, IPv4 and IPv6.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "allowed_clients",
+      "type": "list(string)",
+      "default": [
+        "127.0.0.0/8",
+        "::1/128",
+        "10.0.0.0/8",
+        "172.16.0.0/12",
+        "192.168.0.0/16",
+        "100.64.0.0/10",
+        "fc00::/7",
+        "fe80::/10"
+      ],
+      "description": "Clients AdGuard Home answers, as addresses or CIDR networks. Everyone else is refused. The default is loopback and the private ranges. An empty list answers anyone who can reach port 53.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "upstream_dns",
+      "type": "list(string)",
+      "default": [
+        "https://dns.quad9.net/dns-query",
+        "https://cloudflare-dns.com/dns-query"
+      ],
+      "description": "Servers AdGuard Home forwards allowed queries to, in its upstream syntax: \"https://...\" for DNS over HTTPS, \"tls://...\" for DNS over TLS, or a plain address such as \"192.168.1.1\" or \"127.0.0.1:5335\". The default is Quad9 and Cloudflare over HTTPS.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "bootstrap_dns",
+      "type": "list(string)",
+      "default": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "1.1.1.1",
+        "1.0.0.1"
+      ],
+      "description": "Plain DNS servers, by address, that look up the names in upstream_dns, such as dns.quad9.net.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "filters",
+      "type": "map(string)",
+      "default": {
+        "AdGuard DNS filter": "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt"
+      },
+      "description": "Blocklists, names to URLs. Adblock-style lists, hosts files and plain domain lists all work.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "user_rules",
+      "type": "list(string)",
+      "default": [],
+      "description": "Filtering rules of your own, in AdGuard's syntax, such as [\"||ads.example.com^\", \"@@||allowed.example.com^\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rewrites",
+      "type": "map(string)",
+      "default": {},
+      "description": "DNS rewrites for local names, domains to an IP address or another domain, such as { \"nas.home.arpa\" = \"192.168.1.20\" }. A domain can start with *. to cover its subdomains.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "blocking_mode",
+      "type": "string",
+      "default": "default",
+      "description": "How AdGuard Home answers a blocked query: \"default\" (0.0.0.0 or :: for Adblock-style rules, the rule's address for hosts-style ones), \"null_ip\", \"nxdomain\" or \"refused\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

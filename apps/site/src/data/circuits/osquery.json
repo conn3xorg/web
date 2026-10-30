@@ -1,0 +1,19 @@
+{
+  "name": "osquery",
+  "repo": "conn3xorg/circuit-osquery",
+  "description": "osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment.",
+  "version": "v0.1.0",
+  "tags": [
+    "osquery",
+    "fim",
+    "visibility"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Detection and response",
+  "official": true
+}

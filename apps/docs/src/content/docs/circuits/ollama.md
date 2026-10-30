@@ -111,4 +111,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-ollama/blob/v0.1.1/L
 
 - Repository: [conn3xorg/circuit-ollama](https://github.com/conn3xorg/circuit-ollama). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-ollama/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-ollama/tags) list every release.
 - Examples: [examples/digitalocean](https://github.com/conn3xorg/circuit-ollama/tree/v0.1.1/examples/digitalocean), [examples/local](https://github.com/conn3xorg/circuit-ollama/tree/v0.1.1/examples/local).
-- Related circuits: [Tailscale](/circuits/tailscale), [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [Qdrant](/circuits/qdrant).
+- Related circuits: [Tailscale](/circuits/tailscale), [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [Qdrant](/circuits/qdrant), [Agent box](/circuits/agentbox).

@@ -1,0 +1,91 @@
+{
+  "name": "qdrant",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "qdrant_version",
+      "type": "string",
+      "default": "1.20.0",
+      "description": "Qdrant release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x86_64": "b03a64616a1f41ddab78b480a318466541765f19835318113b1821cbea8df52c",
+        "aarch64": "bd8a458b8ef8006ce2c603c5bd6d1d973e39d787f794008dd959112e747c3bb7"
+      },
+      "description": "SHA-256 of the musl release tarball for each architecture, x86_64 and aarch64, from the release page. Change these with qdrant_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the REST and gRPC APIs listen on. The default keeps Qdrant to the host itself; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_port",
+      "type": "number",
+      "default": 6333,
+      "description": "Port of the REST API.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "grpc_port",
+      "type": "number",
+      "default": 6334,
+      "description": "Port of the gRPC API.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "api_key",
+      "type": "string",
+      "default": null,
+      "description": "Key every API request must send in an api-key header. When null, the APIs take requests without one. Pass it at run time with -var or TF_VAR_api_key; it never reaches state.",
+      "sensitive": true,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "storage_path",
+      "type": "string",
+      "default": "/var/lib/qdrant/storage",
+      "description": "Directory Qdrant keeps its collections in.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "snapshots_path",
+      "type": "string",
+      "default": "/var/lib/qdrant/snapshots",
+      "description": "Directory Qdrant writes snapshots to.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "telemetry_disabled",
+      "type": "bool",
+      "default": true,
+      "description": "Stop Qdrant sending anonymous usage statistics to its developers. Set false to send them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "auditd",
+  "repo": "conn3xorg/circuit-auditd",
+  "description": "Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability",
+  "version": "v0.1.0",
+  "tags": [
+    "auditd",
+    "audit",
+    "compliance"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Security and compliance",
+  "official": true
+}

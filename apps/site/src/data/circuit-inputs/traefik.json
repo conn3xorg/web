@@ -1,0 +1,82 @@
+{
+  "name": "traefik",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "traefik_version",
+      "type": "string",
+      "default": "3.7.16",
+      "description": "Traefik release to install, without the leading v.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "759a7bc0d66b74c588255ed9e41c7f9d4aba60bdb7bce9dde551b1268a55eb07",
+        "arm64": "8f9463a7dd3a618569aaa46e19500331d7374a2e6f6ee300a50df5bb49132e1a"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's checksums file. Change these with traefik_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "sites",
+      "type": "map(object({\n    host     = string\n    backends = list(string)\n  }))",
+      "default": {},
+      "description": "Sites to route, by name. Each answers HTTPS requests for host and load-balances them across backends, a list of URLs such as \"http://127.0.0.1:3000\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "acme_email",
+      "type": "string",
+      "default": null,
+      "description": "Email address for the Let's Encrypt account. When set, Traefik gets a certificate for each site's host with the HTTP challenge. When null, sites use Traefik's self-signed default certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "acme_staging",
+      "type": "bool",
+      "default": false,
+      "description": "Get certificates from Let's Encrypt's staging server, which browsers don't trust but which has far higher rate limits. For trying things out.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dashboard",
+      "type": "bool",
+      "default": false,
+      "description": "Serve Traefik's dashboard and API on 127.0.0.1:8080, without authentication. Loopback only: reach it through an SSH tunnel.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "access_log",
+      "type": "bool",
+      "default": false,
+      "description": "Log every request to the journal.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "docker_provider",
+      "type": "bool",
+      "default": false,
+      "description": "Also route to Docker containers that opt in with the label traefik.enable=true. Needs Docker on the host, for example from circuit-docker, since the traefik user joins the docker group.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}
