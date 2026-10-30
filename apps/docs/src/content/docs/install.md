@@ -17,10 +17,10 @@ Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up n
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.6.6` with the version you want.
+Pick the archive for your system. Replace `0.6.10` with the version you want.
 
 ```sh
-VERSION=0.6.6
+VERSION=0.6.10
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
@@ -40,7 +40,7 @@ xattr -d com.apple.quarantine /usr/local/bin/conn3x
 Every release is also published as a container image, tagged with its version and with `latest`:
 
 ```sh
-docker run --rm ghcr.io/conn3xorg/conn3x:v0.6.6 version
+docker run --rm ghcr.io/conn3xorg/conn3x:v0.6.10 version
 ```
 
 The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root user. Podman takes the same command.

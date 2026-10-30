@@ -81,12 +81,10 @@ A step lowers to the `conn3x_command` resource, one instance per host, and conne
 
 **Output.** `stdout` and `stderr` keep the output of the last run, up to 4 KiB each. Both are sensitive, so the plan doesn't print them.
 
-Sensitive hides them from the plan, not from state: the state file keeps both in plain text, so anyone who can read your state can read them. Don't print a secret from a command step. If a command has to produce one, such as a join token, have it write the secret to a file on the host with mode `0600`, and read it there.
-
 ## Removal
 
 Deleting a `command` step changes nothing on the host. To undo what a command did, add a step that does that.
 
 ## From Ansible
 
-`conn3x convert ansible` turns `command` and `shell` tasks into `command` steps, carrying over `creates` and `removes`. `chdir` becomes `cd <dir> && ` in front of the command, and `executable` is dropped. A task with neither `creates` nor `removes` stays a TODO, since Ansible runs it on every play: add a guard or `triggers` so Conn3x knows when it's done.
+`conn3x convert ansible` turns `command` and `shell` tasks into `command` steps, carrying over `creates` and `removes`. `chdir` becomes `cd <dir> && ` in front of the command, and `executable` is dropped. Conn3x tests `creates` and `removes` as plain paths, so one with a glob such as `*` stays a TODO, as does a free-form command with `chdir=` or `creates=` written inline. A task with neither `creates` nor `removes` stays a TODO, since Ansible runs it on every play: add a guard or `triggers` so Conn3x knows when it's done.

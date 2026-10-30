@@ -73,7 +73,7 @@ A step lowers to the `conn3x_repository` resource, one instance per host, and co
 
 **Red Hat family.** Conn3x writes the key to `/etc/pki/rpm-gpg/RPM-GPG-KEY-conn3x-<name>` and the repository to `/etc/yum.repos.d/<name>.repo`, enabled and with `gpgcheck=1`, pointing at the key. dnf reads the new repository on its next run.
 
-**Debian and Ubuntu.** Conn3x writes the key to `/etc/apt/keyrings/conn3x-<name>.asc` and a deb822 file to `/etc/apt/sources.list.d/<name>.sources`, with `Signed-By` set to the key, so apt trusts the key for this repository only. `components` defaults to `["main"]`. A flat repository, whose suite ends in `/` such as `"./"`, gets no components. Conn3x then runs `apt-get update`, so the next step can install from the repository.
+**Debian and Ubuntu.** Conn3x writes the key to `/etc/apt/keyrings/conn3x-<name>.asc` and a deb822 file to `/etc/apt/sources.list.d/<name>.sources`, with `Signed-By` set to the key, so apt trusts the key for this repository only. `components` defaults to `["main"]`. A flat repository, whose suite ends in `/` such as `"./"`, gets no components. Conn3x then runs `apt-get update`, waiting up to five minutes if another apt holds its lock, so the next step can install from the repository. Repository and package steps on one host take turns, so another circuit's install never runs beside this `apt-get update`.
 
 **Validation.** `url` must start with `http://` or `https://`, and `key` must be an ASCII-armored public key. Conn3x only learns the host's family when it connects, so a missing `suites` on Debian or Ubuntu fails at apply.
 
@@ -82,3 +82,7 @@ A step lowers to the `conn3x_repository` resource, one instance per host, and co
 ## Removal
 
 When you delete a `repository` step, `on_remove` decides what happens on the host. The default, `"forget"`, leaves the repository in place. `"delete"` removes its two files, and on Debian and Ubuntu runs `apt-get update`. Packages you installed from it stay installed.
+
+## From Ansible
+
+`conn3x convert ansible` turns `apt_repository` tasks with a one-line `deb` source and `signed-by=/path`, and `yum_repository` tasks with one `baseurl`, one `gpgkey` and `gpgcheck: true`, into `repository` steps. A `repository` step holds the key itself, so save it beside the playbook, in `files/` or next to it, under the same file name as the path or URL the task gives. The `apt_repository` step gets its name from the URL, suite and components, and carries a TODO to delete the `.list` file Ansible left behind. `description` is dropped. A task stays a TODO when its key file is missing, or with `state: absent`, `deb-src`, a `ppa:` source, an apt option other than `signed-by`, `filename`, `validate_certs`, `update_cache: false`, `enabled: false`, a `file` that differs from `name`, `metalink`, `mirrorlist`, a loop, or any other argument.

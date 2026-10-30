@@ -21,6 +21,8 @@ It never prompts. A variable without a value is an error, so pass it with `-var`
 
 A resource whose type starts with `conn3x_` is listed under **Hosts**. Everything else is listed under **Cloud**.
 
+When a cloud resource looks changed, `drift` also runs a normal plan. If that plan wouldn't update, replace or delete the resource, it isn't drift. It's listed under **Changed, but your config wouldn't change them back**, and doesn't affect the exit code. A run with no changed cloud resources does one plan, and a run with some does two.
+
 ## Output
 
 When something changed:
