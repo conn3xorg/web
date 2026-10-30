@@ -89,8 +89,9 @@ test("builder.json names real circuits and inputs", () => {
   for (const [n, w] of Object.entries(data.builder.wiring)) {
     known(n);
     for (const [c, ins] of Object.entries(w.values)) {
-      assert.ok(c === n || data.builder.requires[n].includes(c), `${n} requires ${c}, which it wires`);
-      for (const i of Object.keys(ins)) assert.ok(data.inputs[c].inputs.some((v) => v.name === i), `${c}.${i}`);
+      const co = data.builder.companions?.[n]?.find((x) => x.as === c);
+      assert.ok(c === n || co || data.builder.requires[n].includes(c), `${n} requires ${c}, which it wires`);
+      for (const i of Object.keys(ins)) assert.ok(data.inputs[co?.circuit ?? c].inputs.some((v) => v.name === i), `${c}.${i}`);
     }
   }
   for (const [n, ps] of Object.entries(data.builder.ports)) {
@@ -243,4 +244,17 @@ test("roles refuse a layout that can't work", () => {
 test("role addresses are typed text, so stay strings", () => {
   const r = generate(data, { ...base, hosts: "", picks: ["k3s"], values: { "k3s.servers": 'cp1 "}${file("/etc/shadow")}' } });
   assert.ok(r.files["main.tf"].includes('cp1 = "\\"}$${file(\\"/etc/shadow\\")}"'));
+});
+
+test("zabbix brings its database to the server's host, and sets a password", () => {
+  const values = { "zabbix.servers": "mon 203.0.113.50", "zabbix.agents": "mon 203.0.113.50\nweb1 203.0.113.10" };
+  const r = generate(data, { ...base, hosts: "", picks: ["zabbix"], values });
+  assert.ok(!r.errors, JSON.stringify(r.errors));
+  const main = r.files["main.tf"];
+  assert.match(main, /module "zabbix_postgres" \{[\s\S]*?hosts\s*= \{\n\s+mon = \{ address = "203\.0\.113\.50", os = "rocky" \}/);
+  assert.match(main, /depends_on = \[module\.zabbix_postgres\]/);
+  assert.match(main, /admin_password\s+= var\.zabbix_admin_password/);
+  assert.match(main, /database_password\s+= var\.zabbix_db_password/);
+  assert.match(r.files["README.md"], /docs\.conn3x\.org\/circuits\/postgres/);
+  assert.equal(unavailable(data, "zabbix", "fedora45"), "Not tested on Fedora 45 yet.");
 });

@@ -21,7 +21,7 @@ test("builds a config and greys out what conflicts", async ({ page }) => {
 
 test("never offers excluded circuits", async ({ page }) => {
   await page.goto("/build");
-  for (const name of ["kubeadm", "proxmox", "microshift", "zabbix", "lastrack"]) {
+  for (const name of ["kubeadm", "proxmox", "microshift", "lastrack"]) {
     await expect(page.locator(`input[name=pick][value="${name}"]`)).toHaveCount(0);
   }
   await expect(page.locator(".later")).toContainText("kubeadm has control planes and workers");
