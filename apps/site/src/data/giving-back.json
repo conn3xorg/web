@@ -1,0 +1,13 @@
+{
+  "otherMinutes": 50,
+  "items": [
+    { "date": "2026-10-30", "repo": "Velocidex/velociraptor", "summary": "Confirmed a spilled query's len() is fixed on master, by building before and after, so a maintainer can close the issue.", "url": "https://github.com/Velocidex/velociraptor/issues/5109#issuecomment-6526269264", "minutes": 5 },
+    { "date": "2026-10-30", "repo": "OpenSCAP/openscap", "summary": "Reproduced a false \"does not exist\" on hosts without /etc/mtab through a real OVAL scan, and confirmed the fix.", "url": "https://github.com/OpenSCAP/openscap/pull/2474#issuecomment-6526268907", "minutes": 5 },
+    { "date": "2026-10-30", "repo": "OpenSCAP/openscap", "summary": "Ran a real scan to show invalid results on main and valid ones with the fix, for addresses ending in ::.", "url": "https://github.com/OpenSCAP/openscap/pull/2473#issuecomment-6526268518", "minutes": 5 },
+    { "date": "2026-10-30", "repo": "k3s-io/k3s", "summary": "Two small things found by re-running the install script on a fapolicyd host.", "url": "https://github.com/k3s-io/k3s/pull/14483#issuecomment-6515270444", "minutes": 20 },
+    { "date": "2026-10-30", "repo": "k3s-io/k3s", "summary": "Why a kernel config check didn't fire on Linux 6.18, and the symbol that makes it work.", "url": "https://github.com/k3s-io/k3s/pull/14074#issuecomment-6515270209", "minutes": 25 },
+    { "date": "2026-10-29", "repo": "data-privacy-stack/presidio", "summary": "A review confirming the fix for an allow list that dropped real findings, email addresses included.", "url": "https://github.com/data-privacy-stack/presidio/pull/2417#pullrequestreview-5708080373", "minutes": 15 },
+    { "date": "2026-10-29", "repo": "linux-audit/audit-userspace", "summary": "The reproduction a maintainer asked for: a denial that aureport silently left out.", "url": "https://github.com/linux-audit/audit-userspace/pull/546#issuecomment-6514983651", "minutes": 20 },
+    { "date": "2026-10-29", "repo": "BerriAI/litellm", "summary": "Tracing a reported Langfuse 404 back through the code to a likely cause.", "url": "https://github.com/BerriAI/litellm/issues/43032#issuecomment-6514983923", "minutes": 25 }
+  ]
+}
