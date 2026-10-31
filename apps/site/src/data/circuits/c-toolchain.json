@@ -1,0 +1,20 @@
+{
+  "name": "c-toolchain",
+  "repo": "conn3xorg/circuit-c-toolchain",
+  "description": "gcc, g++, make, gdb and nasm from your distribution's packages, for C, C++ and assembly. Versions differ per distribution.",
+  "version": "v0.1.0",
+  "tags": [
+    "c",
+    "cpp",
+    "gcc",
+    "assembly"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

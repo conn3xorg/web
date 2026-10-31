@@ -1,0 +1,37 @@
+{
+  "name": "go",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "go_version",
+      "type": "string",
+      "default": "1.27.3",
+      "description": "Go release to install, such as \"1.27.3\". Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40",
+        "arm64": "a06e99309dbcbdca1a8ccd2282c3ee146e55930886e26b4f1193269587165f49"
+      },
+      "description": "SHA-256 of the linux-amd64 and linux-arm64 .tar.gz tarballs, from https://go.dev/dl/. Change these with go_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tools",
+      "type": "map(string)",
+      "default": {},
+      "description": "Commands to build with go install into /usr/local/bin, by package path, each at an exact version, such as { \"github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen\" = \"v2.8.1\" }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

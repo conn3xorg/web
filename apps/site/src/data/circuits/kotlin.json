@@ -1,0 +1,19 @@
+{
+  "name": "kotlin",
+  "repo": "conn3xorg/circuit-kotlin",
+  "description": "One exact Kotlin compiler from JetBrains' releases, checked against its checksum, on a Java you provide.",
+  "version": "v0.1.0",
+  "tags": [
+    "kotlin",
+    "jvm",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

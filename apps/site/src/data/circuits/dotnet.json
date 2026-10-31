@@ -1,0 +1,20 @@
+{
+  "name": "dotnet",
+  "repo": "conn3xorg/circuit-dotnet",
+  "description": "One exact .NET SDK with ASP.NET Core from Microsoft's tarballs, checked against its checksum, with telemetry off by default.",
+  "version": "v0.1.0",
+  "tags": [
+    "dotnet",
+    "aspnet",
+    "csharp",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

@@ -1,0 +1,16 @@
+{
+  "name": "python",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "venvs",
+      "type": "map(map(string))",
+      "default": {},
+      "description": "Virtual environments to create, by absolute path, each with the packages to install from PyPI at exact versions, such as { \"/opt/tools\" = { cowsay = \"6.1\" } }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

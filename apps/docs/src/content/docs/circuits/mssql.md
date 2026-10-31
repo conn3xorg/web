@@ -164,4 +164,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mssql/blob/v0.1.0/LI
 
 - Repository: [conn3xorg/circuit-mssql](https://github.com/conn3xorg/circuit-mssql). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-mssql/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-mssql/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch).
+- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).
