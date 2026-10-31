@@ -17,6 +17,14 @@ test("contributors are merged across repositories, bots dropped, A to Z", () => 
   assert.equal(people[0].avatar, "https://avatars.example/amy");
 });
 
+test("bots and AI tools never count, even as ordinary users", () => {
+  const notPeople = ["claude", "Claude", "claude-code", "anthropic-bot", "copilot", "Copilot-swe-agent", "chatgpt-codex", "openai-agent", "cursoragent", "devin-ai-integration", "goreleaserbot", "github-actions", "some-bot", "x[bot]"];
+  assert.deepEqual(merge([notPeople.map((l) => user(l))]), []);
+  // People whose names only look close stay.
+  const real = ["abbot", "claudeb", "claudia", "cursorfan", "robot42"];
+  assert.deepEqual(merge([real.map((l) => user(l))]).map((p) => p.login), real);
+});
+
 test("the fallback list is already merged", () => {
   const file = JSON.parse(readFileSync(new URL("../apps/site/src/data/contributors.json", import.meta.url), "utf8"));
   assert.ok(file.length > 0);

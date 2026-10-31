@@ -32,6 +32,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+        env:
+          # The contributors list reads every public repository, far past the
+          # anonymous rate limit. Read-only, per the permissions above.
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Deploy the docs to Cloudflare Workers
         working-directory: apps/docs
         env:
