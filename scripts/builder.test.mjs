@@ -284,7 +284,7 @@ test("creating servers refuses what can't work", () => {
   assert.match(err({ cloud: { adminCidrs: "203.0.113.7/32", region: 'x" evil' } }), /isn't a region/);
   // One name in two heavy roles is one droplet, so the same rule as addresses applies.
   assert.match(err({ picks: ["k3s", "nginx"], values: { "k3s.servers": "web1" } }), /in both/);
-  for (const provider of ["__proto__", "constructor", "azure"]) assert.match(err({ cloud: { provider, adminCidrs: "203.0.113.7/32" } }), /can't create servers there/, provider);
+  for (const provider of ["__proto__", "constructor", "linode"]) assert.match(err({ cloud: { provider, adminCidrs: "203.0.113.7/32" } }), /can't create servers there/, provider);
 });
 
 const gcp = { provider: "gcp", project: "my-project-123", adminCidrs: "203.0.113.7/32" };
@@ -382,6 +382,71 @@ test("AWS refuses what can't work, and keeps typed text in strings", () => {
   for (const tags of ["Name=x", "aws:x=y", 'x"=y', "a=${var.x}"]) assert.match(err({}, { tags }), /isn't a tag/, tags);
   for (const hosts of ["web_1", "web1 203.0.113.1", 'a"b']) assert.match(err({ hosts }), /just a name/, hosts);
   const key = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: { ...aws, publicKey: 'x")}${file("/etc/shadow")}' } }).files["main.tf"];
+  assert.ok(key.includes('pathexpand("x\\")}$${file(\\"/etc/shadow\\")}")'), "the path stays a string");
+});
+
+const azure = { provider: "azure", adminCidrs: "203.0.113.7/32" };
+
+test("Azure gets a resource group, a security group and a conn3x login with a key", () => {
+  const r = generate(data, { ...base, distro: "ubuntu2404", hosts: "web1\nweb2", picks: ["nginx", "samba"], cloud: { ...azure, resourceGroup: "conn3x-ci-1", tags: "conn3x-ci=true" }, network: "10.0.0.0/8" });
+  assert.ok(!r.errors, JSON.stringify(r.errors));
+  const main = r.files["main.tf"];
+  assert.match(main, /azurerm = \{ source = "hashicorp\/azurerm", version = "~> 5\.0" \}/);
+  assert.match(main, /provider "azurerm" \{\n\s+features \{\}/);
+  assert.match(main, /"azurerm_resource_group" "hosts" \{\n\s+name\s+= "conn3x-ci-1"\n\s+location = "westus2"/);
+  assert.match(main, /size\s+= "Standard_B2s_v2"/);
+  assert.match(main, /admin_username\s+= "conn3x"/);
+  assert.match(main, /disable_password_authentication = true/);
+  assert.match(main, /admin_ssh_key \{/);
+  assert.doesNotMatch(main, /admin_password/);
+  assert.match(main, /publisher = "Canonical"\n\s+offer\s+= "ubuntu-24_04-lts"\n\s+sku\s+= "server"\n\s+version\s+= "latest"/);
+  assert.match(main, /custom_data = base64encode\("#cloud-config/);
+  assert.match(main, /address = azurerm_linux_virtual_machine\.host\["web1"\]\.public_ip_address/);
+  assert.match(main, /host_key = tls_private_key\.host\["web1"\]\.public_key_openssh/);
+  assert.match(main, /ssh_user\s+= "conn3x"/);
+  assert.match(main, /ssh_become\s+= true/);
+  // SSH only from the admin addresses, the picks' ports, and the VMs by their public addresses too.
+  assert.match(main, /name\s+= "ssh"[^}]*destination_port_range\s+= "22"\n\s+source_address_prefixes\s+= \["203\.0\.113\.7\/32"\]/);
+  assert.match(main, /name\s+= "public-80-tcp"[^}]*source_address_prefixes\s+= \["0\.0\.0\.0\/0"\]/);
+  assert.match(main, /name\s+= "network-445-tcp"[^}]*source_address_prefixes\s+= \["10\.0\.0\.0\/8"\]/);
+  assert.match(main, /name\s+= "peers"[^}]*concat\(\["10\.10\.0\.0\/24"\], \[for ip in azurerm_public_ip\.host : ip\.ip_address\]\)/);
+  assert.equal(new Set([...main.matchAll(/priority\s+= (\d+)/g)].map((m) => m[1])).size, [...main.matchAll(/priority\s+=/g)].length, "priorities don't repeat");
+  assert.match(main, /depends_on = \[azurerm_subnet_network_security_group_association\.hosts\]/);
+  assert.doesNotMatch(main, /client_secret|client_id|subscription_id|ARM_/, "no credentials");
+  const readme = r.files["README.md"];
+  assert.match(readme, /creates the VMs on Azure/);
+  assert.match(readme, /cost money until you run `conn3x destroy`/);
+  assert.match(readme, /az login/);
+  assert.match(readme, /ARM_SUBSCRIPTION_ID/);
+  assert.match(readme, /custom_data/);
+  assert.match(readme, /private SSH host key/);
+  assert.match(readme, /Windows is still to come/);
+});
+
+test("every Azure image is one we've checked, needing no Marketplace terms", () => {
+  assert.deepEqual(data.builder.cloud.azure, {
+    ubuntu2404: { publisher: "Canonical", offer: "ubuntu-24_04-lts", sku: "server" },
+    debian13: { publisher: "Debian", offer: "debian-13", sku: "13-gen2" },
+  });
+});
+
+test("Azure refuses what can't work, and keeps typed text in strings", () => {
+  const err = (b, cloud = {}) => (generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", ...b, cloud: { ...azure, ...cloud } }).errors ?? []).map((e) => e[1]).join(" ");
+  assert.equal(err({}), "");
+  assert.match(err({ distro: "rocky10" }), /Marketplace terms/);
+  assert.match(err({ distro: "fedora45" }), /Azure has no Fedora 45 image/);
+  for (const resourceGroup of ['x"; evil', '${file("/etc/shadow")}', "a\nb", "ends.", "a/b", "%{ if true }", "x".repeat(91)]) assert.match(err({}, { resourceGroup }), /isn't a resource group/, resourceGroup);
+  for (const resourceGroup of ["", "conn3x-ci-1", "My_Group.2"]) assert.equal(err({}, { resourceGroup }), "", resourceGroup);
+  for (const region of ["us-central1-a", "eu-west-2", 'westus2"', "westus2\nx", "${var.x}", "West US"]) assert.match(err({}, { region }), /isn't a region/, region);
+  for (const size of ["t3.medium", "B2s_v2", 'Standard_B2s_v2"', "Standard_B2s_v2\nx", "${var.x}", "Standard B2s"]) assert.match(err({}, { size }), /isn't a size/, size);
+  for (const size of ["Standard_D2ps_v5", "Standard_B2pts_v2", "Standard_E4pds_v6", "Standard_D2pls_v5"]) assert.match(err({}, { size }), /runs on Arm/, size);
+  for (const size of ["Standard_B2s_v2", "Standard_B2as_v2", "Standard_B2als_v2", "Standard_D2as_v5", "Standard_D2s_v5"]) assert.equal(err({}, { size }), "", size);
+  for (const adminCidrs of ["2001:db8::/64", "203.0.113.7/24", "203.0.113.999/32"]) assert.match(err({}, { adminCidrs }), /isn't an IPv4 network/, adminCidrs);
+  assert.match(err({}, { adminCidrs: "0.0.0.0/0" }), /SSH to everyone/);
+  assert.match(err({ network: "2001:db8::/64" }), /isn't an IPv4 network/);
+  for (const tags of ["azure-x=y", "Microsoft.x", "windows=1", 'x"=y', "a=${var.x}", "a/b=c", "a=%{ x }"]) assert.match(err({}, { tags }), /isn't a tag/, tags);
+  for (const hosts of ["web_1", "web-", "1web", "web1 203.0.113.1", 'a"b', "a".repeat(65)]) assert.match(err({ hosts }), /just a name/, hosts);
+  const key = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: { ...azure, publicKey: 'x")}${file("/etc/shadow")}' } }).files["main.tf"];
   assert.ok(key.includes('pathexpand("x\\")}$${file(\\"/etc/shadow\\")}")'), "the path stays a string");
 });
 

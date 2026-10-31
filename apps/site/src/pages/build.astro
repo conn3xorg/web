@@ -87,12 +87,18 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
               <label class="chip"><input type="radio" name="where" value="digitalocean" /> Create them on DigitalOcean</label>
               <label class="chip"><input type="radio" name="where" value="gcp" /> Create them on Google Cloud</label>
               <label class="chip"><input type="radio" name="where" value="aws" /> Create them on AWS</label>
+              <label class="chip"><input type="radio" name="where" value="azure" /> Create them on Azure (Linux)</label>
             </div>
           </fieldset>
           <div class="fields wide" id="cloud-fields" hidden>
             <label class="field wide" id="cloud-project-field" hidden>
               <span>Project ID (needed)</span>
               <input id="cloud-project" type="text" placeholder="my-project-123" spellcheck="false" autocomplete="off" />
+            </label>
+            <label class="field wide" id="cloud-resource-group-field" hidden>
+              <span>Resource group</span>
+              <input id="cloud-resource-group" type="text" placeholder="conn3x" spellcheck="false" autocomplete="off" />
+              <small>We create this one, so name a group you don't have yet.</small>
             </label>
             <label class="field wide">
               <span>Addresses that can reach SSH, one per line (needed)</span>
@@ -241,6 +247,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     if (creating()) {
       const c = (clouds as any)[where()];
       $("cloud-project-field").hidden = !c.projectOk;
+      $("cloud-resource-group-field").hidden = !c.resourceGroupOk;
       $("cloud-region-label").textContent = c.regionLabel;
       $("cloud-size-label").textContent = c.sizeLabel;
       $("cloud-tags-label").textContent = c.tagsLabel;
@@ -398,6 +405,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
         ? {
             provider: where(),
             project: $<HTMLInputElement>("cloud-project").value,
+            resourceGroup: $<HTMLInputElement>("cloud-resource-group").value,
             adminCidrs: $<HTMLTextAreaElement>("cloud-admin").value,
             region: $<HTMLInputElement>("cloud-region").value,
             size: $<HTMLInputElement>("cloud-size").value,
@@ -442,7 +450,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       box.replaceChildren(
         el("p", {}, "A few things to fix first:"),
         el("ul", {}, ...r.errors.map(([f, msg]: [string, string]) => {
-          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f === "cloud.adminCidrs" ? "cloud-admin" : f === "cloud.region" ? "cloud-region" : f === "cloud.size" ? "cloud-size" : f === "cloud.project" ? "cloud-project" : f === "cloud.tags" ? "cloud-tags" : f === "cloud" ? "s-distro" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
+          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f === "cloud.adminCidrs" ? "cloud-admin" : f === "cloud.region" ? "cloud-region" : f === "cloud.size" ? "cloud-size" : f === "cloud.project" ? "cloud-project" : f === "cloud.resourceGroup" ? "cloud-resource-group" : f === "cloud.tags" ? "cloud-tags" : f === "cloud" ? "s-distro" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
           document.getElementById(target)?.setAttribute("aria-invalid", "true");
           return el("li", {}, el("a", { href: `#${target}` }, f.includes(".") && f !== "ssh.user" && !f.startsWith("cloud") ? f : f === "cloud" ? "Distribution" : f.startsWith("cloud") ? f.slice(6) : f === "picks" ? "Circuits" : f), `: ${msg}`);
         })),

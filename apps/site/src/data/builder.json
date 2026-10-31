@@ -570,6 +570,10 @@
       "rocky10": { "owner": "792107900819", "name": "Rocky-10-EC2-Base-*.x86_64" },
       "ubuntu2404": { "owner": "099720109477", "name": "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*" },
       "debian13": { "owner": "136693071363", "name": "debian-13-amd64-*" }
+    },
+    "azure": {
+      "ubuntu2404": { "publisher": "Canonical", "offer": "ubuntu-24_04-lts", "sku": "server" },
+      "debian13": { "publisher": "Debian", "offer": "debian-13", "sku": "13-gen2" }
     }
   }
 }
