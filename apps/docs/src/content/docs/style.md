@@ -1,54 +1,60 @@
-# Documentation style guide
+---
+title: Style guide
+description: How we write the Conn3x docs, so each page doesn't decide it all again.
+---
 
-This guide keeps Conn3x documentation consistent, clear, and easy to use. Prefer practical explanations over lengthy descriptions.
+This guide records the writing decisions used in Conn3x documentation. Follow these conventions when adding or updating a page.
 
-## Writing style
+## Terminology
 
-- Use direct, concise language and a friendly, technical tone.
-- Explain what a feature does and why it matters.
-- Address the reader directly when describing steps.
-- Introduce unfamiliar concepts before discussing their details.
-- Avoid repeating information already explained elsewhere.
+- Write `circuit` in lowercase, except at the beginning of a sentence or in a proper name. Do not capitalize it just because it refers to the Conn3x concept.
+- Use **host** for a machine that Conn3x connects to or manages. For example, a host can be reached through a bastion.
+- Use **server** when describing the machine in its role as a server, such as when explaining how to create and configure one.
+- Use contractions such as "don't" and "it's". They match the conversational tone already used across the documentation.
 
-## Headings and structure
+## Headings and page structure
 
-- Use sentence case for headings. Capitalize the first word and proper nouns.
-- Keep headings short and descriptive.
-- Start a page with a brief introduction explaining its purpose.
-- Organize content into logical sections that are easy to scan.
-- Use numbered lists for procedures and bullet lists for related items.
+- Use sentence case for headings: `Host keys`, not `Host Keys`.
+- Start with a short introduction explaining what the page covers.
+- Use numbered lists for steps that must be followed in order. Use bullets for unordered information.
+- Use tables for reference information that readers need to compare or look up.
 
-## Terminology and formatting
+## Code and formatting
 
-- Use **host** when referring to a machine managed or accessed by Conn3x. Use **server** when the context specifically concerns a server.
-- Capitalize **circuit** in ordinary prose only when it begins a sentence or forms part of a proper name. Use `circuit` for the general concept.
-- Use backticks for commands, code, configuration keys, environment variables, file paths, and other literal technical values.
-- Use consistent terminology throughout a page. When existing pages disagree, prefer the term that most clearly describes the concept.
+- Use backticks for commands, identifiers, configuration keys, environment variables, and file paths.
+- Put multi-line commands and code examples in fenced code blocks. Specify the language when appropriate.
+- Introduce an example with a short explanation. Explain any non-obvious behavior after it.
 
-## Code examples
+**Before:** Set the `CONN3X_HOST` environment variable.
 
-- Provide examples that readers can adapt to their own use cases.
-- Keep examples focused on the concept being explained.
-- Introduce examples with a short explanation and describe important details afterward.
-- Format commands, code, and configuration snippets as fenced code blocks. Specify the language when appropriate.
+**After:** Set `CONN3X_HOST` to the name of the host you want to connect to.
 
-## Lists, tables, and links
+## Warnings
 
-- Use tables when readers need to compare values, understand mappings, or look up reference information.
-- Use lists for short collections of related points. Prefer prose when the relationship between ideas needs explanation.
-- Link to related documentation instead of duplicating detailed explanations.
-- Use descriptive link text that tells readers what they will find.
+Use Starlight's `:::caution` aside for important risks, destructive actions, or security-sensitive instructions. Place it immediately before the relevant step or information.
 
-## Warnings and security
+```md
+:::caution
+Keep private keys secure. Restrict access to the key file.
+:::
+```
 
-- Make security risks and potentially destructive actions explicit.
-- Place warnings close to the action or information they concern.
-- Explain the consequence of the risk and, when appropriate, how to avoid it.
-- Use the documentation site's supported warning or note formatting consistently.
+Use ordinary paragraphs for explanations and notes that do not require a warning.
 
-## Choose the right level of detail
+## Examples
 
-- **Guides:** Focus on completing a task, with steps and practical examples.
-- **Reference pages:** Explain syntax, options, and behavior precisely.
-- **Internals pages:** Describe implementation details and the reasoning behind them.
-- Keep the documentation focused. Include enough detail to help readers succeed without making pages unnecessarily long.
+Prefer specific wording that tells readers what a command or setting does.
+
+**Before:** The host is configured.
+
+**After:** Conn3x connects to the host using the configured connection settings.
+
+**Before:** There are some options for configuring the connection.
+
+**After:** Configure the connection with the host address and authentication settings.
+
+## Page types
+
+- **Guides** explain how to complete a task, using ordered steps and practical examples.
+- **Reference pages** describe syntax, options, and behavior.
+- **Internals pages** explain implementation details and how the system works.
