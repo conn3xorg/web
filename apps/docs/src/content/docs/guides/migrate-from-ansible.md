@@ -39,9 +39,13 @@ step "write_the_home_page" {
 
 ## Modules it converts
 
-`copy`, `file` (directories and links), `lineinfile`, `blockinfile`, `package`, `dnf`, `yum`, `apt`, `service`, `systemd`, `systemd_service`, `user`, `group`, `authorized_key`, `cron`, `sysctl`, `hostname`, `timezone`, `firewalld`, `ufw`, `seboolean`, `sefcontext`, `get_url`, `unarchive`, `git`, `mount`, `apt_repository`, `yum_repository`, `ini_file`, `replace`, `command`, `shell` and `wait_for`, with or without their collection prefix.
+`copy`, `file` (directories and links), `lineinfile`, `blockinfile`, `package`, `dnf`, `yum`, `apt`, `service`, `systemd`, `systemd_service`, `user`, `group`, `authorized_key`, `cron`, `sysctl`, `hostname`, `timezone`, `firewalld`, `ufw`, `seboolean`, `sefcontext`, `get_url`, `unarchive`, `git`, `mount`, `apt_repository`, `yum_repository`, `ini_file`, `replace`, `known_hosts`, `pam_limits`, `command`, `shell` and `wait_for`, with or without their collection prefix.
 
-The last four arrived in v0.6.10, and each converts only as far as it can be proved the same. A repository needs its signing key saved beside the playbook. A `replace` pattern using `\d`, `\w` or `\s` stays for review, because Python and Go read them differently, so rewrite `\d` as `[0-9]` and convert again.
+`apt_repository`, `yum_repository`, `ini_file` and `replace` arrived in v0.6.10, and each converts only as far as it can be proved the same. A repository needs its signing key saved beside the playbook. A `replace` pattern using `\d`, `\w` or `\s` stays for review, because Python and Go read them differently, so rewrite `\d` as `[0-9]` and convert again.
+
+New in v0.6.11, `known_hosts` becomes a [known_hosts](/modules/known_hosts#from-ansible) step and `pam_limits` a [limit](/modules/limit#from-ansible) step. Some of each stay for review, and their pages say which.
+
+You won't get a step for `debug`, since all it does is print. The task is dropped, and a comment in its place says so. What it printed isn't copied, because a debug message can hold a secret. A `debug` with a `when` or a `register` stays as a TODO, and its contents stay out of that comment too.
 
 A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each):
 
