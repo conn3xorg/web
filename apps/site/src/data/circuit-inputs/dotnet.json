@@ -1,0 +1,37 @@
+{
+  "name": "dotnet",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "sdk_version",
+      "type": "string",
+      "default": "10.0.403",
+      "description": "The .NET SDK release to install, such as \"10.0.403\". Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "x64": "cd7224fe8e8ba57c15f1601439ff8785a1a72b54ae5c89dd5302a32dcfbddf18",
+        "arm64": "21fe1a0963984206bfaeb19968da07e7a61d30c9bc4621b7372a762a30c88679"
+      },
+      "description": "SHA-256 of the linux-x64 and linux-arm64 SDK tarballs. Microsoft publishes SHA-512, so check that first; the README shows how. Change these with sdk_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "telemetry",
+      "type": "bool",
+      "default": false,
+      "description": "Let the .NET CLI send Microsoft its usage telemetry. Off by default: the dotnet command sets DOTNET_CLI_TELEMETRY_OPTOUT=1.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

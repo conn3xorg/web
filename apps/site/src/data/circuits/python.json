@@ -1,0 +1,19 @@
+{
+  "name": "python",
+  "repo": "conn3xorg/circuit-python",
+  "description": "Your distribution's Python with working venvs, and optional environments holding pinned packages.",
+  "version": "v0.1.0",
+  "tags": [
+    "python",
+    "venv",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

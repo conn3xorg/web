@@ -1,0 +1,19 @@
+{
+  "name": "sqlite",
+  "repo": "conn3xorg/circuit-sqlite",
+  "description": "The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode.",
+  "version": "v0.1.0",
+  "tags": [
+    "sqlite",
+    "database",
+    "sql"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Databases and caches",
+  "official": true
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ruby",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "gems",
+      "type": "map(string)",
+      "default": {},
+      "description": "Gems to install from RubyGems, by name, each at an exact version, such as { rainbow = \"3.1.1\" }. Installs a compiler, make and Ruby's headers too.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

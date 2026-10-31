@@ -143,6 +143,9 @@
     "langfuse": [
       "postgres",
       "valkey"
+    ],
+    "kotlin": [
+      "java"
     ]
   },
   "ports": {
@@ -308,7 +311,8 @@
     "nagios": "The web interface listens on the host itself, so reach it through an SSH tunnel or a proxy.",
     "selenium": "The Grid has no login, so it stays on the host itself. Reach it through an SSH tunnel.",
     "zap": "Only scan what you're allowed to. Scans are passive unless you set active_scan.",
-    "containerd": "This installs containerd alone, with no network config for pods. Its README covers what's left to you."
+    "containerd": "This installs containerd alone, with no network config for pods. Its README covers what's left to you.",
+    "kotlin": "It comes with circuit-java, since the compiler needs a Java on the PATH."
   },
   "wiring": {
     "github-runner": {

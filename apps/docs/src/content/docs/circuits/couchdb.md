@@ -206,4 +206,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-couchdb/blob/v0.1.0/
 
 - Repository: [conn3xorg/circuit-couchdb](https://github.com/conn3xorg/circuit-couchdb). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-couchdb/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.0/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch).
+- Related circuits: [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).

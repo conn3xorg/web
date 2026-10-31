@@ -1,0 +1,6 @@
+{
+  "name": "c-toolchain",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": []
+}
