@@ -37,6 +37,10 @@ Switches, routers and firewalls, configured over their own management interfaces
 
 macOS hosts.
 
+## Last
+
+The Circuit Builder as an app: desktop apps for Windows and macOS, and phone apps for iOS and Android.
+
 ## Help shape it
 
 Open work is in [GitHub issues](https://github.com/conn3xorg/conn3x/issues), and every circuit repository has [good first issues](https://github.com/search?q=org%3Aconn3xorg+label%3A%22good+first+issue%22+state%3Aopen&type=issues) if you'd like somewhere to start. The order on this page moves when people tell us what they need. If Windows, network devices or a circuit you're missing matter to you, say so in [Discussions](https://github.com/conn3xorg/conn3x/discussions). See [Get involved](/contribute) for other ways to help.
