@@ -157,4 +157,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-hardening/blob/v0.1.
 
 - Repository: [conn3xorg/circuit-hardening](https://github.com/conn3xorg/circuit-hardening). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-hardening/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-hardening/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.1.0/examples/local).
-- Related circuits: [OpenSCAP](/circuits/openscap), [Baseline](/circuits/baseline), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant).
+- Related circuits: [OpenSCAP](/circuits/openscap), [Baseline](/circuits/baseline), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

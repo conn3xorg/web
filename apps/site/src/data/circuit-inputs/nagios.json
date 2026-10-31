@@ -1,0 +1,87 @@
+{
+  "name": "nagios",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "web_password",
+      "type": "string",
+      "description": "Password of the web interface's nagiosadmin user. Pass it at run time with -var or TF_VAR_web_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "web_listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the web server listens on. The default keeps Nagios on the host, for a proxy or an SSH tunnel. Anything else sends the login in the clear, since the circuit doesn't set up TLS.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "web_port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port the web server listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "monitored_hosts",
+      "type": "map(object({\n    address            = string\n    alias              = optional(string)\n    check_command      = optional(string, \"check-host-alive\")\n    max_check_attempts = optional(number, 3)\n  }))",
+      "default": {},
+      "description": "Hosts Nagios watches, by name, such as { web1 = { address = \"10.0.0.5\" } }. check_command is how Nagios decides the host is up, by default a ping.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "services",
+      "type": "map(object({\n    host               = string\n    check_command      = string\n    description        = optional(string)\n    check_interval     = optional(number, 5)\n    retry_interval     = optional(number, 1)\n    max_check_attempts = optional(number, 3)\n  }))",
+      "default": {},
+      "description": "Services Nagios checks, by name, such as { web1_http = { host = \"web1\", description = \"HTTP\", check_command = \"check_http\" } }. description defaults to the name, and intervals are in minutes.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "commands",
+      "type": "map(string)",
+      "default": {},
+      "description": "Extra check commands, by name, such as { check_api = \"$USER1$/check_http -H $HOSTADDRESS$ -u /health\" }. They run on the Nagios host as the nagios user.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "extra_objects",
+      "type": "string",
+      "default": "",
+      "description": "More Nagios object definitions, added to the file as they are, such as contacts or host groups. nagios -v checks them before any reload.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "nagios_version",
+      "type": "string",
+      "default": "4.5.14",
+      "description": "Nagios Core release to build on Ubuntu, Rocky Linux, AlmaLinux and RHEL. Debian and Fedora use their own package, whatever its version. Change it together with nagios_sha256.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "nagios_sha256",
+      "type": "string",
+      "default": "dce59f306577789c56d2748471d4c3856ecba8572d6b0811cf79f9de2f9afabb",
+      "description": "SHA-256 of the nagios_version source tarball.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

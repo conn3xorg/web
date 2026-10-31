@@ -35,9 +35,10 @@ Error: Unknown module "pakage"
 
 Supported modules are "archive", "authorized_key", "block", "command",
 "cron", "directory", "download", "file", "firewalld", "git", "group",
-"hostname", "line", "link", "locale", "mount", "package", "reboot",
-"repository", "selinux_boolean", "selinux_fcontext", "service", "sysctl",
-"template", "timer", "timezone", "ufw", "user", "wait_for".
+"hostname", "ini", "known_hosts", "limit", "line", "link", "locale",
+"mount", "package", "reboot", "replace", "repository", "selinux_boolean",
+"selinux_fcontext", "service", "sysctl", "template", "timer", "timezone",
+"ufw", "user", "wait_for".
 ```
 
 With no errors, it prints:

@@ -1,0 +1,19 @@
+{
+  "name": "selenium",
+  "repo": "conn3xorg/circuit-selenium",
+  "description": "Selenium Grid under Podman, official images pinned by digest, on loopback by default.",
+  "version": "v0.1.0",
+  "tags": [
+    "selenium",
+    "testing",
+    "browser"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

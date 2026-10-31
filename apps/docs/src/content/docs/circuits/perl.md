@@ -112,4 +112,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-perl/blob/v0.1.0/LIC
 
 - Repository: [conn3xorg/circuit-perl](https://github.com/conn3xorg/circuit-perl). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-perl/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-perl/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.1.0/examples/local).
-- Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs).
+- Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox).

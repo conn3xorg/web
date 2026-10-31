@@ -1,0 +1,19 @@
+{
+  "name": "bun",
+  "repo": "conn3xorg/circuit-bun",
+  "description": "Install one pinned Bun release, checksum-verified, on every Linux host.",
+  "version": "v0.1.0",
+  "tags": [
+    "bun",
+    "javascript",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

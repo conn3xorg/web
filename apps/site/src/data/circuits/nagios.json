@@ -1,0 +1,19 @@
+{
+  "name": "nagios",
+  "repo": "conn3xorg/circuit-nagios",
+  "description": "Nagios Core with plugins, hosts and services from inputs, nagios -v before every reload, and a login-protected web interface on loopback.",
+  "version": "v0.1.0",
+  "tags": [
+    "nagios",
+    "monitoring",
+    "alerting"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Monitoring",
+  "official": true
+}

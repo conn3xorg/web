@@ -1,0 +1,98 @@
+{
+  "name": "nomad",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "servers",
+      "type": "any",
+      "description": "Server nodes, by name: a map of names to addresses, or to host objects with an address and optional host_key, user, port, private_key_file, jump_hosts or advertise. Give an odd number.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "clients",
+      "type": "any",
+      "default": {},
+      "description": "Client nodes, which run your jobs, by name, in the same form as servers. A name can't be both a server and a client.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "gossip_key",
+      "type": "string",
+      "description": "Key that encrypts the servers' gossip traffic: 32 bytes in base64, from nomad operator gossip keyring generate or openssl rand -base64 32. Pass it at run time with -var or TF_VAR_gossip_key; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "join_addresses",
+      "type": "list(string)",
+      "default": null,
+      "description": "Addresses nodes use to find the servers. When null, each server's advertise address, or else its address. Set it when Conn3x reaches the servers on a different address from the one the nodes use.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "acl_enabled",
+      "type": "bool",
+      "default": true,
+      "description": "Turn on Nomad's ACLs. Until you run nomad acl bootstrap, nobody can do anything through the API. Without ACLs, anyone who reaches port 4646 can run jobs on your clients.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "datacenter",
+      "type": "string",
+      "default": "dc1",
+      "description": "Datacenter the nodes belong to.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_config",
+      "type": "any",
+      "default": {},
+      "description": "More agent settings for the servers, written to /etc/nomad.d/50-extra.json, such as { tls = { http = true, rpc = true } }. Nomad merges this over the circuit's own settings.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "client_config",
+      "type": "any",
+      "default": {},
+      "description": "More agent settings for the clients, written to /etc/nomad.d/50-extra.json, such as { client = { node_pool = \"gpu\" } }. Nomad merges this over the circuit's own settings.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "nomad_version",
+      "type": "string",
+      "default": "2.1.1",
+      "description": "Nomad release to install, without the v. Change it together with checksums.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "073084f7690fdaea756ff1eff8b669b25c3a6c17778f19ae0c47606973ed3f39",
+        "arm64": "ed7222af2f9b924262a8c4e053688ad9e7a7c82fa9485d6d147261072b3b8d50"
+      },
+      "description": "SHA-256 of the Nomad zip for each architecture, from the release's SHA256SUMS file. Change these with nomad_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

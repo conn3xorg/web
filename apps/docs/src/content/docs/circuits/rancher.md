@@ -151,4 +151,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-rancher/blob/v0.1.0/
 
 - Repository: [conn3xorg/circuit-rancher](https://github.com/conn3xorg/circuit-rancher). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-rancher/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.0/examples/local).
-- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift).
+- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio).

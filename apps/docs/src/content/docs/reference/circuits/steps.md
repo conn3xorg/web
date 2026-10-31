@@ -52,7 +52,7 @@ A step accepts nothing else. The resource meta-arguments `count`, `lifecycle`, `
 
 ## Modules
 
-These are the module blocks a step can contain: `archive`, `authorized_key`, `block`, `command`, `cron`, `directory`, `download`, `file`, `firewalld`, `git`, `group`, `hostname`, `line`, `link`, `locale`, `mount`, `package`, `reboot`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw`, `user` and `wait_for`.
+These are the module blocks a step can contain: `archive`, `authorized_key`, `block`, `command`, `cron`, `directory`, `download`, `file`, `firewalld`, `git`, `group`, `hostname`, `ini`, `known_hosts`, `limit`, `line`, `link`, `locale`, `mount`, `package`, `reboot`, `replace`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw`, `user` and `wait_for`.
 
 Each has its own page under [Modules](/modules/file), with its arguments and the attributes Conn3x computes.
 

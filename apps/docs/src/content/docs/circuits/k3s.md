@@ -172,4 +172,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-k3s/blob/v0.1.3/LICE
 
 - Repository: [conn3xorg/circuit-k3s](https://github.com/conn3xorg/circuit-k3s). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-k3s/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.3/examples/local).
-- Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher).
+- Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio).
