@@ -2,6 +2,13 @@
   "otherMinutes": 57,
   "items": [
     {
+      "date": "2026-10-31",
+      "repo": "aquasecurity/trivy",
+      "summary": "Retested the checksum work at the author's request, and confirmed the dropped pin now shows in the log.",
+      "url": "https://github.com/aquasecurity/trivy/pull/11494#issuecomment-6539262151",
+      "minutes": 5
+    },
+    {
       "date": "2026-10-30",
       "repo": "data-privacy-stack/presidio",
       "summary": "Reproduced an allow list bug through analyze(), and found terms the planned fix can't compile, before it was sent.",
