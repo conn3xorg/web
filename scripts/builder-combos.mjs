@@ -112,6 +112,13 @@ export const combos = [
     hosts: "graphs",
     values: { "k3s.servers": "server1", "k3s.agents": "agent1" },
   },
+  {
+    distro: "debian13",
+    picks: ["nginx", "samba", "firewall"],
+    cloud: { provider: "aws", adminCidrs: "203.0.113.7/32", region: "us-east-1", tags: "team=web" },
+    network: "10.0.0.0/8",
+    hosts: "web1\nweb2",
+  },
 ];
 
 /** Every build CI validates: [folder name, build]. */
