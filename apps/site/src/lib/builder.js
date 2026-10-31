@@ -483,8 +483,15 @@ export function generate(data, build) {
     const c = data.circuits[name];
     const body = [...(rolesOf(data, name).length ? Object.entries(placed[name]) : [["hosts", new Ref("local.hosts")]]), ...shared];
     const managed = name === "firewall" ? ["allow"] : [];
+    // circuit-firewall opens this circuit's port, and running both at once can
+    // catch ufw half installed.
+    const ownFirewall = name === "nginx" && picks.includes("firewall") ? [["firewall", "none"]] : [];
     for (const v of data.inputs[name].inputs) {
       if (managed.includes(v.name) || roleOf(data, name, v.name)) continue;
+      if (ownFirewall.some(([k]) => k === v.name)) {
+        body.push(...ownFirewall);
+        continue;
+      }
       if (wired.values[name] && v.name in wired.values[name]) {
         body.push([v.name, wired.values[name][v.name]]);
         continue;

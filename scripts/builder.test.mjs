@@ -389,3 +389,10 @@ test("Google Cloud's credentials never reach the config", () => {
   const r = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: gcp });
   assert.doesNotMatch(r.files["main.tf"], /credentials|access_token|GOOGLE_/);
 });
+
+test("nginx leaves the firewall to circuit-firewall when both are picked", () => {
+  const both = generate(data, { ...base, picks: ["nginx", "firewall"] }).files["main.tf"];
+  assert.match(both, /module "nginx"[^}]*firewall\s+= "none"/s);
+  const alone = generate(data, { ...base, picks: ["nginx"] }).files["main.tf"];
+  assert.doesNotMatch(alone, /firewall\s+= "none"/);
+});
