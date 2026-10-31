@@ -30,7 +30,7 @@ Good writers are harder to find than good developers, and they're what we need m
 - **Technical writers:** every circuit's README has its own issue listing where to start, and the docs still need a style guide and a glossary.
 - **Content writers:** posts about real jobs Conn3x does, social drafts from what we've published, and an honest read of the website.
 
-It's all under the [writers wanted label](https://github.com/search?q=org%3Aconn3xorg+label%3A%22writers+wanted%22+state%3Aopen&type=issues). Not sure where to begin? Say what you like writing in [Discussions](https://github.com/conn3xorg/conn3x/discussions).
+The [style guide](/style) has the decisions we've made so far. It's all under the [writers wanted label](https://github.com/search?q=org%3Aconn3xorg+label%3A%22writers+wanted%22+state%3Aopen&type=issues). Not sure where to begin? Say what you like writing in [Discussions](https://github.com/conn3xorg/conn3x/discussions).
 
 ## Improve the docs
 
