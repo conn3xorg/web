@@ -87,3 +87,25 @@ test("can create the servers on DigitalOcean", async ({ page }) => {
   await page.fill("#cloud-admin", "203.0.113.7/32");
   await expect(page.locator("#code")).toContainText('resource "digitalocean_droplet" "host"');
 });
+
+test("asks Google Cloud for what it needs, in its own words", async ({ page }) => {
+  await page.goto("/build");
+  await page.locator('input[name=distro][value="debian13"]').check({ force: true });
+  await page.locator('input[name=where][value="gcp"]').check({ force: true });
+  await expect(page.locator("#cloud-project-field")).toBeVisible();
+  await expect(page.locator("#cloud-region-label")).toHaveText("Zone");
+  await expect(page.locator("#cloud-region")).toHaveAttribute("placeholder", "us-central1-a");
+  await expect(page.locator("#cloud-size")).toHaveAttribute("placeholder", "e2-medium");
+  await page.locator('input[name=pick][value="nginx"]').check({ force: true });
+  await page.fill("#hosts", "web1");
+  await page.fill("#cloud-admin", "203.0.113.7/32");
+  await page.click("#write");
+  await expect(page.locator("#errors")).toContainText("which project");
+  await page.fill("#cloud-project", "my-project-123");
+  await expect(page.locator("#code")).toContainText('resource "google_compute_instance" "host"');
+  await page.locator('input[name=distro][value="fedora45"]').check({ force: true });
+  await expect(page.locator("#errors")).toContainText("Google Cloud has no Fedora 45 image");
+  await page.locator('input[name=where][value="digitalocean"]').check({ force: true });
+  await expect(page.locator("#cloud-project-field")).toBeHidden();
+  await expect(page.locator("#cloud-region-label")).toHaveText("Region");
+});

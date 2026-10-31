@@ -103,6 +103,15 @@ export const combos = [
     hosts: "graphs",
     values: { "k3s.servers": "server1", "k3s.agents": "agent1", "zabbix.servers": "mon", "zabbix.agents": "mon\nagent1" },
   },
+  { distro: "rocky10", picks: ["nginx", "fail2ban", "firewall"], cloud: { provider: "gcp", project: "my-project-123", adminCidrs: "203.0.113.7/32", tags: "team=web" }, hosts: "web1\nweb2" },
+  {
+    distro: "ubuntu2404",
+    picks: ["k3s", "grafana"],
+    cloud: { provider: "gcp", project: "my-project-123", adminCidrs: "203.0.113.7/32", region: "europe-west2-b", size: "e2-standard-2" },
+    network: "10.0.0.0/8",
+    hosts: "graphs",
+    values: { "k3s.servers": "server1", "k3s.agents": "agent1" },
+  },
 ];
 
 /** Every build CI validates: [folder name, build]. */

@@ -284,4 +284,58 @@ test("creating servers refuses what can't work", () => {
   assert.match(err({ cloud: { adminCidrs: "203.0.113.7/32", region: 'x" evil' } }), /isn't a region/);
   // One name in two heavy roles is one droplet, so the same rule as addresses applies.
   assert.match(err({ picks: ["k3s", "nginx"], values: { "k3s.servers": "web1" } }), /in both/);
+  for (const provider of ["__proto__", "constructor", "azure"]) assert.match(err({ cloud: { provider, adminCidrs: "203.0.113.7/32" } }), /can't create servers there/, provider);
+});
+
+const gcp = { provider: "gcp", project: "my-project-123", adminCidrs: "203.0.113.7/32" };
+
+test("Google Cloud gets a network, a firewall and a login user with sudo", () => {
+  const r = generate(data, { ...base, distro: "debian13", hosts: "web1\nweb2", picks: ["nginx", "samba"], cloud: { ...gcp, tags: "conn3x-ci\nteam=web" }, network: "10.0.0.0/8" });
+  assert.ok(!r.errors, JSON.stringify(r.errors));
+  const main = r.files["main.tf"];
+  assert.match(main, /google = \{ source = "hashicorp\/google"/);
+  assert.match(main, /project = "my-project-123"\n\s+region\s+= "us-central1"\n\s+zone\s+= "us-central1-a"/);
+  assert.match(main, /image\s+= "debian-cloud\/debian-13"/);
+  assert.match(main, /machine_type = "e2-medium"/);
+  assert.match(main, /address = time_sleep\.boot\["web1"\]\.triggers\["address"\]/);
+  assert.match(main, /host_key = tls_private_key\.host\["web1"\]\.public_key_openssh/);
+  assert.match(main, /os = "debian"/);
+  assert.match(main, /ssh_user\s+= "conn3x"/);
+  assert.match(main, /ssh_become\s+= true/);
+  assert.match(main, /"conn3x-ci" = ""|conn3x-ci = ""/);
+  // SSH only from the admin addresses, and never the default network.
+  assert.match(main, /"ssh" \{[^}]*source_ranges = \["203\.0\.113\.7\/32"\][^}]*ports\s+= \["22"\]/);
+  assert.match(main, /"public" \{[^}]*source_ranges = \["0\.0\.0\.0\/0"\][^}]*ports\s+= \["80"\]/);
+  assert.match(main, /"network" \{[^}]*source_ranges = \["10\.0\.0\.0\/8"\]/);
+  assert.match(main, /"internal" \{[^}]*nat_ip\}\/32/);
+  assert.ok(!main.includes('"::/0"') && !main.includes("network/default"), "IPv4 only, and its own network");
+  const readme = r.files["README.md"];
+  assert.match(readme, /creates the instances on Google Cloud/);
+  assert.match(readme, /cost money until you run `conn3x destroy`/);
+  assert.match(readme, /application-default login/);
+  assert.match(readme, /private SSH host key/);
+});
+
+test("Google Cloud refuses what can't work, and keeps typed text in strings", () => {
+  const err = (b, cloud = {}) => (generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", ...b, cloud: { ...gcp, ...cloud } }).errors ?? []).map((e) => e[1]).join(" ");
+  assert.equal(err({}), "");
+  assert.match(err({ distro: "fedora45" }), /Google Cloud has no Fedora 45 image/);
+  for (const project of ["", "Bad_Project", 'x"; evil', "${file(\"/etc/shadow\")}", "a\nb", "short"]) assert.match(err({}, { project }), /project/, project);
+  for (const region of ["us-central1", 'us-central1-a"', "lon1", "us-central1-a\nx", "${var.x}"]) assert.match(err({}, { region }), /isn't a zone/, region);
+  for (const size of ["e2 medium", 't3.medium', 'e2-medium"', "${var.x}"]) assert.match(err({}, { size }), /isn't a machine type/, size);
+  assert.match(err({}, { size: "t2a-standard-1" }), /runs on Arm/);
+  for (const adminCidrs of ["2001:db8::/64", "203.0.113.999/32", "203.0.113.7/33", "203.0.113.7/24"]) assert.match(err({}, { adminCidrs }), /isn't an IPv4 network/, adminCidrs);
+  assert.match(err({}, { adminCidrs: "0.0.0.0/0" }), /SSH to everyone/);
+  assert.match(err({ network: "2001:db8::/64" }), /isn't an IPv4 network/);
+  for (const tags of ["UPPER", "a=b=c", 'x"=y', "a=${var.x}"]) assert.match(err({}, { tags }), /isn't a label/, tags);
+  for (const hosts of ["Web1", "web_1", "web-", "web1 203.0.113.1", 'a"b']) assert.match(err({ hosts }), /just a name/, hosts);
+  assert.match(err({ values: { "nginx.port": "80; rm" } }), /isn't a number/);
+
+  const key = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: { ...gcp, publicKey: 'x")}${file("/etc/shadow")}' } }).files["main.tf"];
+  assert.ok(key.includes('pathexpand("x\\")}$${file(\\"/etc/shadow\\")}")'), "the path stays a string");
+});
+
+test("Google Cloud's credentials never reach the config", () => {
+  const r = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: gcp });
+  assert.doesNotMatch(r.files["main.tf"], /credentials|access_token|GOOGLE_/);
 });
