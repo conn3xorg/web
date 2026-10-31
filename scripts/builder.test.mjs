@@ -335,7 +335,64 @@ test("Google Cloud refuses what can't work, and keeps typed text in strings", ()
   assert.ok(key.includes('pathexpand("x\\")}$${file(\\"/etc/shadow\\")}")'), "the path stays a string");
 });
 
+const aws = { provider: "aws", adminCidrs: "203.0.113.7/32" };
+
+test("AWS looks its image up by owner, and uses the default VPC", () => {
+  const r = generate(data, { ...base, distro: "ubuntu2404", hosts: "web1\nweb2", picks: ["nginx", "samba"], cloud: { ...aws, tags: "conn3x-ci=true" }, network: "10.0.0.0/8" });
+  assert.ok(!r.errors, JSON.stringify(r.errors));
+  const main = r.files["main.tf"];
+  assert.match(main, /aws = \{ source = "hashicorp\/aws"/);
+  assert.match(main, /region = "eu-west-2"/);
+  assert.match(main, /owners\s+= \["099720109477"\]/);
+  assert.match(main, /values = \["ubuntu\/images\/hvm-ssd-gp3\/ubuntu-noble-24\.04-amd64-server-\*"\]/);
+  assert.match(main, /data "aws_vpc" "default"/);
+  assert.match(main, /ignore_changes = \[ami\]/);
+  assert.match(main, /instance_type\s+= "t3\.medium"/);
+  assert.match(main, /address = aws_instance\.host\["web1"\]\.public_ip/);
+  assert.match(main, /host_key = tls_private_key\.host\["web1"\]\.public_key_openssh/);
+  assert.match(main, /ssh_user\s+= "conn3x"/);
+  assert.match(main, /ssh_become\s+= true/);
+  assert.match(main, /"ssh" \{\n\s+for_each = toset\(\["203\.0\.113\.7\/32"\]\)/);
+  assert.match(main, /"80\/tcp 0\.0\.0\.0\/0"/);
+  assert.match(main, /"445\/tcp 10\.0\.0\.0\/8"/);
+  assert.match(main, /"\$\{each\.value\.public_ip\}\/32"/);
+  assert.match(main, /"conn3x-ci" = "true"|conn3x-ci\s+= "true"/);
+  assert.doesNotMatch(main, /aws_access|secret_key|access_key|\bingress \{/);
+  assert.match(r.files["README.md"], /creates the instances on AWS/);
+  assert.match(r.files["README.md"], /cost money until you run `conn3x destroy`/);
+  assert.match(r.files["README.md"], /default VPC/);
+  assert.match(r.files["README.md"], /private SSH host key/);
+});
+
+test("every AWS image names a publisher we've checked", () => {
+  const known = { rocky10: "792107900819", ubuntu2404: "099720109477", debian13: "136693071363" };
+  assert.deepEqual(Object.fromEntries(Object.entries(data.builder.cloud.aws).map(([d, i]) => [d, i.owner])), known);
+});
+
+test("AWS refuses what can't work, and keeps typed text in strings", () => {
+  const err = (b, cloud = {}) => (generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", ...b, cloud: { ...aws, ...cloud } }).errors ?? []).map((e) => e[1]).join(" ");
+  assert.equal(err({}), "");
+  assert.match(err({ distro: "fedora45" }), /AWS has no Fedora 45 image/);
+  for (const region of ["lon1", "us-central1-a", 'eu-west-2"', "eu-west-2\nx", "${var.x}"]) assert.match(err({}, { region }), /isn't a region/, region);
+  for (const size of ["t3 medium", "e2-medium", 't3.medium"', "${var.x}"]) assert.match(err({}, { size }), /isn't an instance type/, size);
+  for (const size of ["t4g.medium", "m7g.large", "a1.large", "c6gn.large"]) assert.match(err({}, { size }), /runs on Arm/, size);
+  for (const size of ["t3.medium", "g4dn.xlarge", "m5.large"]) assert.equal(err({}, { size }), "", size);
+  for (const adminCidrs of ["2001:db8::/64", "203.0.113.7/24"]) assert.match(err({}, { adminCidrs }), /isn't an IPv4 network/, adminCidrs);
+  assert.match(err({}, { adminCidrs: "0.0.0.0/0" }), /SSH to everyone/);
+  for (const tags of ["Name=x", "aws:x=y", 'x"=y', "a=${var.x}"]) assert.match(err({}, { tags }), /isn't a tag/, tags);
+  for (const hosts of ["web_1", "web1 203.0.113.1", 'a"b']) assert.match(err({ hosts }), /just a name/, hosts);
+  const key = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: { ...aws, publicKey: 'x")}${file("/etc/shadow")}' } }).files["main.tf"];
+  assert.ok(key.includes('pathexpand("x\\")}$${file(\\"/etc/shadow\\")}")'), "the path stays a string");
+});
+
 test("Google Cloud's credentials never reach the config", () => {
   const r = generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", cloud: gcp });
   assert.doesNotMatch(r.files["main.tf"], /credentials|access_token|GOOGLE_/);
+});
+
+test("nginx leaves the firewall to circuit-firewall when both are picked", () => {
+  const both = generate(data, { ...base, picks: ["nginx", "firewall"] }).files["main.tf"];
+  assert.match(both, /module "nginx"[^}]*firewall\s+= "none"/s);
+  const alone = generate(data, { ...base, picks: ["nginx"] }).files["main.tf"];
+  assert.doesNotMatch(alone, /firewall\s+= "none"/);
 });

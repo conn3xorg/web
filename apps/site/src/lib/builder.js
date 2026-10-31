@@ -483,8 +483,15 @@ export function generate(data, build) {
     const c = data.circuits[name];
     const body = [...(rolesOf(data, name).length ? Object.entries(placed[name]) : [["hosts", new Ref("local.hosts")]]), ...shared];
     const managed = name === "firewall" ? ["allow"] : [];
+    // circuit-firewall opens this circuit's port, and running both at once can
+    // catch ufw half installed.
+    const ownFirewall = name === "nginx" && picks.includes("firewall") ? [["firewall", "none"]] : [];
     for (const v of data.inputs[name].inputs) {
       if (managed.includes(v.name) || roleOf(data, name, v.name)) continue;
+      if (ownFirewall.some(([k]) => k === v.name)) {
+        body.push(...ownFirewall);
+        continue;
+      }
       if (wired.values[name] && v.name in wired.values[name]) {
         body.push([v.name, wired.values[name][v.name]]);
         continue;
@@ -611,6 +618,18 @@ function gcpLabels(lines, fail) {
   return out;
 }
 
+// AWS tags: "name" or "name=value", per line. Name is each server's own.
+function awsTags(lines, fail) {
+  const out = {};
+  for (const l of lines) {
+    const at = l.indexOf("=");
+    const [k, v] = at < 0 ? [l, ""] : [l.slice(0, at), l.slice(at + 1)];
+    if (!/^[A-Za-z0-9 _.:/=+@-]{1,128}$/.test(k) || !/^[A-Za-z0-9 _.:/=+@-]{0,256}$/.test(v) || /^aws:/i.test(k) || k === "Name") fail(`"${l}" isn't a tag we can set. Write name or name=value, in letters, digits, spaces and _ . : / = + @ -. Name and anything starting aws: are taken.`);
+    else out[k] = v;
+  }
+  return out;
+}
+
 // Everything that differs between clouds. The images are in builder.json.
 export const clouds = {
   digitalocean: {
@@ -673,6 +692,43 @@ Debian's and Rocky's images on Google Cloud have no cloud-init, so the startup s
 The private host key sits in the instance's metadata as well as in state. Anything running on the instance can read it, and so can anyone who can view the instance in your project.
 `,
     tf: gcpTf,
+  },
+  aws: {
+    name: "AWS",
+    server: "instance",
+    servers: "instances",
+    user: "conn3x",
+    ipv4Only: true,
+    region: "eu-west-2",
+    regionLabel: "Region",
+    // Two vCPUs and 4 GB, the same as DigitalOcean's default, on 50 GB of disk.
+    size: "t3.medium",
+    sizeLabel: "Instance type",
+    tagsLabel: "Tags, one per line",
+    tagsHolder: "team=web",
+    tags: awsTags,
+    nameOk: /^[A-Za-z][A-Za-z0-9-]*$/,
+    nameRule: "letters, digits and -",
+    regionOk: /^[a-z]{2}(-[a-z]+)+-\d+$/,
+    sizeOk: /^[a-z][a-z0-9-]*\.[a-z0-9]+$/,
+    notArm: /^(a1|[a-z]+\d+g[a-z]*)\./,
+    keyInstalledBy: "cloud-init",
+    providers: { aws: `{ source = "hashicorp/aws", version = "~> 6.0" }` },
+    address: (n) => `aws_instance.host[${n}].public_ip`,
+    note: "Instances cost money until you run conn3x destroy. Your AWS credentials never go in the config: they stay on your machine.",
+    credentials: "Sign in to AWS: set `AWS_PROFILE`, or `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, in your shell. Either way the credentials stay out of this config. You need to be able to create instances and security groups, and to read images and VPCs. Conn3x makes each instance's SSH host key and checks it from the first connection.",
+    readme: `
+## On AWS
+
+The instances go in your region's default VPC, so there's no network to pay for or look after. A security group called \`conn3x\` keeps them apart from anything else in there, and that name is fixed, so keep to one of these configs per region. If you've deleted the default VPC, the plan stops saying so; \`aws ec2 create-default-vpc\` brings it back.
+
+Each instance gets 50 GB of gp3 disk and a public IPv4 address. Cloud-init makes a user called \`conn3x\`, with your public key and sudo, because that's who Conn3x logs in as: these images keep root out of SSH.
+
+The image is the newest one its publisher has out when you first apply. Later releases don't replace a running server, because the config ignores changes to it.
+
+The private host key sits in the instance's user data as well as in state. Anything running on the instance can read it, and so can anyone who can view the instance's attributes in your account.
+`,
+    tf: awsTf,
   },
 };
 
@@ -770,6 +826,60 @@ function gcpTf(c) {
 `;
   out += `\n# Long enough for the startup script. SSH starts first, with the image's own\n# host key, and Conn3x rightly stops if it meets that one.\n`;
   out += `resource "time_sleep" "boot" {\n  for_each = google_compute_instance.host\n\n  create_duration = "90s"\n  triggers = {\n    address = each.value.network_interface[0].access_config[0].nat_ip\n  }\n}\n`;
+  return out;
+}
+
+// Instances in the default VPC, with every rule its own resource: the provider
+// fights over a group that mixes inline rules with separate ones, and the
+// rules for public addresses can't be inline, since they need the instances.
+function awsTf(c) {
+  const tags = (extra = {}) => {
+    const all = { ...extra, ...c.tags };
+    return Object.keys(all).length ? [["tags", all]] : [];
+  };
+  const named = tags({ Name: new Ref("each.key") });
+  const group = new Ref("aws_security_group.hosts.id");
+  let out = `\nprovider "aws" {\n${attrs([["region", c.region]], "  ")}}\n`;
+  out += `\nlocals {\n  admin_key = trimspace(file(pathexpand(${hcl(c.publicKey)})))\n}\n`;
+  out += `\ndata "aws_vpc" "default" {\n  default = true\n}\n`;
+  out += `\ndata "aws_ami" "os" {\n  most_recent = true\n  owners      = ${hcl([c.image.owner])}\n`;
+  for (const [name, value] of [["name", c.image.name], ["architecture", "x86_64"], ["virtualization-type", "hvm"], ["state", "available"]]) {
+    out += `\n  filter {\n${attrs([["name", name], ["values", [value]]], "    ")}  }\n`;
+  }
+  out += `}\n`;
+  out += `\n# SSH from your addresses, what your picks serve, and the instances to each other.\n`;
+  out += `resource "aws_security_group" "hosts" {\n${attrs([["name", "conn3x"], ["description", "Conn3x servers"], ["vpc_id", new Ref("data.aws_vpc.default.id")], ...tags()], "  ")}}\n`;
+  out += `\nresource "aws_vpc_security_group_ingress_rule" "ssh" {\n  for_each = toset(${hcl(c.admin)})\n\n`;
+  out += attrs([["security_group_id", group], ["cidr_ipv4", new Ref("each.value")], ["ip_protocol", "tcp"], ["from_port", 22], ["to_port", 22]], "  ");
+  out += `}\n`;
+  const served = Object.fromEntries([...c.open.map((p) => [p, "0.0.0.0/0"]), ...c.closed.map((p) => [p, c.net])].map(([p, from]) => {
+    const [port, protocol] = p.port.split("/");
+    return [`${p.port} ${from}`, { port: Number(port), protocol, from }];
+  }));
+  if (Object.keys(served).length) {
+    out += `\nresource "aws_vpc_security_group_ingress_rule" "served" {\n  for_each = ${hcl(served, "  ")}\n\n`;
+    out += attrs([["security_group_id", group], ["cidr_ipv4", new Ref("each.value.from")], ["ip_protocol", new Ref("each.value.protocol")], ["from_port", new Ref("each.value.port")], ["to_port", new Ref("each.value.port")]], "  ");
+    out += `}\n`;
+  }
+  out += `\nresource "aws_vpc_security_group_ingress_rule" "internal" {\n${attrs([["security_group_id", group], ["referenced_security_group_id", group], ["ip_protocol", "-1"]], "  ")}}\n`;
+  // Circuits join each other on public addresses, such as k3s agents reaching
+  // their server, and a group reference doesn't match those.
+  out += `\nresource "aws_vpc_security_group_ingress_rule" "peers" {\n  for_each = aws_instance.host\n\n`;
+  out += attrs([["security_group_id", group], ["cidr_ipv4", new Ref('"${each.value.public_ip}/32"')], ["ip_protocol", "-1"]], "  ");
+  out += `}\n`;
+  out += `\nresource "aws_vpc_security_group_egress_rule" "all" {\n${attrs([["security_group_id", group], ["cidr_ipv4", "0.0.0.0/0"], ["ip_protocol", "-1"]], "  ")}}\n`;
+  out += `\nresource "aws_instance" "host" {\n  for_each = tls_private_key.host\n\n`;
+  out += attrs([
+    ["ami", new Ref("data.aws_ami.os.id")],
+    ["instance_type", c.size],
+    ["vpc_security_group_ids", new Ref("[aws_security_group.hosts.id]")],
+    ["associate_public_ip_address", true],
+    ...named,
+  ], "  ");
+  out += `\n  root_block_device {\n${attrs([["volume_type", "gp3"], ["volume_size", 50], ...named], "    ")}  }\n`;
+  out += `\n  metadata_options {\n    http_tokens = "required"\n  }\n`;
+  out += `\n  user_data = "#cloud-config\\n\${yamlencode({\n    ssh_deletekeys = true\n    ssh_keys = {\n      ed25519_private = each.value.private_key_openssh\n      ed25519_public  = each.value.public_key_openssh\n    }\n    users = [{\n      name                = ${hcl(c.def.user)}\n      shell               = "/bin/bash"\n      sudo                = "ALL=(ALL) NOPASSWD:ALL"\n      ssh_authorized_keys = [local.admin_key]\n    }]\n  })}"\n`;
+  out += `\n  # A newer image shouldn't replace a running server.\n  lifecycle {\n    ignore_changes = [ami]\n  }\n}\n`;
   return out;
 }
 
