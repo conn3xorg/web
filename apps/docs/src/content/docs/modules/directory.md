@@ -45,6 +45,17 @@ step "app_tree" {
 }
 ```
 
+Make sure an empty directory is gone, and stays gone:
+
+```hcl
+step "old_cache" {
+  directory {
+    path  = "/var/cache/app-legacy"
+    state = "absent"
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
@@ -54,6 +65,7 @@ step "app_tree" {
 | `on_remove` | string | No | "forget" (default) leaves the directory, "delete" removes it when it is empty. |
 | `owner` | string | No | Owning user. Left as is when unset. |
 | `path` | string | Yes | Absolute path. |
+| `state` | string | No | "present" (default) or "absent", which removes the directory when it is empty and keeps it gone. |
 
 ## Read-only attributes
 
@@ -61,6 +73,7 @@ Conn3x sets these; reference them as `conn3x_directory.<circuit>__<step>["<host>
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `in_sync` | bool | With state "absent", whether the directory is already gone. Null otherwise. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_directory` resource, one instance per host, and connects with its circuit's `ssh` block.
@@ -74,6 +87,8 @@ A step lowers to the `conn3x_directory` resource, one instance per host, and con
 **Ownership.** `owner` and `group` are only checked and set when you give them. Leave them out and Conn3x keeps whatever the directory has.
 
 **Mode.** The default mode is `"0755"`. If the mode on the host changes, the next plan shows the difference.
+
+**Absent.** With `state = "absent"`, every plan checks only whether the directory exists. If it does, the plan shows the step out of sync and apply removes it. If it doesn't, the plan shows no change, and a directory that comes back later is removed again by the next apply. Only an empty directory is removed: one with anything in it is left in place, and the apply reports an error. `mode`, `owner` and `group` can't be set alongside it. A file, a symbolic link or anything else that isn't a directory at the path is an error, and is left in place.
 
 A `directory` step acts as root on the path you name, and follows a symlink at that path. Don't manage a root-owned path inside a directory a non-root user can write to, because that user can swap what the path points to.
 
