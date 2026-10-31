@@ -2,7 +2,7 @@
   "name": "istio",
   "repo": "conn3xorg/circuit-istio",
   "description": "A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "istio",
     "service-mesh",

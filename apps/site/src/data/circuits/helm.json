@@ -2,7 +2,7 @@
   "name": "helm",
   "repo": "conn3xorg/circuit-helm",
   "description": "A pinned, checksum-verified Helm, with optional chart releases kept as you configured them.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "helm",
     "kubernetes",
