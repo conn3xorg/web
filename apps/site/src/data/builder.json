@@ -28,7 +28,9 @@
     "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
     "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
     "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
-    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up."
+    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up.",
+    "helm": "Helm's releases go onto a Kubernetes cluster, so it needs one first. Its README shows how.",
+    "istio": "Istio installs onto a k3s cluster, so it needs that cluster first. Its README shows how."
   },
   "conflicts": [
     {
@@ -68,7 +70,8 @@
         "keycloak",
         "infisical",
         "gitlab",
-        "openwebui"
+        "openwebui",
+        "nagios"
       ],
       "reason": "both want port 8080"
     },
@@ -108,6 +111,21 @@
         "firewall"
       ],
       "reason": "circuit-firewall has no rule for VRRP, so every host would claim the floating address"
+    },
+    {
+      "circuits": [
+        "containerd",
+        "docker",
+        "kubeadm"
+      ],
+      "reason": "circuit-docker and circuit-kubeadm install their own containerd"
+    },
+    {
+      "circuits": [
+        "nagios",
+        "apache"
+      ],
+      "reason": "circuit-nagios takes over the host's Apache"
     }
   ],
   "requires": {
@@ -284,7 +302,12 @@
     "cloudflared": "Create the tunnel in the Cloudflare dashboard and set TF_VAR_cloudflared_tunnel_token to its token.",
     "trivy": "Its vulnerability database takes 1.6 to 3.1 GB of disk. Reports stay on the host.",
     "cinc": "Put your cookbooks on the host yourself and point repo_path at them. Set run_list to say which to run.",
-    "wazuh": "Set the three passwords as TF_VAR_ values. Nothing here makes a host or company compliant."
+    "wazuh": "Set the three passwords as TF_VAR_ values. Nothing here makes a host or company compliant.",
+    "nomad": "Nomad is under the BUSL licence, not open source, and the circuit's README explains what that means. Set TF_VAR_nomad_gossip_key to the output of nomad operator gossip keyring generate. ACLs are on, so run nomad acl bootstrap yourself after the first apply.",
+    "nagios": "The web interface listens on the host itself, so reach it through an SSH tunnel or a proxy.",
+    "selenium": "The Grid has no login, so it stays on the host itself. Reach it through an SSH tunnel.",
+    "zap": "Only scan what you're allowed to. Scans are passive unless you set active_scan.",
+    "containerd": "This installs containerd alone, with no network config for pods. Its README covers what's left to you."
   },
   "wiring": {
     "github-runner": {
@@ -498,6 +521,23 @@
         "prefix": "agent",
         "light": true,
         "help": "Hosts that report to the server. They can also run other circuits from this build, but not the server, whose packages clash with the agent."
+      }
+    ],
+    "nomad": [
+      {
+        "input": "servers",
+        "label": "Servers",
+        "prefix": "server",
+        "min": 1,
+        "odd": true,
+        "oddWhy": "they vote on a leader, so one or three is the usual choice.",
+        "help": "Run the Nomad servers. They need to reach each other, so a private network is best."
+      },
+      {
+        "input": "clients",
+        "label": "Clients",
+        "prefix": "client",
+        "help": "Run your jobs. Leave it empty for servers only."
       }
     ]
   },

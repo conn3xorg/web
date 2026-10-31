@@ -1,0 +1,79 @@
+{
+  "name": "istio",
+  "version": "v0.1.0",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "server",
+      "type": "any",
+      "description": "One k3s server to run istioctl on: an address, or a host object with an address and optional host_key, user, port, private_key_file or jump_hosts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "istio_version",
+      "type": "string",
+      "default": "1.31.3",
+      "description": "Istio release, without a v. Change it with checksums and k3s_minors.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "382c3004ce2e9c5ed3064b092ae0da7f6bbe30c766a1be282f45725add004860",
+        "arm64": "7476801623dbb900073cb1dba6a23b6a15c564b7e92b208aed36829315fefff1"
+      },
+      "description": "SHA-256 of the istioctl tarball for each architecture, from the .sha256 file beside it on the Istio release.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "k3s_minors",
+      "type": "list(string)",
+      "default": [
+        "1.32",
+        "1.33",
+        "1.34",
+        "1.35",
+        "1.36",
+        "1.37"
+      ],
+      "description": "Kubernetes minor versions the server's k3s may run, from Istio's supported releases page. Anything else fails the apply before Istio is touched.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ingress_gateway",
+      "type": "bool",
+      "default": false,
+      "description": "Install Istio's ingress gateway too, which is its default profile rather than minimal. It wants ports 80 and 443, so Traefik must be disabled on circuit-k3s first.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "inject_namespaces",
+      "type": "list(string)",
+      "default": [],
+      "description": "Namespaces to create if they're missing and label for sidecar injection. Pods already running there get a sidecar when they're next restarted.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "operator_spec",
+      "type": "any",
+      "default": {},
+      "description": "More fields for the spec of the IstioOperator file, such as { meshConfig = { accessLogFile = \"/dev/stdout\" } }. Keys here replace the same keys from this circuit, profile included. They reach state, so nothing secret goes here.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

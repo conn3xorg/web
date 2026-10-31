@@ -120,4 +120,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-docker/blob/v0.1.1/L
 
 - Repository: [conn3xorg/circuit-docker](https://github.com/conn3xorg/circuit-docker). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-docker/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-docker/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-docker/tree/v0.1.1/examples/local).
-- Related circuits: [Users](/circuits/users), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher).
+- Related circuits: [Users](/circuits/users), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio).

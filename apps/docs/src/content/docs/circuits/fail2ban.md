@@ -119,4 +119,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-fail2ban/blob/v0.2.0
 
 - Repository: [conn3xorg/circuit-fail2ban](https://github.com/conn3xorg/circuit-fail2ban). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-fail2ban/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.2.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant).
+- Related circuits: [Firewall](/circuits/firewall), [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

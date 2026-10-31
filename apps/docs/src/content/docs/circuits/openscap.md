@@ -222,4 +222,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openscap/blob/v0.1.0
 
 - Repository: [conn3xorg/circuit-openscap](https://github.com/conn3xorg/circuit-openscap). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-openscap/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.0/examples/local).
-- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant).
+- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

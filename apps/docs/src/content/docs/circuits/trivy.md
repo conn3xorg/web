@@ -189,4 +189,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-trivy/blob/v0.1.0/LI
 
 - Repository: [conn3xorg/circuit-trivy](https://github.com/conn3xorg/circuit-trivy). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-trivy/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.0/examples/local).
-- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [CISO Assistant](/circuits/ciso-assistant).
+- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

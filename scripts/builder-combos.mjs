@@ -50,7 +50,10 @@ export const samples = {
   "wazuh.agents": "client1 203.0.113.10",
   "zabbix.servers": "zabbix 203.0.113.50",
   "zabbix.agents": "zabbix 203.0.113.50\nclient1 203.0.113.10",
+  "nomad.servers": "server1 203.0.113.60\nserver2 203.0.113.61\nserver3 203.0.113.62",
+  "nomad.clients": "client1 203.0.113.63",
   "velociraptor.server": "dfir 203.0.113.40",
+  "zap.targets": "https://staging.example.com/",
   "velociraptor.clients": "client1 203.0.113.10\nclient2 203.0.113.20",
   "langfuse.public_url": "https://langfuse.example.com",
   "langfuse.admin_email": "you@example.com",
@@ -93,6 +96,8 @@ export const combos = [
   { distro: "rocky10", picks: ["freeipa", "velociraptor", "caddy", "auto-updates"] },
   { distro: "ubuntu2404", picks: ["wazuh", "nodejs", "perl", "trivy", "cloudflared", "nginx"] },
   { distro: "debian13", picks: ["cinc", "nodejs", "trivy"] },
+  { distro: "ubuntu2404", picks: ["bun", "containerd", "openvox", "nagios", "firewall"] },
+  { distro: "rocky10", picks: ["selenium", "zap", "nomad", "caddy", "firewall"] },
   // Names rather than addresses, since these servers get created.
   { distro: "debian13", picks: ["nginx", "fail2ban", "firewall"], cloud: { adminCidrs: "203.0.113.7/32", tags: "web" }, hosts: "web1\nweb2" },
   {
