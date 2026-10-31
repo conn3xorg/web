@@ -102,6 +102,29 @@ test("asks AWS for a region, and no project", async ({ page }) => {
   await expect(page.locator("#code")).toContainText('resource "aws_instance" "host"');
 });
 
+test("asks Azure for a resource group, and refuses Rocky with its reason", async ({ page }) => {
+  await page.goto("/build");
+  await page.locator('input[name=distro][value="debian13"]').check({ force: true });
+  await expect(page.locator("#cloud-resource-group-field")).toBeHidden();
+  await page.locator('input[name=where][value="azure"]').check({ force: true });
+  await expect(page.locator("#cloud-project-field")).toBeHidden();
+  await expect(page.locator("#cloud-resource-group-field")).toBeVisible();
+  await expect(page.locator("#cloud-region")).toHaveAttribute("placeholder", "westus2");
+  await expect(page.locator("#cloud-size")).toHaveAttribute("placeholder", "Standard_B2s_v2");
+  await page.locator('input[name=pick][value="nginx"]').check({ force: true });
+  await page.fill("#hosts", "web1");
+  await page.fill("#cloud-admin", "203.0.113.7/32");
+  await page.click("#write");
+  await expect(page.locator("#code")).toContainText('resource "azurerm_linux_virtual_machine" "host"');
+  await page.fill("#cloud-resource-group", 'bad"group');
+  await expect(page.locator("#errors")).toContainText("isn't a resource group name");
+  await page.fill("#cloud-resource-group", "");
+  await page.locator('input[name=distro][value="rocky10"]').check({ force: true });
+  await expect(page.locator("#errors")).toContainText("Marketplace terms");
+  await page.locator('input[name=where][value="aws"]').check({ force: true });
+  await expect(page.locator("#cloud-resource-group-field")).toBeHidden();
+});
+
 test("asks Google Cloud for what it needs, in its own words", async ({ page }) => {
   await page.goto("/build");
   await page.locator('input[name=distro][value="debian13"]').check({ force: true });

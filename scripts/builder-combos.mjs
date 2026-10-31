@@ -124,6 +124,20 @@ export const combos = [
     network: "10.0.0.0/8",
     hosts: "web1\nweb2",
   },
+  {
+    distro: "ubuntu2404",
+    picks: ["nginx", "samba", "firewall"],
+    cloud: { provider: "azure", resourceGroup: "conn3x-web", adminCidrs: "203.0.113.7/32", tags: "team=web" },
+    network: "10.0.0.0/8",
+    hosts: "web1\nweb2",
+  },
+  {
+    distro: "debian13",
+    picks: ["k3s"],
+    cloud: { provider: "azure", adminCidrs: "203.0.113.7/32" },
+    hosts: "",
+    values: { "k3s.servers": "server1", "k3s.agents": "agent1" },
+  },
 ];
 
 /** Every build CI validates: [folder name, build]. */
