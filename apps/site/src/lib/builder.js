@@ -367,8 +367,10 @@ export function readLink(data, hash) {
  *   picks: ["nginx", ...],
  *   values: { "nginx.port": "8080", "k3s.servers": "cp1 203.0.113.20", ... },
  *   network: "192.168.1.0/24",                    for private firewall ports
- *   cloud: { region, size, adminCidrs, publicKey, tags }, create the hosts on
- *     DigitalOcean; hosts and role hosts are then names, one per line
+ *   cloud: { provider, project, region, size, adminCidrs, publicKey, tags },
+ *     create the hosts on a cloud in `clouds`, DigitalOcean when provider is
+ *     left out; hosts and role hosts are then names, one per line, and region
+ *     is a zone on Google Cloud
  * }
  *
  * Returns { files } or { errors: [[field, message], ...] }.
@@ -388,11 +390,14 @@ export function generate(data, build) {
   if (errors.length) return { errors };
 
   const cloud = build.cloud;
-  const image = cloud && data.builder.cloud.images[distro.id];
-  if (cloud && !image) fail("cloud", `DigitalOcean has no ${distro.name} image.`);
-  // The droplet's address and host key aren't known until it exists, so os stands in for its facts.
+  const provider = cloud && (cloud.provider ?? "digitalocean");
+  if (cloud && !Object.hasOwn(clouds, provider)) return { errors: [["cloud", "The builder can't create servers there."]] };
+  const def = cloud && clouds[provider];
+  const image = cloud && data.builder.cloud[provider][distro.id];
+  if (cloud && !image) fail("cloud", `${def.name} has no ${distro.name} image.`);
+  // The server's address and host key aren't known until it exists, so os stands in for its facts.
   const created = (n) => ({
-    address: new Ref(`digitalocean_droplet.host[${quote(n)}].ipv4_address`),
+    address: new Ref(def.address(quote(n))),
     host_key: new Ref(`tls_private_key.host[${quote(n)}].public_key_openssh`),
     os: distro.os,
   });
@@ -404,8 +409,8 @@ export function generate(data, build) {
     (text ?? "").split("\n").map((l) => l.trim()).filter(Boolean).forEach((l, n) => {
       const parts = l.split(/\s+/);
       if (cloud) {
-        // Droplet names can't hold an underscore.
-        if (parts.length > 1 || !/^[A-Za-z][A-Za-z0-9-]*$/.test(l)) return fail(field, `Write just a name for each new server, with letters, digits and -, not "${l}".`);
+        // Droplet names can't hold an underscore, and Google Cloud's can't hold a capital either.
+        if (parts.length > 1 || !def.nameOk.test(l)) return fail(field, `Write just a name for each new server, with ${def.nameRule}, not "${l}".`);
         if (out[l]) return fail(field, `${l} is there twice.`);
         out[l] = l;
         return;
@@ -460,14 +465,14 @@ export function generate(data, build) {
   }
 
   const ssh = build.ssh ?? {};
-  // DigitalOcean's images log in as root.
-  const user = cloud ? "root" : (ssh.user ?? "").trim() || "root";
+  // DigitalOcean's images log in as root. The others keep root out of SSH.
+  const user = cloud ? def.user : (ssh.user ?? "").trim() || "root";
   if (!/^[a-z_][a-z0-9_.-]*$/i.test(user)) fail("ssh.user", `"${user}" isn't a user name.`);
   const shared = [];
   if (user !== "root") shared.push(["ssh_user", user]);
   if (ssh.key?.trim()) shared.push(["ssh_private_key_file", ssh.key.trim()]);
   if (ssh.knownHosts?.trim() && !cloud) shared.push(["ssh_known_hosts_file", ssh.knownHosts.trim()]);
-  if (ssh.become && !cloud) shared.push(["ssh_become", true]);
+  if (cloud ? user !== "root" : ssh.become) shared.push(["ssh_become", true]);
 
   const wired = wiring(data, picks);
   const variables = [...wired.secrets];
@@ -522,6 +527,7 @@ export function generate(data, build) {
     for (const p of data.builder.ports[name] ?? []) {
       const set = p.input && body.find(([k]) => k === p.input);
       const port = set ? `${set[1]}/${p.port.split("/")[1]}` : p.port;
+      if (cloud && !/^\d{1,5}\/(tcp|udp)$/.test(port)) fail(`${name}.${p.input}`, `"${set[1]}" isn't a port.`);
       (p.private ? closed : open).push({ port, circuit: name });
     }
     // A second copy of a circuit that goes with one role's hosts, such as the database on Zabbix's server.
@@ -540,9 +546,18 @@ export function generate(data, build) {
     admin = (cloud.adminCidrs ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
     if (!admin.length) fail("cloud.adminCidrs", "Say which addresses can reach SSH, such as 203.0.113.7/32.");
     for (const a of admin) if (!/^[0-9a-fA-F:.]+\/\d{1,3}$/.test(a)) fail("cloud.adminCidrs", `"${a}" isn't an address such as 203.0.113.7/32.`);
-    if (!/^[a-z0-9]+$/.test(cloud.region?.trim() || "lon1")) fail("cloud.region", `"${cloud.region}" isn't a region such as lon1.`);
-    if (!/^[a-z0-9-]+$/.test(cloud.size?.trim() || "s-2vcpu-4gb")) fail("cloud.size", `"${cloud.size}" isn't a size such as s-2vcpu-4gb.`);
+    if (def.ipv4Only) {
+      for (const a of admin) if (/^[0-9a-fA-F:.]+\/\d{1,3}$/.test(a) && !ipv4Network(a)) fail("cloud.adminCidrs", `"${a}" isn't an IPv4 network such as 203.0.113.7/32. These servers only have IPv4 addresses.`);
+      if (admin.some((a) => a.endsWith("/0"))) fail("cloud.adminCidrs", "That opens SSH to everyone. Name your own address instead.");
+      if (net && !ipv4Network(net)) fail("network", `"${net}" isn't an IPv4 network such as 192.168.1.0/24. These servers only have IPv4 addresses.`);
+    }
+    if (!def.regionOk.test(cloud.region?.trim() || def.region)) fail("cloud.region", `"${cloud.region}" isn't a ${def.regionLabel.toLowerCase()} such as ${def.region}.`);
+    if (!def.sizeOk.test(cloud.size?.trim() || def.size)) fail("cloud.size", `"${cloud.size}" isn't ${/^[aeiou]/i.test(def.sizeLabel) ? "an" : "a"} ${def.sizeLabel.toLowerCase()} such as ${def.size}.`);
+    if (def.notArm?.test(cloud.size?.trim() || def.size)) fail("cloud.size", `${cloud.size?.trim()} runs on Arm, and these images are for x86. Pick an x86 ${def.sizeLabel.toLowerCase()}.`);
+    if (def.projectOk && !def.projectOk.test(cloud.project?.trim() ?? "")) fail("cloud.project", cloud.project?.trim() ? `"${cloud.project}" isn't a project ID such as my-project-123.` : "Say which project to create the servers in.");
   }
+  const tagLines = (cloud?.tags ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
+  const tags = cloud && (def.tags ? def.tags(tagLines, (m) => fail("cloud.tags", m)) : tagLines);
   if (errors.length) return { errors };
 
   const fw = modules.find((m) => m.name === "firewall");
@@ -557,31 +572,116 @@ export function generate(data, build) {
   return {
     files: {
       "main.tf": mainTf(distro, hosts, modules, cloud && {
+        def,
         image,
+        project: cloud.project?.trim(),
         names: [...new Set(claims.map((c) => c.address))].sort(),
-        region: cloud.region?.trim() || "lon1",
-        size: cloud.size?.trim() || "s-2vcpu-4gb",
+        region: cloud.region?.trim() || def.region,
+        size: cloud.size?.trim() || def.size,
         admin,
         publicKey: cloud.publicKey?.trim() || "~/.ssh/id_ed25519.pub",
-        tags: (cloud.tags ?? "").split("\n").map((l) => l.trim()).filter(Boolean),
+        tags,
+        net,
         open: [...new Set(open.map((p) => p.port))].map((port) => ({ port, from: ["0.0.0.0/0", "::/0"] })),
         closed: net ? [...new Set(closed.map((p) => p.port))].map((port) => ({ port, from: [net] })) : [],
       }),
       ...(variables.length ? { "variables.tf": variablesTf(variables) } : {}),
-      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length), cloud: !!cloud }),
+      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length), cloud: def }),
     },
   };
 }
 
+// A network written as a.b.c.d/n, with no bits set past the prefix, since the
+// clouds refuse or rewrite one that has them.
+function ipv4Network(s) {
+  const m = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})$/.exec(s);
+  if (!m || m.slice(1, 5).some((o) => Number(o) > 255) || Number(m[5]) > 32) return false;
+  const n = m.slice(1, 5).reduce((a, o) => a * 256 + Number(o), 0);
+  return n % 2 ** (32 - Number(m[5])) === 0;
+}
+
+// Google Cloud labels: "name" or "name=value", per line, lowercase by its rules.
+function gcpLabels(lines, fail) {
+  const out = {};
+  for (const l of lines) {
+    const [k, v = ""] = l.split("=");
+    if (!/^[a-z][a-z0-9_-]{0,62}$/.test(k) || !/^[a-z0-9_-]{0,63}$/.test(v) || l.split("=").length > 2) fail(`"${l}" isn't a label. Write name or name=value, in lowercase letters, digits, - and _.`);
+    else out[k] = v;
+  }
+  return out;
+}
+
+// Everything that differs between clouds. The images are in builder.json.
+export const clouds = {
+  digitalocean: {
+    name: "DigitalOcean",
+    server: "droplet",
+    servers: "droplets",
+    user: "root",
+    region: "lon1",
+    regionLabel: "Region",
+    size: "s-2vcpu-4gb",
+    sizeLabel: "Size",
+    tagsLabel: "Tags, one per line",
+    tagsHolder: "",
+    nameOk: /^[A-Za-z][A-Za-z0-9-]*$/,
+    nameRule: "letters, digits and -",
+    regionOk: /^[a-z0-9]+$/,
+    sizeOk: /^[a-z0-9-]+$/,
+    keyInstalledBy: "cloud-init",
+    providers: { digitalocean: `{ source = "digitalocean/digitalocean", version = "~> 2.0" }` },
+    address: (n) => `digitalocean_droplet.host[${n}].ipv4_address`,
+    note: "Droplets cost money until you run conn3x destroy. Your token never goes in the config: you set it in your shell when you run it.",
+    credentials: "Set your DigitalOcean token: `export DIGITALOCEAN_TOKEN=...`. Conn3x makes each droplet's SSH host key and checks it from the first connection. If the apply says `SSH Key is already in use`, that public key is already in your account: remove it there, or use another key.",
+    tf: digitaloceanTf,
+  },
+  gcp: {
+    name: "Google Cloud",
+    server: "instance",
+    servers: "instances",
+    user: "conn3x",
+    ipv4Only: true,
+    region: "us-central1-a",
+    regionLabel: "Zone",
+    // Two vCPUs and 4 GB, the same as DigitalOcean's default, on 50 GB of disk.
+    size: "e2-medium",
+    sizeLabel: "Machine type",
+    tagsLabel: "Labels, one per line",
+    tagsHolder: "team=web",
+    tags: gcpLabels,
+    nameOk: /^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$/,
+    nameRule: "lowercase letters, digits and -, ending in a letter or digit",
+    regionOk: /^[a-z]+-[a-z]+\d+-[a-z]$/,
+    sizeOk: /^[a-z][a-z0-9]*(-[a-z0-9]+)+$/,
+    notArm: /^[a-z]\d+a-/,
+    projectOk: /^[a-z][a-z0-9-]{4,28}[a-z0-9]$/,
+    keyInstalledBy: "its startup script",
+    providers: { google: `{ source = "hashicorp/google", version = "~> 7.0" }`, time: `{ source = "hashicorp/time", version = "~> 0.13" }` },
+    // Through the wait below, so nothing connects until the host key is in place.
+    address: (n) => `time_sleep.boot[${n}].triggers["address"]`,
+    note: "Instances cost money until you run conn3x destroy. Your Google credentials never go in the config: they stay on your machine.",
+    credentials: "Sign in to Google Cloud: `gcloud auth application-default login`, or point `GOOGLE_APPLICATION_CREDENTIALS` at a service account key. Either way the credentials stay out of this config. The project needs the Compute Engine API turned on, and you need to be able to create instances and firewall rules in it: `roles/compute.admin` is enough. Conn3x makes each instance's SSH host key and checks it from the first connection.",
+    readme: `
+## On Google Cloud
+
+Everything goes in a network of its own, called \`conn3x\`, so the rules on your project's \`default\` network, which let SSH in from anywhere, don't apply. That name is fixed, so keep to one of these configs per project.
+
+Each instance gets 50 GB of balanced disk and a public IPv4 address. Its startup script makes a user called \`conn3x\`, with your public key and sudo, because that's who Conn3x logs in as: these images keep root out of SSH. Keys added to your whole project stay off the instance.
+
+Debian's and Rocky's images on Google Cloud have no cloud-init, so the startup script does the job on all of them, a moment after SSH first starts. That's why the config waits 90 seconds before connecting: an earlier connection would meet the image's own host key and be refused. If an apply stops with a host key error anyway, run it again.
+
+The private host key sits in the instance's metadata as well as in state. Anything running on the instance can read it, and so can anyone who can view the instance in your project.
+`,
+    tf: gcpTf,
+  },
+};
+
+const cloudKeysComment = (c) =>
+  `\n# Each ${c.def.server}'s SSH host key, made here and installed by ${c.def.keyInstalledBy}, so\n# Conn3x can check it on the very first connection.\n`;
+
 // Droplets, their host keys and a cloud firewall, the way the private AI box example does it.
-function cloudTf(c) {
-  let out = `\nterraform {\n  required_providers {\n`;
-  out += `    digitalocean = { source = "digitalocean/digitalocean", version = "~> 2.0" }\n`;
-  out += `    tls          = { source = "hashicorp/tls", version = "~> 4.0" }\n`;
-  out += `  }\n}\n`;
-  out += `\n# Each droplet's SSH host key, made here and installed by cloud-init, so\n# Conn3x can check it on the very first connection.\n`;
-  out += `resource "tls_private_key" "host" {\n  for_each  = toset(${hcl(c.names)})\n  algorithm = "ED25519"\n}\n`;
-  out += `\nresource "digitalocean_ssh_key" "admin" {\n  name       = "conn3x"\n  public_key = trimspace(file(pathexpand(${hcl(c.publicKey)})))\n}\n`;
+function digitaloceanTf(c) {
+  let out = `\nresource "digitalocean_ssh_key" "admin" {\n  name       = "conn3x"\n  public_key = trimspace(file(pathexpand(${hcl(c.publicKey)})))\n}\n`;
   out += `\nresource "digitalocean_droplet" "host" {\n  for_each = tls_private_key.host\n\n`;
   out += attrs([
     ["name", new Ref("each.key")],
@@ -610,6 +710,78 @@ function cloudTf(c) {
   out += rule("outbound", "icmp", null, everywhere);
   out += `}\n`;
   return out;
+}
+
+// Instances in a network of their own, the way circuit-caddy's example does it,
+// except that the startup script replaces cloud-init, which most images here lack.
+function gcpTf(c) {
+  const labels = Object.keys(c.tags).length ? [["labels", c.tags]] : [];
+  const firewall = (name, ranges, ports) => {
+    let out = `\nresource "google_compute_firewall" ${hcl(name)} {\n`;
+    out += attrs([["name", `conn3x-${name}`], ["network", new Ref("google_compute_network.hosts.id")], ["source_ranges", ranges]], "  ");
+    for (const protocol of ["tcp", "udp"]) {
+      const list = ports.map((p) => p.split("/")).filter(([, x]) => x === protocol).map(([n]) => n);
+      if (list.length) out += `\n  allow {\n${attrs([["protocol", protocol], ["ports", list]], "    ")}  }\n`;
+    }
+    return `${out}}\n`;
+  };
+  const ports = (list) => [...new Set(list.map((p) => p.port))];
+  let out = `\nprovider "google" {\n${attrs([["project", c.project], ["region", c.region.slice(0, c.region.lastIndexOf("-"))], ["zone", c.region]], "  ")}}\n`;
+  out += `\nlocals {\n  admin_key = trimspace(file(pathexpand(${hcl(c.publicKey)})))\n}\n`;
+  out += `\n# A network of its own, so the default network's allow-SSH-from-anywhere\n# rule doesn't apply.\n`;
+  out += `resource "google_compute_network" "hosts" {\n  name                    = "conn3x"\n  auto_create_subnetworks = false\n}\n`;
+  out += `\nresource "google_compute_subnetwork" "hosts" {\n  name          = "conn3x"\n  network       = google_compute_network.hosts.id\n  ip_cidr_range = "10.10.0.0/24"\n}\n`;
+  out += `\n# SSH from your addresses, what your picks serve, and the instances to each other.`;
+  out += firewall("ssh", c.admin, ["22/tcp"]);
+  if (c.open.length) out += firewall("public", ["0.0.0.0/0"], ports(c.open));
+  if (c.closed.length) out += firewall("network", [c.net], ports(c.closed));
+  // Circuits join each other on public addresses, such as k3s agents reaching
+  // their server, so those count as server-to-server too.
+  out += `\nresource "google_compute_firewall" "internal" {\n  name          = "conn3x-internal"\n  network       = google_compute_network.hosts.id\n  source_ranges = concat(["10.10.0.0/24"], [for i in google_compute_instance.host : "\${i.network_interface[0].access_config[0].nat_ip}/32"])\n`;
+  for (const protocol of ["tcp", "udp", "icmp"]) out += `\n  allow {\n    protocol = ${hcl(protocol)}\n  }\n`;
+  out += `}\n`;
+  out += `\nresource "google_compute_instance" "host" {\n  for_each = tls_private_key.host\n\n`;
+  out += attrs([["name", new Ref("each.key")], ["machine_type", c.size], ...labels], "  ");
+  out += `\n  boot_disk {\n    initialize_params {\n`;
+  out += attrs([["image", c.image], ["type", "pd-balanced"], ["size", 50], ...labels], "      ");
+  out += `    }\n  }\n\n  network_interface {\n    subnetwork = google_compute_subnetwork.hosts.id\n\n    access_config {}\n  }\n\n  metadata = {\n    # Keys added to the whole project don't get onto this instance.\n    block-project-ssh-keys = true\n    enable-oslogin         = "FALSE"\n\n`;
+  // base64, so nothing in a key can be read as shell.
+  out += `    startup-script = <<-EOT
+      #!/bin/bash
+      set -eu
+      [ -e /var/lib/conn3x-ready ] && exit 0
+      rm -f /etc/ssh/ssh_host_*
+      echo \${base64encode(each.value.private_key_openssh)} | base64 -d > /etc/ssh/ssh_host_ed25519_key
+      chmod 600 /etc/ssh/ssh_host_ed25519_key
+      echo \${base64encode(each.value.public_key_openssh)} | base64 -d > /etc/ssh/ssh_host_ed25519_key.pub
+      id ${c.def.user} > /dev/null 2>&1 || useradd -m -s /bin/bash ${c.def.user}
+      install -d -m 700 -o ${c.def.user} -g ${c.def.user} /home/${c.def.user}/.ssh
+      echo \${base64encode(local.admin_key)} | base64 -d > /home/${c.def.user}/.ssh/authorized_keys
+      chown ${c.def.user}: /home/${c.def.user}/.ssh/authorized_keys
+      chmod 600 /home/${c.def.user}/.ssh/authorized_keys
+      echo '${c.def.user} ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/${c.def.user}
+      chmod 440 /etc/sudoers.d/${c.def.user}
+      if command -v restorecon > /dev/null; then restorecon -R /etc/ssh /home/${c.def.user}/.ssh; fi
+      systemctl try-restart sshd ssh || true
+      touch /var/lib/conn3x-ready
+    EOT
+  }
+}
+`;
+  out += `\n# Long enough for the startup script. SSH starts first, with the image's own\n# host key, and Conn3x rightly stops if it meets that one.\n`;
+  out += `resource "time_sleep" "boot" {\n  for_each = google_compute_instance.host\n\n  create_duration = "90s"\n  triggers = {\n    address = each.value.network_interface[0].access_config[0].nat_ip\n  }\n}\n`;
+  return out;
+}
+
+// What every cloud has in common: its providers and a host key per server.
+function cloudTf(c) {
+  const providers = { ...c.def.providers, tls: `{ source = "hashicorp/tls", version = "~> 4.0" }` };
+  let out = `\nterraform {\n  required_providers {\n`;
+  out += attrs(Object.entries(providers).map(([k, v]) => [k, new Ref(v)]), "    ");
+  out += `  }\n}\n`;
+  out += cloudKeysComment(c);
+  out += `resource "tls_private_key" "host" {\n  for_each  = toset(${hcl(c.names)})\n  algorithm = "ED25519"\n}\n`;
+  return out + c.def.tf(c);
 }
 
 function mainTf(distro, hosts, modules, cloud) {
@@ -646,7 +818,7 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   let out = "# Your Conn3x config\n\n";
   out += `Written by the Circuit Builder at https://conn3x.org/build, for ${distro.name} on ${n} host${n === 1 ? "" : "s"}. `;
   out += fw.cloud
-    ? "It's configuration only: nothing exists yet. `conn3x apply` creates the droplets on DigitalOcean, once you say yes, and they cost money until you run `conn3x destroy`.\n\n"
+    ? `It's configuration only: nothing exists yet. \`conn3x apply\` creates the ${fw.cloud.servers} on ${fw.cloud.name}, once you say yes, and they cost money until you run \`conn3x destroy\`.\n\n`
     : "It's configuration only: nothing has touched your servers yet, and nothing will until you run `conn3x apply` and say yes.\n\n";
   out += "## What's in it\n\n";
   for (const m of modules) {
@@ -663,7 +835,7 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   out += "\n## Run it\n\n";
   out += "1. Install Conn3x: https://docs.conn3x.org/get-started\n";
   out += fw.cloud
-    ? "2. Set your DigitalOcean token: `export DIGITALOCEAN_TOKEN=...`. Conn3x makes each droplet's SSH host key and checks it from the first connection. If the apply says `SSH Key is already in use`, that public key is already in your account: remove it there, or use another key.\n"
+    ? `2. ${fw.cloud.credentials}\n`
     : "2. Log in to each host with `ssh` once, so its key is in your known_hosts. Conn3x checks it.\n";
   if (variables.length) {
     out += "3. Set the secrets. They stay in your shell, never in a file:\n\n   ```sh\n";
@@ -687,7 +859,8 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   }
   if (fw.cloud) {
     out += "\n## The state file\n\n";
-    out += "It holds each droplet's private SSH host key, so turn on state encryption, or store it where you'd store a secret: https://opentofu.org/docs/language/state/encryption/\n";
+    out += `It holds each ${fw.cloud.server}'s private SSH host key, so turn on state encryption, or store it where you'd store a secret: https://opentofu.org/docs/language/state/encryption/\n`;
+    out += fw.cloud.readme ?? "";
   }
   const hints = modules.map((m) => data.builder.hints[m.name] && `- **${m.name}**: ${data.builder.hints[m.name]}`).filter(Boolean);
   if (hints.length) out += `\n## Worth knowing\n\n${hints.join("\n")}\n`;
