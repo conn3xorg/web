@@ -108,4 +108,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-firewall/blob/v0.2.0
 
 - Repository: [conn3xorg/circuit-firewall](https://github.com/conn3xorg/circuit-firewall). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-firewall/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.0/examples/local).
-- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd).
+- Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

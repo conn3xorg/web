@@ -133,6 +133,10 @@ const sections = [
         a: `<p>Run <code>conn3x drift</code>. It checks both your cloud resources and what's on the servers, and exits 2 when something changed, so a scheduled CI job can alert on it. <a href="${docs}/tutorials/drift-in-ci">Catch drift in CI</a> sets one up.</p>`,
       },
       {
+        q: "Is there a kustomize circuit?",
+        a: `<p>No, because you don't need one on k3s: its <code>kubectl</code> has kustomize built in. A <code>command</code> step runs <code>k3s kubectl apply -k PATH</code> with <code>unless = "k3s kubectl diff -k PATH"</code>, so it only acts when the overlay has changed. We've run those two commands by hand on k3s v1.37.1, though not yet as a step.</p>`,
+      },
+      {
         id: "circuits",
         q: "Where can I find circuits other people have written?",
         a: `<p>On <a href="/circuits">conn3x.org/circuits</a>. Each one goes in with a single <code>module</code> block. Written one worth sharing? <a href="${docs}/guides/share-a-circuit">Share a circuit</a> explains how to publish it and list it there.</p>`,

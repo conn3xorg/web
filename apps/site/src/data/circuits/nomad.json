@@ -1,0 +1,19 @@
+{
+  "name": "nomad",
+  "repo": "conn3xorg/circuit-nomad",
+  "description": "A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state.",
+  "version": "v0.1.0",
+  "tags": [
+    "nomad",
+    "scheduler",
+    "hashicorp"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Containers and Kubernetes",
+  "official": true
+}

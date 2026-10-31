@@ -1,0 +1,86 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../../layouts/Base.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import PageHero from "../../components/PageHero.astro";
+import { hoursGiven } from "../../lib/giving-back.js";
+import givingBack from "../../data/giving-back.json";
+
+const when = (d: string) => new Date(`${d}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+---
+<Base
+  title="Giving back: Conn3x"
+  description="What Conn3x has done for the projects its circuits stand on, with a link to each piece of work."
+  path="/community/giving-back"
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero label="Community" title="Giving back">
+      <p>
+        Every circuit stands on someone else's project, so we give some time back. About {hoursGiven(givingBack)} so
+        far, counting the digging behind each piece of work and the threads we looked at and left alone.
+      </p>
+    </PageHero>
+
+    <div class="wrap page">
+      <ul class="log">
+        {givingBack.items.map((i) => (
+          <li>
+            <time datetime={i.date}>{when(i.date)}</time>
+            <a href={i.url}>{i.repo}</a>
+            <span>{i.summary}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="fine">
+        Know a project one of our circuits uses that could do with a hand? Tell us in{" "}
+        <a href="https://github.com/conn3xorg/conn3x/discussions">Discussions</a>.{" "}
+        <a href="/community">Back to the community page</a>.
+      </p>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .page {
+    padding-block: 2rem 5rem;
+  }
+  .log {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--c-border);
+  }
+  .log li {
+    display: grid;
+    grid-template-columns: 7rem 14rem 1fr;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .log time,
+  .log span,
+  .fine {
+    color: var(--c-text-muted);
+  }
+  .log a {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .fine {
+    margin: 1.5rem 0 0;
+    font-size: 0.9375rem;
+  }
+  @media (max-width: 860px) {
+    .log li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.25rem;
+    }
+  }
+</style>

@@ -1,0 +1,20 @@
+{
+  "name": "authentik",
+  "repo": "conn3xorg/circuit-authentik",
+  "description": "Self-host authentik: single sign-on over OIDC and SAML, with users, sessions and audit trail on your own hosts.",
+  "version": "v0.1.0",
+  "tags": [
+    "authentik",
+    "sso",
+    "oidc",
+    "saml"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Identity and secrets",
+  "official": true
+}

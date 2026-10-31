@@ -1,0 +1,147 @@
+{
+  "name": "ciso-assistant",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "ciso_assistant_version",
+      "type": "string",
+      "default": "v4.1.5",
+      "description": "Tag of the ghcr.io/intuitem/ciso-assistant-community backend and frontend images, such as \"v4.1.5\". Change backend_image_digest and frontend_image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "backend_image_digest",
+      "type": "string",
+      "default": "sha256:bf33509874da045a8d41c27b9a6c74113ecd7ff5e04378b1995ea9e137e9b707",
+      "description": "Digest of the backend image for ciso_assistant_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "frontend_image_digest",
+      "type": "string",
+      "default": "sha256:9a4016e2aa9bb4ca5070e112ec92610c5fcc4872a332efcc74dec6569f48fd9b",
+      "description": "Digest of the frontend image for ciso_assistant_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "public_url",
+      "type": "string",
+      "description": "The address people reach CISO Assistant at, with no path or trailing slash, such as \"https://grc.example.com\". The app sets its allowed host and its links from it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "db_host",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address of the PostgreSQL server, as seen from the host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_port",
+      "type": "number",
+      "default": 5432,
+      "description": "Port of the PostgreSQL server.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_name",
+      "type": "string",
+      "default": "ciso_assistant",
+      "description": "Name of the database, which has to exist already.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_user",
+      "type": "string",
+      "default": "ciso_assistant",
+      "description": "PostgreSQL role that owns the database.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_password",
+      "type": "string",
+      "description": "Password of db_user. It reaches the host in root-only files and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "admin_email",
+      "type": "string",
+      "description": "Email address of the first administrator, who signs in with admin_password.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password of the first administrator. It reaches the host in a root-only file and never the plan or state. CISO Assistant sets it only when it creates the user.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the web interface listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 3000,
+      "description": "Port the web interface listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "backend_port",
+      "type": "number",
+      "default": 8000,
+      "description": "Port the API listens on, always on 127.0.0.1.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "min_memory_mb",
+      "type": "number",
+      "default": 3500,
+      "description": "Memory, in MiB, a host needs before the circuit configures it. A 4 GB host reports a little less than 4096.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of CISO Assistant's environment variables for the backend and the worker, such as { EMAIL_HOST = \"smtp.example.com\", EMAIL_HOST_PASSWORD = \"...\" }. They go in root-only files and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

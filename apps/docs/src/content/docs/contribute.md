@@ -40,7 +40,7 @@ The docs and the website live in [conn3xorg/web](https://github.com/conn3xorg/we
 
 ## Test a release
 
-Releases come out often, and each one is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. Your servers are none of those exactly. When a new [release](https://github.com/conn3xorg/conn3x/releases) lands, run your configuration against a host you don't mind touching, or a container from the [local tutorial](/tutorials/try-locally), and tell us what changed. A report that says "v0.6.6 works on my setup" helps too, in Discussions.
+Releases come out often, and each one is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. Your servers are none of those exactly. When a new [release](https://github.com/conn3xorg/conn3x/releases) lands, run your configuration against a host you don't mind touching, or a container from the [local tutorial](/tutorials/try-locally), and tell us what changed. A report that says "v0.6.11 works on my setup" helps too, in Discussions.
 
 ## Pick up an issue
 

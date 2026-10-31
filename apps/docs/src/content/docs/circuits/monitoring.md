@@ -127,4 +127,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-monitoring/blob/v0.2
 
 - Repository: [conn3xorg/circuit-monitoring](https://github.com/conn3xorg/circuit-monitoring). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-monitoring/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.0/examples/local).
-- Related circuits: [Docker](/circuits/docker), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix).
+- Related circuits: [Docker](/circuits/docker), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).

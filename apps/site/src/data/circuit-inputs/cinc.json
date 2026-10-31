@@ -1,0 +1,68 @@
+{
+  "name": "cinc",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "cinc_version",
+      "type": "string",
+      "default": "19.4.46",
+      "description": "Cinc Client release to install, from https://omnitruck.cinc.sh/stable/cinc/versions/all.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "ubuntu/24.04/x86_64": "71dd1056fc86b29b94d95798d087df8ad081670d070f01dbc38a87e9f8e02a22",
+        "ubuntu/24.04/aarch64": "28ea28866aacbac77fdca0b3550c6700225624d345592cddbeb6b1b929a2b107",
+        "debian/13/x86_64": "83ad6e1b905a348909e1f312bc4f2f5061c566469a4ec77b041746378975d2a9",
+        "debian/13/aarch64": "9954f9ec268db2748e8a33c955d20b492c7278ee3325cd5d33e135dce87d6ea8",
+        "el/10/x86_64": "7d02410e28c23ebdf2eff1ef130ba9bf3383a1282b952c1f36a0a7594b087573",
+        "el/10/aarch64": "b63b6dbc4cff4c00cd43bc9723b2ff365499a863b1c1caf41527e69db06c9252"
+      },
+      "description": "SHA-256 of the package for each platform, by \"PLATFORM/VERSION/ARCH\". Change these with cinc_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "repo_path",
+      "type": "string",
+      "default": "/var/lib/cinc/repo",
+      "description": "Directory on the host that holds cookbooks/, and roles/ if you use them. Whatever can write here can run anything as root, so keep it writable by root alone.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "run_list",
+      "type": "list(string)",
+      "default": [],
+      "description": "What to converge, such as [\"recipe[nginx]\", \"role[web]\"]. When empty, the circuit only installs the client.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": null,
+      "description": "systemd OnCalendar expression that converges on a timer, such as \"hourly\" or \"*:0/30\". When null, there is no timer.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "converge_trigger",
+      "type": "string",
+      "default": "",
+      "description": "Any string, such as a cookbook's hash or a Git commit. Changing it converges on the next apply, for when something the circuit can't see has changed.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

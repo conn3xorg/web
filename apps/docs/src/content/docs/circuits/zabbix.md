@@ -176,4 +176,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.0/L
 
 - Repository: [conn3xorg/circuit-zabbix](https://github.com/conn3xorg/circuit-zabbix). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-zabbix/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.0/examples/local).
-- Related circuits: [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol).
+- Related circuits: [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Nagios Core](/circuits/nagios).

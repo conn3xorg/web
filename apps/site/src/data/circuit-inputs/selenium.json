@@ -1,0 +1,81 @@
+{
+  "name": "selenium",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "selenium_version",
+      "type": "string",
+      "default": "4.51.0-20261010",
+      "description": "Tag shared by the docker.io/selenium/hub and node images, such as \"4.51.0-20261010\". Change the image digests with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "hub_image_digest",
+      "type": "string",
+      "default": "sha256:4f94ce0ca99cb98234cd86829a9659eccf1b641277eb212f7101b0d96b3fe998",
+      "description": "Digest of docker.io/selenium/hub for selenium_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "chromium_image_digest",
+      "type": "string",
+      "default": "sha256:1aa008be6564d821ad6e3f916fb1a778ed144231ca8a52011ead7af63be8f24e",
+      "description": "Digest of docker.io/selenium/node-chromium for selenium_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "firefox_image_digest",
+      "type": "string",
+      "default": "sha256:e6a109a147cddeb2d5e17cb639760e43e18ce9d6f0611947412917351b8e3bdd",
+      "description": "Digest of docker.io/selenium/node-firefox for selenium_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "browsers",
+      "type": "list(string)",
+      "default": [
+        "chromium"
+      ],
+      "description": "Browsers to run, each in a node of its own: \"chromium\", \"firefox\" or both.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "node_max_sessions",
+      "type": "number",
+      "default": 1,
+      "description": "Browser sessions each node runs at once. Allow about 1 GB of memory for each.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IPv4 address the Grid listens on. The Grid has no authentication, so anyone who can reach this address can drive its browsers. Read the README before changing it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 4444,
+      "description": "Port the Grid listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

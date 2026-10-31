@@ -1,0 +1,19 @@
+{
+  "name": "istio",
+  "repo": "conn3xorg/circuit-istio",
+  "description": "A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports.",
+  "version": "v0.1.0",
+  "tags": [
+    "istio",
+    "service-mesh",
+    "kubernetes"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Containers and Kubernetes",
+  "official": true
+}

@@ -85,20 +85,25 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
             <div class="chips">
               <label class="chip"><input type="radio" name="where" value="own" checked /> I have them already</label>
               <label class="chip"><input type="radio" name="where" value="digitalocean" /> Create them on DigitalOcean</label>
+              <label class="chip"><input type="radio" name="where" value="gcp" /> Create them on Google Cloud</label>
             </div>
           </fieldset>
           <div class="fields wide" id="cloud-fields" hidden>
+            <label class="field wide" id="cloud-project-field" hidden>
+              <span>Project ID (needed)</span>
+              <input id="cloud-project" type="text" placeholder="my-project-123" spellcheck="false" autocomplete="off" />
+            </label>
             <label class="field wide">
               <span>Addresses that can reach SSH, one per line (needed)</span>
               <textarea id="cloud-admin" rows="2" spellcheck="false" autocomplete="off" placeholder="203.0.113.7/32"></textarea>
               <small>Your own public address, as a network. The cloud firewall keeps everyone else off port 22.</small>
             </label>
             <label class="field">
-              <span>Region</span>
+              <span id="cloud-region-label">Region</span>
               <input id="cloud-region" type="text" placeholder="lon1" spellcheck="false" autocomplete="off" />
             </label>
             <label class="field">
-              <span>Size</span>
+              <span id="cloud-size-label">Size</span>
               <input id="cloud-size" type="text" placeholder="s-2vcpu-4gb" spellcheck="false" autocomplete="off" />
             </label>
             <label class="field">
@@ -106,10 +111,10 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
               <input id="cloud-key" type="text" placeholder="~/.ssh/id_ed25519.pub" spellcheck="false" autocomplete="off" />
             </label>
             <label class="field">
-              <span>Tags, one per line</span>
+              <span id="cloud-tags-label">Tags, one per line</span>
               <textarea id="cloud-tags" rows="1" spellcheck="false" autocomplete="off"></textarea>
             </label>
-            <small class="wide">Droplets cost money until you run <code>conn3x destroy</code>. Your token never goes in the config: you set it in your shell when you run it.</small>
+            <small class="wide" id="cloud-note"></small>
           </div>
           <label class="field wide" id="hosts-field">
             <span id="hosts-label">Hosts, one per line</span>
@@ -175,7 +180,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 </Base>
 
 <script>
-  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip, linkFor, readLink, rolesOf } from "../lib/builder.js";
+  import { generate, unavailable, conflict, withRequired, wiring, unticked, parseType, fieldKind, secret, varName, zip, linkFor, readLink, rolesOf, clouds } from "../lib/builder.js";
   import builder from "../data/builder.json";
 
   const load = (g: Record<string, { default: any }>) =>
@@ -194,7 +199,8 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
   let files: Record<string, string> = {};
   let current = "main.tf";
 
-  const creating = () => form.querySelector<HTMLInputElement>('input[name="where"]:checked')!.value !== "own";
+  const where = () => form.querySelector<HTMLInputElement>('input[name="where"]:checked')!.value;
+  const creating = () => where() !== "own";
   const distro = () => form.querySelector<HTMLInputElement>('input[name="distro"]:checked')!.value;
   const picked = () => picks.filter((p) => p.checked).map((p) => p.value);
 
@@ -231,6 +237,18 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
     const priv = names.flatMap((n) => (builder.ports as any)[n] ?? []).filter((p: any) => p.private);
     $("network-field").hidden = !((fw || creating()) && priv.length);
     $("cloud-fields").hidden = !creating();
+    if (creating()) {
+      const c = (clouds as any)[where()];
+      $("cloud-project-field").hidden = !c.projectOk;
+      $("cloud-region-label").textContent = c.regionLabel;
+      $("cloud-size-label").textContent = c.sizeLabel;
+      $("cloud-tags-label").textContent = c.tagsLabel;
+      $<HTMLInputElement>("cloud-region").placeholder = c.region;
+      $<HTMLInputElement>("cloud-size").placeholder = c.size;
+      $<HTMLTextAreaElement>("cloud-tags").placeholder = c.tagsHolder;
+      $("cloud-note").textContent = c.note;
+    }
+    $<HTMLTextAreaElement>("hosts").placeholder = creating() ? "web1\nweb2" : "web1 203.0.113.10\nweb2 203.0.113.11";
     for (const e of form.querySelectorAll<HTMLElement>("[data-own]")) e.hidden = creating();
     $("hosts-help").textContent = creating()
       ? "A name for each new server. Every circuit runs on all of them, except the ones that ask for hosts by role."
@@ -377,6 +395,8 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       network: $("network-field").hidden ? "" : $<HTMLInputElement>("network").value,
       cloud: creating()
         ? {
+            provider: where(),
+            project: $<HTMLInputElement>("cloud-project").value,
             adminCidrs: $<HTMLTextAreaElement>("cloud-admin").value,
             region: $<HTMLInputElement>("cloud-region").value,
             size: $<HTMLInputElement>("cloud-size").value,
@@ -421,7 +441,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       box.replaceChildren(
         el("p", {}, "A few things to fix first:"),
         el("ul", {}, ...r.errors.map(([f, msg]: [string, string]) => {
-          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f === "cloud.adminCidrs" ? "cloud-admin" : f === "cloud.region" ? "cloud-region" : f === "cloud.size" ? "cloud-size" : f === "cloud" ? "s-distro" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
+          const target = f === "hosts" ? "hosts" : f === "ssh.user" ? "ssh-user" : f === "network" ? "network" : f === "cloud.adminCidrs" ? "cloud-admin" : f === "cloud.region" ? "cloud-region" : f === "cloud.size" ? "cloud-size" : f === "cloud.project" ? "cloud-project" : f === "cloud.tags" ? "cloud-tags" : f === "cloud" ? "s-distro" : f.includes(".") ? `f-${f.replace(".", "-")}` : "s-circuits";
           document.getElementById(target)?.setAttribute("aria-invalid", "true");
           return el("li", {}, el("a", { href: `#${target}` }, f.includes(".") && f !== "ssh.user" && !f.startsWith("cloud") ? f : f === "cloud" ? "Distribution" : f.startsWith("cloud") ? f.slice(6) : f === "picks" ? "Circuits" : f), `: ${msg}`);
         })),

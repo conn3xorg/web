@@ -63,10 +63,14 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 | [`file`](/modules/file) | `"forget"` | Removes the file. |
 | [`firewalld`](/modules/firewalld) | `"delete"` | Removes the rule, closing the port again. |
 | [`group`](/modules/group) | `"forget"` | Removes the group. |
+| [`ini`](/modules/ini) | `"forget"` | Removes the option. It doesn't bring back a value the step replaced. |
+| [`known_hosts`](/modules/known_hosts) | `"delete"` | Removes that key, so a key you retire stops being trusted. |
+| [`limit`](/modules/limit) | `"forget"` | Removes the limit. |
 | [`line`](/modules/line) | `"forget"` | Takes the line edit back out of the file. |
 | [`link`](/modules/link) | `"forget"` | Removes the symbolic link. |
 | [`mount`](/modules/mount) | `"forget"` | Unmounts the file system and removes its fstab entry. |
 | [`package`](/modules/package) | `"forget"` | Uninstalls the package. |
+| [`replace`](/modules/replace) | `"forget"` | Not allowed: the old text is gone, so the file stays as it is. |
 | [`repository`](/modules/repository) | `"forget"` | Removes the repository's files. |
 | [`selinux_fcontext`](/modules/selinux_fcontext) | `"forget"` | Removes the file context rule and relabels. |
 | [`service`](/modules/service) | `"forget"` | Stops and disables the unit. |

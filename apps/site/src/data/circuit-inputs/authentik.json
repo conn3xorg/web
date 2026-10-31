@@ -1,0 +1,122 @@
+{
+  "name": "authentik",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "authentik_version",
+      "type": "string",
+      "default": "2026.8.5",
+      "description": "Tag of the ghcr.io/goauthentik/server image, such as \"2026.8.5\". Change image_digest with it. Upstream doesn't allow skipping a major release when you upgrade.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:602227a86455d6772e3d16b7d852713c4f864f40df5df894abd1285bb53979a5",
+      "description": "Digest of ghcr.io/goauthentik/server for authentik_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "public_url",
+      "type": "string",
+      "description": "The address people reach authentik at, such as \"https://auth.example.com\". authentik copies it to its Base URL setting on the first start, and leaves that setting alone afterwards.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "postgres",
+      "type": "object({\n    host     = optional(string, \"127.0.0.1\")\n    port     = optional(number, 5432)\n    database = optional(string, \"authentik\")\n    username = optional(string, \"authentik\")\n    sslmode  = optional(string, \"disable\")\n  })",
+      "default": {},
+      "description": "PostgreSQL 14 to 18 to keep authentik's data in. The database and role must exist. The defaults suit one on the same host, listening on localhost; set sslmode, such as \"verify-ca\", for one across a network.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres_password",
+      "type": "string",
+      "description": "Password of the postgres username, at most 99 characters. It reaches the host in root-only files and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "bootstrap_password",
+      "type": "string",
+      "default": null,
+      "description": "Password authentik gives akadmin on its first start. It reaches the host in a root-only file and never the plan or state. authentik reads it only once, so set it to null after the first apply to take it off the host.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "bootstrap_token",
+      "type": "string",
+      "default": null,
+      "description": "API token authentik creates for akadmin on its first start. It reaches the host in a root-only file and never the plan or state. authentik reads it only once; set it to null after the first apply, and delete the token in authentik when you're done with it.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "bootstrap_email",
+      "type": "string",
+      "default": null,
+      "description": "Email address authentik gives akadmin on its first start, such as \"you@example.com\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the authentik server listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 9000,
+      "description": "Port the authentik server listens on for HTTP. 9001, 9300 and 9301 are taken by the circuit's other listeners.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "https_port",
+      "type": "number",
+      "default": 9443,
+      "description": "Port the authentik server listens on for HTTPS, with its self-signed certificate until you give it another.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "min_memory_mb",
+      "type": "number",
+      "default": 1600,
+      "description": "Memory, in MiB, a host needs before the circuit configures it. authentik asks for 2 GB; a 2 GB host reports less, as little as 1704 MiB on a Rocky Linux droplet.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of authentik's environment variables for the server and worker, such as { AUTHENTIK_EMAIL__HOST = \"smtp.example.com\" }. They go in root-only files and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

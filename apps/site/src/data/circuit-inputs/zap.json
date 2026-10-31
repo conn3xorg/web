@@ -1,0 +1,96 @@
+{
+  "name": "zap",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "targets",
+      "type": "list(string)",
+      "description": "URLs to scan, each with a report of its own. Required, with no default: list only sites you're allowed to scan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "active_scan",
+      "type": "bool",
+      "default": false,
+      "description": "Attack every target with zap-full-scan.py instead of the passive zap-baseline.py. It sends real attacks that can change data or take a site down. Only for sites you own or have written permission to attack.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "zap_version",
+      "type": "string",
+      "default": "2.17.0",
+      "description": "Tag of the ghcr.io/zaproxy/zaproxy image. Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:030d3df57735dacbb83464854758e674dd9ad01d79d12a129a8e58b1fd384238",
+      "description": "Digest of ghcr.io/zaproxy/zaproxy for zap_version. ZAP rebuilds the same tag often, so the digest is what fixes what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "update_addons",
+      "type": "bool",
+      "default": false,
+      "description": "Let ZAP fetch its newest add-ons and beta rules as each scan starts. It finds more, but runs code the image digest doesn't pin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "spider_minutes",
+      "type": "number",
+      "default": 1,
+      "description": "Longest the spider walks each target, in minutes.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "max_scan_minutes",
+      "type": "number",
+      "default": 120,
+      "description": "Longest one target's scan may take, in minutes. A scan that runs out of time counts as failed. Raise it for active scans of large sites.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": "weekly",
+      "description": "When the scan timer runs, as a systemd OnCalendar expression such as \"weekly\" or \"Sun 03:00\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "keep",
+      "type": "number",
+      "default": 8,
+      "description": "Number of scans to keep under /var/lib/conn3x-zap. Older ones are deleted after each scan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "run_now",
+      "type": "bool",
+      "default": false,
+      "description": "Scan during the apply: on the first apply, and again whenever the scan's settings change.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

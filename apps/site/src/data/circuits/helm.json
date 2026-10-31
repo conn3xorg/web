@@ -1,0 +1,19 @@
+{
+  "name": "helm",
+  "repo": "conn3xorg/circuit-helm",
+  "description": "A pinned, checksum-verified Helm, with optional chart releases kept as you configured them.",
+  "version": "v0.1.0",
+  "tags": [
+    "helm",
+    "kubernetes",
+    "charts"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Containers and Kubernetes",
+  "official": true
+}

@@ -176,4 +176,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-osquery/blob/v0.1.0/
 
 - Repository: [conn3xorg/circuit-osquery](https://github.com/conn3xorg/circuit-osquery). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-osquery/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.0/examples/local).
-- Related circuits: [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [Velociraptor](/circuits/velociraptor).
+- Related circuits: [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [Velociraptor](/circuits/velociraptor), [Wazuh](/circuits/wazuh).
