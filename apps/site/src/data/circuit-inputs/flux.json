@@ -1,0 +1,144 @@
+{
+  "name": "flux",
+  "version": "v0.1.1",
+  "hostObjects": false,
+  "inputs": [
+    {
+      "name": "server",
+      "type": "any",
+      "description": "One k3s server to run kubectl on: an address, or a host object with an address and optional host_key, user, port, private_key_file or jump_hosts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "git_url",
+      "type": "string",
+      "description": "Git repository Flux watches, as an ssh://, https:// or http:// URL. This goes into state, so credentials belong in git_ssh_private_key or git_password.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "git_branch",
+      "type": "string",
+      "default": "main",
+      "description": "Branch to follow.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "git_path",
+      "type": "string",
+      "default": "./",
+      "description": "Directory in the repository to reconcile, relative to its root.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "git_auth",
+      "type": "string",
+      "default": "none",
+      "description": "How Flux logs in to the repository: \"none\", \"ssh\" (git_ssh_private_key and git_known_hosts) or \"https\" (git_username and git_password).",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "git_ssh_private_key",
+      "type": "string",
+      "default": null,
+      "description": "Private key Flux logs in with, in PEM or OpenSSH form, for git_auth = \"ssh\". Never reaches state.",
+      "sensitive": false,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "git_known_hosts",
+      "type": "string",
+      "default": "",
+      "description": "known_hosts lines for the Git server, for git_auth = \"ssh\", such as the output of ssh-keyscan. Flux refuses SSH without them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "git_username",
+      "type": "string",
+      "default": "git",
+      "description": "User name for git_auth = \"https\". Many Git hosts take anything here when the password is a token.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "git_password",
+      "type": "string",
+      "default": null,
+      "description": "Password or token for git_auth = \"https\". Never reaches state.",
+      "sensitive": false,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "git_ca_cert",
+      "type": "string",
+      "default": "",
+      "description": "PEM certificate of the CA that signed the Git server's certificate, for git_auth = \"https\" against a private CA.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "interval",
+      "type": "string",
+      "default": "1m",
+      "description": "How often Flux checks the repository and reconciles it, as a Go duration such as \"1m\" or \"1h\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "prune",
+      "type": "bool",
+      "default": true,
+      "description": "Delete from the cluster what has been deleted from the repository.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "flux_version",
+      "type": "string",
+      "default": "v2.10.0",
+      "description": "Flux release to install, from https://github.com/fluxcd/flux2/releases. Change it with install_sha256 and k3s_minors.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "install_sha256",
+      "type": "string",
+      "default": "a8c838ccd9be5d30eba9df87cd229b7c4eb80c0049fba1bc3b9840829f267f28",
+      "description": "SHA-256 of the release's install.yaml.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "k3s_minors",
+      "type": "list(string)",
+      "default": [
+        "1.35",
+        "1.36",
+        "1.37"
+      ],
+      "description": "Kubernetes minor versions the server's k3s may run, from the release notes of flux_version. Anything else fails the apply before Flux is touched.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

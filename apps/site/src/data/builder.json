@@ -22,15 +22,16 @@
     }
   ],
   "excluded": {
+    "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
+    "flux": "Flux installs onto a k3s cluster and syncs from your Git repository, so it needs both first. Its README shows how.",
+    "helm": "Helm's releases go onto a Kubernetes cluster, so it needs one first. Its README shows how.",
+    "istio": "Istio installs onto a k3s cluster, so it needs that cluster first. Its README shows how.",
     "kubeadm": "kubeadm has control planes and workers, two kinds of host. Its README shows how to set them up.",
     "microshift": "MicroShift turns the whole box into an OpenShift node, with its router on 80 and 443. Give it a host of its own and follow its README.",
     "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README.",
-    "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
-    "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
-    "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
-    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up.",
-    "helm": "Helm's releases go onto a Kubernetes cluster, so it needs one first. Its README shows how.",
-    "istio": "Istio installs onto a k3s cluster, so it needs that cluster first. Its README shows how."
+    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up."
   },
   "conflicts": [
     {

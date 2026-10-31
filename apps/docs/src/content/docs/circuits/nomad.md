@@ -162,4 +162,4 @@ The circuit is MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nomad
 
 - Repository: [conn3xorg/circuit-nomad](https://github.com/conn3xorg/circuit-nomad). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-nomad/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.0/examples/local).
-- Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Helm](/circuits/helm), [Istio](/circuits/istio).
+- Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).
