@@ -50,8 +50,3 @@ test("with enforcement off, the builder still offers a failing circuit", async (
   await page.goto("/build");
   await expect(page.locator('input[name=pick][value="nginx"]')).toHaveCount(1);
 });
-
-test("the hidden circuit has no grade page", async ({ request }) => {
-  expect((await request.get("/circuits/lastrack/grade")).status()).toBe(404);
-  expect((await request.get("/circuits/lastrack/grade.svg")).status()).toBe(404);
-});

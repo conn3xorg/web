@@ -131,15 +131,10 @@ test("nothing held reaches the published file, and every check is there", () => 
   }
 });
 
-test("lastrack stays out of everything public", () => {
-  assert.ok(!("lastrack" in published));
-  assert.ok(!read("apps/site/src/data/grades.json").toLowerCase().includes("lastrack"));
-  assert.ok(!read("apps/docs/src/content/docs/reference/circuit-grades.md").toLowerCase().includes("lastrack"));
-});
-
-test("every directory circuit has a grade", () => {
-  for (const f of readdirSync(new URL("../apps/site/src/data/circuits/", import.meta.url))) {
-    const name = f.replace(".json", "");
+test("the directory's circuits have grades, and nothing else does", () => {
+  const names = readdirSync(new URL("../apps/site/src/data/circuits/", import.meta.url)).map((f) => f.replace(".json", ""));
+  assert.deepEqual(Object.keys(published).sort(), [...names].sort());
+  for (const name of names) {
     assert.ok(published[name], name);
     assert.match(published[name].checkedAt, /^\d{4}-\d{2}-\d{2}T/);
   }

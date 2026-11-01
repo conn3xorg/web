@@ -23,8 +23,6 @@ const FALLBACK = new URL("grades.json", DATA);
 // A circuit below this percentage doesn't pass: C or better does.
 export const PASS_MARK = 70;
 export const BANDS = [["A", 90], ["B", 80], ["C", PASS_MARK], ["D", 60], ["F", 0]];
-// Hidden on purpose; see the project's notes. Never graded, never listed.
-const NEVER = new Set(["lastrack"]);
 
 // Off: every grade shows, and the Circuit Builder leaves everything in. On:
 // the builder drops a circuit that doesn't pass, and says why.
@@ -540,7 +538,7 @@ export const entry = (c, ev, opts) => ({
 export async function fetchGrades(list, keepOld = fallback) {
   const out = {};
   let fresh = 0;
-  await pool(list.filter((c) => !NEVER.has(c.name)), 8, async (c) => {
+  await pool(list, 8, async (c) => {
     try {
       out[c.name] = entry(c, await read(c.repo));
       fresh++;
