@@ -70,6 +70,7 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 | [`link`](/modules/link) | `"forget"` | Removes the symbolic link. |
 | [`mount`](/modules/mount) | `"forget"` | Unmounts the file system and removes its fstab entry. |
 | [`package`](/modules/package) | `"forget"` | Uninstalls the package. |
+| [`pip`](/modules/pip) | `"forget"` | Uninstalls the package. The venv stays. |
 | [`replace`](/modules/replace) | `"forget"` | Not allowed: the old text is gone, so the file stays as it is. |
 | [`repository`](/modules/repository) | `"forget"` | Removes the repository's files. |
 | [`selinux_fcontext`](/modules/selinux_fcontext) | `"forget"` | Removes the file context rule and relabels. |
