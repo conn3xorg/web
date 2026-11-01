@@ -3,7 +3,7 @@ title: Istio
 description: "A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-istio at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-istio at v0.1.1. -->
 
 A Conn3x circuit that installs [Istio](https://istio.io) on a k3s cluster with `istioctl`, at a version you pin, with the tarball's SHA-256 checked. Istio recommends `istioctl` for most installs, because it validates the configuration and checks the result. It's for the cluster you've built with [circuit-k3s](/circuits/k3s), and it takes you to sidecars on the namespaces you name.
 
@@ -13,7 +13,7 @@ Two things tend to catch people on k3s, and this circuit handles both. Istio sup
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.4"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token
@@ -21,7 +21,7 @@ module "k3s" {
 }
 
 module "istio" {
-  source     = "github.com/conn3xorg/circuit-istio?ref=v0.1.0"
+  source     = "github.com/conn3xorg/circuit-istio?ref=v0.1.1"
   depends_on = [module.k3s]
 
   server               = "203.0.113.10"
@@ -39,7 +39,7 @@ Run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` 
 
 Without an ingress gateway you get Istio's `minimal` profile, just `istiod`, and Traefik carries on handling traffic into the cluster.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1/examples/local).
 
 ### Traefik and the ingress gateway
 
@@ -78,7 +78,7 @@ It reaches state, so nothing secret goes there. Only the default settings have b
 On the server you name, in order:
 
 1. Checks that the k3s installed there is on `k3s_minors`, and stops with a message if it isn't. The check runs on every plan, so a later k3s upgrade past Istio's range shows up too.
-2. Waits for k3s to settle. k3s can exit just after creating its Helm CRDs, which leaves them never established, and then it exits a minute into every start after that, taking the API away in the middle of an install. If that has happened, this deletes the two CRDs and k3s creates them again. Nothing can be stored in them until they're established, so nothing is lost.
+2. Waits for every CRD to be established. If one stays stuck, the apply fails and points to [Troubleshooting](https://github.com/conn3xorg/circuit-k3s#troubleshooting) in circuit-k3s. It never deletes a CRD.
 3. Stops if `ingress_gateway` is on and Traefik is enabled.
 4. Downloads `istioctl`, checks its SHA-256, unpacks it under `/opt/istio/VERSION` and links `/usr/local/bin/istioctl` to it.
 5. Writes `/var/lib/conn3x-istio/operator.yaml` and runs `istioctl install` with it, which waits for Istio to be ready.
@@ -89,7 +89,7 @@ Each plan compares a hash of the operator file and the image `istiod` runs with 
 ### What it doesn't do
 
 - It doesn't install k3s. Use circuit-k3s, or any k3s whose binary is at `k3s` in the `PATH` with its kubeconfig at `/etc/rancher/k3s/k3s.yaml`.
-- It doesn't turn on mutual TLS for you. Sidecars use it when both ends have one, and a `PeerAuthentication` set to `STRICT` makes it required, as [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.0/examples/local/check.sh) does for its own namespace.
+- It doesn't turn on mutual TLS for you. Sidecars use it when both ends have one, and a `PeerAuthentication` set to `STRICT` makes it required, as [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.1/examples/local/check.sh) does for its own namespace.
 - It doesn't restart your workloads, so after an upgrade your sidecars stay on the old version until you do: `kubectl rollout restart`.
 - It doesn't open firewall ports or configure ambient mode, and it doesn't uninstall. `istioctl uninstall --purge` removes Istio.
 
@@ -122,24 +122,24 @@ Set `istio_version`, `checksums` and `k3s_minors` together, with the versions fr
 
 ## Requirements
 
-Requires Conn3x v0.6.10 or later, a k3s server on a Kubernetes version Istio supports, and outbound HTTPS to GitHub and to the registry Istio's images come from. `istiod` asks the scheduler for 500m of CPU and 2 GiB of memory by default, and each sidecar for 100m and 128 MiB.
+Requires Conn3x v0.6.10 or later, circuit-k3s v0.1.4 or later if that's what built your cluster, a k3s server on a Kubernetes version Istio supports, and outbound HTTPS to GitHub and to the registry Istio's images come from. `istiod` asks the scheduler for 500m of CPU and 2 GiB of memory by default, and each sidecar for 100m and 128 MiB.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.0/examples/local) to each in a container on amd64, checks that the plan after it has no changes, and runs [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.0/examples/local/check.sh): both pods in the mesh get a sidecar, the client reaches the server with Envoy's header on the answer, and with mutual TLS required a pod outside the mesh can't reach it. The same four containers also passed by hand on arm64, and a k3s setup with Traefik enabled stopped `ingress_gateway = true` with its message on Ubuntu 24.04.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1/examples/local) to each in a container on amd64, checks that the plan after it has no changes, and runs [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.1/examples/local/check.sh): both pods in the mesh get a sidecar, the client reaches the server with Envoy's header on the answer, and with mutual TLS required a pod outside the mesh can't reach it. The same four containers also passed by hand on arm64, and a k3s setup with Traefik enabled stopped `ingress_gateway = true` with its message on Ubuntu 24.04.
 
 The rest was run by hand on 2 vCPU, 4 GB droplets with one node each. On Rocky Linux 10 with SELinux enforcing: the same checks, an upgrade from 1.31.2 to 1.31.3 with the pods restarted afterwards, then a reboot with no changes in the plan and the checks passing again. On Ubuntu 24.04: the same checks and a reboot, with Traefik off and `ingress_gateway = true`, and on a second droplet a `Gateway` and `VirtualService` answering 200 from outside on port 80 through the gateway.
 
-Before this circuit waited for k3s to settle, an apply failed on Ubuntu 24.04 when k3s lost the API partway through. On a droplet, deleting the stuck CRDs by hand cleared it, and that's what the settle step does. The step's own recovery path hasn't been seen firing in a run.
+v0.1.0 deleted k3s's Helm CRDs when they weren't established after about three minutes. On a cluster that was only slow, that would have deleted every HelmChart in it, so upgrade from v0.1.0. v0.1.1 only waits. CI runs it with circuit-k3s v0.1.4; the droplet runs above were on v0.1.0.
 
 Not run: more than one node, arm64 on a real host, ambient mode, an upgrade between minor versions, k3s versions other than v1.37.1 (the circuit-k3s default).
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-istio/blob/v0.1.0/LICENSE). Istio is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-istio/blob/v0.1.1/LICENSE). Istio is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-istio](https://github.com/conn3xorg/circuit-istio). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-istio/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-istio/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.0/examples/local).
-- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm).
+- Repository: [conn3xorg/circuit-istio](https://github.com/conn3xorg/circuit-istio). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-istio/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1/examples/local).
+- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Flux](/circuits/flux).

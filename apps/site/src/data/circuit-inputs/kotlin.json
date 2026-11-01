@@ -1,0 +1,25 @@
+{
+  "name": "kotlin",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "kotlin_version",
+      "type": "string",
+      "default": "2.4.21",
+      "description": "Kotlin compiler release to install, such as \"2.4.21\". Change checksum with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksum",
+      "type": "string",
+      "default": "7cc140e76daf416a0424a5557f99afd7ca89ebd463ea1101261e3e01c33e75cd",
+      "description": "SHA-256 of kotlin-compiler-VERSION.zip, from the .zip.sha256 file on the GitHub release. Change this with kotlin_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

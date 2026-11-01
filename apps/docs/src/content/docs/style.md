@@ -7,7 +7,7 @@ This guide records the writing decisions used in Conn3x documentation. Follow th
 
 ## Terminology
 
-- Write `circuit` in lowercase, except at the beginning of a sentence or in a proper name. Do not capitalize it just because it refers to the Conn3x concept.
+- Write `circuit` in lowercase, except at the beginning of a sentence or in a proper name. Don't capitalize it just because it refers to the Conn3x concept.
 - Use **host** for a machine that Conn3x connects to or manages. For example, a host can be reached through a bastion.
 - Use **server** when describing the machine in its role as a server, such as when explaining how to create and configure one.
 - Use contractions such as "don't" and "it's". They match the conversational tone already used across the documentation.
@@ -25,9 +25,9 @@ This guide records the writing decisions used in Conn3x documentation. Follow th
 - Put multi-line commands and code examples in fenced code blocks. Specify the language when appropriate.
 - Introduce an example with a short explanation. Explain any non-obvious behavior after it.
 
-**Before:** Set the `CONN3X_HOST` environment variable.
+**Before:** Set the `TF_ENCRYPTION` environment variable.
 
-**After:** Set `CONN3X_HOST` to the name of the host you want to connect to.
+**After:** Set `TF_ENCRYPTION` to turn on state encryption without an `encryption` block.
 
 ## Warnings
 
@@ -39,7 +39,7 @@ Keep private keys secure. Restrict access to the key file.
 :::
 ```
 
-Use ordinary paragraphs for explanations and notes that do not require a warning.
+Use ordinary paragraphs for explanations and notes that don't need a warning.
 
 ## Examples
 

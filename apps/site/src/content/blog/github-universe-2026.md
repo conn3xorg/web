@@ -16,7 +16,7 @@ Circuits work the same way. Each official one is a repository, and you use it by
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
   # ...
 }
 ```

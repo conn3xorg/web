@@ -1,0 +1,19 @@
+{
+  "name": "flux",
+  "repo": "conn3xorg/circuit-flux",
+  "description": "Flux CD on a k3s cluster at a pinned version, synced from a Git repository you name, with credentials kept out of state.",
+  "version": "v0.1.1",
+  "tags": [
+    "flux",
+    "gitops",
+    "kubernetes"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Containers and Kubernetes",
+  "official": true
+}

@@ -22,15 +22,16 @@
     }
   ],
   "excluded": {
+    "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
+    "flux": "Flux installs onto a k3s cluster and syncs from your Git repository, so it needs both first. Its README shows how.",
+    "helm": "Helm's releases go onto a Kubernetes cluster, so it needs one first. Its README shows how.",
+    "istio": "Istio installs onto a k3s cluster, so it needs that cluster first. Its README shows how.",
     "kubeadm": "kubeadm has control planes and workers, two kinds of host. Its README shows how to set them up.",
     "microshift": "MicroShift turns the whole box into an OpenShift node, with its router on 80 and 443. Give it a host of its own and follow its README.",
     "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README.",
-    "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
-    "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
-    "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
-    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up.",
-    "helm": "Helm's releases go onto a Kubernetes cluster, so it needs one first. Its README shows how.",
-    "istio": "Istio installs onto a k3s cluster, so it needs that cluster first. Its README shows how."
+    "rancher": "Rancher needs a k3s cluster at a version it supports. Its README shows how to set one up."
   },
   "conflicts": [
     {
@@ -142,6 +143,9 @@
     "langfuse": [
       "postgres",
       "valkey"
+    ],
+    "kotlin": [
+      "java"
     ]
   },
   "ports": {
@@ -307,7 +311,8 @@
     "nagios": "The web interface listens on the host itself, so reach it through an SSH tunnel or a proxy.",
     "selenium": "The Grid has no login, so it stays on the host itself. Reach it through an SSH tunnel.",
     "zap": "Only scan what you're allowed to. Scans are passive unless you set active_scan.",
-    "containerd": "This installs containerd alone, with no network config for pods. Its README covers what's left to you."
+    "containerd": "This installs containerd alone, with no network config for pods. Its README covers what's left to you.",
+    "kotlin": "It comes with circuit-java, since the compiler needs a Java on the PATH."
   },
   "wiring": {
     "github-runner": {
@@ -560,6 +565,15 @@
       "rocky10": "rocky-linux-cloud/rocky-linux-10",
       "ubuntu2404": "ubuntu-os-cloud/ubuntu-2404-lts-amd64",
       "debian13": "debian-cloud/debian-13"
+    },
+    "aws": {
+      "rocky10": { "owner": "792107900819", "name": "Rocky-10-EC2-Base-*.x86_64" },
+      "ubuntu2404": { "owner": "099720109477", "name": "ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-*" },
+      "debian13": { "owner": "136693071363", "name": "debian-13-amd64-*" }
+    },
+    "azure": {
+      "ubuntu2404": { "publisher": "Canonical", "offer": "ubuntu-24_04-lts", "sku": "server" },
+      "debian13": { "publisher": "Debian", "offer": "debian-13", "sku": "13-gen2" }
     }
   }
 }

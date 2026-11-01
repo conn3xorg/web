@@ -1,7 +1,7 @@
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
 
-// Everyone with a commit in conn3x, web or a circuit-* repository, read from
+// Everyone with a commit in any public conn3xorg repository, read from
 // the GitHub API when the site builds. If the API fails or is rate-limited,
 // the build uses the last good list in data/contributors.json instead, so a
 // GitHub outage never fails a deploy.
@@ -15,8 +15,10 @@ import fallback from "../data/contributors.json" with { type: "json" };
 const ORG = "conn3xorg";
 const FALLBACK = new URL("../data/contributors.json", import.meta.url);
 
-const counted = (repo) => repo === "conn3x" || repo === "web" || repo.startsWith("circuit-");
-const isBot = (c) => c.type === "Bot" || c.login.endsWith("[bot]");
+// GitHub marks only some automation as Bot, so accounts for bots and AI tools
+// that look like ordinary users are named here. The page lists people.
+const NOT_PEOPLE = /^(claude|claude-.*|anthropic.*|copilot|copilot-.*|chatgpt.*|codex|openai.*|cursor|cursoragent|cursor-.*|devin.*|gemini.*|aider.*|.*-bot|.*\[bot\]|goreleaserbot|github-actions|web-flow|renovate|dependabot)$/i;
+const isBot = (c) => c.type === "Bot" || NOT_PEOPLE.test(c.login);
 
 // One entry per person across every repository, bots dropped, A to Z.
 export function merge(lists) {
@@ -36,10 +38,19 @@ async function get(path) {
   return res.status === 204 ? [] : res.json();
 }
 
-// ponytail: one page of 100 per call; add Link-header paging past 100 repos or people.
+// Every page of a list, so the org passing 100 repositories loses nobody.
+async function getAll(path) {
+  const all = [];
+  for (let page = 1; ; page++) {
+    const items = await get(`${path}${path.includes("?") ? "&" : "?"}per_page=100&page=${page}`);
+    all.push(...items);
+    if (items.length < 100) return all;
+  }
+}
+
 export async function fetchContributors() {
-  const repos = (await get(`/orgs/${ORG}/repos?type=public&per_page=100`)).map((r) => r.name).filter(counted);
-  return merge(await Promise.all(repos.map((r) => get(`/repos/${ORG}/${r}/contributors?per_page=100`))));
+  const repos = await getAll(`/orgs/${ORG}/repos?type=public`);
+  return merge(await Promise.all(repos.map((r) => getAll(`/repos/${ORG}/${r.name}/contributors`))));
 }
 
 export async function contributors() {

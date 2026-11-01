@@ -30,7 +30,7 @@ Good writers are harder to find than good developers, and they're what we need m
 - **Technical writers:** every circuit's README has its own issue listing where to start, and the docs still need a style guide and a glossary.
 - **Content writers:** posts about real jobs Conn3x does, social drafts from what we've published, and an honest read of the website.
 
-It's all under the [writers wanted label](https://github.com/search?q=org%3Aconn3xorg+label%3A%22writers+wanted%22+state%3Aopen&type=issues). Not sure where to begin? Say what you like writing in [Discussions](https://github.com/conn3xorg/conn3x/discussions).
+The [style guide](/style) has the decisions we've made so far. It's all under the [writers wanted label](https://github.com/search?q=org%3Aconn3xorg+label%3A%22writers+wanted%22+state%3Aopen&type=issues). Not sure where to begin? Say what you like writing in [Discussions](https://github.com/conn3xorg/conn3x/discussions).
 
 ## Improve the docs
 
@@ -40,7 +40,7 @@ The docs and the website live in [conn3xorg/web](https://github.com/conn3xorg/we
 
 ## Test a release
 
-Releases come out often, and each one is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. Your servers are none of those exactly. When a new [release](https://github.com/conn3xorg/conn3x/releases) lands, run your configuration against a host you don't mind touching, or a container from the [local tutorial](/tutorials/try-locally), and tell us what changed. A report that says "v0.6.11 works on my setup" helps too, in Discussions.
+Releases come out often, and each one is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. Your servers are none of those exactly. When a new [release](https://github.com/conn3xorg/conn3x/releases) lands, run your configuration against a host you don't mind touching, or a container from the [local tutorial](/tutorials/try-locally), and tell us what changed. A report that says "v0.6.12 works on my setup" helps too, in Discussions.
 
 ## Pick up an issue
 
@@ -57,3 +57,8 @@ There's no contributor licence agreement, and your commits land under your name.
 ## Report a security problem
 
 Don't open a public issue for a vulnerability. Email [security@conn3x.org](mailto:security@conn3x.org), or use GitHub's [private vulnerability reporting](https://github.com/conn3xorg/conn3x/security/advisories/new). [SECURITY.md](https://github.com/conn3xorg/conn3x/blob/main/SECURITY.md) has the details.
+
+Published advisories:
+
+- [GHSA-vjfh-6jw8-5rq9](https://github.com/conn3xorg/conn3x/security/advisories/GHSA-vjfh-6jw8-5rq9): `directory` and `file` steps followed symlinks a local user could plant. Fixed in v0.6.12. See [Paths as root](/guides/paths-as-root).
+- [GHSA-78rx-v8vx-rjhg](https://github.com/conn3xorg/conn3x/security/advisories/GHSA-78rx-v8vx-rjhg): `authorized_key` followed symlinks in a user's home as root. Fixed in v0.6.10.

@@ -367,7 +367,7 @@ export function readLink(data, hash) {
  *   picks: ["nginx", ...],
  *   values: { "nginx.port": "8080", "k3s.servers": "cp1 203.0.113.20", ... },
  *   network: "192.168.1.0/24",                    for private firewall ports
- *   cloud: { provider, project, region, size, adminCidrs, publicKey, tags },
+ *   cloud: { provider, project, resourceGroup, region, size, adminCidrs, publicKey, tags },
  *     create the hosts on a cloud in `clouds`, DigitalOcean when provider is
  *     left out; hosts and role hosts are then names, one per line, and region
  *     is a zone on Google Cloud
@@ -394,7 +394,7 @@ export function generate(data, build) {
   if (cloud && !Object.hasOwn(clouds, provider)) return { errors: [["cloud", "The builder can't create servers there."]] };
   const def = cloud && clouds[provider];
   const image = cloud && data.builder.cloud[provider][distro.id];
-  if (cloud && !image) fail("cloud", `${def.name} has no ${distro.name} image.`);
+  if (cloud && !image) fail("cloud", def.noImage?.[distro.id] ?? `${def.name} has no ${distro.name} image.`);
   // The server's address and host key aren't known until it exists, so os stands in for its facts.
   const created = (n) => ({
     address: new Ref(def.address(quote(n))),
@@ -483,8 +483,15 @@ export function generate(data, build) {
     const c = data.circuits[name];
     const body = [...(rolesOf(data, name).length ? Object.entries(placed[name]) : [["hosts", new Ref("local.hosts")]]), ...shared];
     const managed = name === "firewall" ? ["allow"] : [];
+    // circuit-firewall opens this circuit's port, and running both at once can
+    // catch ufw half installed.
+    const ownFirewall = name === "nginx" && picks.includes("firewall") ? [["firewall", "none"]] : [];
     for (const v of data.inputs[name].inputs) {
       if (managed.includes(v.name) || roleOf(data, name, v.name)) continue;
+      if (ownFirewall.some(([k]) => k === v.name)) {
+        body.push(...ownFirewall);
+        continue;
+      }
       if (wired.values[name] && v.name in wired.values[name]) {
         body.push([v.name, wired.values[name][v.name]]);
         continue;
@@ -555,6 +562,7 @@ export function generate(data, build) {
     if (!def.sizeOk.test(cloud.size?.trim() || def.size)) fail("cloud.size", `"${cloud.size}" isn't ${/^[aeiou]/i.test(def.sizeLabel) ? "an" : "a"} ${def.sizeLabel.toLowerCase()} such as ${def.size}.`);
     if (def.notArm?.test(cloud.size?.trim() || def.size)) fail("cloud.size", `${cloud.size?.trim()} runs on Arm, and these images are for x86. Pick an x86 ${def.sizeLabel.toLowerCase()}.`);
     if (def.projectOk && !def.projectOk.test(cloud.project?.trim() ?? "")) fail("cloud.project", cloud.project?.trim() ? `"${cloud.project}" isn't a project ID such as my-project-123.` : "Say which project to create the servers in.");
+    if (def.resourceGroupOk && !def.resourceGroupOk.test(cloud.resourceGroup?.trim() || def.resourceGroup)) fail("cloud.resourceGroup", `"${cloud.resourceGroup}" isn't a resource group name such as ${def.resourceGroup}. Use letters, digits and . _ -, not ending in a dot.`);
   }
   const tagLines = (cloud?.tags ?? "").split("\n").map((l) => l.trim()).filter(Boolean);
   const tags = cloud && (def.tags ? def.tags(tagLines, (m) => fail("cloud.tags", m)) : tagLines);
@@ -575,6 +583,7 @@ export function generate(data, build) {
         def,
         image,
         project: cloud.project?.trim(),
+        resourceGroup: cloud.resourceGroup?.trim() || def?.resourceGroup,
         names: [...new Set(claims.map((c) => c.address))].sort(),
         region: cloud.region?.trim() || def.region,
         size: cloud.size?.trim() || def.size,
@@ -606,6 +615,31 @@ function gcpLabels(lines, fail) {
   for (const l of lines) {
     const [k, v = ""] = l.split("=");
     if (!/^[a-z][a-z0-9_-]{0,62}$/.test(k) || !/^[a-z0-9_-]{0,63}$/.test(v) || l.split("=").length > 2) fail(`"${l}" isn't a label. Write name or name=value, in lowercase letters, digits, - and _.`);
+    else out[k] = v;
+  }
+  return out;
+}
+
+// AWS tags: "name" or "name=value", per line. Name is each server's own.
+function awsTags(lines, fail) {
+  const out = {};
+  for (const l of lines) {
+    const at = l.indexOf("=");
+    const [k, v] = at < 0 ? [l, ""] : [l.slice(0, at), l.slice(at + 1)];
+    if (!/^[A-Za-z0-9 _.:/=+@-]{1,128}$/.test(k) || !/^[A-Za-z0-9 _.:/=+@-]{0,256}$/.test(v) || /^aws:/i.test(k) || k === "Name") fail(`"${l}" isn't a tag we can set. Write name or name=value, in letters, digits, spaces and _ . : / = + @ -. Name and anything starting aws: are taken.`);
+    else out[k] = v;
+  }
+  return out;
+}
+
+// Azure tags: "name" or "name=value", per line. Azure keeps the azure, microsoft
+// and windows prefixes for itself, and won't have < > % & \ ? / in a name.
+function azureTags(lines, fail) {
+  const out = {};
+  for (const l of lines) {
+    const at = l.indexOf("=");
+    const [k, v] = at < 0 ? [l, ""] : [l.slice(0, at), l.slice(at + 1)];
+    if (!/^[A-Za-z0-9 _.:+@-]{1,128}$/.test(k) || !/^[A-Za-z0-9 _.:/=+@-]{0,256}$/.test(v) || /^(azure|microsoft|windows)/i.test(k)) fail(`"${l}" isn't a tag we can set. Write name or name=value, in letters, digits, spaces and _ . : + @ -. Anything starting azure, microsoft or windows is taken.`);
     else out[k] = v;
   }
   return out;
@@ -673,6 +707,93 @@ Debian's and Rocky's images on Google Cloud have no cloud-init, so the startup s
 The private host key sits in the instance's metadata as well as in state. Anything running on the instance can read it, and so can anyone who can view the instance in your project.
 `,
     tf: gcpTf,
+  },
+  aws: {
+    name: "AWS",
+    server: "instance",
+    servers: "instances",
+    user: "conn3x",
+    ipv4Only: true,
+    region: "eu-west-2",
+    regionLabel: "Region",
+    // Two vCPUs and 4 GB, the same as DigitalOcean's default, on 50 GB of disk.
+    size: "t3.medium",
+    sizeLabel: "Instance type",
+    tagsLabel: "Tags, one per line",
+    tagsHolder: "team=web",
+    tags: awsTags,
+    nameOk: /^[A-Za-z][A-Za-z0-9-]*$/,
+    nameRule: "letters, digits and -",
+    regionOk: /^[a-z]{2}(-[a-z]+)+-\d+$/,
+    sizeOk: /^[a-z][a-z0-9-]*\.[a-z0-9]+$/,
+    notArm: /^(a1|[a-z]+\d+g[a-z]*)\./,
+    keyInstalledBy: "cloud-init",
+    providers: { aws: `{ source = "hashicorp/aws", version = "~> 6.0" }` },
+    address: (n) => `aws_instance.host[${n}].public_ip`,
+    note: "Instances cost money until you run conn3x destroy. Your AWS credentials never go in the config: they stay on your machine.",
+    credentials: "Sign in to AWS: set `AWS_PROFILE`, or `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, in your shell. Either way the credentials stay out of this config. You need to be able to create instances and security groups, and to read images and VPCs. Conn3x makes each instance's SSH host key and checks it from the first connection.",
+    readme: `
+## On AWS
+
+The instances go in your region's default VPC, so there's no network to pay for or look after. A security group called \`conn3x\` keeps them apart from anything else in there, and that name is fixed, so keep to one of these configs per region. If you've deleted the default VPC, the plan stops saying so; \`aws ec2 create-default-vpc\` brings it back.
+
+Each instance gets 50 GB of gp3 disk and a public IPv4 address. Cloud-init makes a user called \`conn3x\`, with your public key and sudo, because that's who Conn3x logs in as: these images keep root out of SSH.
+
+The image is the newest one its publisher has out when you first apply. Later releases don't replace a running server, because the config ignores changes to it.
+
+The private host key sits in the instance's user data as well as in state. Anything running on the instance can read it, and so can anyone who can view the instance's attributes in your account.
+`,
+    tf: awsTf,
+  },
+  azure: {
+    name: "Azure",
+    server: "VM",
+    servers: "VMs",
+    user: "conn3x",
+    ipv4Only: true,
+    region: "westus2",
+    regionLabel: "Region",
+    // Two vCPUs and 8 GB, on 50 GB of disk.
+    size: "Standard_B2s_v2",
+    sizeLabel: "Size",
+    tagsLabel: "Tags, one per line",
+    tagsHolder: "team=web",
+    tags: azureTags,
+    // Azure's rule for Linux computer names, which default to the VM's name.
+    nameOk: /^[A-Za-z]([A-Za-z0-9-]{0,62}[A-Za-z0-9])?$/,
+    nameRule: "letters, digits and -, ending in a letter or digit",
+    regionOk: /^[a-z][a-z0-9]*$/,
+    sizeOk: /^Standard_[A-Za-z0-9_-]+$/,
+    // The p after the vCPU count marks Arm: D2ps_v5, B2pts_v2, E4pds_v6.
+    notArm: /^Standard_[a-z]+\d+[a-z]*p[a-z]*_/i,
+    resourceGroup: "conn3x",
+    resourceGroupOk: /^[A-Za-z0-9_-]([A-Za-z0-9._-]{0,88}[A-Za-z0-9_-])?$/,
+    // The publisher's own image needs its Marketplace terms accepted first, and a config shouldn't do that quietly.
+    noImage: {
+      rocky10: "Rocky Linux 10 on Azure comes with Marketplace terms that you'd have to accept for your subscription, and we haven't tested it. Pick Ubuntu 24.04 or Debian 13, or bring a Rocky server you already have.",
+    },
+    keyInstalledBy: "cloud-init",
+    providers: { azurerm: `{ source = "hashicorp/azurerm", version = "~> 5.0" }` },
+    // Through the VM, so nothing connects until it's up.
+    address: (n) => `azurerm_linux_virtual_machine.host[${n}].public_ip_address`,
+    note: "VMs cost money until you run conn3x destroy. Your Azure credentials never go in the config: they stay on your machine. Azure here means Linux hosts. Windows is still to come.",
+    credentials: "Sign in to Azure with `az login`, which uses your active subscription, or set `ARM_CLIENT_ID`, `ARM_CLIENT_SECRET`, `ARM_TENANT_ID` and `ARM_SUBSCRIPTION_ID` in your shell. Either way the credentials stay out of this config. You need to be able to create resource groups, networks and VMs: `Contributor` on the subscription is enough. The subscription needs `Microsoft.Compute` and `Microsoft.Network` registered, which `az provider register --namespace Microsoft.Compute` does. Conn3x makes each VM's SSH host key and checks it from the first connection.",
+    readme: `
+## On Azure
+
+Linux hosts, that is. Windows is still to come.
+
+Everything goes in one new resource group, so \`az group delete\` is your way out if \`conn3x destroy\` ever can't finish. If a group of that name already exists, the apply stops rather than adopt it. Inside are a network, a subnet and a network security group that lets in SSH from your addresses, what your picks serve, and the VMs themselves. That last rule names their public addresses as well as the subnet, because circuits such as k3s join on those.
+
+Each VM gets 50 GB of Standard SSD and a static public IPv4 address, and both cost money too. Azure makes a user called \`conn3x\`, with your public key and sudo, and password login is off.
+
+Cloud-init writes each host key before SSH starts on both images, so unlike Google Cloud there's no wait before connecting. If an apply ever stops with a host key error, run it again.
+
+The image is the newest one its publisher has out when you first apply. Later releases don't replace a running server.
+
+The private host key sits in the VM's \`custom_data\` as well as in state. Azure's API won't hand \`custom_data\` back, but root on the VM can read it, so treat anything with root there as holding the key.
+`,
+    tf: azureTf,
   },
 };
 
@@ -770,6 +891,116 @@ function gcpTf(c) {
 `;
   out += `\n# Long enough for the startup script. SSH starts first, with the image's own\n# host key, and Conn3x rightly stops if it meets that one.\n`;
   out += `resource "time_sleep" "boot" {\n  for_each = google_compute_instance.host\n\n  create_duration = "90s"\n  triggers = {\n    address = each.value.network_interface[0].access_config[0].nat_ip\n  }\n}\n`;
+  return out;
+}
+
+// Instances in the default VPC, with every rule its own resource: the provider
+// fights over a group that mixes inline rules with separate ones, and the
+// rules for public addresses can't be inline, since they need the instances.
+function awsTf(c) {
+  const tags = (extra = {}) => {
+    const all = { ...extra, ...c.tags };
+    return Object.keys(all).length ? [["tags", all]] : [];
+  };
+  const named = tags({ Name: new Ref("each.key") });
+  const group = new Ref("aws_security_group.hosts.id");
+  let out = `\nprovider "aws" {\n${attrs([["region", c.region]], "  ")}}\n`;
+  out += `\nlocals {\n  admin_key = trimspace(file(pathexpand(${hcl(c.publicKey)})))\n}\n`;
+  out += `\ndata "aws_vpc" "default" {\n  default = true\n}\n`;
+  out += `\ndata "aws_ami" "os" {\n  most_recent = true\n  owners      = ${hcl([c.image.owner])}\n`;
+  for (const [name, value] of [["name", c.image.name], ["architecture", "x86_64"], ["virtualization-type", "hvm"], ["state", "available"]]) {
+    out += `\n  filter {\n${attrs([["name", name], ["values", [value]]], "    ")}  }\n`;
+  }
+  out += `}\n`;
+  out += `\n# SSH from your addresses, what your picks serve, and the instances to each other.\n`;
+  out += `resource "aws_security_group" "hosts" {\n${attrs([["name", "conn3x"], ["description", "Conn3x servers"], ["vpc_id", new Ref("data.aws_vpc.default.id")], ...tags()], "  ")}}\n`;
+  out += `\nresource "aws_vpc_security_group_ingress_rule" "ssh" {\n  for_each = toset(${hcl(c.admin)})\n\n`;
+  out += attrs([["security_group_id", group], ["cidr_ipv4", new Ref("each.value")], ["ip_protocol", "tcp"], ["from_port", 22], ["to_port", 22]], "  ");
+  out += `}\n`;
+  const served = Object.fromEntries([...c.open.map((p) => [p, "0.0.0.0/0"]), ...c.closed.map((p) => [p, c.net])].map(([p, from]) => {
+    const [port, protocol] = p.port.split("/");
+    return [`${p.port} ${from}`, { port: Number(port), protocol, from }];
+  }));
+  if (Object.keys(served).length) {
+    out += `\nresource "aws_vpc_security_group_ingress_rule" "served" {\n  for_each = ${hcl(served, "  ")}\n\n`;
+    out += attrs([["security_group_id", group], ["cidr_ipv4", new Ref("each.value.from")], ["ip_protocol", new Ref("each.value.protocol")], ["from_port", new Ref("each.value.port")], ["to_port", new Ref("each.value.port")]], "  ");
+    out += `}\n`;
+  }
+  out += `\nresource "aws_vpc_security_group_ingress_rule" "internal" {\n${attrs([["security_group_id", group], ["referenced_security_group_id", group], ["ip_protocol", "-1"]], "  ")}}\n`;
+  // Circuits join each other on public addresses, such as k3s agents reaching
+  // their server, and a group reference doesn't match those.
+  out += `\nresource "aws_vpc_security_group_ingress_rule" "peers" {\n  for_each = aws_instance.host\n\n`;
+  out += attrs([["security_group_id", group], ["cidr_ipv4", new Ref('"${each.value.public_ip}/32"')], ["ip_protocol", "-1"]], "  ");
+  out += `}\n`;
+  out += `\nresource "aws_vpc_security_group_egress_rule" "all" {\n${attrs([["security_group_id", group], ["cidr_ipv4", "0.0.0.0/0"], ["ip_protocol", "-1"]], "  ")}}\n`;
+  out += `\nresource "aws_instance" "host" {\n  for_each = tls_private_key.host\n\n`;
+  out += attrs([
+    ["ami", new Ref("data.aws_ami.os.id")],
+    ["instance_type", c.size],
+    ["vpc_security_group_ids", new Ref("[aws_security_group.hosts.id]")],
+    ["associate_public_ip_address", true],
+    ...named,
+  ], "  ");
+  out += `\n  root_block_device {\n${attrs([["volume_type", "gp3"], ["volume_size", 50], ...named], "    ")}  }\n`;
+  out += `\n  metadata_options {\n    http_tokens = "required"\n  }\n`;
+  out += `\n  user_data = "#cloud-config\\n\${yamlencode({\n    ssh_deletekeys = true\n    ssh_keys = {\n      ed25519_private = each.value.private_key_openssh\n      ed25519_public  = each.value.public_key_openssh\n    }\n    users = [{\n      name                = ${hcl(c.def.user)}\n      shell               = "/bin/bash"\n      sudo                = "ALL=(ALL) NOPASSWD:ALL"\n      ssh_authorized_keys = [local.admin_key]\n    }]\n  })}"\n`;
+  out += `\n  # A newer image shouldn't replace a running server.\n  lifecycle {\n    ignore_changes = [ami]\n  }\n}\n`;
+  return out;
+}
+
+// One resource group holding everything, with the rules inline on the security
+// group: public addresses are known before the VMs exist, so nothing goes round
+// in a circle. Azure's images run cloud-init before SSH starts, so unlike Google
+// Cloud this needs no wait.
+function azureTf(c) {
+  const tags = Object.keys(c.tags).length ? [["tags", c.tags]] : [];
+  const placed = [["location", new Ref("azurerm_resource_group.hosts.location")], ["resource_group_name", new Ref("azurerm_resource_group.hosts.name")]];
+  const rule = (name, priority, protocol, port, from) =>
+    `\n  security_rule {\n${attrs([
+      ["name", name],
+      ["priority", priority],
+      ["direction", "Inbound"],
+      ["access", "Allow"],
+      ["protocol", protocol],
+      ["source_port_range", "*"],
+      ["destination_port_range", port],
+      ["source_address_prefixes", from],
+      ["destination_address_prefix", "*"],
+    ], "    ")}  }\n`;
+  let out = `\nprovider "azurerm" {\n  features {}\n}\n`;
+  out += `\nresource "azurerm_resource_group" "hosts" {\n${attrs([["name", c.resourceGroup], ["location", c.region], ...tags], "  ")}}\n`;
+  out += `\nresource "azurerm_virtual_network" "hosts" {\n${attrs([["name", "conn3x"], ...placed, ["address_space", ["10.10.0.0/16"]], ...tags], "  ")}}\n`;
+  out += `\nresource "azurerm_subnet" "hosts" {\n${attrs([["name", "conn3x"], ["resource_group_name", new Ref("azurerm_resource_group.hosts.name")], ["virtual_network_name", new Ref("azurerm_virtual_network.hosts.name")], ["address_prefixes", ["10.10.0.0/24"]]], "  ")}}\n`;
+  out += `\n# SSH from your addresses, what your picks serve, and the VMs to each other.\n`;
+  out += `resource "azurerm_network_security_group" "hosts" {\n${attrs([["name", "conn3x"], ...placed, ...tags], "  ")}`;
+  out += rule("ssh", 100, "Tcp", "22", c.admin);
+  // Circuits join each other on public addresses, such as k3s agents reaching
+  // their server, and traffic to those doesn't count as coming from the subnet.
+  out += rule("peers", 110, "*", "*", new Ref(`concat(["10.10.0.0/24"], [for ip in azurerm_public_ip.host : ip.ip_address])`));
+  [...c.open.map((p) => [p, ["0.0.0.0/0"], "public"]), ...c.closed.map((p) => [p, p.from, "network"])].forEach(([p, from, kind], i) => {
+    const [port, protocol] = p.port.split("/");
+    out += rule(`${kind}-${port}-${protocol}`, 200 + i, protocol === "tcp" ? "Tcp" : "Udp", port, from);
+  });
+  out += `}\n`;
+  out += `\nresource "azurerm_subnet_network_security_group_association" "hosts" {\n  subnet_id                 = azurerm_subnet.hosts.id\n  network_security_group_id = azurerm_network_security_group.hosts.id\n}\n`;
+  out += `\nresource "azurerm_public_ip" "host" {\n  for_each = tls_private_key.host\n\n${attrs([["name", new Ref("each.key")], ...placed, ["allocation_method", "Static"], ["sku", "Standard"], ...tags], "  ")}}\n`;
+  out += `\nresource "azurerm_network_interface" "host" {\n  for_each = tls_private_key.host\n\n${attrs([["name", new Ref("each.key")], ...placed, ...tags], "  ")}`;
+  out += `\n  ip_configuration {\n${attrs([["name", "conn3x"], ["subnet_id", new Ref("azurerm_subnet.hosts.id")], ["private_ip_address_allocation", "Dynamic"], ["public_ip_address_id", new Ref("azurerm_public_ip.host[each.key].id")]], "    ")}  }\n}\n`;
+  out += `\nresource "azurerm_linux_virtual_machine" "host" {\n  for_each = tls_private_key.host\n\n`;
+  out += attrs([
+    ["name", new Ref("each.key")],
+    ...placed,
+    ["size", c.size],
+    ["admin_username", c.def.user],
+    ["disable_password_authentication", true],
+    ["network_interface_ids", new Ref("[azurerm_network_interface.host[each.key].id]")],
+    ...tags,
+  ], "  ");
+  out += `\n  admin_ssh_key {\n${attrs([["username", c.def.user], ["public_key", new Ref(`trimspace(file(pathexpand(${hcl(c.publicKey)})))`)]], "    ")}  }\n`;
+  out += `\n  os_disk {\n${attrs([["caching", "ReadWrite"], ["storage_account_type", "StandardSSD_LRS"], ["disk_size_gb", 50]], "    ")}  }\n`;
+  out += `\n  source_image_reference {\n${attrs([["publisher", c.image.publisher], ["offer", c.image.offer], ["sku", c.image.sku], ["version", "latest"]], "    ")}  }\n`;
+  out += `\n  custom_data = base64encode("#cloud-config\\n\${yamlencode({\n    ssh_deletekeys = true\n    ssh_keys = {\n      ed25519_private = each.value.private_key_openssh\n      ed25519_public  = each.value.public_key_openssh\n    }\n  })}")\n`;
+  out += `\n  # The firewall goes on before anything can listen.\n  depends_on = [azurerm_subnet_network_security_group_association.hosts]\n}\n`;
   return out;
 }
 

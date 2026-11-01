@@ -1,0 +1,16 @@
+{
+  "name": "sqlite",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "databases",
+      "type": "map(object({\n    owner = optional(string, \"root\")\n    group = optional(string)\n    mode  = optional(string, \"0640\")\n  }))",
+      "default": {},
+      "description": "Empty databases to create, by absolute path, with their owner, group (the owner's name when null) and mode. A database that exists keeps its contents.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

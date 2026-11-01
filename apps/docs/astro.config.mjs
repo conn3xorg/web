@@ -46,7 +46,7 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/paths-as-root", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         {
           label: "Circuits",
@@ -77,7 +77,7 @@ export default defineConfig({
           collapsed: true,
           items: ["plan-reads", "state", "revision-and-handlers", "connections"].map((page) => `internals/${page}`),
         },
-        { label: "Get involved", items: ["contribute", "roadmap"] },
+        { label: "Get involved", items: ["contribute", "style", "roadmap"] },
       ],
     }),
   ],

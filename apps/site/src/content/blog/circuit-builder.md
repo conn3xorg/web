@@ -30,7 +30,7 @@ That's the job the [Circuit Builder](/build) does. You pick a distribution and t
 <summary>Read the diagram as text</summary>
 
 - **Distribution:** Rocky Linux 10, Fedora 45, Ubuntu 24.04 or Debian 13. Circuits that aren't tested on it grey out, with the reason.
-- **Circuits:** 75 of them, grouped by the same 14 categories as the [circuit directory](/circuits). Picking one greys out anything that clashes with it.
+- **Circuits:** 90 of them, grouped by the same 14 categories as the [circuit directory](/circuits). Picking one greys out anything that clashes with it.
 - **Settings:** your hosts, one per line, the SSH user, key and `known_hosts` file, and whether to use sudo. Then only the inputs each circuit can't do without. The rest sit under "More settings" with the circuit's own defaults showing.
 - **Your files:** `main.tf`, a `variables.tf` when there are secrets, and a `README.md` with the run steps. Copy them one at a time or download `conn3x-config.zip`.
 
@@ -147,15 +147,15 @@ The builder is a page and a plain JavaScript module. The circuit data, the input
 
 ## How we know the configs work
 
-A builder that writes broken configs would be worse than no builder. So the site's CI runs the same code the page runs and writes every one of the 82 circuits on its own, plus 31 realistic combinations across the four distributions: Apache, MySQL and Certbot on Ubuntu, Infisical and Caddy on Rocky, the monitoring stack with Samba and NFS on Debian, and this post's nginx build among them. That's 113 configs. Each one goes through `conn3x fmt -check`, then `conn3x init -backend=false` and `conn3x validate`, with the latest Conn3x release, checksum checked.
+A builder that writes broken configs would be worse than no builder. So the site's CI runs the same code the page runs and writes every one of the 90 circuits on its own, plus 34 realistic combinations across the four distributions: Apache, MySQL and Certbot on Ubuntu, Infisical and Caddy on Rocky, the monitoring stack with Samba and NFS on Debian, and this post's nginx build among them. That's 124 configs. Each one goes through `conn3x fmt -check`, then `conn3x init -backend=false` and `conn3x validate`, with the latest Conn3x release, checksum checked.
 
-Validate runs each circuit's own validation rules on the values, so a bad sample value fails the job as surely as bad syntax does. If any one of the 113 fails, the job fails. Unit tests sit underneath: the escaping, including attempts to break out of a string, the type of every input of every circuit, the conflicts, the secrets, the firewall and the zip format, and a check that circuits left out of the builder can't be generated.
+Validate runs each circuit's own validation rules on the values, so a bad sample value fails the job as surely as bad syntax does. If any one of the 124 fails, the job fails. Unit tests sit underneath: the escaping, including attempts to break out of a string, the type of every input of every circuit, the conflicts, the secrets, the firewall and the zip format, and a check that circuits left out of the builder can't be generated.
 
 What validate can't do is apply. It proves the config is well formed and the values are ones the circuits accept. The circuits themselves are applied for real: each one's CI applies it to a systemd container of every distribution it lists and checks that it works, and each was run on cloud servers before its first release.
 
 ## What it doesn't do yet
 
-It can create your servers on DigitalOcean or Google Cloud, but not on other clouds yet. Fedora 45 stays off Google Cloud, which has no base image for it, and the builder tells you so. And kubeadm isn't in it yet, because joining its control planes and workers takes more than a list of hosts.
+It can create your servers on DigitalOcean, Google Cloud, AWS or Azure, but not on other clouds yet. Azure here means Linux hosts, with Windows still to come. Fedora 45 stays off Google Cloud, which has no base image for it, and the builder tells you so. Rocky stays off Azure too, because its image makes you accept Marketplace terms first, and we'd rather you did that knowingly than have a config do it for you. And kubeadm isn't in it yet, because joining its control planes and workers takes more than a list of hosts.
 
 Forgejo, Keycloak, Matrix and LLDAP work without a database circuit, on SQLite or a file meant for trials, so the builder doesn't wire PostgreSQL to them. Their hints point at the README, which shows how.
 

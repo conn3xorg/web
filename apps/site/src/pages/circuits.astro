@@ -70,7 +70,7 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
       {circuits.map((c) => (
         <li class="card" data-cat={c.category} data-text={`${c.name} ${c.description} ${c.tags.join(" ")}`.toLowerCase()}>
           <div class="top">
-            <h2><a href={`https://github.com/${c.repo}`}>{c.name}</a></h2>
+            <h2><a href={`https://github.com/${c.repo}`}>{c.name}<span class="visually-hidden"> circuit</span></a></h2>
             {c.official && <span class="badge">Official</span>}
           </div>
           <p class="desc">{c.description}</p>

@@ -1,0 +1,19 @@
+{
+  "name": "go",
+  "repo": "conn3xorg/circuit-go",
+  "description": "One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions.",
+  "version": "v0.1.0",
+  "tags": [
+    "go",
+    "golang",
+    "runtime"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

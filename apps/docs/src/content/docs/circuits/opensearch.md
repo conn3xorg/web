@@ -173,4 +173,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-opensearch/blob/v0.1
 
 - Repository: [conn3xorg/circuit-opensearch](https://github.com/conn3xorg/circuit-opensearch). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-opensearch/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey).
+- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [SQLite](/circuits/sqlite).
