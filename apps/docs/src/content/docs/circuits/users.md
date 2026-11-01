@@ -5,6 +5,8 @@ description: "Creates users, groups and their SSH keys from one map, with option
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-users at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/users/grade.svg)](https://conn3x.org/circuits/users/grade)
+
 A [Conn3x](https://conn3x.org) circuit that manages local accounts from one map: the users, the groups they belong to, and the SSH keys they log in with. A user can also get passwordless sudo, through a drop-in file in `/etc/sudoers.d`.
 
 ## Usage

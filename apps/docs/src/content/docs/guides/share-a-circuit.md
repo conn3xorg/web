@@ -128,3 +128,7 @@ Put the circuit in a public repository with an open-source licence and at least 
   `category` is one of the names in [`categories.json`](https://github.com/conn3xorg/web/blob/main/apps/site/src/data/categories.json), and it's the filter your circuit shows up under on the page.
 
 Before we list a circuit, we check that `conn3x validate` passes, read it through, and make sure the README covers the points above. When you release a new version, open a pull request that bumps `version`.
+
+## Your grade
+
+Every circuit in the directory gets a grade from A to F, read from your repository at its latest tag. It takes C or better to stay in the Circuit Builder once enforcement is on, and most of the points come from your CI. [Circuit grades](/reference/circuit-grades) lists each check and how to earn it.

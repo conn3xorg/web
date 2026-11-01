@@ -5,6 +5,8 @@ description: "Let's Encrypt certificates with certbot for nginx, HAProxy and the
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-certbot at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/certbot/grade.svg)](https://conn3x.org/circuits/certbot/grade)
+
 A Conn3x circuit that gets TLS certificates from Let's Encrypt with certbot, and keeps them renewed. You list the certificates you want and the domains on each, and every host ends up with them under `/etc/letsencrypt/live`, a renewal timer that's switched on, and, if you give one, a command that runs whenever a certificate changes, such as `systemctl reload nginx`.
 
 It's for nginx, HAProxy, Postfix, or anything else that reads a certificate from disk. If you run Caddy, you don't need this: Caddy gets and renews its own certificates, so [circuit-caddy](/circuits/caddy) covers it.

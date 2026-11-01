@@ -5,6 +5,8 @@ description: "Installs Podman and runs your containers as systemd services throu
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/podman/grade.svg)](https://conn3x.org/circuits/podman/grade)
+
 A Conn3x circuit that installs Podman from your distribution's own repositories and runs your containers as systemd services through Quadlet. There's no daemon and no Compose file: each container is a unit, so `systemctl status`, `journalctl -u` and boot ordering work the way they do for anything else on the box.
 
 You describe each container in your configuration, with an image pinned to a tag or digest. A change shows up in `conn3x plan` as a diff of its unit file, and the apply restarts only the container that changed. Secrets go in a separate ephemeral input, which Conn3x writes to the host without putting it in state or the plan.

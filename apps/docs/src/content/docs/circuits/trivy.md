@@ -5,6 +5,8 @@ description: "Scan hosts for known vulnerabilities with a pinned Trivy on a syst
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-trivy at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/trivy/grade.svg)](https://conn3x.org/circuits/trivy/grade)
+
 A Conn3x circuit that scans your hosts for known vulnerabilities with Trivy. Each host gets a pinned Trivy, checked against its checksum, and a daily timer that scans the root filesystem and leaves a report on the host: the operating system's packages, plus language packages such as npm modules and Python packages installed anywhere on disk.
 
 It only looks. Nothing gets patched, and the scan runs in a systemd sandbox that makes the whole host read-only to it apart from its own two directories.

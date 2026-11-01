@@ -5,6 +5,8 @@ description: "A HashiCorp Nomad cluster from a pinned release, with an odd serve
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-nomad at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/nomad/grade.svg)](https://conn3x.org/circuits/nomad/grade)
+
 A Conn3x circuit that turns your hosts into a [HashiCorp Nomad](https://developer.hashicorp.com/nomad) cluster: an odd number of servers, and as many clients as you give it. It installs a pinned Nomad release, checks its SHA-256 before using it, and runs Nomad under systemd with its settings in `/etc/nomad.d`. x86_64 and arm64 hosts each get the right build.
 
 You come away with a cluster that has gossip encryption and ACLs on, and neither the gossip key nor any token anywhere in your Conn3x state.

@@ -51,7 +51,7 @@ export default defineConfig({
         {
           label: "Circuits",
           collapsed: true,
-          items: [{ slug: "circuits", label: "Overview" }, { autogenerate: { directory: "circuits" } }],
+          items: [{ slug: "circuits", label: "Overview" }, { slug: "reference/circuit-grades", label: "How grades work" }, { autogenerate: { directory: "circuits" } }],
         },
         {
           label: "Circuit language",

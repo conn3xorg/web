@@ -5,6 +5,8 @@ description: "Selenium Grid under Podman, official images pinned by digest, on l
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-selenium at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/selenium/grade.svg)](https://conn3x.org/circuits/selenium/grade)
+
 A Conn3x circuit that runs a Selenium Grid under Podman: a hub and a browser node for each browser you ask for, from Selenium's official images, as systemd services pinned by tag and digest. Your tests point a `RemoteWebDriver` at one address and the Grid hands them a browser.
 
 **The Grid has no authentication.** Anyone who can reach its port can start a browser on your host and send it anywhere that host can reach, including services on its private network. So it listens only on `127.0.0.1` unless you say otherwise.

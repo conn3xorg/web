@@ -5,6 +5,8 @@ description: "One exact Node.js LTS from nodejs.org on every distribution, check
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-nodejs at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/nodejs/grade.svg)](https://conn3x.org/circuits/nodejs/grade)
+
 A Conn3x circuit that puts one exact Node.js release on all your hosts. Distributions ship whatever Node.js they froze at release time, so a fleet of Ubuntu and Rocky Linux ends up running different majors, and the fix is usually a curl-to-bash script nobody pinned. This circuit takes the official tarball from nodejs.org instead, checks it against the release's SHA-256, and gives you the same Node.js on every distribution: 26.13.0 by default, the current LTS.
 
 If your hosts need command-line tools from npm, you can list those too, each at an exact version.

@@ -5,6 +5,8 @@ description: "One exact Kotlin compiler from JetBrains' releases, checked agains
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-kotlin at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/kotlin/grade.svg)](https://conn3x.org/circuits/kotlin/grade)
+
 A Conn3x circuit that puts one exact Kotlin compiler on your hosts, from the zip JetBrains attaches to each GitHub release, checked against its SHA-256. You get `kotlinc` and `kotlin`, 2.4.21 by default, the same on every distribution.
 
 **You bring the Java.** The compiler is a JVM program, and which JDK a host runs is a decision that belongs elsewhere, so this circuit needs a `java` on the `PATH` and stops with a clear message if there isn't one. [circuit-java](/circuits/java) is the easy way, and what the usage below shows. The runtime it installs by default is enough to compile and run.

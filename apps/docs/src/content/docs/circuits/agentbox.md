@@ -5,6 +5,8 @@ description: "Remote dev box for coding agents: key-only user, git, tmux, ripgre
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-agentbox at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/agentbox/grade.svg)](https://conn3x.org/circuits/agentbox/grade)
+
 A Conn3x circuit that turns a Linux host into a remote box for coding agents: one ordinary user you log in to with your SSH key, with git, tmux, a C toolchain, ripgrep, jq and a current Node.js LTS, plus whichever agent CLIs you list, installed in that user's own npm prefix. Your laptop stays cool, the agents get the cores and the RAM, and when you close the lid the tmux session is still there in the morning.
 
 It's the box, not the client. Plain SSH and tmux work with it as they are. So does [Orca](https://github.com/stablyai/orca), which runs agents on a remote host over SSH: Orca creates the git worktrees on the host and brings its own server and Node.js runtime, so what it needs from the box is git, a home directory it can run programs from, an SSH server that allows port forwarding, and the agents themselves. This circuit sets up the first three and installs the agents you name.

@@ -5,6 +5,8 @@ description: "A pinned, checksum-verified Helm, with optional chart releases kep
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-helm at v0.1.1. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/helm/grade.svg)](https://conn3x.org/circuits/helm/grade)
+
 A Conn3x circuit that installs [Helm](https://helm.sh) at a version you pin, checks its SHA-256, and can keep chart releases where you asked: repository, chart, exact version and values, all in your configuration.
 
 Say you've got a k3s server and a couple of charts you want on it. Run Helm by hand and six months later nobody remembers which values went in. Here the values live in your configuration, a change to them is an upgrade on the next apply, and an upgrade or uninstall someone did by hand shows up in the next plan.

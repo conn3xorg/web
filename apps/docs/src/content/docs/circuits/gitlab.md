@@ -5,6 +5,8 @@ description: "Single-node GitLab CE from GitLab's official packages: pinned rele
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-gitlab at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/gitlab/grade.svg)](https://conn3x.org/circuits/gitlab/grade)
+
 A Conn3x circuit that runs [GitLab Community Edition](https://about.gitlab.com/install/) on one host of your own, from GitLab's official Linux packages. You say where people reach it, which release you want and what root's first password is; the circuit adds GitLab's repository, writes `gitlab.rb`, installs the package and runs `gitlab-ctl reconfigure` for you. After that, reconfigure runs again only when `gitlab.rb` changes, so a plan with nothing to do stays quiet and an apply with nothing to do takes seconds, not the minutes a reconfigure costs.
 
 The release is pinned in your code. GitLab moves when you raise `gitlab_version`, on your schedule, one stop at a time along its [upgrade path](#upgrades), and not because a new package landed in the repository overnight.

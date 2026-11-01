@@ -5,6 +5,8 @@ description: "OpenSCAP scans against CIS, STIG and other SCAP Security Guide pro
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-openscap at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/openscap/grade.svg)](https://conn3x.org/circuits/openscap/grade)
+
 A Conn3x circuit that scans your hosts against a security benchmark, such as CIS Level 1 Server or the DISA STIG, with OpenSCAP and the SCAP Security Guide from the ComplianceAsCode project. Each host gets the scanner, the right content for its distribution and a weekly timer, and every scan leaves an HTML report you can open in a browser and results other SCAP tools can read.
 
 Audit first, change later. By default the circuit only looks. When you're ready, `remediate = true` has OpenSCAP fix what failed, once per host and profile, and you can leave out the rules you can't live with, such as the one that turns off root logins over SSH.

@@ -5,6 +5,8 @@ description: "osqueryd from osquery's own repos: scheduled queries, packs, file 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-osquery at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/osquery/grade.svg)](https://conn3x.org/circuits/osquery/grade)
+
 A Conn3x circuit that installs osquery from osquery's own apt and yum repositories and runs `osqueryd` as a systemd service, with `osquery.conf` built from your inputs: options, scheduled queries, query packs and file integrity monitoring. Results go to JSON log files on the host, which osquery rotates itself, and the circuit checks every config with `osqueryd --config_check` before it restarts the daemon.
 
 osquery turns a Linux host into a set of tables you can query with SQL: users, processes, listening ports, installed packages, changed files. It's the host half of a detection lab like DetectionLab, where osquery feeds a Fleet server. This circuit can point osqueryd at a Fleet server you already run, too; setting up Fleet itself isn't part of it.

@@ -5,7 +5,8 @@
       "startServerReadyPattern": "Ready on",
       "url": [
         "http://127.0.0.1:8787/",
-        "http://127.0.0.1:8787/circuits"
+        "http://127.0.0.1:8787/circuits",
+        "http://127.0.0.1:8787/circuits/nginx/grade"
       ],
       "numberOfRuns": 3,
       "settings": {

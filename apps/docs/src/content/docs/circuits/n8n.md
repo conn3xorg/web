@@ -5,6 +5,8 @@ description: "Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQ
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-n8n at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/n8n/grade.svg)](https://conn3x.org/circuits/n8n/grade)
+
 A Conn3x circuit that runs [n8n](https://n8n.io), the workflow automation tool, on your own hosts. You wire up webhooks, schedules and a few hundred services in its editor, and the workflows, the credentials they use and every execution stay on a machine you run.
 
 n8n runs from its official image under Podman as a systemd service, pinned by tag and digest, and listens on `127.0.0.1:5678` for a reverse proxy in front. It keeps its data in SQLite under `/var/lib/n8n` unless you point it at PostgreSQL, such as one from [circuit-postgres](/circuits/postgres). If you give it an owner, the first apply creates that account for you, so nobody else can claim the instance before you open it. It runs on Debian, Ubuntu, Fedora and Rocky Linux.

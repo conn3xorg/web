@@ -5,6 +5,8 @@ description: "Share folders over NFSv4 from the kernel NFS server, with each exp
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-nfs at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/nfs/grade.svg)](https://conn3x.org/circuits/nfs/grade)
+
 A Conn3x circuit that shares folders from a Linux box over NFS, with the kernel's own NFS server and your distribution's packages. You list the paths and which clients may mount each one; the circuit installs the server, creates the folders, writes the exports, applies them with `exportfs`, and checks that every one made it into the kernel's table. It's the shared storage behind a homelab's media server and backups, or the home directories and build caches on a rack of Linux machines.
 
 The server speaks NFSv4 only unless you ask for v3. That means one port, TCP 2049, and no rpcbind or mountd for clients to reach. On Rocky Linux and Fedora it works with SELinux enforcing as it comes: the distribution's policy already lets the NFS server export any folder.

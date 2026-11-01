@@ -5,6 +5,8 @@ description: "Prometheus, Grafana and cAdvisor as one Compose stack, scraping th
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-monitoring at v0.2.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/monitoring/grade.svg)](https://conn3x.org/circuits/monitoring/grade)
+
 A Conn3x circuit that runs Prometheus, Grafana and cAdvisor on a host with Docker, as one Compose stack. Prometheus scrapes the targets you give it, Grafana comes up with Prometheus already set as its data source, and cAdvisor reports on every container on the host.
 
 Pair it with [circuit-docker](/circuits/docker) to get Docker on the host, and [circuit-node-exporter](/circuits/node-exporter) for the machines you want to watch. One configuration, one `conn3x apply`, and the dashboards are up.

@@ -5,6 +5,8 @@ description: "Valkey, the open Redis fork, from your distribution with a write-o
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-valkey at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/valkey/grade.svg)](https://conn3x.org/circuits/valkey/grade)
+
 A Conn3x circuit that installs Valkey, the open-source fork of Redis, and sets it up as a password-protected cache or key-value store. You choose where it listens, how much memory it gets, what it evicts when that runs out, and whether data survives a restart. The password goes in at run time and never lands in state.
 
 It also sets `vm.overcommit_memory = 1`, which Valkey asks for in its log on every start until you do. Without it, the fork behind a background save can fail on a busy host, and with persistence on that means writes start failing too.

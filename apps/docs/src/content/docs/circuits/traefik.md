@@ -5,6 +5,8 @@ description: "Traefik 3 routing HTTPS to your backends from a map of sites, with
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-traefik at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/traefik/grade.svg)](https://conn3x.org/circuits/traefik/grade)
+
 A Conn3x circuit that installs Traefik 3 from its release tarball, runs it as its own `traefik` user, and routes HTTPS to your backends from a map of sites. Give it an email address and each site gets a certificate from Let's Encrypt, which Traefik renews itself. Port 80 redirects to 443.
 
 Sites live in a file Traefik watches, so adding or changing one takes effect without a restart. Changes to the rest of the config, such as turning on the dashboard, restart Traefik once.
