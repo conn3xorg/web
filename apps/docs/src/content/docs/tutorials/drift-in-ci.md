@@ -55,7 +55,7 @@ jobs:
 
       - name: Install Conn3x
         env:
-          VERSION: 0.6.11
+          VERSION: 0.6.12
         run: |
           BASE="https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}"
           curl -fsSLO "$BASE/conn3x_${VERSION}_linux_amd64.tar.gz"
