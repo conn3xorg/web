@@ -3,6 +3,10 @@ title: Glossary
 description: Definitions of terms used throughout the Conn3x documentation.
 ---
 
+## Agent
+
+The Conn3x host agent is an experimental component whose builds may be bundled inside the Conn3x binary for different architectures. It is off by default; when it is not enabled, Conn3x runs commands over plain SSH. See [conn3x version](https://docs.conn3x.org/reference/cli/version).
+
 ## Circuit
 
 A circuit configures a group of hosts, specifying how to connect to them and which steps to run. See [Circuits](https://docs.conn3x.org/reference/circuits/).
