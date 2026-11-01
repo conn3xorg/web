@@ -3,7 +3,7 @@ title: Suricata
 description: "Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json"
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-suricata at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-suricata at v0.1.1. -->
 
 A Conn3x circuit that installs Suricata as a network intrusion detection system, keeps its rules current with suricata-update, and writes every alert to `eve.json`. Suricata watches a host's traffic as it passes and tells you when something matches a rule: a lookup of a known malware domain, an exploit attempt against a web server, a client speaking a protocol on a port it shouldn't. It doesn't block anything. It's the part of a network you read, not the part that says no.
 
@@ -13,7 +13,7 @@ You pick the interfaces, your home networks, the rule sources and any rules of y
 
 ```hcl
 module "suricata" {
-  source = "github.com/conn3xorg/circuit-suricata?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-suricata?ref=v0.1.1"
 
   hosts                = { sensor1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -43,7 +43,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.1/examples/local).
 
 ### Which interface it watches
 
@@ -68,9 +68,9 @@ Changing them reloads the rules without restarting Suricata, so it keeps watchin
 On each host, in order:
 
 1. Adds Suricata's repository, as OISF's installation guide describes for each distribution:
-   - **Ubuntu**: OISF's PPA for the series, `ppa:oisf/suricata-8.0`. Its signing key, in [files/oisf-ppa.asc](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.0/files/oisf-ppa.asc), doesn't expire.
+   - **Ubuntu**: OISF's PPA for the series, `ppa:oisf/suricata-8.0`. Its signing key, in [files/oisf-ppa.asc](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.1/files/oisf-ppa.asc), doesn't expire.
    - **Debian**: Debian's own backports, since Debian 13 itself carries Suricata 7. If the host doesn't list backports already, the circuit adds `/etc/apt/sources.list.d/conn3x-backports.sources`, signed by Debian's archive key. An apt pin in `/etc/apt/preferences.d/suricata` takes `suricata` and `suricata-update` from backports, and nothing else.
-   - **Fedora, Rocky Linux and AlmaLinux**: OISF's COPR repository for the series, `@oisf/suricata-8.0`. Rocky Linux and AlmaLinux get `epel-release` first, which COPR's builds need for some libraries. The repository's key, in [files/oisf-copr-suricata-8.0.asc](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.0/files/oisf-copr-suricata-8.0.asc), expires on 7 April 2030.
+   - **Fedora, Rocky Linux and AlmaLinux**: OISF's COPR repository for the series, `@oisf/suricata-8.0`. Rocky Linux and AlmaLinux get `epel-release` first, which COPR's builds need for some libraries. The repository's key, in [files/oisf-copr-suricata-8.0.asc](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.1/files/oisf-copr-suricata-8.0.asc), expires on 7 April 2030.
 2. Installs `suricata`, and on Debian `suricata-update`, which the other packages include. On the Red Hat family, it first writes `/etc/sysconfig/suricata` with `--af-packet`, so Suricata reads the interfaces from its configuration rather than the package's `-i eth0`. On Ubuntu, it adds a tmpfiles.d entry for `/run/suricata`, which the PPA's package doesn't recreate after a reboot, leaving Suricata without its command socket.
 3. Writes `/etc/logrotate.d/suricata`, which keeps a week of `eve.json` and Suricata's other logs, compressed, and tells Suricata to reopen them. Ubuntu's package doesn't rotate them at all.
 4. Enables the `rule_sources` with suricata-update and removes any others, then runs suricata-update, which downloads their rules, tests them with `suricata -T` and writes `/var/lib/suricata/rules/suricata.rules`.
@@ -122,7 +122,9 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Fedora 45 and Rocky Linux 10. [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.0/examples/local) was applied to each in arm64 Podman containers, and CI does the same on amd64: it checks that the second plan has no changes and that `suricata -T` passes, then looks up `suricata-check.example.com` in the container and checks the example's custom rule alerts on the query in `eve.json`.
+Ubuntu 24.04, Debian 13, Fedora 45 and Rocky Linux 10. [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.1/examples/local) was applied to each in arm64 Podman containers, and CI does the same on amd64: it checks that the second plan has no changes and that `suricata -T` passes, then looks up `suricata-check.example.com` in the container and checks the example's custom rule alerts on the query in `eve.json`.
+
+On the same containers, hosts first applied at v0.1.0 and then moved to this version also had a clean second plan and passed those checks. All of it ran on Conn3x v0.6.11 and on a newer development build.
 
 On Ubuntu 24.04 and Rocky Linux 10 droplets, with SELinux enforcing on Rocky Linux, the same checks passed by hand, with Suricata watching the interface of the default route. A DNS query for the test name to `1.1.1.1` raised the alert on each. After a reboot, Suricata came back with its command socket, the plan had no changes, and the alert fired again. The daily timer's service, started by hand, updated the rules and reloaded them on both. On Rocky Linux, COPR's package has no SELinux policy of its own, so Suricata runs as `unconfined_service_t`; the audit log had no denials.
 
@@ -130,10 +132,10 @@ Also tried by hand, on Ubuntu 24.04 in a container: a rule with a misspelt keywo
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.0/LICENSE). Suricata itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-suricata/blob/v0.1.1/LICENSE). Suricata itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-suricata](https://github.com/conn3xorg/circuit-suricata). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-suricata/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-suricata](https://github.com/conn3xorg/circuit-suricata). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-suricata/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-suricata/tree/v0.1.1/examples/local).
 - Related circuits: [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor), [Wazuh](/circuits/wazuh).
