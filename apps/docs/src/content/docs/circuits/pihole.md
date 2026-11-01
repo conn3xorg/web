@@ -5,6 +5,8 @@ description: "Pi-hole ad blocking for your whole network from the official image
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-pihole at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/pihole/grade.svg)](https://conn3x.org/circuits/pihole/grade)
+
 A Conn3x circuit that runs [Pi-hole](https://pi-hole.net) on your hosts, so every device on the network that asks it for DNS gets ads and trackers answered with `0.0.0.0`. Phones, TVs and the smart plug you can't install anything on all get the same treatment, because blocking happens at the one place they all ask.
 
 Pi-hole runs from its official image, `pihole/pihole`, under Podman as a systemd service. You give it upstream servers, a password, any extra blocklists and the local names your homelab answers to, such as `nas.home.arpa`, and the same setup lands on Debian, Ubuntu, Fedora and Rocky Linux. On Ubuntu, Fedora and Debian cloud images, where `systemd-resolved` already holds port 53, the circuit moves it out of the way first.

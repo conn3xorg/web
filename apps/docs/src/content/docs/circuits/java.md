@@ -5,6 +5,8 @@ description: "OpenJDK or Eclipse Temurin 21 or 25 on Debian, Ubuntu, Fedora and 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-java at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/java/grade.svg)](https://conn3x.org/circuits/java/grade)
+
 A Conn3x circuit that installs a Java runtime, or a full JDK, on your hosts and makes it the Java they use. You pick the release, 25 by default, and where it comes from: the distribution's own OpenJDK packages, or Eclipse Temurin from Adoptium's repository. The circuit sorts out the rest, which is mostly names. The same OpenJDK 25 runtime is `openjdk-25-jre-headless` on Debian and Ubuntu, `java-25-openjdk-headless` on Fedora and Rocky Linux, and lives in a directory whose name carries the architecture on one family and not the other.
 
 It then points `java` at that release through the alternatives system and exports `JAVA_HOME` from `/etc/profile.d`, so a login shell, a build script or a service you start by hand all find the same Java. The `java_home` output hands the path to whatever you run on top, such as a systemd unit's `Environment=JAVA_HOME=`.

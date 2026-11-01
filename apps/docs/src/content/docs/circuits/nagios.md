@@ -5,6 +5,8 @@ description: "Nagios Core with plugins, hosts and services from inputs, nagios -
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-nagios at v0.1.1. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/nagios/grade.svg)](https://conn3x.org/circuits/nagios/grade)
+
 A Conn3x circuit that installs [Nagios Core](https://www.nagios.org/projects/nagios-core/) with its plugins, and writes your hosts and services into its config. You list what to watch in one place, and the file on the box never drifts from it. Every change goes through `nagios -v` first, so a typo fails the apply instead of taking your monitoring down on the next restart.
 
 The web interface listens on loopback, behind a login, and the password never reaches your Conn3x state. If you've ever found a Nagios answering on port 80 with `nagiosadmin`/`nagiosadmin`, that's the part this is for.

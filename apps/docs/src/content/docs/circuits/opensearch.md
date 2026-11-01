@@ -5,6 +5,8 @@ description: "Self-hosted single-node OpenSearch 3.x from the official repositor
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-opensearch at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/opensearch/grade.svg)](https://conn3x.org/circuits/opensearch/grade)
+
 A Conn3x circuit that installs OpenSearch 3.x from OpenSearch's own apt and yum repositories and runs it as a single node, with the security plugin on, an admin password you choose, and HTTPS on the REST API. It's the self-hosted counterpart to a managed domain such as [terraform-aws-modules/opensearch](https://github.com/terraform-aws-modules/terraform-aws-opensearch): the same search engine, on a machine you run.
 
 Getting OpenSearch up by hand takes more steps than it looks. The package won't finish installing unless `OPENSEARCH_INITIAL_ADMIN_PASSWORD` is in its environment, the kernel needs `vm.max_map_count` raised, the heap lives in a JVM options file, and a single node has to be told it's alone. The circuit does all of that the same way on Debian, Ubuntu, Fedora and Rocky Linux, pins the release, and keeps the password out of state.

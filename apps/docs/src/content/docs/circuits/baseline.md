@@ -5,6 +5,8 @@ description: "A sensible start for any server: time zone, chrony, sysctl setting
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-baseline at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/baseline/grade.svg)](https://conn3x.org/circuits/baseline/grade)
+
 A Conn3x circuit that gives every host the same starting point: a time zone, chrony keeping the clock, a few kernel network settings, and SSH that only accepts keys. You pass in your hosts, and it does the same thing on Rocky Linux, Fedora, Ubuntu and Debian, picking the right service names for each.
 
 Root can still log in with a key afterwards (`PermitRootLogin prohibit-password`), so applying this over a root key login doesn't lock you out.

@@ -245,6 +245,7 @@ export function unavailable(data, name, distro) {
   const c = data.circuits[name];
   if (!c || !c.official || !data.inputs[name]) return "It isn't an official circuit.";
   if (data.builder.excluded[name]) return data.builder.excluded[name];
+  if (data.blocked?.[name]) return data.blocked[name];
   const d = data.builder.distros.find((x) => x.id === distro);
   if (!d) return "Pick a distribution first.";
   if (!c.tested.includes(distro)) return `Not tested on ${d.name} yet.`;

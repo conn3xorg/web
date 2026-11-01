@@ -5,6 +5,8 @@ description: "Joins hosts into a WireGuard network, full mesh or hub and spoke, 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-wireguard at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/wireguard/grade.svg)](https://conn3x.org/circuits/wireguard/grade)
+
 A Conn3x circuit that joins your hosts into a WireGuard network. Give it a map of hosts and it installs `wireguard-tools`, makes a key pair on each host, writes `/etc/wireguard/wg0.conf` with every other host as a peer, and keeps `wg-quick@wg0` running. Three VPS hosts in different clouds, a homelab box and an offsite backup server can all talk over private `10.77.0.x` addresses, without anyone copying public keys between terminals.
 
 By default every host connects to every other. Name one host as `hub` and the rest connect only through it, which suits hosts behind NAT that can't reach each other directly. Laptops and phones that Conn3x doesn't manage can join as extra peers by public key.

@@ -5,6 +5,8 @@ description: "OWASP ZAP baseline scans of URLs you list, on a systemd timer, rep
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-zap at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/zap/grade.svg)](https://conn3x.org/circuits/zap/grade)
+
 A Conn3x circuit that scans websites you name with [ZAP](https://www.zaproxy.org/), on a schedule, and leaves the reports on the host. Each host gets the official ZAP image, pinned by digest, and a weekly systemd timer that runs a baseline scan of each URL in `targets`.
 
 **Scan only what you're allowed to scan.** That means sites you own, or sites whose owner has given you permission. Scanning someone else's site without permission can break the law where you or they are, and it can trip their security monitoring even if it's only a baseline. `targets` has no default for this reason: nothing gets scanned until you list it, and the only URLs ever passed to ZAP are the ones you listed.

@@ -5,6 +5,8 @@ description: "Your distribution's Python with working venvs, and optional enviro
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-python at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/python/grade.svg)](https://conn3x.org/circuits/python/grade)
+
 A Conn3x circuit that installs Python from each distribution's own packages, makes sure `python3 -m venv` works, and can build virtual environments with packages at versions you pin.
 
 Be clear on one thing before you use it. **The Python version differs per distribution**, because the distributions ship it and this circuit takes what they ship:

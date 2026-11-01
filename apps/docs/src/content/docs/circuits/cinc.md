@@ -5,6 +5,8 @@ description: "Run Chef cookbooks in local mode with Cinc Client, the free commun
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-cinc at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/cinc/grade.svg)](https://conn3x.org/circuits/cinc/grade)
+
 A Conn3x circuit that runs your Chef cookbooks on a host without a Chef Server. It installs Cinc Client, the free community build of Chef Infra Client, checks the package against its SHA-256, and converges in local mode from a directory on the host, once on apply and on a systemd timer if you ask for one.
 
 You'd want it when you already have cookbooks and don't want to run a server just to apply them, or when you're moving hosts off a Chef Server one at a time. Conn3x puts the client and the schedule in place, and your recipes stay what they are.

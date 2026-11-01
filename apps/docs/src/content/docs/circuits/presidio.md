@@ -5,6 +5,8 @@ description: "Presidio's PII analyzer and anonymizer on loopback in Podman, to s
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-presidio at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/presidio/grade.svg)](https://conn3x.org/circuits/presidio/grade)
+
 A Conn3x circuit that runs [Presidio](https://github.com/data-privacy-stack/presidio), the open-source PII detection and anonymization service first built at Microsoft, on your own hosts. Send it a prompt or a document before it goes to a model, and you get back where the names, email addresses, phone numbers and card numbers are, or the same text with each one swapped for a placeholder.
 
 Presidio is two small HTTP services. The analyzer finds PII, using spaCy's English model for names and places and patterns and checksums for the rest. The anonymizer takes the analyzer's findings and replaces, masks, hashes or encrypts them. Both run from their official images under Podman as systemd services, pinned by tag and digest, on `127.0.0.1` by default, on Debian, Ubuntu, Fedora or Rocky Linux.

@@ -5,6 +5,8 @@ description: "Runs the Qdrant vector database from its official release under sy
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-qdrant at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/qdrant/grade.svg)](https://conn3x.org/circuits/qdrant/grade)
+
 A Conn3x circuit that runs [Qdrant](https://qdrant.tech), the vector database, on your own hosts. It's the self-hosted counterpart to Qdrant Cloud and its Terraform provider: the same database, on a box you already pay for, with your embeddings never leaving it.
 
 It downloads a pinned Qdrant release, checks its SHA-256, and runs it under systemd as its own `qdrant` user. You set the ports, the listen address, where the data lives and an optional API key; the circuit writes `/etc/qdrant/config.yaml` from them and restarts Qdrant when it changes. Out of the box Qdrant listens only on `127.0.0.1` and sends no telemetry, so nothing is reachable from outside until you say so.

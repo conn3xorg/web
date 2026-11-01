@@ -5,6 +5,8 @@ description: "A default-deny ufw or firewalld firewall, picked per host, that op
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-firewall at v0.2.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/firewall/grade.svg)](https://conn3x.org/circuits/firewall/grade)
+
 A Conn3x circuit that turns on each host's firewall with a default of deny, and opens the ports you list. It uses ufw on Debian and Ubuntu and firewalld on Rocky Linux, AlmaLinux, RHEL and Fedora, picked per host, so one list of ports works across a mixed fleet.
 
 The part that usually goes wrong by hand is the order. Turn ufw on before SSH is allowed and you've locked yourself out. This circuit opens SSH first, on the port Conn3x logs in on, then turns the firewall on.

@@ -5,6 +5,8 @@ description: "Turns one Rocky Linux 10 box into a single-node MicroShift cluster
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-microshift at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/microshift/grade.svg)](https://conn3x.org/circuits/microshift/grade)
+
 A Conn3x circuit that turns a Rocky Linux 10 box into a single-node MicroShift cluster: the small, edge-sized cut of OpenShift, with the OpenShift router, `Route` objects and the `oc` client, on one small machine.
 
 It installs the community build from [microshift-io](https://github.com/microshift-io/microshift), which packages upstream MicroShift on top of OKD. That's not Red Hat's product and it carries no Red Hat support. If you need supported OpenShift, Red Hat sells it as Red Hat Device Edge; this circuit is for homelabs, test rigs and learning OpenShift without a full cluster.

@@ -5,6 +5,8 @@ description: "The sqlite3 command line tool from your distribution's packages, w
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-sqlite at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/sqlite/grade.svg)](https://conn3x.org/circuits/sqlite/grade)
+
 A Conn3x circuit that installs the `sqlite3` command from each distribution's packages, and can create empty databases with the owner and mode you want, ready for your application to open.
 
 Be clear on one thing before you use it. **The SQLite version differs per distribution**, because the distributions ship it and this circuit takes what they ship:

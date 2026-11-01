@@ -5,6 +5,8 @@ description: "Self-host authentik: single sign-on over OIDC and SAML, with users
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-authentik at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/authentik/grade.svg)](https://conn3x.org/circuits/authentik/grade)
+
 A Conn3x circuit that runs [authentik](https://goauthentik.io), the self-hosted identity provider, on your own hosts. Your apps sign people in over OpenID Connect or SAML, and the users, sessions and audit trail stay on a machine you run.
 
 authentik is two processes from one image: a server that answers requests and a worker that runs background tasks. The circuit runs both from the official image under Podman, as systemd services pinned by tag and digest, on the host's network and listening on loopback unless you say otherwise. You bring PostgreSQL; [circuit-postgres](/circuits/postgres) can put it on the same host. You don't need Redis or Valkey: authentik [removed that dependency](https://docs.goauthentik.io/releases/2025.10/) in 2025.10 and keeps everything in PostgreSQL.

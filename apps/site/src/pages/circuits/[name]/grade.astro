@@ -1,0 +1,154 @@
+---
+// Copyright (c) The Conn3x Authors
+// SPDX-License-Identifier: MPL-2.0
+import Base from "../../../layouts/Base.astro";
+import SiteHeader from "../../../components/SiteHeader.astro";
+import SiteFooter from "../../../components/SiteFooter.astro";
+import PageHero from "../../../components/PageHero.astro";
+import { allGrades } from "../../../lib/grade-data";
+import { RUBRIC, PASS_MARK } from "../../../lib/grades.js";
+
+export async function getStaticPaths() {
+  const all = await allGrades();
+  return Object.values(all).map((g: any) => ({ params: { name: g.name }, props: { g } }));
+}
+
+const { g } = Astro.props as { g: any };
+const rubric = "https://docs.conn3x.org/reference/circuit-grades";
+const url = `https://conn3x.org/circuits/${g.name}/grade`;
+const snippet = `[![Conn3x grade](${url}.svg)](${url})`;
+const checked = new Date(g.checkedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const words: Record<string, string> = { pass: "Passed", partial: "Partly", fail: "Failed", na: "Doesn't apply", held: "Held" };
+const results = new Map(g.checks.map((c: any) => [c.id, c]));
+const groups = [...new Set(RUBRIC.map((r) => r.group))].map((name) => ({
+  name,
+  rows: RUBRIC.filter((r) => r.group === name && results.has(r.id)).map((r) => ({ ...(results.get(r.id) as any), title: r.title })),
+}));
+const blocker = g.gateFailed?.length
+  ? RUBRIC.filter((r) => g.gateFailed.includes(r.id)).map((r) => r.title)
+  : [];
+---
+<Base
+  title={`${g.name} grade: Conn3x`}
+  description={`What's been checked on the ${g.name} circuit, and when. Grade ${g.grade}. A grade reflects checks done, not a security guarantee.`}
+  path={`/circuits/${g.name}/grade`}
+>
+  <a class="skip" href="#main">Skip to content</a>
+  <SiteHeader />
+
+  <main id="main">
+    <PageHero label="Circuit grade" title={`${g.name}: ${g.grade}`}>
+      <p>
+        {g.score}% of the points that apply, read from <a href={`https://github.com/${g.repo}/tree/${g.tag}`}>{g.repo} at {g.tag}</a> on {checked}.
+        {g.passing
+          ? " That's a pass."
+          : blocker.length
+            ? ` That's not a pass, and no score could make it one until this changes: ${blocker.join("; ")}.`
+            : ` That's not a pass: it takes ${PASS_MARK}%.`}
+        This tells you what we checked. It doesn't tell you the circuit is safe, because no grade can: it runs as root on
+        your servers, so read it before you run it.
+      </p>
+    </PageHero>
+
+    <div class="wrap page">
+      {groups.map((group) => (
+        <section>
+          <h2>{group.name}</h2>
+          <div class="scroll" tabindex="0" role="region" aria-label={`${group.name} checks`}>
+          <table>
+            <thead>
+              <tr><th scope="col">Check</th><th scope="col">Result</th><th scope="col">Points</th><th scope="col">What we saw</th></tr>
+            </thead>
+            <tbody>
+              {group.rows.map((c) => (
+                <tr>
+                  <th scope="row">{c.title}{c.gate && <span class="gate"> (must pass)</span>}</th>
+                  <td class:list={["state", c.state]}>{words[c.state]}</td>
+                  <td>{c.state === "na" || c.state === "held" ? "–" : `${c.points} of ${c.max}`}</td>
+                  <td>{c.state === "held" ? "We're not publishing this result yet, for any circuit, and it isn't in the score." : c.detail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          </div>
+        </section>
+      ))}
+
+      <section>
+        <h2>How to read this</h2>
+        <p>
+          Every point comes from a CI file, a workflow run or a signature that a script read. A README can't earn one.
+          So a pass here means CI ran what it says; a miss can mean the work was done and never written into CI, which we
+          count the same way. <a href={rubric}>The rubric</a> lists every check, what it's worth and what it can't see.
+        </p>
+        {g.ciRun && <p><a href={g.ciRun}>The CI run we read</a> is on GitHub, so you can check our reading.</p>}
+      </section>
+
+      <section>
+        <h2>Badge</h2>
+        <p><img src={`/circuits/${g.name}/grade.svg`} alt={`Conn3x grade: ${g.grade}`} width="108" height="20" /></p>
+        <pre tabindex="0"><code>{snippet}</code></pre>
+      </section>
+    </div>
+  </main>
+
+  <SiteFooter />
+</Base>
+
+<style>
+  .page {
+    padding-block: 3rem 5rem;
+  }
+  section + section {
+    margin-top: 2.5rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.75rem;
+  }
+  .scroll {
+    overflow-x: auto;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9375rem;
+  }
+  th,
+  td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    border-bottom: 1px solid var(--c-border);
+    min-width: 5rem;
+  }
+  tbody th {
+    font-weight: 600;
+    min-width: 13rem;
+  }
+  td:last-child {
+    min-width: 16rem;
+    color: var(--c-text-muted);
+    overflow-wrap: anywhere;
+  }
+  .gate {
+    font-weight: 400;
+    color: var(--c-text-muted);
+  }
+  .state.fail {
+    font-weight: 700;
+  }
+  pre {
+    margin: 0.75rem 0 0;
+    background: var(--c-code-bg);
+    color: var(--c-code-text);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    font-size: 0.8125rem;
+  }
+  code {
+    font-family: var(--font-mono);
+  }
+</style>

@@ -5,6 +5,8 @@ description: "OpenBao from the official release on raft storage, with auto-unsea
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-openbao at v0.2.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/openbao/grade.svg)](https://conn3x.org/circuits/openbao/grade)
+
 A Conn3x circuit that runs [OpenBao](https://openbao.org), the Linux Foundation's open source fork of HashiCorp Vault, on your own hosts. You get the same secrets engines, auth methods and `bao` CLI as Vault's `vault`, under MPL-2.0, on a box you control.
 
 It downloads a pinned OpenBao release, checks its SHA-256, and runs `bao server` under systemd as its own `openbao` user, with integrated storage (raft) as a single node in `/var/lib/openbao`. It writes `/etc/openbao/openbao.hcl` from a handful of inputs and restarts OpenBao when that changes. Out of the box it listens only on `127.0.0.1:8200`, over plain HTTP. Any other address needs a certificate, and the plan refuses one without it.

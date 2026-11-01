@@ -5,6 +5,8 @@ description: "Langfuse LLM observability on one host: prompts, costs and evals t
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-langfuse at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/langfuse/grade.svg)](https://conn3x.org/circuits/langfuse/grade)
+
 A Conn3x circuit that runs [Langfuse](https://langfuse.com), the open-source LLM observability platform, on your own hosts. Every prompt your applications send, every response, its token count, cost and latency, and every evaluation score lands in one place you can search, and none of it leaves machines you run. If you have to show what your AI systems did and when, this is the record.
 
 Langfuse 4 is four moving parts beside PostgreSQL and Redis: the web server, a worker, ClickHouse for the traces and an S3-compatible store for raw events. The circuit runs all four from official images under Podman, as systemd services pinned by tag and digest, on the host's network and listening only on loopback, apart from the web server's own `listen_address`. You bring PostgreSQL and Valkey; pair it with [circuit-postgres](/circuits/postgres) and [circuit-valkey](/circuits/valkey) and the whole stack fits on one host, on Debian, Ubuntu, Fedora or Rocky Linux.
