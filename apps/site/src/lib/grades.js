@@ -26,7 +26,7 @@ export const BANDS = [["A", 90], ["B", 80], ["C", PASS_MARK], ["D", 60], ["F", 0
 
 // Off: every grade shows, and the Circuit Builder leaves everything in. On:
 // the builder drops a circuit that doesn't pass, and says why.
-export const ENFORCE_GRADES = false;
+export const ENFORCE_GRADES = true;
 
 // Results for these checks stay out of the published data and out of the
 // score, for every circuit, until the fixes they would point at have shipped.
@@ -570,7 +570,7 @@ export function grades(list) {
   })());
 }
 
-/** What the builder has to refuse, and why: nothing while enforcement is off. */
+/** What the builder has to refuse, and why. */
 export function blocked(names, all, enforce = ENFORCE_GRADES) {
   if (!enforce) return {};
   const out = {};

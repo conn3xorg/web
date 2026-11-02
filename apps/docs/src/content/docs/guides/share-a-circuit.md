@@ -131,4 +131,4 @@ Before we list a circuit, we check that `conn3x validate` passes, read it throug
 
 ## Your grade
 
-Every circuit in the directory gets a grade from A to F, read from your repository at its latest tag. It takes C or better to stay in the Circuit Builder once enforcement is on, and most of the points come from your CI. [Circuit grades](/reference/circuit-grades) lists each check and how to earn it.
+Every circuit in the directory gets a grade from A to F, read from your repository at its latest tag. It takes C or better to stay in the Circuit Builder, and most of the points come from your CI. [Circuit grades](/reference/circuit-grades) lists each check and how to earn it.
