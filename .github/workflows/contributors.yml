@@ -7,12 +7,16 @@ on:
 
 permissions: {}
 
+# A manual run and the schedule at once could each find no issue and open one.
+concurrency:
+  group: contributors
+
 jobs:
   update:
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -20,25 +24,8 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-      # Logins are checked in contributors.js and only ever reach the JSON file.
-      # The commit and the pull request use fixed text.
-      - name: Find anyone new
+      # Logins are checked in contributors.js, and the issue's other text is fixed.
+      - name: Open or update the issue
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: node apps/site/src/lib/contributors.js
-      - name: Open or update the pull request
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          file=apps/site/src/data/contributors.json
-          git diff --quiet -- "$file" && { echo "Nobody new."; exit 0; }
-          branch=contributors-update
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git switch -C "$branch"
-          git commit -s -m "docs(community): new contributors missing from the page" -- "$file"
-          gh auth setup-git
-          git push --force origin "$branch"
-          [ -n "$(gh pr list --head "$branch" --state open --json number -q '.[].number')" ] || gh pr create --head "$branch" \
-            --title "docs(community): new contributors missing from the page" \
-            --body "Found by the Contributors workflow: new authors of merged pull requests. A pull request opened with GITHUB_TOKEN starts no checks, so close and reopen this one to run them."
+        run: node apps/site/src/lib/contributors.js --issue

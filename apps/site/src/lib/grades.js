@@ -34,6 +34,7 @@ export const ENFORCE_GRADES = true;
 export const HELD = new Set();
 
 const DAY = 86_400_000;
+const CI_GRACE_DAYS = 3;
 const FRESH_DAYS = 180;
 const KEY_WARN_DAYS = 90;
 const REAL_HOST_DAYS = 180;
@@ -279,11 +280,11 @@ export const RUBRIC = [
       const on = `Run of ${date(Date.parse(ev.run.date))}`;
       if (ev.run.conclusion === "success") return pass(`${on} passed.`);
       const ended = `${on} ended: ${ev.run.conclusion}`;
-      // One flaky job shouldn't drop a circuit: red takes a second failed run, or a failed re-run when there's only one.
-      if (ev.run.previous) {
-        return ev.run.previous === "success" ? pass(`${ended}, and the run before it passed.`) : fail(`${ended}, and so did the run before it.`);
-      }
-      return ev.run.attempt > 1 ? fail(`${ended}, after a re-run, and it's the only run.`) : pass(`${ended}. It's the only run and hasn't been re-run.`);
+      // One flaky job shouldn't drop a circuit, but a broken one on a quiet repo can't wait forever for a next push.
+      if (ev.run.attempt > 1) return fail(`${ended}, after a re-run.`);
+      if (ev.run.previous && ev.run.previous !== "success") return fail(`${ended}, and so did the run before it.`);
+      if (ev.now - Date.parse(ev.run.date) > CI_GRACE_DAYS * DAY) return fail(`${ended}, over ${CI_GRACE_DAYS} days ago, with no run since.`);
+      return pass(ev.run.previous ? `${ended}, and the run before it passed.` : `${ended}. It's the only run and hasn't been re-run.`);
     },
   },
   {
