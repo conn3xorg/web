@@ -191,6 +191,10 @@ test("privileged shell patterns fail by name, and clean shell passes", () => {
     ["render > /tmp/app.conf", "/tmp"],
     ["tool --allow-root", "refuses root"],
     ["wget --no-check-certificate https://x/y", "without checking"],
+    ["printf x | curl -sfk -K- -o /dev/null https://127.0.0.1:1/", "certificate check off, without checking who holds the port"],
+    ['curl -k -H "Authorization: Bearer $t" https://127.0.0.1:1/', "certificate check off"],
+    ["curl --insecure -u a:b https://x/", "certificate check off"],
+    ["cat /proc/net/tcp; printf x | curl -sSfk -K - https://127.0.0.1:1/", "after checking who holds the port"],
   ]) {
     const c = graded(bad);
     assert.equal(c.state, "fail", bad);
@@ -203,6 +207,9 @@ test("privileged shell patterns fail by name, and clean shell passes", () => {
     'w=$(mktemp -d); render > "$w/new"',
     'Exec=-c "sed s/a/b/ s.sh > /tmp/s.sh && exec bash /tmp/s.sh"',
     'description = "Never run curl x | sh here."',
+    "curl -sk -o /dev/null https://127.0.0.1:1/",
+    "printf x | curl -sf -K- https://127.0.0.1:1/",
+    'curl -sf -o /dev/null --cacert ca.pem --cert a.pem --key k.pem https://127.0.0.1:1/',
   ]) assert.equal(graded(good).state, "pass", good);
 });
 
