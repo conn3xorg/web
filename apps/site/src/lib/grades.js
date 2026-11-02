@@ -111,7 +111,7 @@ function scriptLines(line, files) {
 
 // Commands that only look at a host: they can pass on a service that doesn't work.
 const LOOKING = /^(?:(?:systemctl\s+(?:is-active|is-enabled|status|show|cat|list-\S+)|service\s+\S+\s+status|sysctl|apt-config|systemd-detect-virt|cmp|diff|sha256sum|mkdir|rm|export|ufw\s+status|firewall-cmd\s+--(?:list|query|state)\S*|pgrep|pidof|test|stat|ls|cat|grep|egrep|command\s+-v|which|type|getent|id|find|head|tail|readlink|ps|ss|wc|file|dpkg|rpm|journalctl|echo|printf|sleep|set|cd|for|while|until|do|done|if|then|else|elif|fi|case|esac|exit|true|false|run|conn3x)(?=[\s;]|$)|\[\[?\s|\S+:(?:\s|$)|[A-Za-z_]+=\S*$|[{})]|&\w+\s*\|?$|[\w-]+\(\)\s*\{|\.\/(?:up|down)\.sh|(?:(?:sudo\s+)?[\w.-]+\s+)?(?:--?version|version)(?:\s|$)|(?:docker\s+compose|docker|podman|crictl|ctr)\s+(?:ps|images|inspect|logs)(?=\s|$)|(?:k3s\s+)?kubectl\s+(?:--\S+\s+\S+\s+)*(?:get|wait|describe|logs)(?=\s|$)|(?:sh|bash)(?:\s+-\S+)*(?:\s+\S+)*\s*<<?-?\s*\S+$|\S*(?:check|settled)[\w-]*\.(?:sh|py)(?=\s|$))/;
-const WRAPPER = /^(!\s*|"|'|\|\s*|run:\s*\|?\s*|sudo\s+(-\S+\s+)*|timeout\s+\S+\s+|(?:podman|docker|\$\w+)\s+exec\s+(?:-[weu]\s+\S+\s+|--\S+\s+|-\w+\s+)*\S+\s+|\$\{?\w+\}?\s+|sh\s+-\w*c\s+|bash\s+-\w*c\s+|if\s+!?\s*|until\s+|while\s+|for\s+.*;\s*do\s+|do\s+|then\s+)/;
+const WRAPPER = /^(!\s*|[\w-]+\(\)\s*\{\s*|[A-Za-z_]\w*=\$\(\s*|"|'|\|\s*|run:\s*\|?\s*|sudo\s+(-\S+\s+)*|timeout\s+\S+\s+|(?:podman|docker|\$\w+)\s+exec\s+(?:-[weu]\s+\S+\s+|--\S+\s+|-\w+\s+)*\S+\s+|\$\{?\w+\}?\s+|sh\s+-\w*c\s+|bash\s+-\w*c\s+|if\s+!?\s*|until\s+|while\s+|for\s+.*;\s*do\s+|do\s+|then\s+)/;
 
 function unwrap(line) {
   let s = line.trim();
@@ -124,9 +124,12 @@ function unwrap(line) {
 
 /** The first line that does something a stopped service couldn't, if any. */
 export function behaviourLine(lines) {
+  // A function is judged by its body. Calling one, by name, shows nothing.
+  // shortcut: a body counts even if nothing calls it; good enough while the page shows the line.
+  const fns = new Set(lines.flatMap((l) => /^\s*([\w-]+)\(\)\s*\{/.exec(l)?.[1] ?? []));
   for (const raw of lines) {
     const s = unwrap(raw);
-    if (!s || /^(#|\/\/)/.test(s)) continue;
+    if (!s || /^(#|\/\/)/.test(s) || fns.has(s.split(/\s/)[0])) continue;
     if (!LOOKING.test(s)) return s;
   }
   return null;
