@@ -106,10 +106,24 @@ test("secrets in state only matter where there are secrets", () => {
 });
 
 test("real API evidence decides the repository checks", () => {
-  const bad = evaluate(evidence(ci(fetching), { tagVerified: false, rules: ["deletion"], run: { conclusion: "failure", date: "2026-10-30T00:00:00Z" }, tagDate: "2025-01-01T00:00:00Z" }));
+  const bad = evaluate(evidence(ci(fetching), { tagVerified: false, rules: ["deletion"], run: { conclusion: "failure", date: "2026-10-30T00:00:00Z", previous: "failure" }, tagDate: "2025-01-01T00:00:00Z" }));
   for (const id of ["signed-tags", "branch-protection", "ci-green", "fresh"]) assert.equal(check(bad, id).state, "fail", id);
   assert.equal(bad.passing, false, "red CI is a gate");
   assert.equal(check(evaluate(evidence(ci(fetching), { run: undefined })), "ci-green").state, "fail");
+});
+
+test("one failed CI run doesn't drop a circuit, and staying red does", () => {
+  const graded = (run) => evaluate(evidence(ci(fetching), { run: { date: "2026-10-30T00:00:00Z", ...run } }));
+  const green = (run) => check(graded(run), "ci-green").state;
+  assert.equal(green({ conclusion: "failure", attempt: 1, previous: "success" }), "pass", "one failure");
+  assert.equal(green({ conclusion: "failure", attempt: 1 }), "pass", "the only run, not re-run");
+  assert.equal(green({ conclusion: "success", attempt: 1, previous: "failure" }), "pass", "a failure, then a pass");
+  for (const run of [{ conclusion: "failure", attempt: 1, previous: "failure" }, { conclusion: "failure", attempt: 2 }]) {
+    assert.equal(green(run), "fail", JSON.stringify(run));
+    assert.ok(graded(run).gateFailed.includes("ci-green"));
+    assert.equal(graded(run).passing, false);
+  }
+  assert.ok(!graded({ conclusion: "failure", attempt: 1, previous: "success" }).gateFailed?.includes("ci-green"));
 });
 
 test("downloads need a checksum, with interpolation in the block", () => {
