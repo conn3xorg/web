@@ -138,6 +138,12 @@ export const combos = [
     hosts: "",
     values: { "k3s.servers": "server1", "k3s.agents": "agent1" },
   },
+  {
+    distro: "rocky10",
+    picks: ["nginx", "firewall"],
+    cloud: { provider: "azure", adminCidrs: "203.0.113.7/32" },
+    hosts: "web1",
+  },
 ];
 
 /** Every build CI validates: [folder name, build]. */
