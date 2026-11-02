@@ -82,6 +82,73 @@ An empty `for_each` gives the step no instances, so nothing runs for it.
 
 Package and service names differ across distributions: `chronyd` on Rocky and Fedora is `chrony` on Debian and Ubuntu. Read the host's family with [`conn3x_host`](/reference/host-facts) and choose from it. Where you can't tell what a host needs, take a variable and document its default.
 
+## Working in a directory someone else owns
+
+Core protects `file` and `directory` steps from v0.6.12, as [Paths as root](/guides/paths-as-root) explains. It doesn't protect `command` steps: those run as root, and root follows symbolic links. So when a command step writes to a directory a service account owns, whoever controls that account decides where the write lands. Checking first with `[ -L ]` won't save you, since the path can change between the check and the write.
+
+We got this wrong in our own circuits, in [sqlite](https://github.com/conn3xorg/circuit-sqlite/security/advisories/GHSA-v27f-c2xc-rph7), [jellyfin](https://github.com/conn3xorg/circuit-jellyfin/security/advisories/GHSA-j5xf-vxvh-cxxq), [suricata](https://github.com/conn3xorg/circuit-suricata/security/advisories/GHSA-5vh4-hm93-pg9v), [wazuh](https://github.com/conn3xorg/circuit-wazuh/security/advisories/GHSA-hf44-fq59-fmj4) and [couchdb](https://github.com/conn3xorg/circuit-couchdb/security/advisories/GHSA-m35r-f677-chcw). Each advisory shows how it went wrong.
+
+Use a `file` step when you can. When you can't, there are three ways, in this order.
+
+**Become the owner.** It's what core does when it runs a step as another user. The kernel checks the owner's permissions on every path, so following a link gets them nothing they didn't already have. Secrets reach the script on a file descriptor root opens, never on a command line:
+
+```sh
+cd /
+runuser -u jellyfin -- sh -es 3< /etc/conn3x/app/password <<'SH'
+p=$(cat <&3)
+umask 077
+printf 'password = %s\n' "$p" > /etc/jellyfin/app.ini
+SH
+```
+
+**Keep the work somewhere only root can reach.** Build candidates in `mktemp -d` or a 0700 directory under `/etc/conn3x`, then `install` them over the path. `install` replaces a link rather than following it, so that last step is safe from root:
+
+```sh
+w=$(mktemp -d)
+trap 'rm -rf "$w"' EXIT
+render > "$w/new"
+check "$w/new"
+install -g bind -m 640 "$w/new" /var/lib/bind/zone
+```
+
+**Only act as root where nobody else can change the way there.** When the path comes from an input, walk it first, and do it before anything root does with that path. If the walk fails, run the work as the owner, or stop:
+
+```sh
+only_root_changes() {
+  case $1 in /*) ;; *) return 1 ;; esac
+  p=$1
+  while :; do
+    if [ -L "$p" ]; then
+      [ "$(stat -c %u -- "$p")" = 0 ] && (only_root_changes "$(readlink -f -- "$p")") || return 1
+    elif [ -e "$p" ]; then
+      [ "$(stat -c %u -- "$p")" = 0 ] && [ $((0$(stat -c %a -- "$p") & 022)) = 0 ] || return 1
+    fi
+    [ "$p" != / ] || return 0
+    p=$(dirname -- "$p")
+  done
+}
+```
+
+Walk the path as written. Resolve it first with `readlink -f` and you only ever look at where a link points today, so a link its owner can re-point passes.
+
+And never run a script from a directory the service owns as root. `runuser -u` it, even when the package's own docs show `sudo`.
+
+## Sending a password to a local port
+
+Ports above 1024 are anyone's when the service isn't holding them, and that includes the moments during a restart. Before a step sends a password to `127.0.0.1`, check who holds the port. Only root or the service's own user should pass:
+
+```sh
+held() {
+  p=$(printf ':%04X$' 3000)
+  u=$(id -u grafana)
+  cat /proc/net/tcp /proc/net/tcp6 2>/dev/null | awk -v p="$p" -v u="$u" \
+    '$4 == "0A" && $2 ~ p { n++; if ($8 != u && $8 != 0) b = 1 } END { exit !(n && !b) }'
+}
+held && printf 'user = "admin:%s"\n' "$(cat "$password_file")" | curl -sf -K- http://127.0.0.1:3000/api/user
+```
+
+This narrows the window rather than closing it: the service could die between the check and the send.
+
 ## Test it on a container
 
 Before you tag a version, apply your circuit to a fresh host and run `conn3x plan` again. The second plan has to say `No changes.` If it doesn't, a step is reporting a change it didn't make, or making one it didn't plan.
