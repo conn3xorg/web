@@ -3,7 +3,7 @@ title: Tailscale
 description: "Installs Tailscale from Tailscale's repository and joins your hosts to your tailnet, with subnet routes, exit nodes and Tailscale SSH."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-tailscale at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-tailscale at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/tailscale/grade.svg)](https://conn3x.org/circuits/tailscale/grade)
 
@@ -15,7 +15,7 @@ The auth key comes in through an ephemeral variable, so it never lands in state 
 
 ```hcl
 module "tailscale" {
-  source = "github.com/conn3xorg/circuit-tailscale?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-tailscale?ref=v0.1.1"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -61,13 +61,13 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.1/examples/local).
 
 ## What it does
 
 On each host, in order:
 
-1. Adds Tailscale's stable repository and signing key: `pkgs.tailscale.com/stable/rhel` on Rocky Linux, AlmaLinux and RHEL, and the `fedora`, `ubuntu` or `debian` one elsewhere. The key is in [files](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.0/files), copied from Tailscale's site. Every one of these repositories is signed with it.
+1. Adds Tailscale's stable repository and signing key: `pkgs.tailscale.com/stable/rhel` on Rocky Linux, AlmaLinux and RHEL, and the `fedora`, `ubuntu` or `debian` one elsewhere. The key is in [files](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.1/files), copied from Tailscale's site. Every one of these repositories is signed with it.
 2. Installs `tailscale`, and starts `tailscaled` now and at boot.
 3. When `advertise_routes` is set or `advertise_exit_node` is true, sets `net.ipv4.ip_forward` and `net.ipv6.conf.all.forwarding` to `1`, now and across reboots.
 4. When `join` is true, writes `auth_key` to `/etc/tailscale/authkey`, mode `0600`, and runs `tailscale up --auth-key=file:/etc/tailscale/authkey` with your settings. It skips this when `tailscale status` already reports the node as running, so a host that has joined isn't logged in again.
@@ -116,16 +116,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.0/examples/local) to each on amd64 with `join = false`, checks that the second plan has no changes, and checks that `tailscaled` is running, `tailscale version` answers and forwarding is on. The CI containers run with SELinux off. The same checks also passed by hand on a Rocky Linux 10 droplet with SELinux enforcing, with no denials in the audit log.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.1/examples/local) to each on amd64 with `join = false`, checks that the second plan has no changes, and checks that `tailscaled` is running, `tailscale version` answers and forwarding is on. It then applies again with `join = true` against a [Headscale](https://headscale.net) control server, checks the plan is still clean and the key stayed out of state, and pings the host across the tailnet from a second node, before and after restarting `tailscaled`. The CI containers run with SELinux off. The same checks also passed by hand on a Rocky Linux 10 droplet with SELinux enforcing, with no denials in the audit log, and on Fedora 44 and AlmaLinux 10 droplets, again after a reboot.
 
-Joining a tailnet isn't covered by CI, because it needs a real auth key. It was tried by hand only as far as Tailscale rejecting a fake key, which shows the key reaches `tailscale up` and stays out of state and the plan, and as far as switching `join` to false afterwards, which deleted the key file and left the next plan empty. A successful join with a real key hasn't been tested.
+Joining Tailscale's own control plane isn't covered by CI, because it needs a real auth key. By hand, Tailscale rejected a fake key, which shows the key reaches `tailscale up`, and switching `join` to false afterwards deleted the key file and left the next plan empty.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-tailscale/blob/v0.1.0/LICENSE). Tailscale's client is BSD-3-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-tailscale/blob/v0.1.1/LICENSE). Tailscale's client is BSD-3-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-tailscale](https://github.com/conn3xorg/circuit-tailscale). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-tailscale/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-tailscale](https://github.com/conn3xorg/circuit-tailscale). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-tailscale/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.1.1/examples/local).
 - Related circuits: [WireGuard](/circuits/wireguard), [keepalived](/circuits/keepalived), [Cloudflare Tunnel](/circuits/cloudflared).

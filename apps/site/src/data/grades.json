@@ -2,9 +2,9 @@
   "adguardhome": {
     "name": "adguardhome",
     "repo": "conn3xorg/circuit-adguardhome",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.302Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-adguardhome/actions/runs/40956915326",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:16.171Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-adguardhome/actions/runs/41372390573",
     "grade": "C",
     "score": 76,
     "passing": true,
@@ -16,7 +16,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -106,7 +106,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -120,7 +120,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -128,7 +128,7 @@
     "name": "agentbox",
     "repo": "conn3xorg/circuit-agentbox",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.303Z",
+    "checkedAt": "2026-11-02T02:19:16.100Z",
     "ciRun": "https://github.com/conn3xorg/circuit-agentbox/actions/runs/40971233898",
     "grade": "B",
     "score": 89,
@@ -253,7 +253,7 @@
     "name": "apache",
     "repo": "conn3xorg/circuit-apache",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.249Z",
+    "checkedAt": "2026-11-02T02:19:16.114Z",
     "ciRun": "https://github.com/conn3xorg/circuit-apache/actions/runs/40968324019",
     "grade": "B",
     "score": 83,
@@ -289,7 +289,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Fetch a page, and a page through the reverse proxy\" runs: out=$(curl -sSfi -H 'Host: app.example.test' localhost:8080/ | tr -d '\\r')"
+        "detail": "Step \"Fetch a page, and a page through the reverse proxy\" runs: curl -sSfi -H 'Host: app.example.test' localhost:8080/ | tr -d '\\r')"
       },
       {
         "id": "secrets-in-state",
@@ -378,7 +378,7 @@
     "name": "auditd",
     "repo": "conn3xorg/circuit-auditd",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.290Z",
+    "checkedAt": "2026-11-02T02:19:16.258Z",
     "ciRun": "https://github.com/conn3xorg/circuit-auditd/actions/runs/40975788503",
     "grade": "B",
     "score": 83,
@@ -495,16 +495,16 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
   "authentik": {
     "name": "authentik",
     "repo": "conn3xorg/circuit-authentik",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.319Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-authentik/actions/runs/41108167618",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:16.193Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-authentik/actions/runs/41373010164",
     "grade": "B",
     "score": 89,
     "passing": true,
@@ -516,7 +516,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -539,7 +539,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check logins, providers, and a restart\" runs: Proves authentik works, from inside the server container, where Python and"
+        "detail": "Step \"Check logins, providers, and a restart\" runs: python3 - < check.py; }"
       },
       {
         "id": "secrets-in-state",
@@ -606,7 +606,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -620,7 +620,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -628,7 +628,7 @@
     "name": "auto-updates",
     "repo": "conn3xorg/circuit-auto-updates",
     "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:13.343Z",
+    "checkedAt": "2026-11-02T02:19:16.272Z",
     "ciRun": "https://github.com/conn3xorg/circuit-auto-updates/actions/runs/40956911114",
     "grade": "B",
     "score": 89,
@@ -752,15 +752,13 @@
   "baseline": {
     "name": "baseline",
     "repo": "conn3xorg/circuit-baseline",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.354Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-baseline/actions/runs/40956908528",
-    "grade": "F",
-    "score": 56,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:16.394Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-baseline/actions/runs/41365413780",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -768,7 +766,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -789,9 +787,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Check sshd, the clock and the time zone do what the circuit set\" runs: ssh -i id_ed25519 -p 2222 -o UserKnownHostsFile=known_hosts -o IdentitiesOnly=ye"
       },
       {
         "id": "secrets-in-state",
@@ -803,9 +801,9 @@
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -856,9 +854,9 @@
       {
         "id": "signed-tags",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "GitHub has no verified signature on v0.1.0."
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -872,16 +870,16 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 5 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
   "bind": {
     "name": "bind",
     "repo": "conn3xorg/circuit-bind",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:13.279Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-bind/actions/runs/40956904153",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:16.115Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-bind/actions/runs/41373992260",
     "grade": "C",
     "score": 75,
     "passing": true,
@@ -893,7 +891,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -983,7 +981,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -997,7 +995,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -1005,7 +1003,7 @@
     "name": "bun",
     "repo": "conn3xorg/circuit-bun",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.644Z",
+    "checkedAt": "2026-11-02T02:19:17.614Z",
     "ciRun": "https://github.com/conn3xorg/circuit-bun/actions/runs/41208881761",
     "grade": "B",
     "score": 89,
@@ -1122,7 +1120,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.0 is 2 days old."
       }
     ]
   },
@@ -1130,7 +1128,7 @@
     "name": "c-toolchain",
     "repo": "conn3xorg/circuit-c-toolchain",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.688Z",
+    "checkedAt": "2026-11-02T02:19:17.533Z",
     "ciRun": "https://github.com/conn3xorg/circuit-c-toolchain/actions/runs/41227035879",
     "grade": "B",
     "score": 88,
@@ -1255,7 +1253,7 @@
     "name": "caddy",
     "repo": "conn3xorg/circuit-caddy",
     "tag": "v0.2.1",
-    "checkedAt": "2026-11-01T23:43:14.807Z",
+    "checkedAt": "2026-11-02T02:19:17.648Z",
     "ciRun": "https://github.com/conn3xorg/circuit-caddy/actions/runs/40959356575",
     "grade": "B",
     "score": 85,
@@ -1291,7 +1289,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Fetch the static page through the reverse proxy\" runs: out=$(sudo podman exec circuit-caddy curl -sSfi localhost:8080)"
+        "detail": "Step \"Fetch the static page through the reverse proxy\" runs: curl -sSfi localhost:8080)"
       },
       {
         "id": "secrets-in-state",
@@ -1380,7 +1378,7 @@
     "name": "certbot",
     "repo": "conn3xorg/circuit-certbot",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.795Z",
+    "checkedAt": "2026-11-02T02:19:17.521Z",
     "ciRun": "https://github.com/conn3xorg/circuit-certbot/actions/runs/40956891740",
     "grade": "B",
     "score": 83,
@@ -1505,7 +1503,7 @@
     "name": "cinc",
     "repo": "conn3xorg/circuit-cinc",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.671Z",
+    "checkedAt": "2026-11-02T02:19:17.613Z",
     "ciRun": "https://github.com/conn3xorg/circuit-cinc/actions/runs/41108360906",
     "grade": "B",
     "score": 82,
@@ -1630,7 +1628,7 @@
     "name": "ciso-assistant",
     "repo": "conn3xorg/circuit-ciso-assistant",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.632Z",
+    "checkedAt": "2026-11-02T02:19:17.602Z",
     "ciRun": "https://github.com/conn3xorg/circuit-ciso-assistant/actions/runs/41108302437",
     "grade": "C",
     "score": 79,
@@ -1666,7 +1664,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check the logins, the framework libraries, and a restart\" runs: import json"
+        "detail": "Step \"Check the logins, the framework libraries, and a restart\" runs: python - \"$@\" < examples/local/check.py; }"
       },
       {
         "id": "secrets-in-state",
@@ -1755,7 +1753,7 @@
     "name": "cloudflared",
     "repo": "conn3xorg/circuit-cloudflared",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.796Z",
+    "checkedAt": "2026-11-02T02:19:17.518Z",
     "ciRun": "https://github.com/conn3xorg/circuit-cloudflared/actions/runs/41108194457",
     "grade": "B",
     "score": 86,
@@ -1880,7 +1878,7 @@
     "name": "cockpit",
     "repo": "conn3xorg/circuit-cockpit",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:14.800Z",
+    "checkedAt": "2026-11-02T02:19:17.821Z",
     "ciRun": "https://github.com/conn3xorg/circuit-cockpit/actions/runs/40989609386",
     "grade": "B",
     "score": 83,
@@ -1997,7 +1995,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -2005,7 +2003,7 @@
     "name": "containerd",
     "repo": "conn3xorg/circuit-containerd",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:16.022Z",
+    "checkedAt": "2026-11-02T02:19:18.893Z",
     "ciRun": "https://github.com/conn3xorg/circuit-containerd/actions/runs/41208895177",
     "grade": "B",
     "score": 84,
@@ -2122,16 +2120,16 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.0 is 2 days old."
       }
     ]
   },
   "couchdb": {
     "name": "couchdb",
     "repo": "conn3xorg/circuit-couchdb",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:16.144Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-couchdb/actions/runs/40972638685",
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:18.947Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-couchdb/actions/runs/41370310461",
     "grade": "C",
     "score": 79,
     "passing": true,
@@ -2143,7 +2141,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -2233,7 +2231,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -2247,22 +2245,20 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
   "docker": {
     "name": "docker",
     "repo": "conn3xorg/circuit-docker",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:16.140Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-docker/actions/runs/40956889341",
-    "grade": "F",
-    "score": 63,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:18.936Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-docker/actions/runs/41365413273",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -2270,7 +2266,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -2291,9 +2287,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Reach the stack from outside the host, and again after a restart\" runs: curl -fsS --retry 30 --retry-all-errors --retry-delay 2 --max-time 5 \"http://$ip"
       },
       {
         "id": "secrets-in-state",
@@ -2305,9 +2301,9 @@
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -2360,7 +2356,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -2374,7 +2370,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 3 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
@@ -2382,7 +2378,7 @@
     "name": "dotnet",
     "repo": "conn3xorg/circuit-dotnet",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:16.071Z",
+    "checkedAt": "2026-11-02T02:19:18.902Z",
     "ciRun": "https://github.com/conn3xorg/circuit-dotnet/actions/runs/41224860121",
     "grade": "B",
     "score": 89,
@@ -2507,7 +2503,7 @@
     "name": "fail2ban",
     "repo": "conn3xorg/circuit-fail2ban",
     "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:16.253Z",
+    "checkedAt": "2026-11-02T02:19:19.204Z",
     "ciRun": "https://github.com/conn3xorg/circuit-fail2ban/actions/runs/40956884896",
     "grade": "B",
     "score": 83,
@@ -2631,15 +2627,13 @@
   "firewall": {
     "name": "firewall",
     "repo": "conn3xorg/circuit-firewall",
-    "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:16.196Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-firewall/actions/runs/40956876533",
-    "grade": "F",
-    "score": 61,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.2.1",
+    "checkedAt": "2026-11-02T02:19:19.139Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-firewall/actions/runs/41365593056",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -2647,7 +2641,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -2668,9 +2662,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Check allowed ports answer from outside the host, and the rest don't\" runs: systemd-run --unit=\"listen-$p\" systemd-socket-activate -l \"$p\" -a --inetd /bin/t"
       },
       {
         "id": "secrets-in-state",
@@ -2682,9 +2676,9 @@
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -2737,7 +2731,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.2.0."
+        "detail": "GitHub verified the signature on v0.2.1."
       },
       {
         "id": "branch-protection",
@@ -2751,7 +2745,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.2.0 is 3 days old."
+        "detail": "v0.2.1 is 0 days old."
       }
     ]
   },
@@ -2759,7 +2753,7 @@
     "name": "fleet",
     "repo": "conn3xorg/circuit-fleet",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:16.297Z",
+    "checkedAt": "2026-11-02T02:19:19.006Z",
     "ciRun": "https://github.com/conn3xorg/circuit-fleet/actions/runs/41108279336",
     "grade": "B",
     "score": 83,
@@ -2884,7 +2878,7 @@
     "name": "flux",
     "repo": "conn3xorg/circuit-flux",
     "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:16.172Z",
+    "checkedAt": "2026-11-02T02:19:19.285Z",
     "ciRun": "https://github.com/conn3xorg/circuit-flux/actions/runs/41219023720",
     "grade": "A",
     "score": 90,
@@ -3008,9 +3002,9 @@
   "forgejo": {
     "name": "forgejo",
     "repo": "conn3xorg/circuit-forgejo",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.481Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-forgejo/actions/runs/40956874486",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:20.255Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-forgejo/actions/runs/41367442014",
     "grade": "C",
     "score": 76,
     "passing": true,
@@ -3022,7 +3016,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -3112,7 +3106,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -3126,7 +3120,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -3134,7 +3128,7 @@
     "name": "freeipa",
     "repo": "conn3xorg/circuit-freeipa",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.605Z",
+    "checkedAt": "2026-11-02T02:19:20.291Z",
     "ciRun": "https://github.com/conn3xorg/circuit-freeipa/actions/runs/40985171533",
     "grade": "C",
     "score": 75,
@@ -3251,7 +3245,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -3259,7 +3253,7 @@
     "name": "github-runner",
     "repo": "conn3xorg/circuit-github-runner",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.564Z",
+    "checkedAt": "2026-11-02T02:19:20.267Z",
     "ciRun": "https://github.com/conn3xorg/circuit-github-runner/actions/runs/40979754060",
     "grade": "C",
     "score": 76,
@@ -3376,7 +3370,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -3384,7 +3378,7 @@
     "name": "gitlab",
     "repo": "conn3xorg/circuit-gitlab",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.539Z",
+    "checkedAt": "2026-11-02T02:19:20.441Z",
     "ciRun": "https://github.com/conn3xorg/circuit-gitlab/actions/runs/40976396787",
     "grade": "B",
     "score": 88,
@@ -3501,7 +3495,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -3509,7 +3503,7 @@
     "name": "gitlab-runner",
     "repo": "conn3xorg/circuit-gitlab-runner",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.561Z",
+    "checkedAt": "2026-11-02T02:19:20.464Z",
     "ciRun": "https://github.com/conn3xorg/circuit-gitlab-runner/actions/runs/40981142258",
     "grade": "B",
     "score": 83,
@@ -3626,7 +3620,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -3634,7 +3628,7 @@
     "name": "go",
     "repo": "conn3xorg/circuit-go",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.587Z",
+    "checkedAt": "2026-11-02T02:19:20.487Z",
     "ciRun": "https://github.com/conn3xorg/circuit-go/actions/runs/41224801082",
     "grade": "B",
     "score": 89,
@@ -3758,9 +3752,9 @@
   "grafana": {
     "name": "grafana",
     "repo": "conn3xorg/circuit-grafana",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.688Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-grafana/actions/runs/40956869038",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:20.665Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-grafana/actions/runs/41370340947",
     "grade": "C",
     "score": 76,
     "passing": true,
@@ -3772,7 +3766,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -3862,7 +3856,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -3876,7 +3870,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -3884,7 +3878,7 @@
     "name": "haproxy",
     "repo": "conn3xorg/circuit-haproxy",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:17.817Z",
+    "checkedAt": "2026-11-02T02:19:20.646Z",
     "ciRun": "https://github.com/conn3xorg/circuit-haproxy/actions/runs/40956867577",
     "grade": "C",
     "score": 75,
@@ -4009,7 +4003,7 @@
     "name": "hardening",
     "repo": "conn3xorg/circuit-hardening",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:19.102Z",
+    "checkedAt": "2026-11-02T02:19:21.688Z",
     "ciRun": "https://github.com/conn3xorg/circuit-hardening/actions/runs/40956857549",
     "grade": "B",
     "score": 83,
@@ -4045,7 +4039,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check sshd, the kernel parameters, modules and login settings\" runs: t=$(sshd -T)"
+        "detail": "Step \"Check sshd, the kernel parameters, modules and login settings\" runs: sshd -T)"
       },
       {
         "id": "secrets-in-state",
@@ -4133,21 +4127,23 @@
   "helm": {
     "name": "helm",
     "repo": "conn3xorg/circuit-helm",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:19.045Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-helm/actions/runs/41219023728",
-    "grade": "B",
-    "score": 89,
-    "passing": true,
-    "gateFailed": [],
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:21.667Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-helm/actions/runs/41373274873",
+    "grade": "F",
+    "score": 72,
+    "passing": false,
+    "gateFailed": [
+      "ci-green"
+    ],
     "checks": [
       {
         "id": "ci-green",
         "max": 15,
         "gate": true,
-        "state": "pass",
-        "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "state": "fail",
+        "points": 0,
+        "detail": "Run of 2026-11-02 ended: failure."
       },
       {
         "id": "matrix",
@@ -4170,7 +4166,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check the chart deployed the first value\" runs: k rollout status deploy/podinfo --timeout=5m >/dev/null"
+        "detail": "Step \"Check the chart deployed the first value\" runs: k3s kubectl -n podinfo \"$@\"; }"
       },
       {
         "id": "secrets-in-state",
@@ -4237,7 +4233,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -4251,7 +4247,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 1 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
@@ -4259,7 +4255,7 @@
     "name": "infisical",
     "repo": "conn3xorg/circuit-infisical",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:18.988Z",
+    "checkedAt": "2026-11-02T02:19:21.643Z",
     "ciRun": "https://github.com/conn3xorg/circuit-infisical/actions/runs/40971481374",
     "grade": "C",
     "score": 79,
@@ -4295,7 +4291,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check status, bootstrap, a secret, and a restart\" runs: c $u/api/status | grep -q '\"message\":\"Ok\"'"
+        "detail": "Step \"Check status, bootstrap, a secret, and a restart\" runs: curl -sf \"$@\"; }"
       },
       {
         "id": "secrets-in-state",
@@ -4384,7 +4380,7 @@
     "name": "istio",
     "repo": "conn3xorg/circuit-istio",
     "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:19.036Z",
+    "checkedAt": "2026-11-02T02:19:21.863Z",
     "ciRun": "https://github.com/conn3xorg/circuit-istio/actions/runs/41219080787",
     "grade": "B",
     "score": 89,
@@ -4420,7 +4416,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check sidecars are injected and traffic goes through the mesh\" runs: k create namespace outside --dry-run=client -o yaml | k apply -f - >/dev/null"
+        "detail": "Step \"Check sidecars are injected and traffic goes through the mesh\" runs: k3s kubectl \"$@\"; }"
       },
       {
         "id": "secrets-in-state",
@@ -4509,7 +4505,7 @@
     "name": "java",
     "repo": "conn3xorg/circuit-java",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:18.997Z",
+    "checkedAt": "2026-11-02T02:19:21.834Z",
     "ciRun": "https://github.com/conn3xorg/circuit-java/actions/runs/40967497120",
     "grade": "B",
     "score": 89,
@@ -4633,9 +4629,9 @@
   "jellyfin": {
     "name": "jellyfin",
     "repo": "conn3xorg/circuit-jellyfin",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:18.988Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-jellyfin/actions/runs/40970622758",
+    "tag": "v0.1.3",
+    "checkedAt": "2026-11-02T02:19:21.836Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-jellyfin/actions/runs/41373795533",
     "grade": "B",
     "score": 81,
     "passing": true,
@@ -4647,7 +4643,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -4737,7 +4733,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.3."
       },
       {
         "id": "branch-protection",
@@ -4751,7 +4747,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.3 is 0 days old."
       }
     ]
   },
@@ -4759,7 +4755,7 @@
     "name": "jenkins",
     "repo": "conn3xorg/circuit-jenkins",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:19.141Z",
+    "checkedAt": "2026-11-02T02:19:22.014Z",
     "ciRun": "https://github.com/conn3xorg/circuit-jenkins/actions/runs/40971684996",
     "grade": "B",
     "score": 82,
@@ -4884,7 +4880,7 @@
     "name": "k3s",
     "repo": "conn3xorg/circuit-k3s",
     "tag": "v0.1.5",
-    "checkedAt": "2026-11-01T23:43:19.257Z",
+    "checkedAt": "2026-11-02T02:19:22.048Z",
     "ciRun": "https://github.com/conn3xorg/circuit-k3s/actions/runs/41219137089",
     "grade": "C",
     "score": 76,
@@ -5009,7 +5005,7 @@
     "name": "keepalived",
     "repo": "conn3xorg/circuit-keepalived",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.401Z",
+    "checkedAt": "2026-11-02T02:19:23.102Z",
     "ciRun": "https://github.com/conn3xorg/circuit-keepalived/actions/runs/40956853741",
     "grade": "C",
     "score": 75,
@@ -5045,7 +5041,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check the floating address fails over and comes back\" runs: holds a b"
+        "detail": "Step \"Check the floating address fails over and comes back\" runs: systemctl stop keepalived"
       },
       {
         "id": "secrets-in-state",
@@ -5134,7 +5130,7 @@
     "name": "keycloak",
     "repo": "conn3xorg/circuit-keycloak",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.345Z",
+    "checkedAt": "2026-11-02T02:19:23.021Z",
     "ciRun": "https://github.com/conn3xorg/circuit-keycloak/actions/runs/40956847500",
     "grade": "B",
     "score": 81,
@@ -5259,7 +5255,7 @@
     "name": "kotlin",
     "repo": "conn3xorg/circuit-kotlin",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.371Z",
+    "checkedAt": "2026-11-02T02:19:23.167Z",
     "ciRun": "https://github.com/conn3xorg/circuit-kotlin/actions/runs/41224844114",
     "grade": "B",
     "score": 89,
@@ -5383,15 +5379,13 @@
   "kubeadm": {
     "name": "kubeadm",
     "repo": "conn3xorg/circuit-kubeadm",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.441Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-kubeadm/actions/runs/40956839753",
-    "grade": "F",
-    "score": 52,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:23.306Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-kubeadm/actions/runs/41374097434",
+    "grade": "C",
+    "score": 73,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -5399,7 +5393,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -5420,9 +5414,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Check both nodes are Ready\" runs: sed -n '/cni_manifest_sha256/,/^}/s/.*default *= *\"\\(.*\\)\"/\\1/p' variables.tf)"
       },
       {
         "id": "secrets-in-state",
@@ -5455,9 +5449,9 @@
       {
         "id": "downloads",
         "max": 5,
-        "state": "na",
-        "points": 0,
-        "detail": "Downloads nothing through a download step."
+        "state": "pass",
+        "points": 5,
+        "detail": "All 1 download steps have a checksum."
       },
       {
         "id": "images-by-digest",
@@ -5489,7 +5483,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -5503,7 +5497,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 4 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -5511,7 +5505,7 @@
     "name": "langfuse",
     "repo": "conn3xorg/circuit-langfuse",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.457Z",
+    "checkedAt": "2026-11-02T02:19:23.149Z",
     "ciRun": "https://github.com/conn3xorg/circuit-langfuse/actions/runs/40980758303",
     "grade": "C",
     "score": 79,
@@ -5547,7 +5541,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check health, sign-up, a trace, and a restart\" runs: js=$(cat <<'JS'"
+        "detail": "Step \"Check health, sign-up, a trace, and a restart\" runs: node --input-type=module -; }"
       },
       {
         "id": "secrets-in-state",
@@ -5628,7 +5622,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -5636,7 +5630,7 @@
     "name": "litellm",
     "repo": "conn3xorg/circuit-litellm",
     "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:20.478Z",
+    "checkedAt": "2026-11-02T02:19:23.245Z",
     "ciRun": "https://github.com/conn3xorg/circuit-litellm/actions/runs/40989988870",
     "grade": "C",
     "score": 79,
@@ -5753,7 +5747,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.2.0 is 2 days old."
+        "detail": "v0.2.0 is 3 days old."
       }
     ]
   },
@@ -5761,7 +5755,7 @@
     "name": "lldap",
     "repo": "conn3xorg/circuit-lldap",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.620Z",
+    "checkedAt": "2026-11-02T02:19:23.367Z",
     "ciRun": "https://github.com/conn3xorg/circuit-lldap/actions/runs/40956834150",
     "grade": "C",
     "score": 76,
@@ -5886,7 +5880,7 @@
     "name": "mariadb",
     "repo": "conn3xorg/circuit-mariadb",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:20.700Z",
+    "checkedAt": "2026-11-02T02:19:23.410Z",
     "ciRun": "https://github.com/conn3xorg/circuit-mariadb/actions/runs/40956829303",
     "grade": "C",
     "score": 75,
@@ -6010,9 +6004,9 @@
   "matrix": {
     "name": "matrix",
     "repo": "conn3xorg/circuit-matrix",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:21.665Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-matrix/actions/runs/40970272314",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:24.441Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-matrix/actions/runs/41373028695",
     "grade": "C",
     "score": 79,
     "passing": true,
@@ -6024,7 +6018,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -6114,7 +6108,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -6128,7 +6122,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -6136,7 +6130,7 @@
     "name": "microshift",
     "repo": "conn3xorg/circuit-microshift",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:21.811Z",
+    "checkedAt": "2026-11-02T02:19:24.558Z",
     "ciRun": "https://github.com/conn3xorg/circuit-microshift/actions/runs/40956822314",
     "grade": "F",
     "score": 37,
@@ -6263,15 +6257,13 @@
   "monitoring": {
     "name": "monitoring",
     "repo": "conn3xorg/circuit-monitoring",
-    "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:21.836Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-monitoring/actions/runs/40956819806",
-    "grade": "F",
-    "score": 55,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.2.2",
+    "checkedAt": "2026-11-02T02:19:24.543Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-monitoring/actions/runs/41374486648",
+    "grade": "A",
+    "score": 90,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -6279,7 +6271,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -6300,23 +6292,23 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Log in to Grafana and read a scraped metric through it\" runs: curl -fsS --retry 30 --retry-all-errors --retry-delay 2 --max-time 5 -u admin:ch"
       },
       {
         "id": "secrets-in-state",
         "max": 10,
-        "state": "fail",
-        "points": 0,
-        "detail": "Has secret inputs, and CI never looks for them in state."
+        "state": "pass",
+        "points": 10,
+        "detail": "CI fails if a secret shows up in state."
       },
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -6369,7 +6361,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.2.0."
+        "detail": "GitHub verified the signature on v0.2.2."
       },
       {
         "id": "branch-protection",
@@ -6383,7 +6375,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.2.0 is 3 days old."
+        "detail": "v0.2.2 is 0 days old."
       }
     ]
   },
@@ -6391,7 +6383,7 @@
     "name": "mssql",
     "repo": "conn3xorg/circuit-mssql",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:21.782Z",
+    "checkedAt": "2026-11-02T02:19:24.507Z",
     "ciRun": "https://github.com/conn3xorg/circuit-mssql/actions/runs/40982789360",
     "grade": "C",
     "score": 76,
@@ -6427,7 +6419,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Log in as sa, write a row, survive a restart\" runs: q \"SELECT @@VERSION\""
+        "detail": "Step \"Log in as sa, write a row, survive a restart\" runs: /opt/mssql-tools18/bin/sqlcmd -S 127.0.0.1 -U sa -C -b -h -1 -W -Q \"SET NOCOUNT "
       },
       {
         "id": "secrets-in-state",
@@ -6508,7 +6500,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -6516,7 +6508,7 @@
     "name": "mysql",
     "repo": "conn3xorg/circuit-mysql",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:21.784Z",
+    "checkedAt": "2026-11-02T02:19:24.615Z",
     "ciRun": "https://github.com/conn3xorg/circuit-mysql/actions/runs/40967418561",
     "grade": "C",
     "score": 79,
@@ -6640,11 +6632,11 @@
   "n8n": {
     "name": "n8n",
     "repo": "conn3xorg/circuit-n8n",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:21.846Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-n8n/actions/runs/40980865040",
-    "grade": "C",
-    "score": 79,
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:24.677Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-n8n/actions/runs/41372724248",
+    "grade": "B",
+    "score": 80,
     "passing": true,
     "gateFailed": [],
     "checks": [
@@ -6654,7 +6646,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -6689,9 +6681,9 @@
       {
         "id": "restart",
         "max": 5,
-        "state": "na",
-        "points": 0,
-        "detail": "Runs no service."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -6744,7 +6736,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -6758,28 +6750,30 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
   "nagios": {
     "name": "nagios",
     "repo": "conn3xorg/circuit-nagios",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:22.053Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-nagios/actions/runs/41268716525",
-    "grade": "B",
-    "score": 86,
-    "passing": true,
-    "gateFailed": [],
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:24.760Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-nagios/actions/runs/41372508482",
+    "grade": "F",
+    "score": 71,
+    "passing": false,
+    "gateFailed": [
+      "ci-green"
+    ],
     "checks": [
       {
         "id": "ci-green",
         "max": 15,
         "gate": true,
-        "state": "pass",
-        "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "state": "fail",
+        "points": 0,
+        "detail": "Run of 2026-11-02 ended: failure."
       },
       {
         "id": "matrix",
@@ -6869,7 +6863,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -6883,7 +6877,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 0 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
@@ -6891,7 +6885,7 @@
     "name": "netdata",
     "repo": "conn3xorg/circuit-netdata",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:22.155Z",
+    "checkedAt": "2026-11-02T02:19:24.755Z",
     "ciRun": "https://github.com/conn3xorg/circuit-netdata/actions/runs/41066709342",
     "grade": "C",
     "score": 74,
@@ -7008,7 +7002,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -7016,7 +7010,7 @@
     "name": "nfs",
     "repo": "conn3xorg/circuit-nfs",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:23.036Z",
+    "checkedAt": "2026-11-02T02:19:25.817Z",
     "ciRun": "https://github.com/conn3xorg/circuit-nfs/actions/runs/40956816787",
     "grade": "B",
     "score": 83,
@@ -7140,15 +7134,13 @@
   "nginx": {
     "name": "nginx",
     "repo": "conn3xorg/circuit-nginx",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:23.318Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-nginx/actions/runs/40956810900",
-    "grade": "F",
-    "score": 61,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:25.961Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-nginx/actions/runs/41365416037",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -7156,7 +7148,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -7177,9 +7169,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Fetch the page, and again after a restart\" runs: curl -fsS --retry 10 --retry-all-errors --retry-delay 1 --max-time 5 http://127."
       },
       {
         "id": "secrets-in-state",
@@ -7191,9 +7183,9 @@
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -7246,7 +7238,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -7260,22 +7252,20 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 5 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
   "node-exporter": {
     "name": "node-exporter",
     "repo": "conn3xorg/circuit-node-exporter",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:23.216Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-node-exporter/actions/runs/40955383496",
-    "grade": "F",
-    "score": 58,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:25.965Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-node-exporter/actions/runs/41365413245",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -7283,7 +7273,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -7304,9 +7294,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Scrape the metrics, and again after a restart\" runs: curl -fsS --retry 10 --retry-all-errors --retry-delay 1 --max-time 5 -o metrics."
       },
       {
         "id": "secrets-in-state",
@@ -7318,9 +7308,9 @@
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -7371,9 +7361,9 @@
       {
         "id": "signed-tags",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "GitHub has no verified signature on v0.1.0."
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -7387,16 +7377,16 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 5 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
   "nodejs": {
     "name": "nodejs",
     "repo": "conn3xorg/circuit-nodejs",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:23.226Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-nodejs/actions/runs/41108384853",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:25.981Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-nodejs/actions/runs/41364912295",
     "grade": "B",
     "score": 89,
     "passing": true,
@@ -7408,7 +7398,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -7498,7 +7488,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -7512,7 +7502,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -7520,7 +7510,7 @@
     "name": "nomad",
     "repo": "conn3xorg/circuit-nomad",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:23.288Z",
+    "checkedAt": "2026-11-02T02:19:26.029Z",
     "ciRun": "https://github.com/conn3xorg/circuit-nomad/actions/runs/41208949624",
     "grade": "B",
     "score": 86,
@@ -7637,7 +7627,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.0 is 2 days old."
       }
     ]
   },
@@ -7645,7 +7635,7 @@
     "name": "ollama",
     "repo": "conn3xorg/circuit-ollama",
     "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:23.409Z",
+    "checkedAt": "2026-11-02T02:19:26.184Z",
     "ciRun": "https://github.com/conn3xorg/circuit-ollama/actions/runs/40956804350",
     "grade": "B",
     "score": 84,
@@ -7770,7 +7760,7 @@
     "name": "openbao",
     "repo": "conn3xorg/circuit-openbao",
     "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:23.535Z",
+    "checkedAt": "2026-11-02T02:19:26.088Z",
     "ciRun": "https://github.com/conn3xorg/circuit-openbao/actions/runs/40956799639",
     "grade": "A",
     "score": 90,
@@ -7806,7 +7796,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Unseal, store a secret, restart and unseal again\" runs: key=$(tr -d '\\n ' < $f | sed 's/.*\"unseal_keys_b64\":\\[\"\\([^\"]*\\)\".*/\\1/')"
+        "detail": "Step \"Unseal, store a secret, restart and unseal again\" runs: tr -d '\\n ' < $f | sed 's/.*\"unseal_keys_b64\":\\[\"\\([^\"]*\\)\".*/\\1/')"
       },
       {
         "id": "secrets-in-state",
@@ -7895,7 +7885,7 @@
     "name": "openldap",
     "repo": "conn3xorg/circuit-openldap",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:23.576Z",
+    "checkedAt": "2026-11-02T02:19:26.173Z",
     "ciRun": "https://github.com/conn3xorg/circuit-openldap/actions/runs/40982409878",
     "grade": "C",
     "score": 78,
@@ -7931,7 +7921,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Search as the root DN, and check anonymous access is refused\" runs: search -b \"$b\" -s base dn | grep -qx \"dn: $b\""
+        "detail": "Step \"Search as the root DN, and check anonymous access is refused\" runs: ldapsearch -x -LLL -H ldap://127.0.0.1:389 -D \"cn=admin,$b\" -w ci-only-root-pass"
       },
       {
         "id": "secrets-in-state",
@@ -8012,7 +8002,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -8020,7 +8010,7 @@
     "name": "openscap",
     "repo": "conn3xorg/circuit-openscap",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.335Z",
+    "checkedAt": "2026-11-02T02:19:27.270Z",
     "ciRun": "https://github.com/conn3xorg/circuit-openscap/actions/runs/40956793581",
     "grade": "B",
     "score": 88,
@@ -8144,21 +8134,23 @@
   "opensearch": {
     "name": "opensearch",
     "repo": "conn3xorg/circuit-opensearch",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.548Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-opensearch/actions/runs/40956786316",
-    "grade": "C",
-    "score": 76,
-    "passing": true,
-    "gateFailed": [],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:27.533Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-opensearch/actions/runs/41370975978",
+    "grade": "F",
+    "score": 62,
+    "passing": false,
+    "gateFailed": [
+      "ci-green"
+    ],
     "checks": [
       {
         "id": "ci-green",
         "max": 15,
         "gate": true,
-        "state": "pass",
-        "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "state": "fail",
+        "points": 0,
+        "detail": "Run of 2026-11-02 ended: failure."
       },
       {
         "id": "matrix",
@@ -8248,7 +8240,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -8262,7 +8254,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -8270,7 +8262,7 @@
     "name": "openvox",
     "repo": "conn3xorg/circuit-openvox",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.787Z",
+    "checkedAt": "2026-11-02T02:19:27.260Z",
     "ciRun": "https://github.com/conn3xorg/circuit-openvox/actions/runs/41208965025",
     "grade": "B",
     "score": 82,
@@ -8387,7 +8379,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.0 is 2 days old."
       }
     ]
   },
@@ -8395,7 +8387,7 @@
     "name": "openwebui",
     "repo": "conn3xorg/circuit-openwebui",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.678Z",
+    "checkedAt": "2026-11-02T02:19:27.253Z",
     "ciRun": "https://github.com/conn3xorg/circuit-openwebui/actions/runs/40978426675",
     "grade": "C",
     "score": 79,
@@ -8431,7 +8423,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check health, sign-in, sign-up, models, and a restart\" runs: c $u/health | grep -q '\"status\":true'"
+        "detail": "Step \"Check health, sign-in, sign-up, models, and a restart\" runs: curl -sf \"$@\"; }"
       },
       {
         "id": "secrets-in-state",
@@ -8512,7 +8504,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -8520,7 +8512,7 @@
     "name": "osquery",
     "repo": "conn3xorg/circuit-osquery",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.634Z",
+    "checkedAt": "2026-11-02T02:19:27.467Z",
     "ciRun": "https://github.com/conn3xorg/circuit-osquery/actions/runs/40973389723",
     "grade": "C",
     "score": 76,
@@ -8645,7 +8637,7 @@
     "name": "otelcol",
     "repo": "conn3xorg/circuit-otelcol",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.769Z",
+    "checkedAt": "2026-11-02T02:19:27.654Z",
     "ciRun": "https://github.com/conn3xorg/circuit-otelcol/actions/runs/40976781307",
     "grade": "C",
     "score": 76,
@@ -8762,7 +8754,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -8770,7 +8762,7 @@
     "name": "perl",
     "repo": "conn3xorg/circuit-perl",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:24.888Z",
+    "checkedAt": "2026-11-02T02:19:27.514Z",
     "ciRun": "https://github.com/conn3xorg/circuit-perl/actions/runs/41108412815",
     "grade": "B",
     "score": 89,
@@ -8895,7 +8887,7 @@
     "name": "php",
     "repo": "conn3xorg/circuit-php",
     "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:24.964Z",
+    "checkedAt": "2026-11-02T02:19:27.744Z",
     "ciRun": "https://github.com/conn3xorg/circuit-php/actions/runs/40989839682",
     "grade": "B",
     "score": 85,
@@ -8931,7 +8923,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Fetch a PHP page through Apache, and check the pool and extensions\" runs: out=$(curl -sSf -H 'Host: app.example.test' localhost:8080/)"
+        "detail": "Step \"Fetch a PHP page through Apache, and check the pool and extensions\" runs: curl -sSf -H 'Host: app.example.test' localhost:8080/)"
       },
       {
         "id": "secrets-in-state",
@@ -9012,16 +9004,16 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 2 days old."
+        "detail": "v0.1.1 is 3 days old."
       }
     ]
   },
   "pihole": {
     "name": "pihole",
     "repo": "conn3xorg/circuit-pihole",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:25.760Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-pihole/actions/runs/40956782204",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:28.686Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-pihole/actions/runs/41373028200",
     "grade": "C",
     "score": 75,
     "passing": true,
@@ -9033,7 +9025,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -9123,7 +9115,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -9137,7 +9129,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 3 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -9145,7 +9137,7 @@
     "name": "podman",
     "repo": "conn3xorg/circuit-podman",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:25.954Z",
+    "checkedAt": "2026-11-02T02:19:28.773Z",
     "ciRun": "https://github.com/conn3xorg/circuit-podman/actions/runs/40956776414",
     "grade": "C",
     "score": 75,
@@ -9270,7 +9262,7 @@
     "name": "postgres",
     "repo": "conn3xorg/circuit-postgres",
     "tag": "v0.2.0",
-    "checkedAt": "2026-11-01T23:43:26.094Z",
+    "checkedAt": "2026-11-02T02:19:28.732Z",
     "ciRun": "https://github.com/conn3xorg/circuit-postgres/actions/runs/40956767444",
     "grade": "C",
     "score": 76,
@@ -9395,7 +9387,7 @@
     "name": "presidio",
     "repo": "conn3xorg/circuit-presidio",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:26.012Z",
+    "checkedAt": "2026-11-02T02:19:28.768Z",
     "ciRun": "https://github.com/conn3xorg/circuit-presidio/actions/runs/40978444059",
     "grade": "B",
     "score": 88,
@@ -9512,7 +9504,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 2 days old."
+        "detail": "v0.1.0 is 3 days old."
       }
     ]
   },
@@ -9520,7 +9512,7 @@
     "name": "prometheus",
     "repo": "conn3xorg/circuit-prometheus",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:26.213Z",
+    "checkedAt": "2026-11-02T02:19:28.904Z",
     "ciRun": "https://github.com/conn3xorg/circuit-prometheus/actions/runs/40956762122",
     "grade": "B",
     "score": 84,
@@ -9645,7 +9637,7 @@
     "name": "proxmox",
     "repo": "conn3xorg/circuit-proxmox",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:26.142Z",
+    "checkedAt": "2026-11-02T02:19:29.050Z",
     "ciRun": "https://github.com/conn3xorg/circuit-proxmox/actions/runs/40956747038",
     "grade": "F",
     "score": 37,
@@ -9772,9 +9764,9 @@
   "python": {
     "name": "python",
     "repo": "conn3xorg/circuit-python",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:26.214Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-python/actions/runs/41224814191",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:28.978Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-python/actions/runs/41366990043",
     "grade": "B",
     "score": 88,
     "passing": true,
@@ -9786,7 +9778,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -9876,7 +9868,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -9890,7 +9882,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -9898,7 +9890,7 @@
     "name": "qdrant",
     "repo": "conn3xorg/circuit-qdrant",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:26.463Z",
+    "checkedAt": "2026-11-02T02:19:29.143Z",
     "ciRun": "https://github.com/conn3xorg/circuit-qdrant/actions/runs/40956744093",
     "grade": "C",
     "score": 76,
@@ -10023,7 +10015,7 @@
     "name": "rancher",
     "repo": "conn3xorg/circuit-rancher",
     "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:27.209Z",
+    "checkedAt": "2026-11-02T02:19:30.059Z",
     "ciRun": "https://github.com/conn3xorg/circuit-rancher/actions/runs/41219110583",
     "grade": "B",
     "score": 80,
@@ -10059,7 +10051,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check the API answers, the login works and the local cluster is active\" runs: host=$(k3s kubectl -n cattle-system get ingress rancher -o jsonpath='{.spec.rule"
+        "detail": "Step \"Check the API answers, the login works and the local cluster is active\" runs: k3s kubectl -n cattle-system get ingress rancher -o jsonpath='{.spec.rules[0].ho"
       },
       {
         "id": "secrets-in-state",
@@ -10148,7 +10140,7 @@
     "name": "restic",
     "repo": "conn3xorg/circuit-restic",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:27.417Z",
+    "checkedAt": "2026-11-02T02:19:30.029Z",
     "ciRun": "https://github.com/conn3xorg/circuit-restic/actions/runs/40956726313",
     "grade": "C",
     "score": 76,
@@ -10273,7 +10265,7 @@
     "name": "ruby",
     "repo": "conn3xorg/circuit-ruby",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:27.390Z",
+    "checkedAt": "2026-11-02T02:19:30.244Z",
     "ciRun": "https://github.com/conn3xorg/circuit-ruby/actions/runs/41224828348",
     "grade": "B",
     "score": 88,
@@ -10398,7 +10390,7 @@
     "name": "rust",
     "repo": "conn3xorg/circuit-rust",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:27.562Z",
+    "checkedAt": "2026-11-02T02:19:30.137Z",
     "ciRun": "https://github.com/conn3xorg/circuit-rust/actions/runs/41224788350",
     "grade": "B",
     "score": 89,
@@ -10523,7 +10515,7 @@
     "name": "samba",
     "repo": "conn3xorg/circuit-samba",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:27.553Z",
+    "checkedAt": "2026-11-02T02:19:30.344Z",
     "ciRun": "https://github.com/conn3xorg/circuit-samba/actions/runs/40956723475",
     "grade": "C",
     "score": 75,
@@ -10648,7 +10640,7 @@
     "name": "selenium",
     "repo": "conn3xorg/circuit-selenium",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:27.664Z",
+    "checkedAt": "2026-11-02T02:19:30.390Z",
     "ciRun": "https://github.com/conn3xorg/circuit-selenium/actions/runs/41208908510",
     "grade": "B",
     "score": 88,
@@ -10684,7 +10676,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Drive each browser through the Grid\" runs: ports=$(podman port selenium-hub)"
+        "detail": "Step \"Drive each browser through the Grid\" runs: podman port selenium-hub)"
       },
       {
         "id": "secrets-in-state",
@@ -10765,7 +10757,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.0 is 2 days old."
       }
     ]
   },
@@ -10773,7 +10765,7 @@
     "name": "sqlite",
     "repo": "conn3xorg/circuit-sqlite",
     "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:27.594Z",
+    "checkedAt": "2026-11-02T02:19:30.347Z",
     "ciRun": "https://github.com/conn3xorg/circuit-sqlite/actions/runs/41363036302",
     "grade": "B",
     "score": 88,
@@ -10897,9 +10889,9 @@
   "suricata": {
     "name": "suricata",
     "repo": "conn3xorg/circuit-suricata",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:27.941Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-suricata/actions/runs/41268522815",
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:30.543Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-suricata/actions/runs/41364946872",
     "grade": "B",
     "score": 84,
     "passing": true,
@@ -10911,7 +10903,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -11001,7 +10993,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -11015,22 +11007,20 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 0 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
   "tailscale": {
     "name": "tailscale",
     "repo": "conn3xorg/circuit-tailscale",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:28.593Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-tailscale/actions/runs/40956652698",
-    "grade": "F",
-    "score": 57,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:31.424Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-tailscale/actions/runs/41365413495",
+    "grade": "A",
+    "score": 90,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -11038,7 +11028,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -11059,23 +11049,23 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Join a tailnet and reach the host across it\" runs: podman run --rm -d --name headscale --ip 10.88.0.200 --tmpfs /var/lib/headscale "
       },
       {
         "id": "secrets-in-state",
         "max": 10,
-        "state": "fail",
-        "points": 0,
-        "detail": "Has secret inputs, and CI never looks for them in state."
+        "state": "pass",
+        "points": 10,
+        "detail": "CI fails if a secret shows up in state."
       },
       {
         "id": "restart",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "CI never restarts it after apply."
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
       },
       {
         "id": "upgrade",
@@ -11128,7 +11118,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -11142,7 +11132,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 4 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -11150,7 +11140,7 @@
     "name": "traefik",
     "repo": "conn3xorg/circuit-traefik",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:28.870Z",
+    "checkedAt": "2026-11-02T02:19:31.453Z",
     "ciRun": "https://github.com/conn3xorg/circuit-traefik/actions/runs/40959374880",
     "grade": "B",
     "score": 84,
@@ -11275,7 +11265,7 @@
     "name": "trivy",
     "repo": "conn3xorg/circuit-trivy",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:28.778Z",
+    "checkedAt": "2026-11-02T02:19:31.516Z",
     "ciRun": "https://github.com/conn3xorg/circuit-trivy/actions/runs/41108249109",
     "grade": "B",
     "score": 82,
@@ -11400,7 +11390,7 @@
     "name": "unbound",
     "repo": "conn3xorg/circuit-unbound",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:28.985Z",
+    "checkedAt": "2026-11-02T02:19:31.585Z",
     "ciRun": "https://github.com/conn3xorg/circuit-unbound/actions/runs/40956803689",
     "grade": "B",
     "score": 83,
@@ -11524,15 +11514,13 @@
   "users": {
     "name": "users",
     "repo": "conn3xorg/circuit-users",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:28.973Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-users/actions/runs/40956707713",
-    "grade": "F",
-    "score": 65,
-    "passing": false,
-    "gateFailed": [
-      "behaviour"
-    ],
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:31.724Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-users/actions/runs/41366774788",
+    "grade": "B",
+    "score": 88,
+    "passing": true,
+    "gateFailed": [],
     "checks": [
       {
         "id": "ci-green",
@@ -11540,7 +11528,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -11561,9 +11549,9 @@
         "id": "behaviour",
         "max": 20,
         "gate": true,
-        "state": "fail",
-        "points": 0,
-        "detail": "After apply, CI only looks at the host: it never uses what was installed."
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Log in with the key, and use sudo only as configured\" runs: ssh -i id_ed25519 -p 2222 -o UserKnownHostsFile=known_hosts -o IdentitiesOnly=ye"
       },
       {
         "id": "secrets-in-state",
@@ -11630,7 +11618,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -11644,7 +11632,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 5 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -11652,7 +11640,7 @@
     "name": "valkey",
     "repo": "conn3xorg/circuit-valkey",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:29.045Z",
+    "checkedAt": "2026-11-02T02:19:31.712Z",
     "ciRun": "https://github.com/conn3xorg/circuit-valkey/actions/runs/40956632867",
     "grade": "B",
     "score": 80,
@@ -11688,7 +11676,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check auth, settings and persistence\" runs: cli SET conn3x:check survives | grep -qx OK"
+        "detail": "Step \"Check auth, settings and persistence\" runs: valkey-cli --no-auth-warning -a ci-only-password \"$@\"; }"
       },
       {
         "id": "secrets-in-state",
@@ -11777,7 +11765,7 @@
     "name": "velociraptor",
     "repo": "conn3xorg/circuit-velociraptor",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:29.040Z",
+    "checkedAt": "2026-11-02T02:19:31.694Z",
     "ciRun": "https://github.com/conn3xorg/circuit-velociraptor/actions/runs/40973159290",
     "grade": "B",
     "score": 86,
@@ -11813,7 +11801,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Sign in to the GUI and find the client\" runs: host=$(cat /proc/sys/kernel/hostname)"
+        "detail": "Step \"Sign in to the GUI and find the client\" runs: velociraptor --api_config /etc/velociraptor/api.config.yaml query --format jsonl"
       },
       {
         "id": "secrets-in-state",
@@ -11901,9 +11889,9 @@
   "wazuh": {
     "name": "wazuh",
     "repo": "conn3xorg/circuit-wazuh",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:29.353Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-wazuh/actions/runs/41273520611",
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:31.954Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-wazuh/actions/runs/41370901382",
     "grade": "B",
     "score": 86,
     "passing": true,
@@ -11915,7 +11903,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -11938,7 +11926,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check the API, the agent and file integrity monitoring\" runs: id=$($podman exec -i -e API_PASSWORD=\"$API_PASSWORD\" -e AGENT_NAME=\"$agent\" \"$se"
+        "detail": "Step \"Check the API, the agent and file integrity monitoring\" runs: curl -sSfk -H \"Authorization: Bearer $token\" \"$api/agents?name=$AGENT_NAME&selec"
       },
       {
         "id": "secrets-in-state",
@@ -12005,7 +11993,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -12019,7 +12007,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 0 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
@@ -12027,7 +12015,7 @@
     "name": "wireguard",
     "repo": "conn3xorg/circuit-wireguard",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:29.987Z",
+    "checkedAt": "2026-11-02T02:19:32.783Z",
     "ciRun": "https://github.com/conn3xorg/circuit-wireguard/actions/runs/40956585005",
     "grade": "B",
     "score": 83,
@@ -12151,9 +12139,9 @@
   "zabbix": {
     "name": "zabbix",
     "repo": "conn3xorg/circuit-zabbix",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-01T23:43:30.115Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-zabbix/actions/runs/41266966565",
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-02T02:19:32.784Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-zabbix/actions/runs/41372679008",
     "grade": "C",
     "score": 74,
     "passing": true,
@@ -12165,7 +12153,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -12188,7 +12176,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Check the server, the frontend, the API and the agent\" runs: curl -sf $u/index.php | grep -q Zabbix"
+        "detail": "Step \"Check the server, the frontend, the API and the agent\" runs: curl -sf -H 'Content-Type: application/json-rpc' ${tok:+-H \"Authorization: Beare"
       },
       {
         "id": "secrets-in-state",
@@ -12255,7 +12243,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -12269,16 +12257,16 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 0 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
   "zap": {
     "name": "zap",
     "repo": "conn3xorg/circuit-zap",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:30.192Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-zap/actions/runs/41208921838",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-02T02:19:32.838Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-zap/actions/runs/41372790439",
     "grade": "B",
     "score": 83,
     "passing": true,
@@ -12290,7 +12278,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-01 passed."
+        "detail": "Run of 2026-11-02 passed."
       },
       {
         "id": "matrix",
@@ -12313,7 +12301,7 @@
         "gate": true,
         "state": "pass",
         "points": 20,
-        "detail": "Step \"Scan the weak page, passively\" runs: ip=$(printf '%s' \"$target\" | sed -n 's|^http://\\([0-9.]*\\):8099/$|\\1|p')"
+        "detail": "Step \"Scan the weak page, passively\" runs: sed -n 's|^ *\\(ghcr.io/zaproxy/zaproxy:[^ ]*\\).*|\\1|p' /usr/local/sbin/conn3x-za"
       },
       {
         "id": "secrets-in-state",
@@ -12380,7 +12368,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -12394,7 +12382,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 1 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
@@ -12402,7 +12390,7 @@
     "name": "zeek",
     "repo": "conn3xorg/circuit-zeek",
     "tag": "v0.1.0",
-    "checkedAt": "2026-11-01T23:43:30.383Z",
+    "checkedAt": "2026-11-02T02:19:32.936Z",
     "ciRun": "https://github.com/conn3xorg/circuit-zeek/actions/runs/40972924775",
     "grade": "C",
     "score": 74,

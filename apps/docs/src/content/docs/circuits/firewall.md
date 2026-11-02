@@ -3,7 +3,7 @@ title: Firewall
 description: "A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-firewall at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-firewall at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/firewall/grade.svg)](https://conn3x.org/circuits/firewall/grade)
 
@@ -15,7 +15,7 @@ The part that usually goes wrong by hand is the order. Turn ufw on before SSH is
 
 ```hcl
 module "firewall" {
-  source = "github.com/conn3xorg/circuit-firewall?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-firewall?ref=v0.2.1"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -42,7 +42,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.1/examples/local).
 
 ### SSH on another port, or behind a port forward
 
@@ -98,16 +98,16 @@ Requires Conn3x v0.6.5 or later, which applies several ufw rules on one host wit
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the firewall is on with every rule in place.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the firewall is on with every rule in place. From outside the host, it then connects to listeners on allowed and closed ports: the allowed ones answer, and a closed port and a port open only to another network don't, before and after restarting the firewall.
 
 It was also applied by hand, with circuit-docker, circuit-monitoring and four other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, port 80 answered from outside, port 9100 didn't, and a rule with `from` let only that network in: the Docker bridge reached node_exporter on 9100. A container port published on 8081, which no rule allowed, still answered from outside on both, as above. After a reboot the firewall came back with every rule and the plan had no changes. A separate run created an Ubuntu 24.04 droplet and applied this circuit to it in one `conn3x apply`, with `os = "ubuntu"`, and the second plan had no changes. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-firewall/blob/v0.2.0/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-firewall/blob/v0.2.1/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-firewall](https://github.com/conn3xorg/circuit-firewall). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-firewall/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-firewall](https://github.com/conn3xorg/circuit-firewall). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-firewall/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.2.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

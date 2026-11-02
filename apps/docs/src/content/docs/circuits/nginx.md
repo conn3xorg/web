@@ -3,7 +3,7 @@ title: nginx
 description: "Installs nginx, writes your site, keeps the service running and opens port 80 in firewalld or ufw."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nginx at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nginx at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/nginx/grade.svg)](https://conn3x.org/circuits/nginx/grade)
 
@@ -13,7 +13,7 @@ A [Conn3x](https://conn3x.org) circuit that installs nginx and serves one page f
 
 ```hcl
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.1"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -25,7 +25,7 @@ module "web" {
 }
 ```
 
-Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.0/examples/local).
+Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local).
 
 ### Hosts with pinned host keys
 
@@ -33,7 +33,7 @@ A value in `hosts` can also be a host object, as in a circuit's own [`hosts`](/r
 
 ```hcl
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.1"
 
   hosts = {
     for name, d in digitalocean_droplet.web : name => {
@@ -96,14 +96,16 @@ None.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, and fetches the page from outside the host, before and after restarting nginx.
+
+It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, the page answered on port 80 from outside, through circuit-firewall. After a reboot it answered again, the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-[MPL-2.0](https://github.com/conn3xorg/circuit-nginx/blob/v0.1.0/LICENSE)
+[MPL-2.0](https://github.com/conn3xorg/circuit-nginx/blob/v0.1.1/LICENSE)
 
 ## Source
 
-- Repository: [conn3xorg/circuit-nginx](https://github.com/conn3xorg/circuit-nginx). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-nginx/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-nginx](https://github.com/conn3xorg/circuit-nginx). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nginx/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local).
 - Related circuits: [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot).

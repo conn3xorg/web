@@ -2,7 +2,7 @@
   "name": "tailscale",
   "repo": "conn3xorg/circuit-tailscale",
   "description": "Installs Tailscale from Tailscale's repository and joins your hosts to your tailnet, with subnet routes, exit nodes and Tailscale SSH.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "tailscale",
     "vpn",

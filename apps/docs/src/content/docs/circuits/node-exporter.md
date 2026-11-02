@@ -3,7 +3,7 @@ title: node_exporter
 description: "Runs Prometheus node_exporter at a pinned, checksummed version as its own system user."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-node-exporter at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-node-exporter at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/node-exporter/grade.svg)](https://conn3x.org/circuits/node-exporter/grade)
 
@@ -13,7 +13,7 @@ A Conn3x circuit that installs the Prometheus [node_exporter](https://github.com
 
 ```hcl
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.1"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -31,7 +31,7 @@ For hosts created in the same plan, pass host objects with the host key you gene
 
 ```hcl
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.1"
 
   hosts = {
     for name, d in digitalocean_droplet.app : name => {
@@ -45,7 +45,7 @@ module "node_exporter" {
 
 Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.`
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.1/examples/local).
 
 ## What it does
 
@@ -68,7 +68,7 @@ Set `node_exporter_version` and `checksums` together. Take both checksums from t
 
 ```hcl
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.1"
 
   hosts                 = { web1 = "203.0.113.10" }
   node_exporter_version = "1.12.1"
@@ -108,14 +108,16 @@ Requires Conn3x v0.6.4 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, and scrapes the metrics from outside the host, before and after a restart.
+
+It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, node_exporter ran under systemd, served metrics on port 9100, and circuit-monitoring's Prometheus scraped it through the Docker bridge. After a reboot it came back, the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-node-exporter/blob/v0.1.0/LICENSE). node_exporter itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-node-exporter/blob/v0.1.1/LICENSE). node_exporter itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-node-exporter](https://github.com/conn3xorg/circuit-node-exporter). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-node-exporter/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-node-exporter](https://github.com/conn3xorg/circuit-node-exporter). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-node-exporter/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.1/examples/local).
 - Related circuits: [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).

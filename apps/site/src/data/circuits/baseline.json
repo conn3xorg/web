@@ -2,7 +2,7 @@
   "name": "baseline",
   "repo": "conn3xorg/circuit-baseline",
   "description": "A sensible start for any server: time zone, chrony, sysctl settings and SSH that only takes keys.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "security",
     "ssh",

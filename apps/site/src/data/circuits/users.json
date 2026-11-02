@@ -2,7 +2,7 @@
   "name": "users",
   "repo": "conn3xorg/circuit-users",
   "description": "Creates users, groups and their SSH keys from one map, with optional passwordless sudo.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "users",
     "ssh",
