@@ -259,11 +259,17 @@ function downloadBlocks(hcl) {
 export const RUBRIC = [
   {
     id: "ci-green", group: "Testing", points: 15, gate: true,
-    title: "CI is green on main",
+    title: "CI isn't staying red on main",
     test: (ev) => {
       if (!ev.run) return fail("No finished CI run on main.");
       const on = `Run of ${date(Date.parse(ev.run.date))}`;
-      return ev.run.conclusion === "success" ? pass(`${on} passed.`) : fail(`${on} ended: ${ev.run.conclusion}.`);
+      if (ev.run.conclusion === "success") return pass(`${on} passed.`);
+      const ended = `${on} ended: ${ev.run.conclusion}`;
+      // One flaky job shouldn't drop a circuit: red takes a second failed run, or a failed re-run when there's only one.
+      if (ev.run.previous) {
+        return ev.run.previous === "success" ? pass(`${ended}, and the run before it passed.`) : fail(`${ended}, and so did the run before it.`);
+      }
+      return ev.run.attempt > 1 ? fail(`${ended}, after a re-run, and it's the only run.`) : pass(`${ended}. It's the only run and hasn't been re-run.`);
     },
   },
   {
@@ -494,7 +500,7 @@ async function read(repo) {
     ? await get(`/repos/${repo}/git/tags/${ref.object.sha}`)
     : (await get(`/repos/${repo}/git/commits/${ref.object.sha}`));
   const runs = await get(`/repos/${repo}/actions/runs?branch=main&event=push&status=completed&per_page=20`);
-  const run = runs.workflow_runs.find((r) => r.name === "CI");
+  const [run, previous] = runs.workflow_runs.filter((r) => r.name === "CI");
   const rules = (await get(`/repos/${repo}/rules/branches/main?per_page=100`, { allow404: true })) ?? [];
   let realHost = null;
   if (files.has(".github/workflows/real-host.yml")) {
@@ -505,7 +511,7 @@ async function read(repo) {
     tag, files,
     tagVerified: Boolean(signed.verification?.verified),
     tagDate: signed.tagger?.date ?? signed.committer?.date,
-    run: run && { conclusion: run.conclusion, date: run.updated_at, url: run.html_url },
+    run: run && { conclusion: run.conclusion, date: run.updated_at, url: run.html_url, attempt: run.run_attempt, previous: previous?.conclusion },
     rules: rules.map((r) => r.type),
     realHost,
     now: Date.now(),
