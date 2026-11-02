@@ -2,7 +2,7 @@
   "name": "bind",
   "repo": "conn3xorg/circuit-bind",
   "description": "BIND 9 serving your zones, written as HCL, with serials that go up when records change and TSIG-signed secondaries.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "bind",
     "dns",

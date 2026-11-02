@@ -1,6 +1,6 @@
 {
   "name": "matrix",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -87,6 +87,15 @@
       "type": "any",
       "default": {},
       "description": "Extra homeserver.yaml settings, merged over the circuit's at the top level, such as { enable_registration = true, registration_requires_token = true }.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:fa4aa980f279bcf26d4e7ecc2a2c9a701c73f2ebe8841da9bdcf3b2fdf693d75",
+      "description": "Digest of the image for synapse_version. Podman pulls by the digest, so change it with the version.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

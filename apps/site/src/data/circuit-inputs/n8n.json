@@ -1,6 +1,6 @@
 {
   "name": "n8n",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -70,7 +70,7 @@
       "name": "postgres",
       "type": "object({\n    host     = optional(string, \"127.0.0.1\")\n    port     = optional(number, 5432)\n    database = optional(string, \"n8n\")\n    username = optional(string, \"n8n\")\n    schema   = optional(string, \"public\")\n  })",
       "default": null,
-      "description": "PostgreSQL to keep n8n's data in, such as { host = \"db1\" }. The role and database must exist. When null, n8n uses SQLite in /var/lib/n8n.",
+      "description": "PostgreSQL to keep n8n's data in, such as { host = \"db1\" }. The role and database must exist. When null, n8n uses SQLite in /var/lib/n8n/data.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

@@ -2,7 +2,7 @@
   "name": "forgejo",
   "repo": "conn3xorg/circuit-forgejo",
   "description": "Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "forgejo",
     "git",
