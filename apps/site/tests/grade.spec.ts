@@ -10,7 +10,7 @@ test("a grade page says what was checked, when, and what a grade isn't", async (
   await expect(page.locator(".page-hero")).toContainText("conn3xorg/circuit-postgres at v");
   await expect(page.locator(".page-hero")).toContainText("doesn't tell you the circuit is safe");
   await expect(page.locator("tbody tr")).toHaveCount(16);
-  await expect(page.locator("tbody tr", { hasText: "CI is green on main" })).toContainText(/Run of \d{4}-\d{2}-\d{2}/);
+  await expect(page.locator("tbody tr", { hasText: "CI isn't staying red on main" })).toContainText(/Run of \d{4}-\d{2}-\d{2}/);
   await expect(page.locator('img[src="/circuits/postgres/grade.svg"]')).toBeVisible();
   await expect(page.locator("pre code")).toContainText("https://conn3x.org/circuits/postgres/grade.svg");
   expect(errors).toEqual([]);
