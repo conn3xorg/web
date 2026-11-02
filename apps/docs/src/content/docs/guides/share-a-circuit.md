@@ -116,10 +116,15 @@ install -g bind -m 640 "$w/new" /var/lib/bind/zone
 ```sh
 only_root_changes() {
   case $1 in /*) ;; *) return 1 ;; esac
-  p=$1
+  [ "${2:-0}" -lt 40 ] || return 1
+  # The /. keeps a trailing slash from hiding a link from -L.
+  p=$1/.
   while :; do
     if [ -L "$p" ]; then
-      [ "$(stat -c %u -- "$p")" = 0 ] && (only_root_changes "$(readlink -f -- "$p")") || return 1
+      [ "$(stat -c %u -- "$p")" = 0 ] || return 1
+      t=$(readlink -- "$p")
+      case $t in /*) ;; *) t=$(dirname -- "$p")/$t ;; esac
+      (only_root_changes "$t" $((${2:-0} + 1))) || return 1
     elif [ -e "$p" ]; then
       [ "$(stat -c %u -- "$p")" = 0 ] && [ $((0$(stat -c %a -- "$p") & 022)) = 0 ] || return 1
     fi
@@ -129,7 +134,7 @@ only_root_changes() {
 }
 ```
 
-Walk the path as written. Resolve it first with `readlink -f` and you only ever look at where a link points today, so a link its owner can re-point passes.
+Walk the path as written. Resolve it first with `readlink -f` and you only ever look at where a link points today, so a link its owner can re-point passes. Follow links one at a time for the same reason: `readlink -f` jumps straight to the end of a chain, past any link in the middle.
 
 And never run a script from a directory the service owns as root. `runuser -u` it, even when the package's own docs show `sudo`.
 
@@ -144,8 +149,10 @@ held() {
   cat /proc/net/tcp /proc/net/tcp6 2>/dev/null | awk -v p="$p" -v u="$u" \
     '$4 == "0A" && $2 ~ p { n++; if ($8 != u && $8 != 0) b = 1 } END { exit !(n && !b) }'
 }
-held && printf 'user = "admin:%s"\n' "$(cat "$password_file")" | curl -sf -K- http://127.0.0.1:3000/api/user
+held && printf 'user = "admin:%s"\n' "$(sed 's/[\\"]/\\&/g' "$password_file")" | curl -sf -K- http://127.0.0.1:3000/api/user
 ```
+
+curl reads that line as a quoted string, so the `sed` puts a backslash before any `"` or `\` in the password.
 
 This narrows the window rather than closing it: the service could die between the check and the send.
 
