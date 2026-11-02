@@ -31,7 +31,7 @@ export const ENFORCE_GRADES = true;
 // Results for these checks stay out of the published data and out of the
 // score, for every circuit, until the fixes they would point at have shipped.
 // Holding only the failures would give the failures away.
-export const HELD = new Set(["privileged-shell", "listen-address", "images-by-digest"]);
+export const HELD = new Set();
 
 const DAY = 86_400_000;
 const FRESH_DAYS = 180;
@@ -240,6 +240,20 @@ const date = (ms) => new Date(ms).toISOString().slice(0, 10);
 
 const code = (ev, ...exts) => [...ev.files].filter(([p]) => exts.some((x) => p.endsWith(x)) && !p.startsWith("examples/") && !p.startsWith("test/")).map(([, t]) => t.split("\n").filter((l) => !/^\s*(#|\/\/)/.test(l)).join("\n")).join("\n");
 
+// Code without its prose: an example address in an error message isn't a listener.
+const logic = (ev, ...exts) => code(ev, ...exts).split("\n").filter((l) => !/^\s*(description|error_message)\s*=/.test(l)).join("\n");
+
+// Shell a root step shouldn't contain. Each one is wrong wherever it appears, so a
+// hit is never a guess about who owns a directory. That class can't be read from text.
+const PRIVILEGED = [
+  [/\b(?:curl|wget)\b[^|;&\n]*\|\s*(?:sudo\s+)?(?:ba|da|z)?sh\b/, "pipes a download into a shell"],
+  [/--(?:password|passwd|pass|token|secret|api-key)[ =]\\?"?\$/, "puts a secret on a command line, where ps can read it"],
+  [/\bchmod\s+(?:-R\s+)?(?:0?777|0?666|a\+w|o\+w)(?=\s)/, "makes a path writable by everyone"],
+  [/^(?!.*Exec=).*(?:>|\btee\s+)\s*\/tmp\/[\w.$]/m, "writes to a predictable name in /tmp"],
+  [/--allow-root\b/, "tells a tool that refuses root to run as root anyway"],
+  [/--no-check-certificate|--allow-unauthenticated|\[trusted=yes\]/, "installs or downloads without checking the source"],
+];
+
 function downloadBlocks(hcl) {
   const out = [];
   for (const m of hcl.matchAll(/\bdownload\s*\{/g)) {
@@ -359,7 +373,8 @@ export const RUBRIC = [
     id: "images-by-digest", group: "Supply chain", points: 5,
     title: "Container images pinned by digest",
     test: (ev) => {
-      const hcl = code(ev, ".hcl", ".tf");
+      // An output naming the version isn't a pull.
+      const hcl = logic(ev, ".hcl", ".tf").split("\n").filter((l) => !/^\s*value\s*=/.test(l)).join("\n");
       const images = hcl.match(/"(?:docker\.io|ghcr\.io|quay\.io|registry\.[\w.-]+|mcr\.microsoft\.com)\/[^"\s]+"/g) ?? [];
       const loose = images.filter((i) => !i.includes("@") && /:[^/]+"$/.test(i));
       if (!images.length) return na("Pulls no images.");
@@ -387,15 +402,20 @@ export const RUBRIC = [
     id: "listen-address", group: "Supply chain", points: 5,
     title: "Default listen address",
     test: (ev) => {
-      const all = /(default\s*=\s*"(0\.0\.0\.0|::|\[::\])"|0\.0\.0\.0(?![/\d]))/.test(code(ev, ".hcl", ".tf"));
-      return all ? fail("Listens on every address by default.") : pass("Doesn't default to every address.");
+      // A lookup or comparison handles the address when a caller picks it; it doesn't listen on it.
+      const lines = logic(ev, ".hcl", ".tf").split("\n").filter((l) => !/\b(lookup|contains|setintersection|replace|coalesce)\(|[!=]=\s*"/.test(l));
+      const hit = lines.find((l) => /\bdefault\s*=\s*\[?\s*"(::|\[::\]|\*)(:\d+)?"|0\.0\.0\.0(?![/\d])|--[\w.-]*(listen|bind|addr)[\w-]*=:/.test(l));
+      return hit ? fail(`Listens on every address by default: ${hit.trim().slice(0, 80)}`) : pass("Found no default or literal that listens on every address.");
     },
   },
   {
     id: "privileged-shell", group: "Supply chain", points: 10,
     title: "Privileged shell patterns",
-    // shortcut: the patterns stay out of this public file while the check is held; add them here when it's released.
-    test: () => na("Not published yet."),
+    test: (ev) => {
+      const text = logic(ev, ".hcl", ".tf", ".sh");
+      const found = PRIVILEGED.filter(([re]) => re.test(text)).map(([, what]) => what);
+      return found.length ? fail(`Shell here ${found.join("; ")}.`) : pass("Found none of the listed patterns.");
+    },
   },
   {
     id: "signed-tags", group: "Repository", points: 5,
