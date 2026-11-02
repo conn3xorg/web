@@ -39,17 +39,26 @@ A script reads each circuit when the site builds. It looks at the latest `vX.Y.Z
 | Upgrade tested | Testing | 5 | | A CI step named for an upgrade that runs a second apply |
 | Recent run on a real host | Testing | 5 | | A passing run of `.github/workflows/real-host.yml` on main in the last 180 days |
 | Downloads are checksummed | Supply chain | 5 | | A `sha256` in every `download` step |
-| Container images pinned by digest | Supply chain | 5 | | Image references in the circuit's code |
+| Container images pinned by digest | Supply chain | 5 | | Image references on `docker.io`, `ghcr.io`, `quay.io`, `registry.*` and `mcr.microsoft.com` in the circuit's code, leaving out outputs and messages. Fails on a tag with no digest |
 | Pinned repo keys aren't near expiry | Supply chain | 5 | | Expiry dates in the PGP keys the repo holds. Fails inside 90 days |
-| Default listen address | Supply chain | 5 | | Defaults and literals that listen on every address |
-| Privileged shell patterns | Supply chain | 10 | | Shell that runs as root |
+| Default listen address | Supply chain | 5 | | A default of `0.0.0.0`, `::`, `[::]` or `*`, a `0.0.0.0` literal, or a flag such as `--web.listen-address=:9100`. An address the caller has to choose, or a comparison against one, doesn't count |
+| Privileged shell patterns | Supply chain | 10 | | The [patterns below](#privileged-shell-patterns) in the circuit's `.hcl`, `.tf` and `.sh` files |
 | Release tag is signed | Repository | 5 | | GitHub's verification of the signature on the latest tag |
 | Main is protected | Repository | 5 | | A ruleset on main requiring pull requests and passing checks |
 | Released recently | Repository | 5 | | The latest tag is under 180 days old |
 
-## Held checks
+## Privileged shell patterns
 
-Three checks show **Held** on every circuit's page, and they aren't in anyone's score: default listen address, images by digest, and privileged shell patterns. We publish a check's results once the fixes it would point at have shipped. It's held for every circuit, because holding only the failures would give the failures away. When a check is released, scores move.
+Each of these is wrong wherever it turns up in shell that runs as root, so a hit doesn't depend on guessing how a host is laid out:
+
+- a download piped into a shell: `curl ... | sh`
+- a secret on a command line, where `ps` can read it: `--password "$p"`, and the same for `--passwd`, `--pass`, `--token`, `--secret` and `--api-key`
+- a path made writable by everyone: `chmod 777`, `chmod 666`, `a+w`, `o+w`
+- a write to a predictable name in `/tmp` on the host
+- `--allow-root`, which tells a tool that refuses root to run as root anyway
+- a source that isn't checked: `--no-check-certificate`, `--allow-unauthenticated`, `[trusted=yes]`
+
+[Working in a directory someone else owns](/guides/share-a-circuit#working-in-a-directory-someone-else-owns) shows what to write instead.
 
 ## What a grade can't see
 
@@ -58,6 +67,9 @@ These checks read files and API responses. They don't run the circuit or review 
 - **A pass means CI ran the command, not that the command proves much.** The "uses the thing" check spots commands that only look at a host, such as `systemctl is-active`, `grep` and `kubectl wait`. Anything else counts. A weak test can pass it, and a real test written as a state check can miss it. Each page shows the line it found, so you can judge.
 - **Failing to find a test isn't the same as finding a bug.** A circuit with a low grade may work well, and one with an A may not.
 - **The checksum check only reads `download` steps.** A fetch made another way isn't seen.
+- **The privileged shell check can't see who owns a directory.** Root following a symbolic link planted by a service account is the bug that matters most here, and it can't be read from text, since the same `chown` is safe in a directory only root can change. A pass means none of the listed patterns turned up. It doesn't mean the circuit's root steps are safe.
+- **The listen address check reads text.** A service that listens on every address because its own default says so, with nothing in the circuit about it, isn't seen. A fail isn't always a mistake either: a DNS server is meant to answer on every address. The page shows the line it found.
+- **The image check only knows the registries it lists.** An image from another registry, or a short name such as `alpine:3`, isn't seen.
 - **Key expiry doesn't check signatures or revocations.** It reads the dates.
 - **CI on main can differ from the tag.** The CI file is read at the tag, and the run comes from main.
 - **Real-host and upgrade checks are hard to earn today.** No circuit has either yet. That's the honest state of things, so we count them.
