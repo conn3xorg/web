@@ -1,6 +1,6 @@
 {
   "name": "jellyfin",
-  "version": "v0.1.0",
+  "version": "v0.1.3",
   "hostObjects": true,
   "inputs": [
     {
@@ -82,6 +82,15 @@
       "description": "Password for admin_username. It reaches the host in a root-only file and never the plan or state.",
       "sensitive": true,
       "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:fea863d0cd9ec445985d9c75fc6ed64e38a1d2766cf0c250a33d553f4fc1b771",
+      "description": "Digest of the image for jellyfin_version, on hosts that run the image. Podman pulls by the digest, so change it with the version.",
+      "sensitive": false,
+      "ephemeral": false,
       "required": false
     }
   ]

@@ -2,7 +2,7 @@
   "name": "matrix",
   "repo": "conn3xorg/circuit-matrix",
   "description": "Synapse Matrix homeserver under Podman, behind your reverse proxy, with host-generated secrets and SQLite or Postgres.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "matrix",
     "synapse",
