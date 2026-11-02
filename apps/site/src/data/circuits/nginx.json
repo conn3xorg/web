@@ -2,7 +2,7 @@
   "name": "nginx",
   "repo": "conn3xorg/circuit-nginx",
   "description": "Installs nginx, writes your site, keeps the service running and opens port 80 in firewalld or ufw.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "web",
     "nginx",
