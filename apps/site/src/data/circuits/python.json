@@ -2,7 +2,7 @@
   "name": "python",
   "repo": "conn3xorg/circuit-python",
   "description": "Your distribution's Python with working venvs, and optional environments holding pinned packages.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "python",
     "venv",

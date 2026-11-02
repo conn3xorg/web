@@ -1,6 +1,6 @@
 {
   "name": "pihole",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -73,6 +73,15 @@
       "type": "string",
       "default": null,
       "description": "Where the web interface listens, in Pi-hole's webserver.port syntax, such as \"8080\" or \"127.0.0.1:8080\". When null, Pi-hole's default: 80 and 443 with a self-signed certificate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:d34134716fc32038b052a8674c7c6879e0ff21f0e6d8af345166fffa2c27c113",
+      "description": "Digest of the image for pihole_version. Podman pulls by the digest, so change it with the version.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

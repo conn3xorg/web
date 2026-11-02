@@ -572,6 +572,7 @@
       "debian13": { "owner": "136693071363", "name": "debian-13-amd64-*" }
     },
     "azure": {
+      "rocky10": { "publisher": "resf", "offer": "rockylinux-x86_64", "sku": "10-base", "plan": { "name": "10-base", "product": "rockylinux-x86_64", "publisher": "resf" } },
       "ubuntu2404": { "publisher": "Canonical", "offer": "ubuntu-24_04-lts", "sku": "server" },
       "debian13": { "publisher": "Debian", "offer": "debian-13", "sku": "13-gen2" }
     }

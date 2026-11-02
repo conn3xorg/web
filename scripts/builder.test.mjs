@@ -422,17 +422,30 @@ test("Azure gets a resource group, a security group and a conn3x login with a ke
   assert.match(readme, /Windows is still to come/);
 });
 
-test("every Azure image is one we've checked, needing no Marketplace terms", () => {
+test("every Azure image is one we've checked, and only Rocky needs Marketplace terms", () => {
   assert.deepEqual(data.builder.cloud.azure, {
+    rocky10: { publisher: "resf", offer: "rockylinux-x86_64", sku: "10-base", plan: { name: "10-base", product: "rockylinux-x86_64", publisher: "resf" } },
     ubuntu2404: { publisher: "Canonical", offer: "ubuntu-24_04-lts", sku: "server" },
     debian13: { publisher: "Debian", offer: "debian-13", sku: "13-gen2" },
   });
 });
 
+test("Rocky on Azure names its plan, and the README tells you to accept the terms yourself", () => {
+  const r = generate(data, { ...base, distro: "rocky10", hosts: "web1", picks: ["nginx"], cloud: azure });
+  assert.equal(r.errors, undefined);
+  assert.match(r.files["main.tf"], /plan \{\n\s+name\s+= "10-base"\n\s+product\s+= "rockylinux-x86_64"\n\s+publisher = "resf"\n\s+\}/);
+  assert.match(r.files["README.md"], /az vm image terms accept --publisher resf --offer rockylinux-x86_64 --plan 10-base\n/);
+  for (const distro of ["ubuntu2404", "debian13"]) {
+    const other = generate(data, { ...base, distro, hosts: "web1", picks: ["nginx"], cloud: azure });
+    assert.doesNotMatch(other.files["main.tf"], /\bplan \{/, distro);
+    assert.doesNotMatch(other.files["README.md"], /image terms/, distro);
+  }
+});
+
 test("Azure refuses what can't work, and keeps typed text in strings", () => {
   const err = (b, cloud = {}) => (generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", ...b, cloud: { ...azure, ...cloud } }).errors ?? []).map((e) => e[1]).join(" ");
   assert.equal(err({}), "");
-  assert.match(err({ distro: "rocky10" }), /Marketplace terms/);
+  assert.equal(err({ distro: "rocky10" }), "");
   assert.match(err({ distro: "fedora45" }), /Azure has no Fedora 45 image/);
   for (const resourceGroup of ['x"; evil', '${file("/etc/shadow")}', "a\nb", "ends.", "a/b", "%{ if true }", "x".repeat(91)]) assert.match(err({}, { resourceGroup }), /isn't a resource group/, resourceGroup);
   for (const resourceGroup of ["", "conn3x-ci-1", "My_Group.2"]) assert.equal(err({}, { resourceGroup }), "", resourceGroup);

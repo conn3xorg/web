@@ -155,7 +155,7 @@ What validate can't do is apply. It proves the config is well formed and the val
 
 ## What it doesn't do yet
 
-It can create your servers on DigitalOcean, Google Cloud, AWS or Azure, but not on other clouds yet. Azure here means Linux hosts, with Windows still to come. Fedora 45 stays off Google Cloud, which has no base image for it, and the builder tells you so. Rocky stays off Azure too, because its image makes you accept Marketplace terms first, and we'd rather you did that knowingly than have a config do it for you. And kubeadm isn't in it yet, because joining its control planes and workers takes more than a list of hosts.
+It can create your servers on DigitalOcean, Google Cloud, AWS or Azure, but not on other clouds yet. Azure here means Linux hosts, with Windows still to come. Fedora 45 stays off Google Cloud, which has no base image for it, and the builder tells you so. Rocky on Azure makes you accept Marketplace terms first, and we'd rather you did that knowingly than have a config do it for you, so the README it writes gives you the command. And kubeadm isn't in it yet, because joining its control planes and workers takes more than a list of hosts.
 
 Forgejo, Keycloak, Matrix and LLDAP work without a database circuit, on SQLite or a file meant for trials, so the builder doesn't wire PostgreSQL to them. Their hints point at the README, which shows how.
 

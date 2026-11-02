@@ -2,7 +2,7 @@
   "name": "monitoring",
   "repo": "conn3xorg/circuit-monitoring",
   "description": "Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it.",
-  "version": "v0.2.0",
+  "version": "v0.2.2",
   "tags": [
     "monitoring",
     "prometheus",
