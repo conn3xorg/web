@@ -30,7 +30,7 @@ A script reads each circuit when the site builds. It looks at the latest `vX.Y.Z
 
 | Check | Group | Points | Must pass | Reads |
 |-------|-------|--------|-----------|-------|
-| CI isn't staying red on main | Testing | 15 | Yes | The two latest finished `CI` runs from pushes to main. Fails only when both failed, or when the only run failed after a re-run. One failure with no later run still passes, until a re-run or the next push settles it |
+| CI isn't staying red on main | Testing | 15 | Yes | The two latest finished `CI` runs from pushes to main. A latest run that failed after a re-run fails, whatever came before it. So do two latest runs that both failed. A lone failure, with a passing run before it or no run before it, fails once it's more than 3 days old when grades are read. Until then it passes, so one flaky run has time to be re-run or followed by a push |
 | Applied on real distributions in CI | Testing | 10 | | Distribution names in a job that runs `conn3x apply`. A quarter of the points each, up to four |
 | A second plan comes back clean | Testing | 15 | Yes | `conn3x plan -detailed-exitcode` after an apply, not followed by `\|\| true` |
 | CI uses the thing, past "service is active" | Testing | 20 | Yes | A command after apply, in the workflow or a script it calls, that does more than look at the host |
