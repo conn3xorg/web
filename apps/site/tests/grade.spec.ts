@@ -46,7 +46,7 @@ test("the directory links each circuit's grade", async ({ page }) => {
   await expect(page.locator('a[href="/circuits/nginx/grade"]')).toHaveText(/^Grade [A-F]$/);
 });
 
-test("with enforcement off, the builder still offers a failing circuit", async ({ page }) => {
+test("with enforcement on, the builder still offers a passing circuit", async ({ page }) => {
   await page.goto("/build");
   await expect(page.locator('input[name=pick][value="nginx"]')).toHaveCount(1);
 });

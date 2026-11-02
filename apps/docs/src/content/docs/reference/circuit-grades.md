@@ -24,7 +24,7 @@ A script reads each circuit when the site builds. It looks at the latest `vX.Y.Z
 | D | 60 to 69 |
 | F | below 60, or a failed must-pass check |
 
-**C or better is a pass.** A circuit that doesn't pass stays out of the [Circuit Builder](https://conn3x.org/build) once enforcement is on, with the reason shown. That applies to official and community circuits alike. Enforcement is off for now: every grade is visible, and the builder still offers every circuit it did before.
+**C or better is a pass.** A circuit that doesn't pass stays out of the [Circuit Builder](https://conn3x.org/build), with the reason shown. That applies to official and community circuits alike, and it's enforced: grades are read each time the site builds, so a circuit leaves the builder at the first build that finds it failing, and comes back at the first build that finds it passing.
 
 ## The checks
 
