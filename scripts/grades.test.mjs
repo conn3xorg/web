@@ -59,6 +59,13 @@ test("looking at a host isn't using it", () => {
   for (const l of ["sudo podman exec x curl -sSf localhost", "psql -h 127.0.0.1 -c 'SELECT 1'", 'out=$(curl -sSf localhost)']) assert.ok(behaviourLine([l]), l);
 });
 
+test("a function is judged by what it runs, and an assignment by what it calls", () => {
+  assert.equal(behaviourLine(["ok() { systemctl is-active x; }", "ok"]), null);
+  assert.equal(behaviourLine(["ok() {", "  systemctl is-active x", "}", "ok"]), null);
+  assert.equal(behaviourLine(["ip=$(sudo podman inspect -f '{{.NetworkSettings.IPAddress}}' x)"]), null);
+  assert.match(behaviourLine(["fetch() { curl -fsS http://x/; }", "fetch"]), /^curl/);
+});
+
 test("a step's name earns nothing, and failure-only steps don't count", () => {
   const r = evaluate(evidence(ci("      - name: Curl the page and restart it\n        run: systemctl is-active x\n")));
   assert.equal(check(r, "behaviour").state, "fail");
