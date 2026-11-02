@@ -3,7 +3,7 @@ title: ZAP
 description: "OWASP ZAP baseline scans of URLs you list, on a systemd timer, reports on the host."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-zap at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-zap at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/zap/grade.svg)](https://conn3x.org/circuits/zap/grade)
 
@@ -15,7 +15,7 @@ A Conn3x circuit that scans websites you name with [ZAP](https://www.zaproxy.org
 
 ```hcl
 module "zap" {
-  source = "github.com/conn3xorg/circuit-zap?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-zap?ref=v0.1.1"
 
   hosts                = { scanner = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -42,7 +42,7 @@ Low 2
 Medium 2
 ```
 
-To try it on a throwaway container and a weak page of its own, see [examples/local](https://github.com/conn3xorg/circuit-zap/tree/v0.1.0/examples/local).
+To try it on a throwaway container and a weak page of its own, see [examples/local](https://github.com/conn3xorg/circuit-zap/tree/v0.1.1/examples/local).
 
 ## Passive and active
 
@@ -57,7 +57,7 @@ By default each scan runs `zap-baseline.py`. It spiders the target for up to `sp
 3. Sets up a systemd timer, `conn3x-zap.timer`, that runs the script on `schedule`. The timer is `Persistent`, so a scan missed while the host was off runs soon after it's back.
 4. With `run_now`, scans. It scans again whenever the script changes.
 
-Each scan writes a directory named for its start time in UTC under `/var/lib/conn3x-zap`, and points `latest` at it. Reports are named for their URL, with everything but letters and digits as `_`:
+Each scan writes to a directory of its own while it runs, then moves the reports to a root-owned directory named for its start time in UTC under `/var/lib/conn3x-zap`, and points `latest` at it. Reports are named for their URL, with everything but letters and digits as `_`:
 
 | File | What it is |
 | --- | --- |
@@ -136,16 +136,16 @@ Requires Conn3x v0.6.10 or later and systemd on each host. Hosts need to reach t
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with ZAP 2.17.0. [examples/local](https://github.com/conn3xorg/circuit-zap/tree/v0.1.0/examples/local) was applied to each in a container on arm64, and CI does the same on amd64. It checks that the second plan has no changes, then starts a deliberately weak page inside the host and scans it through `conn3x-zap.service`. The report has to name `Content Security Policy (CSP) Header Not Set`, rule 10038, and the page's access log has to show no attack payloads. Then, with `active_scan = true`, the same scan has to put attack payloads in that log. All of it ran only against that local page.
+Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with ZAP 2.17.0. [examples/local](https://github.com/conn3xorg/circuit-zap/tree/v0.1.1/examples/local) was applied to each in a container on arm64, and CI does the same on amd64. It checks that the second plan has no changes, then starts a deliberately weak page inside the host and scans it through `conn3x-zap.service`. The report has to name `Content Security Policy (CSP) Header Not Set`, rule 10038, and the page's access log has to show no attack payloads. Then, with `active_scan = true`, the same scan has to put attack payloads in that log. All of it ran only against that local page.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-2gb`, the passive check passed, and again after a reboot, when the timer was active and the plan had no changes. `update_addons` also passed on the Ubuntu droplet. On another Ubuntu droplet, an active scan of the same local page sent 638 requests, 136 of them with attack payloads, in about two minutes. An unreachable target failed the service and left `latest` alone, on Rocky Linux 10 in a container. With the AppArmor option removed by hand on the Ubuntu droplet, a 60 second limit ended the hung scan, failed the service and left `latest` alone. More than one target in a run wasn't tried.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zap/blob/v0.1.0/LICENSE). ZAP and its Docker image are Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zap/blob/v0.1.1/LICENSE). ZAP and its Docker image are Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-zap](https://github.com/conn3xorg/circuit-zap). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-zap/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-zap/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-zap/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-zap](https://github.com/conn3xorg/circuit-zap). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-zap/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-zap/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-zap/tree/v0.1.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant).

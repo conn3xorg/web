@@ -3,7 +3,7 @@ title: Helm
 description: "A pinned, checksum-verified Helm, with optional chart releases kept as you configured them."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-helm at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-helm at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/helm/grade.svg)](https://conn3x.org/circuits/helm/grade)
 
@@ -17,7 +17,7 @@ Only the binary:
 
 ```hcl
 module "helm" {
-  source = "github.com/conn3xorg/circuit-helm?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-helm?ref=v0.1.2"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -36,7 +36,7 @@ module "k3s" {
 }
 
 module "helm" {
-  source     = "github.com/conn3xorg/circuit-helm?ref=v0.1.1"
+  source     = "github.com/conn3xorg/circuit-helm?ref=v0.1.2"
   depends_on = [module.k3s]
 
   hosts                = { cp1 = "203.0.113.10" }
@@ -64,7 +64,7 @@ Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No chang
 
 For a chart in an OCI registry, set `chart = "oci://ghcr.io/stefanprodan/charts/podinfo"` and leave out `repository`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2/examples/local).
 
 ### Secrets in values
 
@@ -121,7 +121,7 @@ On every host in `hosts`:
 If you've listed releases, on one host (`release_host`, or the first name in sorted order):
 
 3. On a k3s server, waits for every CRD to be established. If one stays stuck, the apply fails and points to [Troubleshooting](https://github.com/conn3xorg/circuit-k3s#troubleshooting) in circuit-k3s. It never deletes a CRD.
-4. Pulls each chart to `/var/lib/conn3x-helm/RELEASE/VERSION`, checking `sha256` if you gave one before the file lands there.
+4. Pulls each chart to `/var/lib/conn3x-helm/RELEASE/VERSION`, checking `sha256` before the file lands there.
 5. Writes `values` to `/var/lib/conn3x-helm/RELEASE/values.yaml`, mode `0600`.
 6. Runs `helm upgrade --install --wait`, with up to 15 minutes for the release to become ready.
 
@@ -182,7 +182,7 @@ Each release takes:
 | `chart` | string | Required | Chart name in `repository`, or an `oci://` reference. |
 | `repository` | string | `null` | Chart repository, an `https://` URL with no credentials. |
 | `version` | string | Required | One exact chart version. Ranges are refused. |
-| `sha256` | string | `null` | SHA-256 of the chart's `.tgz`. Worth setting: a repository can publish new bytes under an old version. |
+| `sha256` | string | Required | SHA-256 of the chart's `.tgz`, since a repository can publish new bytes under an old version. |
 | `namespace` | string | `"default"` | Namespace, created if it's missing. |
 | `values` | string | `"{}"` | YAML, usually from `yamlencode`. Reaches state, so secrets are refused here. |
 | `values_files` | list(string) | `[]` | Absolute paths of values files already on the host, applied after `values`. |
@@ -200,7 +200,7 @@ Requires Conn3x v0.6.10 or later, circuit-k3s v0.1.4 or later if that's what bui
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.1/examples/local) to each in a container on amd64 and checks that the plan after it has no changes. It asks the running pods for a value through their service, changes the value and asks again, checks that a values file stayed out of state, and checks that a secret-looking value is refused. A container shows that the install works. It doesn't show that a release survives a reboot. The same four containers also passed by hand on arm64, along with an upgrade done by hand showing up in a plan, a wrong chart `sha256` stopping the apply, an `oci://` chart with no `sha256`, and the binary on its own with no releases, the last two on Debian 13.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2/examples/local) to each in a container on amd64 and checks that the plan after it has no changes. It asks the running pods for a value through their service, changes the value and asks again, checks that a values file stayed out of state, and checks that a secret-looking value is refused. A container shows that the install works. It doesn't show that a release survives a reboot. The same four containers also passed by hand on arm64, along with an upgrade done by hand showing up in a plan, a wrong chart `sha256` stopping the apply, an `oci://` chart with no `sha256`, and the binary on its own with no releases, the last two on Debian 13.
 
 The rest was run by hand on 2 vCPU, 4 GB droplets with one node each: Ubuntu 24.04, and Rocky Linux 10. On both, the value change showed in the pods, the secret wasn't in state, and after a reboot the plan had no changes and the pods still gave the right answer.
 
@@ -210,10 +210,10 @@ Not run: Helm 3, a cluster that isn't k3s, more than one host, a real secret cha
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-helm/blob/v0.1.1/LICENSE). Helm is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-helm/blob/v0.1.2/LICENSE). Helm is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-helm](https://github.com/conn3xorg/circuit-helm). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-helm/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-helm/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-helm](https://github.com/conn3xorg/circuit-helm). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-helm/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2/examples/local).
 - Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Istio](/circuits/istio), [Flux](/circuits/flux).

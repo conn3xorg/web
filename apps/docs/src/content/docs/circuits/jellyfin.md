@@ -3,7 +3,7 @@ title: Jellyfin
 description: "Jellyfin media server: official apt repo or Podman image, read-only media, GPU groups, optional admin that skips the setup wizard."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-jellyfin at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-jellyfin at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/jellyfin/grade.svg)](https://conn3x.org/circuits/jellyfin/grade)
 
@@ -22,7 +22,7 @@ variable "jellyfin_admin_password" {
 }
 
 module "jellyfin" {
-  source = "github.com/conn3xorg/circuit-jellyfin?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-jellyfin?ref=v0.1.3"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -53,7 +53,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3/examples/local).
 
 ### Reading your media
 
@@ -128,6 +128,7 @@ Before the circuit runs, the `conn3x_host` data source reads each host's distrib
 | `ssh_known_hosts_file` | string | `null` | known_hosts file to check host keys against. When null, `~/.ssh/known_hosts`. Not used for a host object with `host_key`. |
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
 | `jellyfin_version` | string | `"12.4"` | Jellyfin release. On Debian and Ubuntu it pins `jellyfin-server` and `jellyfin-web`; on Rocky Linux and Fedora it's the image tag. Raising it upgrades in place. |
+| `image_digest` | string | The digest of `12.4` | Digest of the image, on Rocky Linux and Fedora. Podman pulls by the digest, so set it whenever you change `jellyfin_version`. |
 | `media_dirs` | list(string) | `[]` | Directories holding your media, such as `["/srv/media/movies"]`. Checked for read access, never changed. Absolute paths without spaces, colons, commas, quotes or backslashes. |
 | `port` | number | `8096` | HTTP port Jellyfin listens on, on every address. Not `8920`, which Jellyfin keeps for HTTPS. |
 | `data_dir` | string | `"/var/lib/jellyfin"` | Jellyfin's database, metadata and plugins. On Rocky Linux and Fedora, also its settings and logs. |
@@ -150,7 +151,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes, that `/health` answers `Healthy`, that `/System/Info/Public` shows the wizard finished, that the administrator can sign in and a wrong password can't, and that all of it holds after Jellyfin restarts, with a plan that still has no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3/examples/local) to each on amd64 and checks that the second plan has no changes, that `/health` answers `Healthy`, that `/System/Info/Public` shows the wizard finished, that the administrator can sign in and a wrong password can't, and that all of it holds after Jellyfin restarts, with a plan that still has no changes. CI also checks that a link at `network.xml` leaves where it points unchanged.
 
 By hand, in containers: a custom `data_dir`, `cache_dir` and `port` on a fresh Debian 13 host, and the same change on an existing Rocky Linux 10 host, which came up as a new server with the administrator created again.
 
@@ -158,10 +159,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-jellyfin/blob/v0.1.0/LICENSE). Jellyfin itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-jellyfin/blob/v0.1.3/LICENSE). Jellyfin itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-jellyfin](https://github.com/conn3xorg/circuit-jellyfin). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-jellyfin/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-jellyfin](https://github.com/conn3xorg/circuit-jellyfin). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-jellyfin/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3/examples/local).
 - Related circuits: [Samba](/circuits/samba), [NFS](/circuits/nfs), [Firewall](/circuits/firewall), [Podman](/circuits/podman), [Caddy](/circuits/caddy), [Matrix Synapse](/circuits/matrix).

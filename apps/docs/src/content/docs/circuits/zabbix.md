@@ -3,7 +3,7 @@ title: Zabbix
 description: "Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-zabbix at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-zabbix at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/zabbix/grade.svg)](https://conn3x.org/circuits/zabbix/grade)
 
@@ -26,7 +26,7 @@ module "postgres" {
 }
 
 module "zabbix" {
-  source = "github.com/conn3xorg/circuit-zabbix?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-zabbix?ref=v0.1.2"
 
   depends_on = [module.postgres]
 
@@ -56,7 +56,7 @@ Then open `http://localhost:8080` and sign in as `Admin` with your `admin_passwo
 
 `depends_on` makes sure PostgreSQL is up before Zabbix imports its schema. It also holds back reading the hosts until the apply, so give each one's distribution in `os`, as above: the circuit picks repositories and packages by distribution, and without `os` the plan fails with `Invalid for_each argument`. The same goes for hosts created in the same plan. If `os` turns out not to match a host, Conn3x stops before configuring it.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.2/examples/local).
 
 ### Agents for a server you already run
 
@@ -64,7 +64,7 @@ Leave `servers` empty and set `server_address` to your Zabbix server, or to the 
 
 ```hcl
 module "zabbix_agents" {
-  source = "github.com/conn3xorg/circuit-zabbix?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-zabbix?ref=v0.1.2"
 
   agents         = { web1 = "203.0.113.11", web2 = "203.0.113.12" }
   server_address = "zabbix.example.com"
@@ -94,11 +94,11 @@ The circuit doesn't register agents as hosts in Zabbix. Add them in the frontend
 
 On every host, first:
 
-1. Adds Zabbix's repository for the release series, `https://repo.zabbix.com/zabbix/7.0/`, for the host's distribution and architecture, with Zabbix's signing key from [files/zabbix.asc](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.1/files/zabbix.asc). That key expires on 28 April 2034.
+1. Adds Zabbix's repository for the release series, `https://repo.zabbix.com/zabbix/7.0/`, for the host's distribution and architecture, with Zabbix's signing key from [files/zabbix.asc](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.2/files/zabbix.asc). That key expires on 28 April 2034.
 
 On the server host, in order:
 
-1. On Rocky Linux, AlmaLinux and RHEL, also adds Zabbix's `non-supported` repository, which carries the `fping` the server needs, with its key from [files/zabbix-non-supported.asc](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.1/files/zabbix-non-supported.asc), which expires on 30 June 2034. Then installs `zabbix-selinux-policy`, turns on the SELinux booleans `httpd_can_connect_zabbix` and `httpd_can_network_connect_db` where SELinux is on, and sets `PGGSSENCMODE=disable` in `/etc/sysconfig/zabbix-server`. Without that, libpq looks for a Kerberos keytab on every connection, and SELinux logs a denial for each.
+1. On Rocky Linux, AlmaLinux and RHEL, also adds Zabbix's `non-supported` repository, which carries the `fping` the server needs, with its key from [files/zabbix-non-supported.asc](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.2/files/zabbix-non-supported.asc), which expires on 30 June 2034. Then installs `zabbix-selinux-policy`, turns on the SELinux booleans `httpd_can_connect_zabbix` and `httpd_can_network_connect_db` where SELinux is on, and sets `PGGSSENCMODE=disable` in `/etc/sysconfig/zabbix-server`. Without that, libpq looks for a Kerberos keytab on every connection, and SELinux logs a denial for each.
 2. Installs `curl`, the PostgreSQL client, `zabbix-server-pgsql`, `zabbix-sql-scripts`, `zabbix-nginx-conf`, the frontend (`zabbix-frontend-php` on Debian and Ubuntu, `zabbix-web-pgsql` on the Red Hat family), `php-pgsql` and `zabbix-get`. nginx and PHP-FPM come from the distribution.
 3. Sets `DBHost`, `DBPort`, `DBName` and `DBUser` in `/etc/zabbix/zabbix_server.conf`, and writes the password to `/etc/zabbix/zabbix_server.d/conn3x-db.conf`, readable only by root, which the server includes.
 4. Imports `/usr/share/zabbix-sql-scripts/postgresql/server.sql.gz` into the database in one transaction, if the database has no Zabbix tables yet. It never imports over an existing schema; upgrades between 7.0 releases are the server's own job when it starts.
@@ -166,7 +166,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with access to `repo.z
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.1/examples/local), with PostgreSQL from circuit-postgres, the server, the frontend and an agent on one amd64 container, checks that the second plan has no changes, and then checks that the frontend answers `/index.php`, the API reports 7.0.32, Admin logs in with the example's password and no longer with `zabbix`, and `zabbix_get -k agent.ping` returns 1. A second job runs the server on Ubuntu 24.04 and a PSK agent on Rocky Linux 10, in two containers: the agent refuses `zabbix_get` without the key and answers with it, and once the agent is registered through the API with its key, the server reports it available. The same was run on arm64 containers on a Mac.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.2/examples/local), with PostgreSQL from circuit-postgres, the server, the frontend and an agent on one amd64 container, checks that the second plan has no changes, and then checks that the frontend answers `/index.php`, the API reports 7.0.32, Admin logs in with the example's password and no longer with `zabbix`, and `zabbix_get -k agent.ping` returns 1. A second job runs the server on Ubuntu 24.04 and a PSK agent on Rocky Linux 10, in two containers: the agent refuses `zabbix_get` without the key and answers with it, and once the agent is registered through the API with its key, the server reports it available. The same was run on arm64 containers on a Mac.
 
 On arm64 containers, every job above also ran against hosts first applied at v0.1.0 and then moved to this version: the second plan had no changes and the checks passed. All of it ran on Conn3x v0.6.11 and on a newer development build.
 
@@ -174,10 +174,10 @@ On DigitalOcean, a Rocky Linux 10 droplet with SELinux enforcing ran PostgreSQL,
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.1/LICENSE). Zabbix itself is AGPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zabbix/blob/v0.1.2/LICENSE). Zabbix itself is AGPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-zabbix](https://github.com/conn3xorg/circuit-zabbix). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-zabbix/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-zabbix](https://github.com/conn3xorg/circuit-zabbix). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-zabbix/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-zabbix/tree/v0.1.2/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Nagios Core](/circuits/nagios).

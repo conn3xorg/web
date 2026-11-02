@@ -3,7 +3,7 @@ title: Nagios Core
 description: "Nagios Core with plugins, hosts and services from inputs, nagios -v before every reload, and a login-protected web interface on loopback."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nagios at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nagios at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/nagios/grade.svg)](https://conn3x.org/circuits/nagios/grade)
 
@@ -30,7 +30,7 @@ The catch: a built Nagios gets no updates from your package manager. Security fi
 
 ```hcl
 module "nagios" {
-  source = "github.com/conn3xorg/circuit-nagios?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-nagios?ref=v0.1.2"
 
   hosts                = { monitor = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -79,7 +79,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.2/examples/local).
 
 ### Reaching the web interface
 
@@ -153,7 +153,7 @@ Requires Conn3x v0.6.10 or later and systemd on each host, with a package mirror
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.1/examples/local) to each, checks that the second plan has no changes and that the password stayed out of state, and waits for the example's two checks: the one on an open port must show OK and the one on a closed port CRITICAL, in Nagios's status file and on the web interface's status page. It checks that the web interface refuses no password and a wrong one, and isn't answering on the container's own address. Then it applies a service with a command that doesn't exist, twice, and checks that both fail and Nagios keeps running, and that fixing it leaves the plan clean. Those runs were also done by hand in containers on arm64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.2/examples/local) to each, checks that the second plan has no changes and that the password stayed out of state, and waits for the example's two checks: the one on an open port must show OK and the one on a closed port CRITICAL, in Nagios's status file and on the web interface's status page. It checks that the web interface refuses no password and a wrong one, and isn't answering on the container's own address. Then it applies a service with a command that doesn't exist, twice, and checks that both fail and Nagios keeps running, and that fixing it leaves the plan clean. Those runs were also done by hand in containers on arm64.
 
 On the same arm64 containers, hosts first applied at v0.1.0 and then moved to this version passed those checks too, with the old password file gone and a clean second plan, on Conn3x v0.6.11. On a newer development build the same held for Debian and Fedora directly, and for Ubuntu and Rocky Linux with `-refresh=false` on the first apply. The move hasn't been run on a droplet.
 
@@ -161,10 +161,10 @@ The same checks passed on Ubuntu 24.04 and Rocky Linux 10 droplets, on amd64, wi
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nagios/blob/v0.1.1/LICENSE). Nagios Core itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nagios/blob/v0.1.2/LICENSE). Nagios Core itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-nagios](https://github.com/conn3xorg/circuit-nagios). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nagios/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-nagios](https://github.com/conn3xorg/circuit-nagios). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-nagios/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.1.2/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix).
