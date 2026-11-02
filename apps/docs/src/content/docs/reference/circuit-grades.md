@@ -42,7 +42,7 @@ A script reads each circuit when the site builds. It looks at the latest `vX.Y.Z
 | Container images pinned by digest | Supply chain | 5 | | Image references on `docker.io`, `ghcr.io`, `quay.io`, `registry.*` and `mcr.microsoft.com` in the circuit's code, leaving out outputs and messages. Fails on a tag with no digest |
 | Pinned repo keys aren't near expiry | Supply chain | 5 | | Expiry dates in the PGP keys the repo holds. Fails inside 90 days |
 | Default listen address | Supply chain | 5 | | A default of `0.0.0.0`, `::`, `[::]` or `*`, a `0.0.0.0` literal, or a flag such as `--web.listen-address=:9100`. An address the caller has to choose, or a comparison against one, doesn't count |
-| Privileged shell patterns | Supply chain | 10 | | The [patterns below](#privileged-shell-patterns) in the circuit's `.hcl`, `.tf` and `.sh` files |
+| Privileged shell patterns | Supply chain | 5 | | The [patterns below](#privileged-shell-patterns) in the circuit's `.hcl`, `.tf` and `.sh` files |
 | Release tag is signed | Repository | 5 | | GitHub's verification of the signature on the latest tag |
 | Main is protected | Repository | 5 | | A ruleset on main requiring pull requests and passing checks |
 | Released recently | Repository | 5 | | The latest tag is under 180 days old |
@@ -57,6 +57,7 @@ Each of these is wrong wherever it turns up in shell that runs as root, so a hit
 - a write to a predictable name in `/tmp` on the host
 - `--allow-root`, which tells a tool that refuses root to run as root anyway
 - a source that isn't checked: `--no-check-certificate`, `--allow-unauthenticated`, `[trusted=yes]`
+- a credential sent with the certificate check off: `curl -k` or `--insecure` on the same command as `-K`, `-u`, `--cert` or an `Authorization` header. The page says whether the circuit also checks who holds the port first. That narrows the risk, so it still counts as a hit
 
 [Working in a directory someone else owns](/guides/share-a-circuit#working-in-a-directory-someone-else-owns) shows what to write instead.
 
@@ -67,7 +68,7 @@ These checks read files and API responses. They don't run the circuit or review 
 - **A pass means CI ran the command, not that the command proves much.** The "uses the thing" check spots commands that only look at a host, such as `systemctl is-active`, `grep` and `kubectl wait`. Anything else counts. A weak test can pass it, and a real test written as a state check can miss it. Each page shows the line it found, so you can judge.
 - **Failing to find a test isn't the same as finding a bug.** A circuit with a low grade may work well, and one with an A may not.
 - **The checksum check only reads `download` steps.** A fetch made another way isn't seen.
-- **The privileged shell check can't see who owns a directory.** Root following a symbolic link planted by a service account is the bug that matters most here, and it can't be read from text, since the same `chown` is safe in a directory only root can change. A pass means none of the listed patterns turned up. It doesn't mean the circuit's root steps are safe.
+- **The privileged shell check can't see who owns a directory.** Root following a symbolic link planted by a service account is the bug that matters most here, and it can't be read from text, since the same `chown` is safe in a directory only root can change. A pass means none of the listed patterns turned up. It doesn't mean the circuit's root steps are safe. It's worth 5 points, like the other supply chain checks, because nearly every circuit passes it and it can't see that bug.
 - **The listen address check reads text.** A service that listens on every address because its own default says so, with nothing in the circuit about it, isn't seen. A fail isn't always a mistake either: a DNS server is meant to answer on every address. The page shows the line it found.
 - **The image check only knows the registries it lists.** An image from another registry, or a short name such as `alpine:3`, isn't seen.
 - **Key expiry doesn't check signatures or revocations.** It reads the dates.

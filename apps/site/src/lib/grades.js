@@ -255,6 +255,12 @@ const PRIVILEGED = [
   [/--no-check-certificate|--allow-unauthenticated|\[trusted=yes\]/, "installs or downloads without checking the source"],
 ];
 
+// curl with -k or --insecure, and a credential on the same command. -K is how
+// the circuits pass one on stdin. Lower-case -k is matched on its own, so -K isn't it.
+const INSECURE_CREDENTIAL = /\bcurl\b(?=[^|;&\n]*\s(?:-[a-zA-Z]*k[a-zA-Z]*|--insecure)(?=\s))(?=[^|;&\n]*\s(?:-[a-zA-Z]*K|--config\b|-u\s|--user\b|-H\s*["']?(?:Authorization|X-[A-Za-z-]*(?:Token|Key))|--cert\b|--cookie\b|--oauth2-bearer\b))/;
+// The port check from the share-a-circuit guide.
+const PORT_CHECK = /\/proc\/net\/tcp/;
+
 function downloadBlocks(hcl) {
   const out = [];
   for (const m of hcl.matchAll(/\bdownload\s*\{/g)) {
@@ -410,11 +416,14 @@ export const RUBRIC = [
     },
   },
   {
-    id: "privileged-shell", group: "Supply chain", points: 10,
+    id: "privileged-shell", group: "Supply chain", points: 5,
     title: "Privileged shell patterns",
     test: (ev) => {
       const text = logic(ev, ".hcl", ".tf", ".sh");
       const found = PRIVILEGED.filter(([re]) => re.test(text)).map(([, what]) => what);
+      if (INSECURE_CREDENTIAL.test(text)) {
+        found.push(`sends a credential with the certificate check off, ${PORT_CHECK.test(text) ? "after checking who holds the port, which narrows the risk without closing it" : "without checking who holds the port"}`);
+      }
       return found.length ? fail(`Shell here ${found.join("; ")}.`) : pass("Found none of the listed patterns.");
     },
   },
