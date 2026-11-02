@@ -1,6 +1,6 @@
 {
   "name": "helm",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "hostObjects": true,
   "inputs": [
     {
@@ -26,7 +26,7 @@
     },
     {
       "name": "releases",
-      "type": "map(object({\n    chart        = string\n    repository   = optional(string)\n    version      = string\n    sha256       = optional(string)\n    namespace    = optional(string, \"default\")\n    values       = optional(string, \"{}\")\n    values_files = optional(list(string), [])\n  }))",
+      "type": "map(object({\n    chart        = string\n    repository   = optional(string)\n    version      = string\n    sha256       = string\n    namespace    = optional(string, \"default\")\n    values       = optional(string, \"{}\")\n    values_files = optional(list(string), [])\n  }))",
       "default": {},
       "description": "Chart releases to install, by release name. chart is a name in repository, or an oci:// reference with no repository. version is exact. values is YAML, usually from yamlencode, and reaches state, so anything secret goes in values_files: absolute paths of values files already on the host.",
       "sensitive": false,

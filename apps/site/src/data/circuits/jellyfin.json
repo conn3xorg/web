@@ -2,7 +2,7 @@
   "name": "jellyfin",
   "repo": "conn3xorg/circuit-jellyfin",
   "description": "Jellyfin media server: official apt repo or Podman image, read-only media, GPU groups, optional admin that skips the setup wizard.",
-  "version": "v0.1.0",
+  "version": "v0.1.3",
   "tags": [
     "jellyfin",
     "media",

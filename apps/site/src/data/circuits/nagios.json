@@ -2,7 +2,7 @@
   "name": "nagios",
   "repo": "conn3xorg/circuit-nagios",
   "description": "Nagios Core with plugins, hosts and services from inputs, nagios -v before every reload, and a login-protected web interface on loopback.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "nagios",
     "monitoring",
