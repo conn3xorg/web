@@ -7,7 +7,6 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
 import { hcl, parseType, fieldKind, convert, unavailable, conflict, withRequired, generate, unticked, zip, linkFor, readLink, rolesOf } from "../apps/site/src/lib/builder.js";
 import { load, builds } from "./builder-combos.mjs";
 
@@ -65,9 +64,9 @@ test("convert turns typed text into typed values", () => {
   assert.equal(convert(vh, { key: "", fields: {} }), undefined);
 });
 
-test("excluded circuits and lastrack can't be reached", () => {
-  assert.ok(!existsSync(new URL("../apps/site/src/data/circuit-inputs/lastrack.json", import.meta.url)));
-  for (const name of [...Object.keys(data.builder.excluded), "lastrack"]) {
+test("excluded circuits and names outside the directory can't be reached", () => {
+  for (const name of Object.keys(data.inputs)) assert.ok(data.circuits[name], `${name} has inputs, so it must be in the directory`);
+  for (const name of [...Object.keys(data.builder.excluded), "not-in-the-directory"]) {
     assert.ok(!data.inputs[name] || data.builder.excluded[name], `${name} has no inputs file or is excluded`);
     for (const d of data.builder.distros) assert.ok(unavailable(data, name, d.id), `${name} on ${d.id}`);
     const r = generate(data, { ...base, picks: [name] });
@@ -101,8 +100,8 @@ test("builder.json names real circuits and inputs", () => {
       if (p.input) assert.ok(data.inputs[n].inputs.some((v) => v.name === p.input), `${n}.${p.input}`);
     }
   }
-  // Every official circuit has inputs, except lastrack.
-  for (const c of Object.values(data.circuits)) if (c.official && c.name !== "lastrack") assert.ok(data.inputs[c.name], c.name);
+  // Every official circuit has inputs.
+  for (const c of Object.values(data.circuits)) if (c.official) assert.ok(data.inputs[c.name], c.name);
 });
 
 test("conflicts and requirements", () => {
@@ -200,7 +199,7 @@ test("a link carries picks only, and can't smuggle in a bad build", () => {
   assert.deepEqual(readLink(data, linkFor("rocky10", ["nginx", "grafana"])), { distro: "rocky10", picks: ["nginx", "grafana"] });
   assert.deepEqual(readLink(data, "#distro=rocky10&picks="), { distro: "rocky10", picks: [] });
   assert.deepEqual(readLink(data, "#distro=rocky10&picks=nginx,apache,nginx"), { distro: "rocky10", picks: ["nginx"] }, "the clash and the repeat go");
-  assert.deepEqual(readLink(data, "#distro=rocky10&picks=kubeadm,lastrack,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
+  assert.deepEqual(readLink(data, "#distro=rocky10&picks=kubeadm,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
   assert.equal(readLink(data, "#distro=nope&picks=nginx"), null);
   assert.equal(readLink(data, "#hosts"), null, "a link inside the page isn't a build");
 });
