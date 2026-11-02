@@ -3,7 +3,7 @@ title: Matrix Synapse
 description: "Synapse Matrix homeserver under Podman, behind your reverse proxy, with host-generated secrets and SQLite or Postgres."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-matrix at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-matrix at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/matrix/grade.svg)](https://conn3x.org/circuits/matrix/grade)
 
@@ -28,7 +28,7 @@ variable "admin_password" {
 }
 
 module "matrix" {
-  source = "github.com/conn3xorg/circuit-matrix?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-matrix?ref=v0.1.1"
 
   hosts                = { chat = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -54,7 +54,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1/examples/local).
 
 ### Behind a reverse proxy
 
@@ -145,7 +145,7 @@ Make tokens with the [admin API](https://element-hq.github.io/synapse/latest/usa
 
 Element publishes Synapse two ways: Debian and Ubuntu packages from `packages.matrix.org`, and the `element-hq/synapse` image. There's nothing official for Rocky Linux or RHEL, and Fedora's `matrix-synapse` is a downstream package that Fedora maintains. The packages are also amd64 only. The image covers all four distributions, amd64 and arm64, with the same Synapse build, so this circuit uses it everywhere:
 
-- **One pin.** `synapse_version` is an image tag. Change it and `conn3x plan` shows the new tag in the unit file; the apply restarts Synapse on it, and Synapse migrates its database on start.
+- **One pin.** `synapse_version` is an image tag, and `image_digest` pins it. Change both and `conn3x plan` shows the new tag in the unit file; the apply restarts Synapse on it, and Synapse migrates its database on start.
 - **The same layout on every host.** The config lives in `/etc/matrix-synapse` and the data in `/var/lib/matrix-synapse` whichever distribution is underneath.
 
 The container uses the host's network, so `listen_address` is one of the host's own and a proxy on the host reaches it at `localhost:8008`.
@@ -189,6 +189,7 @@ On its first start, Synapse makes its signing key, `/var/lib/matrix-synapse/sign
 | `server_name` | string | Required | The domain in every user ID, such as `"example.com"` for `@alice:example.com`. **It can never change** once Synapse has started. |
 | `public_baseurl` | string | Required | URL clients reach Synapse at through your proxy, such as `"https://matrix.example.com/"`. |
 | `synapse_version` | string | `"v1.164.1"` | Tag of `ghcr.io/element-hq/synapse`. |
+| `image_digest` | string | The digest of `v1.164.1` | Digest of the image. Podman pulls by the digest, so set it whenever you change `synapse_version`. |
 | `listen_address` | string | `"127.0.0.1"` | Address Synapse listens on. |
 | `listen_port` | number | `8008` | Port of the client and federation APIs, in plain HTTP. |
 | `postgres` | object | `null` | PostgreSQL to use, with optional `host` (`"127.0.0.1"`), `port` (`5432`), `database` (`"synapse"`) and `username` (`"synapse"`). The database must exist with C collation. When null, SQLite. |
@@ -211,7 +212,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, which needs to reach i
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes. It checks `/_matrix/client/versions` answers, the example's admin logs in through `/_matrix/client/v3/login` and is an admin, a wrong password is turned down, and `/.well-known/matrix/server` names the server. It checks the generated secrets are root's and not in `homeserver.yaml`. Then it restarts Synapse, logs in again and plans again.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It checks `/_matrix/client/versions` answers, the example's admin logs in through `/_matrix/client/v3/login` and is an admin, a wrong password is turned down, and `/.well-known/matrix/server` names the server. It checks the generated secrets are root's and not in `homeserver.yaml`. Then it restarts Synapse, logs in again and plans again.
 
 The same checks passed by hand on arm64 containers of all four, and on two 2 GB droplets. On Ubuntu 24.04, Synapse ran against PostgreSQL 18 from circuit-postgres v0.2.0, with the database created as shown above, and ran as the `matrix-synapse` user with ID 999, since 991 is `systemd-resolve` there. On Rocky Linux 10, with SELinux enforcing, it ran on SQLite with no denials in the audit log. Adding a setting restarted Synapse with a clean plan after, and both came back after a reboot with the admin still able to log in and no changes in the plan.
 
@@ -219,10 +220,10 @@ Upgrading from one `synapse_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-matrix/blob/v0.1.0/LICENSE). Synapse itself is AGPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-matrix/blob/v0.1.1/LICENSE). Synapse itself is AGPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-matrix](https://github.com/conn3xorg/circuit-matrix). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-matrix/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-matrix](https://github.com/conn3xorg/circuit-matrix). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-matrix/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [Jellyfin](/circuits/jellyfin).

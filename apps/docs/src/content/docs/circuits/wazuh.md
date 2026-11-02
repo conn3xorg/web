@@ -3,7 +3,9 @@ title: Wazuh
 description: "Wazuh manager, indexer and dashboard on one host, agents on the rest: vulnerability detection, file integrity and alerts."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-wazuh at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-wazuh at v0.1.3. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/wazuh/grade.svg)](https://conn3x.org/circuits/wazuh/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/wazuh/grade.svg)](https://conn3x.org/circuits/wazuh/grade)
 
@@ -60,7 +62,7 @@ variable "wazuh_enrollment_password" {
 }
 
 module "wazuh" {
-  source = "github.com/conn3xorg/circuit-wazuh?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-wazuh?ref=v0.1.3"
 
   server               = { siem = "203.0.113.10" }
   agents               = { web1 = "203.0.113.21", web2 = "203.0.113.22", db1 = "203.0.113.30" }
@@ -76,7 +78,7 @@ Then run `conn3x init` and `conn3x apply`, with the three values in `TF_VAR_wazu
 
 Agents need to reach the server on ports 1514 and 1515, and nobody else needs to. The circuit doesn't open them, so if you have a firewall, [circuit-firewall](/circuits/firewall) can. When agents reach the server by another address, such as a private one, set `manager_address`.
 
-To try it on throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.1/examples/local).
+To try it on throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.3/examples/local).
 
 ### The dashboard
 
@@ -188,11 +190,17 @@ On each agent, once the server is ready:
 
 Requires Conn3x v0.6.9 or later and systemd on each host, with outbound HTTPS to packages.wazuh.com, and from the server to raw.githubusercontent.com. Wazuh's packages exist for amd64 and arm64.
 
+The steps that set the API's passwords check the certificate the API made for itself, which lasts a year from first start. Once it expires they stop with a certificate error, until you replace it.
+
 ## Tested on
 
-Wazuh 4.14.9. Containers on arm64 (Podman, 8 GiB shared machine, 1 GB indexer heap): a server and an agent in two containers for Ubuntu 24.04 server with Debian 13 agent, Ubuntu 24.04 server with Rocky Linux 10 agent, Rocky Linux 10 server with Fedora 45 agent, and Rocky Linux 10 server with Ubuntu 24.04 agent. Each applied, had a clean second plan, and passed [test/check.sh](https://github.com/conn3xorg/circuit-wazuh/blob/v0.1.1/test/check.sh): the API refused a wrong password and the default one, took the right one, showed the agent active, and a changed file on the agent reached the indexer as an alert. The indexer runs fine in a container, so CI runs that same matrix on amd64, adding a dashboard sign-in, a password change by a second apply, and a check that state holds no secrets. On Ubuntu 24.04 containers we ran those by hand too: the old passwords got 401 and state had none of them.
+Wazuh 4.14.9. Containers on arm64 (Podman, 8 GiB shared machine, 1 GB indexer heap): a server and an agent in two containers for Ubuntu 24.04 server with Debian 13 agent, Ubuntu 24.04 server with Rocky Linux 10 agent, Rocky Linux 10 server with Fedora 45 agent, and Rocky Linux 10 server with Ubuntu 24.04 agent. Each applied, had a clean second plan, and passed [test/check.sh](https://github.com/conn3xorg/circuit-wazuh/blob/v0.1.3/test/check.sh): the API refused a wrong password and the default one, took the right one, showed the agent active, and a changed file on the agent reached the indexer as an alert. The indexer runs fine in a container, so CI runs that same matrix on amd64, adding a dashboard sign-in, a password change by a second apply, and a check that state holds no secrets. On Ubuntu 24.04 containers we ran those by hand too: the old passwords got 401 and state had none of them.
 
 Those four pairs also ran the whole CI job on arm64 containers against hosts first applied at v0.1.0 and then moved to this version. All of it ran on Conn3x v0.6.11 and on a newer development build. The move hasn't been run on a droplet.
+
+A Rocky Linux 10 server also ran the API password step at v0.1.3 on arm64 containers, on a password change; CI runs it on every pair.
+
+At v0.1.2, an Ubuntu 24.04 server with a Debian 13 agent and a Rocky Linux 10 server with an Ubuntu 24.04 agent ran the same checks on arm64 containers, including a password change with a link in the dashboard's data directory, which left where it pointed as it was. CI runs all four pairs on amd64.
 
 CI can't show you what only real hosts did. On DigitalOcean, with `s-4vcpu-8gb` servers and `s-1vcpu-1gb` agents: an Ubuntu 24.04 server with Debian 13 and Rocky Linux 10 agents, and a Rocky Linux 10 server, SELinux enforcing, with Ubuntu 24.04 and Fedora 44 agents (DigitalOcean has no Fedora 45 image). Every agent showed active, file integrity alerts arrived from each, vulnerability detection filled its index, the dashboard took the admin's password, and a wrong enrollment password was refused on a container pair. From outside, 9200, 55000 and 443 were closed, and 1514 and 1515 open. After rebooting all of them, the plan had no changes and the checks passed again. On Rocky Linux the services ran as `unconfined_service_t` with no denials in the audit log. Upgrading an Ubuntu 24.04 server and a Rocky Linux 10 agent from 4.14.8 to 4.14.9 by raising `wazuh_version` also worked, with a clean plan and a new alert after it.
 
@@ -200,10 +208,10 @@ Not tested: Amazon Linux, RHEL or other Red Hat family servers, arm64 droplets, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-wazuh/blob/v0.1.1/LICENSE). Wazuh itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-wazuh/blob/v0.1.3/LICENSE). Wazuh itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-wazuh](https://github.com/conn3xorg/circuit-wazuh). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-wazuh/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-wazuh](https://github.com/conn3xorg/circuit-wazuh). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-wazuh/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.3/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor).

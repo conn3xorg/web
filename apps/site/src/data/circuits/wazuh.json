@@ -2,7 +2,7 @@
   "name": "wazuh",
   "repo": "conn3xorg/circuit-wazuh",
   "description": "Wazuh manager, indexer and dashboard on one host, agents on the rest: vulnerability detection, file integrity and alerts.",
-  "version": "v0.1.2",
+  "version": "v0.1.3",
   "tags": [
     "wazuh",
     "siem",
