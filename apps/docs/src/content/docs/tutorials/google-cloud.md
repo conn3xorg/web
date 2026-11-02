@@ -8,7 +8,7 @@ In this tutorial one configuration creates two Compute Engine instances running 
 **Time:** 15 minutes.
 
 :::caution[This tutorial costs money]
-It creates two real `e2-small` instances, each with a disk and a public address. Together they cost a few cents an hour at [Google Cloud's prices](https://cloud.google.com/compute/vm-instance-pricing). They keep costing money until you destroy them, so finish with [Destroy everything](#destroy-everything).
+It creates two real instances, each with a disk and a public address. Each `e2-small` costs $0.0168 an hour in `us-central1` at [Google Cloud's prices](https://cloud.google.com/products/compute/pricing/general-purpose), and each [public address](https://cloud.google.com/vpc/network-pricing#ipaddress) $0.005 an hour. Two of each for an hour cost about 4.4 cents, plus a little for their disks. They keep costing money until you destroy them, so finish with [Destroy everything](#destroy-everything).
 :::
 
 ## Prerequisites
