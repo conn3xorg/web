@@ -16,13 +16,11 @@ test("a grade page says what was checked, when, and what a grade isn't", async (
   expect(errors).toEqual([]);
 });
 
-test("a held check shows no result for anyone", async ({ page }) => {
+test("the released checks show a result, and none shows as held", async ({ page }) => {
   for (const name of ["postgres", "nginx"]) {
     await page.goto(`/circuits/${name}/grade`);
     for (const title of ["Default listen address", "Container images pinned by digest", "Privileged shell patterns"]) {
-      const row = page.locator("tbody tr", { hasText: title });
-      await expect(row).toContainText("Held");
-      await expect(row).toContainText("We're not publishing this result yet");
+      await expect(page.locator("tbody tr", { hasText: title })).not.toContainText("Held");
     }
   }
 });

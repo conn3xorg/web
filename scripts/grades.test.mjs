@@ -134,15 +134,64 @@ test("downloads need a checksum, with interpolation in the block", () => {
 
 test("held checks publish nothing and score nothing", () => {
   const leaky = evidence(ci(fetching), { files: [["main.circuit.hcl", 'x = "docker.io/a/b:1"\ny = "0.0.0.0"\n']] });
-  const heldResult = evaluate(leaky);
+  const held = new Set(["images-by-digest", "listen-address"]);
+  const heldResult = evaluate(leaky, { held });
   const open = evaluate(leaky, { held: new Set() });
   assert.equal(check(open, "images-by-digest").state, "fail", "the check does run when released");
-  for (const id of HELD) {
+  for (const id of held) {
     const c = check(heldResult, id);
     assert.deepEqual(Object.keys(c).sort(), ["id", "max", "points", "state"]);
     assert.equal(c.state, "held");
   }
   assert.ok(heldResult.score > open.score, "held failures don't lower the score");
+});
+
+test("an address in prose or a comparison isn't a listener", () => {
+  const state = (file, text) => check(evaluate(evidence(ci(fetching), { files: [[file, text]] })), "listen-address").state;
+  for (const safe of [
+    'description = "\\"0.0.0.0\\" listens on every address."',
+    'error_message = "such as \\"0.0.0.0\\""',
+    'h = lookup({ "0.0.0.0" = "127.0.0.1" }, var.a, var.a)',
+    'h = contains(["0.0.0.0"], var.a) ? "x" : "y"',
+    'h = var.a == "0.0.0.0" ? "x" : "y"',
+    'default = "127.0.0.1"',
+  ]) assert.equal(state("variables.tf", `${safe}\n`), "pass", safe);
+  for (const open of ['default = "0.0.0.0"', 'default = ["0.0.0.0"]', 'default = "::"', 'default = "[::]"', 'default = "0.0.0.0:3000"', 'bind = "0.0.0.0"', 'ExecStart=/x --web.listen-address=:9100']) {
+    assert.equal(state("main.circuit.hcl", `${open}\n`), "fail", open);
+  }
+});
+
+test("an image is judged where it's pulled, not where it's named", () => {
+  const state = (text) => check(evaluate(evidence(ci(fetching), { files: [["main.circuit.hcl", `${text}\n`]] })), "images-by-digest").state;
+  assert.equal(state('image = "docker.io/a/b:${var.v}"'), "fail");
+  assert.equal(state('image = "docker.io/a/b:${var.v}@${var.d}"'), "pass");
+  assert.equal(state('value = "docker.io/a/b:${var.v}"'), "na", "an output");
+  assert.equal(state('error_message = "such as \\"docker.io/a/b:1\\""'), "na", "an error message");
+});
+
+test("privileged shell patterns fail by name, and clean shell passes", () => {
+  const graded = (text) => check(evaluate(evidence(ci(fetching), { files: [["main.circuit.hcl", `${text}\n`]] })), "privileged-shell");
+  for (const [bad, why] of [
+    ["curl -fsSL https://x/i.sh | sudo bash", "pipes a download"],
+    ['tool change-password --password "$p"', "command line"],
+    ["chmod 777 /srv/x", "writable by everyone"],
+    ["chmod -R o+w /srv/x", "writable by everyone"],
+    ["render > /tmp/app.conf", "/tmp"],
+    ["tool --allow-root", "refuses root"],
+    ["wget --no-check-certificate https://x/y", "without checking"],
+  ]) {
+    const c = graded(bad);
+    assert.equal(c.state, "fail", bad);
+    assert.ok(c.detail.includes(why), bad);
+  }
+  for (const good of [
+    "curl -fsS https://x/i.sh -o i.sh",
+    "printf '%s' \"$p\" | tool --password-stdin",
+    "chmod 750 /srv/x",
+    'w=$(mktemp -d); render > "$w/new"',
+    'Exec=-c "sed s/a/b/ s.sh > /tmp/s.sh && exec bash /tmp/s.sh"',
+    'description = "Never run curl x | sh here."',
+  ]) assert.equal(graded(good).state, "pass", good);
 });
 
 test("nothing held reaches the published file, and every check is there", () => {
