@@ -126,6 +126,18 @@ test("one failed CI run doesn't drop a circuit, and staying red does", () => {
   assert.ok(!graded({ conclusion: "failure", attempt: 1, previous: "success" }).gateFailed?.includes("ci-green"));
 });
 
+test("a failed re-run is red whatever came before, and a lone failure gets 3 days", () => {
+  const green = (run) => check(evaluate(evidence(ci(fetching), { run })), "ci-green").state;
+  const lone = { conclusion: "failure", attempt: 1, previous: "success" };
+  assert.equal(green({ ...lone, date: "2026-10-30T00:00:00Z", attempt: 2 }), "fail", "re-run failed, previous passed, recent");
+  assert.equal(green({ ...lone, date: "2026-10-29T00:00:00Z" }), "pass", "exactly 3 days old");
+  assert.equal(green({ ...lone, date: "2026-10-28T23:59:59Z" }), "fail", "just over 3 days old");
+  const { previous, ...only } = lone;
+  assert.equal(green({ ...only, date: "2026-10-29T00:00:00Z" }), "pass", "the only run, exactly 3 days old");
+  assert.equal(green({ ...only, date: "2026-10-28T23:59:59Z" }), "fail", "the only run, just over 3 days old");
+  assert.equal(green({ ...lone, conclusion: "success", date: "2026-01-01T00:00:00Z" }), "pass", "an old pass stays a pass");
+});
+
 test("downloads need a checksum, with interpolation in the block", () => {
   const hcl = (body) => ({ files: [["main.circuit.hcl", `step "d" {\n  download {\n    url = "https://x/\${var.v}"\n${body}  }\n}\n`]] });
   assert.equal(check(evaluate(evidence(ci(fetching), hcl("    sha256 = var.s\n"))), "downloads").state, "pass");
