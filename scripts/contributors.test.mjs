@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { merge } from "../apps/site/src/lib/contributors.js";
+import { authors, merge } from "../apps/site/src/lib/contributors.js";
 
 const user = (login, type = "User") => ({ login, type, avatar_url: `https://avatars.example/${login}` });
 
@@ -25,7 +25,14 @@ test("bots and AI tools never count, even as ordinary users", () => {
   assert.deepEqual(merge([real.map((l) => user(l))]).map((p) => p.login), real);
 });
 
-test("the fallback list is already merged", () => {
+test("search results give people, with nothing odd in a login or an avatar", () => {
+  const item = (login, id = 7, type = "User") => ({ user: { login, id, type, avatar_url: "https://evil.example/x" } });
+  const found = authors([item("amy"), item("$(touch x)"), item("a/../b"), item("bob", "7"), item("dependabot[bot]", 8, "Bot"), {}]);
+  assert.deepEqual(found, [{ login: "amy", type: "User", avatar: "https://avatars.githubusercontent.com/u/7?v=4" }]);
+  assert.deepEqual(merge([authors([item("claude-code"), item("helper", 9, "Bot")])]), []);
+});
+
+test("the list is already merged", () => {
   const file = JSON.parse(readFileSync(new URL("../apps/site/src/data/contributors.json", import.meta.url), "utf8"));
   assert.ok(file.length > 0);
   assert.deepEqual(merge([file]), file);
