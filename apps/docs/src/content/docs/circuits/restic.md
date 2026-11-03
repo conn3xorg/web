@@ -5,6 +5,8 @@ description: "Scheduled, encrypted backups with restic to SFTP, S3, rest-server 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-restic at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/restic/grade.svg)](https://conn3x.org/circuits/restic/grade)
+
 A Conn3x circuit that backs up your hosts with [restic](https://restic.net) on a schedule. Point it at a repository, an SFTP server, a rest-server, an S3 bucket or a local disk, give it a password, and every host backs up the paths you name each night, keeps the snapshots your retention policy says, and prunes the rest.
 
 restic comes from its GitHub release, checked against a pinned SHA-256, so Ubuntu, Debian, Rocky Linux and Fedora all run the same version, whatever their package repositories carry. A systemd timer runs the backup, with a random delay so a fleet on the same schedule doesn't hit the repository at the same minute, and the output goes to the journal.

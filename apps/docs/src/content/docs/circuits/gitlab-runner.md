@@ -5,6 +5,8 @@ description: "GitLab Runner from GitLab's packages, shell or Docker executor, it
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-gitlab-runner at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/gitlab-runner/grade.svg)](https://conn3x.org/circuits/gitlab-runner/grade)
+
 A Conn3x circuit that runs [GitLab Runner](https://docs.gitlab.com/runner/) on hosts of your own, from GitLab's official packages, and connects it to your GitLab. You create the runner in GitLab and hand the circuit its authentication token; the circuit adds GitLab's runner repository, installs the release you pinned, writes `config.toml` and keeps the service running. The token goes to the host and nowhere else: not the plan, not the state.
 
 It pairs with [circuit-gitlab](/circuits/gitlab), which runs the GitLab these runners take jobs from, and with [circuit-docker](/circuits/docker) when you want each job in its own container. It works with any GitLab, though, GitLab.com included.

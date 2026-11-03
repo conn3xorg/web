@@ -17,6 +17,9 @@ type Circuit = {
   official: boolean;
 };
 import categoryList from "../data/categories.json";
+import { allGrades } from "../lib/grade-data";
+
+const grades = (await allGrades()) as Record<string, { grade: string; passing: boolean }>;
 
 const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", { eager: true });
 const circuits = Object.values(files)
@@ -77,6 +80,7 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <p class="meta">
             <span>{c.repo}</span> · <span>{c.version}</span>
             {c.official && <> · <a href={`https://docs.conn3x.org/circuits/${c.name}`}>Docs</a></>}
+            {grades[c.name] && <> · <a href={`/circuits/${c.name}/grade`}>Grade {grades[c.name].grade}</a></>}
           </p>
           <pre><code>{source(c)}</code></pre>
           <button class="copy" type="button" data-copy={source(c)}>Copy</button>

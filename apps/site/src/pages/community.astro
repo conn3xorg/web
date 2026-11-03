@@ -5,7 +5,7 @@ import Base from "../layouts/Base.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import PageHero from "../components/PageHero.astro";
-import { contributors } from "../lib/contributors.js";
+import contributors from "../data/contributors.json";
 import { hoursGiven } from "../lib/giving-back.js";
 import givingBack from "../data/giving-back.json";
 
@@ -16,7 +16,7 @@ const discuss = `${repo}/discussions`;
 // Avatars are inlined at build time: the CSP allows images from this site
 // and data: URLs only. One that won't download shows the handle's initial.
 const people = await Promise.all(
-  (await contributors()).map(async (p) => {
+  contributors.map(async (p) => {
     try {
       const res = await fetch(`${p.avatar}${p.avatar.includes("?") ? "&" : "?"}s=96`, { signal: AbortSignal.timeout(10_000) });
       if (!res.ok) throw new Error(String(res.status));
@@ -55,8 +55,7 @@ const categories = [
       <section aria-labelledby="people">
         <h2 class="sub" id="people">Who builds Conn3x</h2>
         <p class="intro">
-          Everyone with a commit in Conn3x, this website or an official circuit, A to Z, as GitHub
-          listed them when this page was built.
+          Everyone with a merged pull request in Conn3x, this website or a circuit, A to Z.
         </p>
         <ul class="people">
           {people.map((p) => (

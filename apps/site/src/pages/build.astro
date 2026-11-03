@@ -7,13 +7,16 @@ import SiteFooter from "../components/SiteFooter.astro";
 import PageHero from "../components/PageHero.astro";
 import categoryList from "../data/categories.json";
 import builder from "../data/builder.json";
+import { allGrades } from "../lib/grade-data";
+import { blocked as gradeBlocks } from "../lib/grades.js";
 
 type Circuit = { name: string; description: string; version: string; category: string; official: boolean };
 const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", { eager: true });
 const inputs = import.meta.glob("../data/circuit-inputs/*.json");
 const offered = new Set(Object.keys(inputs).map((p) => p.split("/").pop()!.replace(".json", "")));
 const all = Object.values(files).map((f) => f.default);
-const excluded = builder.excluded as Record<string, string>;
+const blocked: Record<string, string> = gradeBlocks(all.filter((c) => c.official).map((c) => c.name), await allGrades());
+const excluded = { ...(builder.excluded as Record<string, string>), ...blocked };
 const circuits = all
   .filter((c) => c.official && offered.has(c.name) && !excluded[c.name])
   .sort((a, b) => a.name.localeCompare(b.name));
@@ -39,7 +42,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
       </p>
     </PageHero>
 
-    <form class="wrap page" id="build" novalidate>
+    <form class="wrap page" id="build" novalidate data-blocked={JSON.stringify(blocked)}>
       <noscript><p class="note">The builder needs JavaScript. Every circuit's README has a working example too.</p></noscript>
 
       <section aria-labelledby="s-distro">
@@ -70,7 +73,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
             <summary>Not in the builder yet ({left.length})</summary>
             <ul>
               {left.map(([n, why]) => (
-                <li><a href={`https://docs.conn3x.org/circuits/${n}`}>{n}</a>: {why}</li>
+                <li><a href={`https://docs.conn3x.org/circuits/${n}`}>{n}</a>: {why}{blocked[n] && <> <a href={`/circuits/${n}/grade`}>See its grade.</a></>}</li>
               ))}
             </ul>
           </details>
@@ -192,7 +195,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 
   const load = (g: Record<string, { default: any }>) =>
     Object.fromEntries(Object.values(g).map((m) => [m.default.name, m.default]));
-  const data = {
+  const data: Record<string, any> = {
     builder,
     circuits: load(import.meta.glob("../data/circuits/*.json", { eager: true })),
     inputs: load(import.meta.glob("../data/circuit-inputs/*.json", { eager: true })),
@@ -200,6 +203,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const form = $<HTMLFormElement>("build");
+  data.blocked = JSON.parse(form.dataset.blocked!);
   const picks = [...form.querySelectorAll<HTMLInputElement>('input[name="pick"]')];
   const values: Record<string, any> = {};
   let shown = false;

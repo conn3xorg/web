@@ -16,7 +16,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Conn3x",
-      description: "Docs for Conn3x: one plan for your cloud and the servers it creates.",
+      description: "Docs for Conn3x, the IaCC tool: infrastructure as code and configuration management in one plan.",
       logo: { light: "./src/logo.svg", dark: "./src/logo-dark.svg", replacesTitle: true },
       favicon: "/favicon.svg",
       social: [
@@ -41,7 +41,7 @@ export default defineConfig({
           label: "Tutorials",
           items: [
             { slug: "tutorials", label: "Overview" },
-            ...["try-locally", "first-server", "digitalocean", "bastion", "secrets", "drift-in-ci", "migrate-ansible", "bigquery"].map((page) => `tutorials/${page}`),
+            ...["try-locally", "first-server", "digitalocean", "google-cloud", "azure", "aws", "bastion", "secrets", "drift-in-ci", "migrate-ansible", "bigquery"].map((page) => `tutorials/${page}`),
           ],
         },
         {
@@ -51,7 +51,7 @@ export default defineConfig({
         {
           label: "Circuits",
           collapsed: true,
-          items: [{ slug: "circuits", label: "Overview" }, { autogenerate: { directory: "circuits" } }],
+          items: [{ slug: "circuits", label: "Overview" }, { slug: "reference/circuit-grades", label: "How grades work" }, { autogenerate: { directory: "circuits" } }],
         },
         {
           label: "Circuit language",

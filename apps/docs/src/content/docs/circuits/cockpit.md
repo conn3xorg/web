@@ -5,6 +5,8 @@ description: "Cockpit, the web console for Linux servers, with your port, extra 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-cockpit at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/cockpit/grade.svg)](https://conn3x.org/circuits/cockpit/grade)
+
 A Conn3x circuit that installs Cockpit, the web console for Linux servers, and sets how it listens, which certificate it serves and who may log in. Cockpit gives you a server's logs, services, storage, network, updates and a terminal in the browser, logged in with the server's own accounts. It's the thing you open when SSH would do but a graph of the last hour would do better.
 
 You pick the port, the address, the extra pages and the certificate once, and the same settings land on Debian, Ubuntu, Fedora and Rocky Linux. The circuit handles the parts that differ: backports on Debian and Ubuntu, as Cockpit's own install guide recommends, SELinux's port list on the Red Hat family, and the extra pages each distribution packages. Root can't log in unless you say so.

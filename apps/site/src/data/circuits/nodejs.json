@@ -2,7 +2,7 @@
   "name": "nodejs",
   "repo": "conn3xorg/circuit-nodejs",
   "description": "One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "nodejs",
     "npm",

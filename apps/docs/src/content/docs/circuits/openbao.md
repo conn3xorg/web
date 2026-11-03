@@ -3,7 +3,11 @@ title: OpenBao
 description: "OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openbao at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openbao at v0.2.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/openbao/grade.svg)](https://conn3x.org/circuits/openbao/grade)
+
+[![Conn3x grade](https://conn3x.org/circuits/openbao/grade.svg)](https://conn3x.org/circuits/openbao/grade)
 
 A Conn3x circuit that runs [OpenBao](https://openbao.org), the Linux Foundation's open source fork of HashiCorp Vault, on your own hosts. You get the same secrets engines, auth methods and `bao` CLI as Vault's `vault`, under MPL-2.0, on a box you control.
 
@@ -15,7 +19,7 @@ What it leaves to you, by default, is the moment that matters most: initialising
 
 ```hcl
 module "openbao" {
-  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.1"
 
   hosts                = { bao1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -42,7 +46,7 @@ To reach OpenBao from other machines, give it a certificate. The files must alre
 
 ```hcl
 module "openbao" {
-  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.1"
 
   hosts                = { bao1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -64,7 +68,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.1/examples/local).
 
 ## Initialising and unsealing
 
@@ -81,6 +85,8 @@ bao operator init -key-shares=1 -key-threshold=1 -format=json
 ```
 
 and writes the output to `/root/openbao-init.json`, mode `0600`. It holds one unseal key and the root token. The key and token stay on the host; Conn3x's plan and state record only that the command ran. If the file already exists, or OpenBao says it's already initialised, the circuit leaves it alone, so turning `initialize` on for a host you set up by hand changes nothing.
+
+The answer is only kept when root or the `openbao` user holds the API port, which narrows the window rather than closing it, since OpenBao could stop between the check and the request. With `tls_cert_file` the step also checks the listener's certificate against that file, under the first name in it, and that closes it. It needs `openssl` on the host, which the circuit installs.
 
 OpenBao still starts sealed. To unseal it after a reboot, run this and paste the key from `unseal_keys_b64` when it asks:
 
@@ -100,7 +106,7 @@ With `seal`, OpenBao unseals itself on every start by asking something else to d
 
 ```hcl
 module "openbao" {
-  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.1"
 
   hosts                = { bao1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -182,7 +188,7 @@ Set `openbao_version` and `checksums` together. The release's `checksums.txt` li
 
 ```hcl
 module "openbao" {
-  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-openbao?ref=v0.2.1"
 
   hosts           = { bao1 = "203.0.113.10" }
   openbao_version = "2.7.2"
@@ -226,22 +232,22 @@ The new release unpacks beside the old one, the unit points at it, and OpenBao r
 
 ## Requirements
 
-Requires Conn3x v0.6.5 or later, systemd on each host, and outbound HTTPS to github.com. In a container, systemd needs `CAP_SYS_ADMIN` to give OpenBao the private `/dev` its unit asks for; [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.0/examples/local) adds it.
+Requires Conn3x v0.6.5 or later, systemd on each host, and outbound HTTPS to github.com. In a container, systemd needs `CAP_SYS_ADMIN` to give OpenBao the private `/dev` its unit asks for; [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.1/examples/local) adds it.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with OpenBao 2.7.2. CI applies [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.0/examples/local) to each on amd64 and checks that the second plan has no changes and that the uninitialised server answers `/v1/sys/health` with `501`. It then applies again with `initialize = true`, unseals with the key from `/root/openbao-init.json`, enables a KV v2 engine and writes and reads a secret with the root token, restarts OpenBao, checks that it came back sealed, unseals it and reads the secret again, and checks that the plan is still clean. The same ran by hand on arm64, along with a switch to `listen_address = "0.0.0.0"` with a self-signed certificate on Fedora 45.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with OpenBao 2.7.2. CI applies [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.1/examples/local) to each on amd64 and checks that the second plan has no changes and that the uninitialised server answers `/v1/sys/health` with `501`. It then applies again with `initialize = true`, unseals with the key from `/root/openbao-init.json`, enables a KV v2 engine and writes and reads a secret with the root token, restarts OpenBao, checks that it came back sealed, unseals it and reads the secret again, and checks that the plan is still clean. The same ran by hand on arm64, along with a switch to `listen_address = "0.0.0.0"` with a self-signed certificate on Fedora 45.
 
 The same checks passed on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both with 1 vCPU and 1 GB of memory. After a reboot each came back sealed, unsealed with the key from the file, still had the secret, and the plan had no changes. On Rocky Linux OpenBao runs as `unconfined_service_t`, and the audit log had no denials. On the Ubuntu droplet, a switch to `listen_address = "0.0.0.0"` with a self-signed certificate answered from another machine over HTTPS, checked with `curl --cacert`.
 
-A second CI job applies [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.0/examples/local) to each distribution with a transit seal against another OpenBao in dev mode, and a `self_init` that enables KV v2, writes a policy, enables userpass and adds a user whose password comes from `environment`. It checks that OpenBao comes up unsealed without anyone unsealing it, that the user can log in and write and read a secret, that it comes back unsealed after a restart, that there's no `/root/openbao-init.json`, that neither the seal's token nor the password is in state, and that the plan stays clean. That job also ran by hand on arm64 on Rocky Linux 10. Only the transit seal is tested; the cloud KMS seals take the same shape of input, but haven't been run here.
+A second CI job applies [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.1/examples/local) to each distribution with a transit seal against another OpenBao in dev mode, and a `self_init` that enables KV v2, writes a policy, enables userpass and adds a user whose password comes from `environment`. It checks that OpenBao comes up unsealed without anyone unsealing it, that the user can log in and write and read a secret, that it comes back unsealed after a restart, that there's no `/root/openbao-init.json`, that neither the seal's token nor the password is in state, and that the plan stays clean. That job also ran by hand on arm64 on Rocky Linux 10. Only the transit seal is tested; the cloud KMS seals take the same shape of input, but haven't been run here.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openbao/blob/v0.2.0/LICENSE). OpenBao itself is MPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openbao/blob/v0.2.1/LICENSE). OpenBao itself is MPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-openbao](https://github.com/conn3xorg/circuit-openbao). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-openbao/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-openbao](https://github.com/conn3xorg/circuit-openbao). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-openbao/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.1/examples/local).
 - Related circuits: [certbot](/circuits/certbot), [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).

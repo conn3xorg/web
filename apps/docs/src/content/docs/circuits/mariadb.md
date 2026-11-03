@@ -5,6 +5,8 @@ description: "MariaDB from your distribution with users, databases and grants, l
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-mariadb at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/mariadb/grade.svg)](https://conn3x.org/circuits/mariadb/grade)
+
 A Conn3x circuit that installs MariaDB from your distribution, cleans out what a fresh install leaves lying around, and creates the databases, users and grants your apps log in with. It does what `mysql_secure_installation` would, without anyone typing answers into it, and keeps doing it: if an anonymous user or a `test` database turns up later, the next plan shows it.
 
 Passwords never land in state. You pass them in at run time through an ephemeral variable, and the plan shows only that a password changed.

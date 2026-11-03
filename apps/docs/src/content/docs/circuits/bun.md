@@ -5,6 +5,8 @@ description: "Install one pinned Bun release, checksum-verified, on every Linux 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-bun at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/bun/grade.svg)](https://conn3x.org/circuits/bun/grade)
+
 A Conn3x circuit that puts one exact Bun release on all your hosts. Distribution repositories mostly don't carry Bun, so the usual route is `curl | bash`, which gives you whatever was newest the day each machine was set up. This circuit takes the official zip from Bun's GitHub release instead, checks it against the release's SHA-256, and gives you the same Bun on every distribution: 1.4.4 by default.
 
 ## Usage

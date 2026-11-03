@@ -5,6 +5,8 @@ description: "Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-te
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-litellm at v0.2.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/litellm/grade.svg)](https://conn3x.org/circuits/litellm/grade)
+
 A Conn3x circuit that runs [LiteLLM Proxy](https://github.com/BerriAI/litellm), the self-hosted LLM gateway, on your own hosts. Your apps and people talk to one OpenAI-compatible endpoint, and behind it sit whichever models you choose: OpenAI, Anthropic, a local Ollama, or all three. Each team or person gets a virtual key of their own, limited to the models you allow, with a budget and rate limits, and every request is logged with who made it, which model answered and what it cost.
 
 Provider keys stay in one place, on the host. Nobody needs your OpenAI key to use GPT, and when someone leaves, you delete their virtual key instead of rotating the real one.

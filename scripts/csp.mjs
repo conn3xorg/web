@@ -12,6 +12,7 @@
 // compile its WebAssembly index reader. It doesn't allow eval().
 // --style-attrs allows style="" attributes (style-src-attr), which the docs
 // theme puts on icons; <style> elements and scripts stay hash-only.
+// --badges allows images from conn3x.org, for the circuit grade badges.
 
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -63,14 +64,14 @@ function scan(dist, { styleAttrs = false } = {}) {
   return { scripts: [...scripts].sort(), styles: [...styles].sort(), errors };
 }
 
-export function policy({ scripts, styles }, { wasm = false, styleAttrs = false } = {}) {
+export function policy({ scripts, styles }, { wasm = false, styleAttrs = false, badges = false } = {}) {
   const src = (list) => ["'self'", ...list].join(" ");
   return [
     "default-src 'self'",
     `script-src ${src(wasm ? ["'wasm-unsafe-eval'", ...scripts] : scripts)}`,
     `style-src ${src(styles)}`,
     ...(styleAttrs ? ["style-src-attr 'unsafe-inline'"] : []),
-    "img-src 'self' data:",
+    `img-src 'self' data:${badges ? " https://conn3x.org" : ""}`,
     "font-src 'self'",
     "connect-src 'self'",
     "object-src 'none'",
@@ -86,7 +87,7 @@ function main([dist, baseFile, ...flags]) {
     console.error("usage: node scripts/csp.mjs <distDir> <headersBaseFile>");
     return 2;
   }
-  const opts = { wasm: flags.includes("--wasm"), styleAttrs: flags.includes("--style-attrs") };
+  const opts = { wasm: flags.includes("--wasm"), styleAttrs: flags.includes("--style-attrs"), badges: flags.includes("--badges") };
   const found = scan(dist, opts);
   if (found.errors.length) {
     for (const e of found.errors) console.error(`csp: ${e}`);
@@ -97,8 +98,9 @@ function main([dist, baseFile, ...flags]) {
     console.error(`csp: policy line is ${line.length} chars, longer than ${MAX_LINE} characters (Cloudflare _headers limit). Move inline code into files.`);
     return 1;
   }
-  const base = readFileSync(baseFile, "utf8").replace(/\n*$/, "\n");
-  writeFileSync(join(dist, "_headers"), base + line + "\n");
+  // The policy belongs to the first block, the site-wide one; later blocks are exceptions.
+  const [first, ...rest] = readFileSync(baseFile, "utf8").trimEnd().split("\n\n");
+  writeFileSync(join(dist, "_headers"), [`${first}\n${line}`, ...rest].join("\n\n") + "\n");
   console.log(`csp: ${found.scripts.length} script and ${found.styles.length} style hashes`);
   return 0;
 }

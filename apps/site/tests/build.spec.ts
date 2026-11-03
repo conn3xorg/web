@@ -21,7 +21,7 @@ test("builds a config and greys out what conflicts", async ({ page }) => {
 
 test("never offers excluded circuits", async ({ page }) => {
   await page.goto("/build");
-  for (const name of ["kubeadm", "proxmox", "microshift", "lastrack"]) {
+  for (const name of ["kubeadm", "proxmox", "microshift", "not-in-the-directory"]) {
     await expect(page.locator(`input[name=pick][value="${name}"]`)).toHaveCount(0);
   }
   await expect(page.locator(".later")).toContainText("kubeadm has control planes and workers");
@@ -120,7 +120,7 @@ test("asks Azure for a resource group, and refuses Rocky with its reason", async
   await expect(page.locator("#errors")).toContainText("isn't a resource group name");
   await page.fill("#cloud-resource-group", "");
   await page.locator('input[name=distro][value="rocky10"]').check({ force: true });
-  await expect(page.locator("#errors")).toContainText("Marketplace terms");
+  await expect(page.locator("#code")).toContainText('publisher = "resf"');
   await page.locator('input[name=where][value="aws"]').check({ force: true });
   await expect(page.locator("#cloud-resource-group-field")).toBeHidden();
 });

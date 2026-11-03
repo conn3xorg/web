@@ -2,7 +2,7 @@
   "name": "couchdb",
   "repo": "conn3xorg/circuit-couchdb",
   "description": "Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin",
-  "version": "v0.1.0",
+  "version": "v0.1.2",
   "tags": [
     "couchdb",
     "database",

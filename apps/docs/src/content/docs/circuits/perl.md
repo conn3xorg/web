@@ -5,6 +5,8 @@ description: "Perl from each distribution's packages, with distribution modules 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-perl at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/perl/grade.svg)](https://conn3x.org/circuits/perl/grade)
+
 A Conn3x circuit that installs Perl from each distribution's own packages, and the modules your scripts need on top: some from the distribution, some from CPAN at versions you pin.
 
 Be clear on one thing before you use it. **The Perl version differs per distribution**, because the distributions ship it and this circuit takes what they ship:

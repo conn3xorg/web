@@ -5,6 +5,8 @@ description: "A k3s Kubernetes cluster from servers and agents, with embedded et
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-k3s at v0.1.5. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/k3s/grade.svg)](https://conn3x.org/circuits/k3s/grade)
+
 A Conn3x circuit that turns your hosts into a [k3s](https://k3s.io) Kubernetes cluster: one or more servers, and as many agents as you give it. It installs a pinned k3s release, checks its SHA-256 before using it, and runs k3s under systemd with its settings in `/etc/rancher/k3s/config.yaml`. x86_64 and arm64 hosts each get the right build.
 
 It replaces the usual hand-off where Terraform makes the VMs and an Ansible playbook runs k3s's install script on them. The VMs and the cluster go in one configuration, and one `conn3x apply` builds both.

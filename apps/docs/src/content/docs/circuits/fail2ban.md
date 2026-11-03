@@ -5,6 +5,8 @@ description: "Bans addresses that keep failing SSH logins, through nftables, wit
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-fail2ban at v0.2.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/fail2ban/grade.svg)](https://conn3x.org/circuits/fail2ban/grade)
+
 A Conn3x circuit that installs fail2ban and turns on its SSH jail, so an address that keeps failing to log in gets banned for a while instead of guessing passwords all night. Any internet-facing box sees this within minutes of coming up; `journalctl -u sshd` on one is usually a wall of `Invalid user admin`.
 
 You set the ban time, the window and the number of tries once, and the same settings land on Debian, Ubuntu, Fedora and Rocky Linux. The circuit picks the parts that differ per distribution: EPEL on Rocky Linux and AlmaLinux, the right package names, and the systemd journal as the log source, since Debian 13, Fedora and Rocky Linux don't write `/var/log/auth.log` or `/var/log/secure` out of the box. You can add more jails, such as one for nginx, from the filters fail2ban ships.

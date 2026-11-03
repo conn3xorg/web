@@ -5,6 +5,8 @@ description: "Run a Cloudflare Tunnel from a pinned, checksummed cloudflared und
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-cloudflared at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/cloudflared/grade.svg)](https://conn3x.org/circuits/cloudflared/grade)
+
 A Conn3x circuit that installs [cloudflared](https://github.com/cloudflare/cloudflared) at a pinned version, checks its SHA-256, and runs your Cloudflare Tunnel as a systemd service. It's the way to put a box behind Cloudflare with no inbound port open: a NAS behind carrier-grade NAT, a homelab, or a fleet of VPS hosts running replicas of one tunnel.
 
 Your tunnel token is passed in through an ephemeral variable. It lands in one file on the host, readable only by the service and root, and never in the plan, state or the systemd unit.

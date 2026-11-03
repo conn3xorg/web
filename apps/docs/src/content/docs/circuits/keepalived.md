@@ -5,6 +5,8 @@ description: "A floating IP address shared between hosts with keepalived, moving
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-keepalived at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/keepalived/grade.svg)](https://conn3x.org/circuits/keepalived/grade)
+
 A Conn3x circuit that runs keepalived on two or more hosts so they share a floating IP address. One host holds it; when that host goes down, or its load balancer stops, another picks the address up within a few seconds, and clients pointed at it never have to know.
 
 The usual case is a pair of HAProxy or nginx boxes in front of everything else. You give the circuit the address and the hosts, and it writes the same VRRP setup on Debian, Ubuntu, Fedora and Rocky Linux: priorities from the order of your hosts, unicast adverts to the other hosts, since most clouds and plenty of switches drop multicast, and a check that hands the address over when the service behind it dies.

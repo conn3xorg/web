@@ -5,3 +5,9 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
+
+# Badges are meant to be embedded: on the docs site, and on every circuit's README.
+/circuits/*/grade.svg
+  ! Cross-Origin-Resource-Policy
+  Cross-Origin-Resource-Policy: cross-origin
+  Cache-Control: public, max-age=3600

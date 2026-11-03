@@ -5,6 +5,8 @@ description: "Samba file shares with per-user passwords kept out of state, SMB2 
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-samba at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/samba/grade.svg)](https://conn3x.org/circuits/samba/grade)
+
 A Conn3x circuit that turns a Linux box into a file server for the Windows, macOS and Linux machines around it, with Samba. You list the shares and who can use them; the circuit installs Samba, creates the folders, writes `smb.conf`, checks it with `testparm`, and adds each user to Samba with the password you pass at run time. It's the file-sharing half of a homelab NAS, or the shared drive in a small office.
 
 The defaults are the ones you'd pick by hand today. SMB1 is off and the oldest dialect accepted is SMB2. NetBIOS is off too, so `nmbd` doesn't run and the server listens on 445 only. On Rocky Linux and Fedora with SELinux enforcing, each share's folder gets the `samba_share_t` label, so smbd can read and write it without turning SELinux off.

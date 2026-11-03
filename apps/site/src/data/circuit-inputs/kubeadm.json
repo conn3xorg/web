@@ -1,6 +1,6 @@
 {
   "name": "kubeadm",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": false,
   "inputs": [
     {
@@ -86,6 +86,15 @@
       "type": "string",
       "default": "https://github.com/flannel-io/flannel/releases/download/v0.28.10/kube-flannel.yml",
       "description": "Manifest of the pod network to apply after kubeadm init. Set null to install one yourself, as with Cilium's CLI or a Helm chart.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cni_manifest_sha256",
+      "type": "string",
+      "default": "393bdbce53eb50c8eb97dd513b218518b7d6e7985dc7b889be956e112a711084",
+      "description": "SHA-256 of the manifest at cni_manifest_url. The default is Flannel v0.28.10's, so set it whenever you change the URL.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

@@ -5,6 +5,8 @@ description: "One exact Rust toolchain from static.rust-lang.org on every distri
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-rust at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/rust/grade.svg)](https://conn3x.org/circuits/rust/grade)
+
 A Conn3x circuit that puts one exact Rust toolchain on all your hosts, without a curl-to-sh in sight. rustup is built for one person's home directory; a server wants `rustc` and `cargo` for everybody, at the version you chose, staying there until you change it. So this circuit takes the official tarball from static.rust-lang.org, checks it against its SHA-256, and installs it under `/opt/rust`: 1.99.1 by default, the same on every distribution.
 
 ## Usage

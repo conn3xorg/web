@@ -5,6 +5,8 @@ description: "Runs Infisical, the open-source secrets manager, from its official
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-infisical at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/infisical/grade.svg)](https://conn3x.org/circuits/infisical/grade)
+
 A Conn3x circuit that runs [Infisical](https://infisical.com), the open-source secrets manager, on your own hosts. Your team gets one place for API keys, database passwords and certificates, with projects, environments, access control and an audit log, and none of it leaves machines you run.
 
 Infisical runs from its official image, `infisical/infisical`, under Podman as a systemd service, pinned by tag and digest. It keeps everything in PostgreSQL and uses Redis or Valkey for queues and caching; you point it at both with two connection strings. Pair it with [circuit-postgres](/circuits/postgres) and [circuit-valkey](/circuits/valkey) and the whole stack fits on one host, on Debian, Ubuntu, Fedora or Rocky Linux.

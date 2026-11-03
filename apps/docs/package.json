@@ -5,7 +5,7 @@
   "license": "MPL-2.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node ../../scripts/csp.mjs dist headers.base --wasm --style-attrs",
+    "build": "astro build && node ../../scripts/csp.mjs dist headers.base --wasm --style-attrs --badges",
     "preview": "wrangler dev --port 8788"
   },
   "dependencies": {

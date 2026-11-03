@@ -5,6 +5,8 @@ description: "GitHub Actions self-hosted runners on Linux hosts: pinned release,
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-github-runner at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/github-runner/grade.svg)](https://conn3x.org/circuits/github-runner/grade)
+
 A Conn3x circuit that turns Linux hosts into GitHub Actions self-hosted runners. Each host gets GitHub's runner release, checked against its SHA-256, a dedicated user without sudo, and one or more runners registered with your repository or organization, each as its own systemd service.
 
 You'd want one when GitHub's hosted runners can't reach what a job needs, such as a database on your network or a box with a GPU, or when your builds have outgrown the free minutes. Doing it by hand means the "New self-hosted runner" page, a pasted token, `config.sh` answering questions, and `svc.sh install`, once per runner, on every host. Here you write the runners down once, and a new host is one more line in `hosts`.

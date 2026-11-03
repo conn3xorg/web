@@ -5,6 +5,8 @@ description: "One exact .NET SDK with ASP.NET Core from Microsoft's tarballs, ch
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-dotnet at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/dotnet/grade.svg)](https://conn3x.org/circuits/dotnet/grade)
+
 A Conn3x circuit that puts one exact .NET SDK on all your hosts, ASP.NET Core included. The tarball comes from Microsoft's build server and is checked against its SHA-256, so Debian, which doesn't package .NET, gets the same 10.0.403 as everything else. That's the current long-term support channel, 10.0.
 
 It also turns the CLI's telemetry off. Left alone, the `dotnet` command sends Microsoft usage data; here `/usr/local/bin/dotnet` is a small script that sets `DOTNET_CLI_TELEMETRY_OPTOUT=1` and runs the real one, so the setting holds in cron, systemd and SSH commands as well as login shells. To opt in, set `telemetry = true`. [Microsoft documents what it collects](https://learn.microsoft.com/dotnet/core/tools/telemetry).

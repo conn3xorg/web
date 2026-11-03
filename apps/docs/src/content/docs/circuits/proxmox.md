@@ -5,6 +5,8 @@ description: "Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-proxmox at v0.1.0. -->
 
+[![Conn3x grade](https://conn3x.org/circuits/proxmox/grade.svg)](https://conn3x.org/circuits/proxmox/grade)
+
 A Conn3x circuit that turns a plain Debian 13 (trixie) box into a Proxmox VE 9 node. It follows Proxmox's own [Install Proxmox VE on Debian 13 Trixie](https://pve.proxmox.com/wiki/Install_Proxmox_VE_on_Debian_13_Trixie) guide step by step, reboot included, so you end up where the ISO installer would have left you, on a machine the ISO can't reach: a rented server, a cloud VM, or a box you'd rather partition yourself.
 
 Doing it by hand is an afternoon of copying commands out of the wiki and answering the postfix and GRUB prompts halfway through. The circuit answers them for you, and it picks up where it left off if a run is interrupted.
