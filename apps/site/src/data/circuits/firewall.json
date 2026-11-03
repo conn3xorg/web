@@ -2,7 +2,7 @@
   "name": "firewall",
   "repo": "conn3xorg/circuit-firewall",
   "description": "A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "firewall",
     "security",

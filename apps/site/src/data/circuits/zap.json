@@ -2,7 +2,7 @@
   "name": "zap",
   "repo": "conn3xorg/circuit-zap",
   "description": "OWASP ZAP baseline scans of URLs you list, on a systemd timer, reports on the host.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "zap",
     "owasp",

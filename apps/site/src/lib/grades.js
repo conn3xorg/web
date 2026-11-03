@@ -26,14 +26,15 @@ export const BANDS = [["A", 90], ["B", 80], ["C", PASS_MARK], ["D", 60], ["F", 0
 
 // Off: every grade shows, and the Circuit Builder leaves everything in. On:
 // the builder drops a circuit that doesn't pass, and says why.
-export const ENFORCE_GRADES = false;
+export const ENFORCE_GRADES = true;
 
 // Results for these checks stay out of the published data and out of the
 // score, for every circuit, until the fixes they would point at have shipped.
 // Holding only the failures would give the failures away.
-export const HELD = new Set(["privileged-shell", "listen-address", "images-by-digest"]);
+export const HELD = new Set();
 
 const DAY = 86_400_000;
+const CI_GRACE_DAYS = 3;
 const FRESH_DAYS = 180;
 const KEY_WARN_DAYS = 90;
 const REAL_HOST_DAYS = 180;
@@ -111,7 +112,7 @@ function scriptLines(line, files) {
 
 // Commands that only look at a host: they can pass on a service that doesn't work.
 const LOOKING = /^(?:(?:systemctl\s+(?:is-active|is-enabled|status|show|cat|list-\S+)|service\s+\S+\s+status|sysctl|apt-config|systemd-detect-virt|cmp|diff|sha256sum|mkdir|rm|export|ufw\s+status|firewall-cmd\s+--(?:list|query|state)\S*|pgrep|pidof|test|stat|ls|cat|grep|egrep|command\s+-v|which|type|getent|id|find|head|tail|readlink|ps|ss|wc|file|dpkg|rpm|journalctl|echo|printf|sleep|set|cd|for|while|until|do|done|if|then|else|elif|fi|case|esac|exit|true|false|run|conn3x)(?=[\s;]|$)|\[\[?\s|\S+:(?:\s|$)|[A-Za-z_]+=\S*$|[{})]|&\w+\s*\|?$|[\w-]+\(\)\s*\{|\.\/(?:up|down)\.sh|(?:(?:sudo\s+)?[\w.-]+\s+)?(?:--?version|version)(?:\s|$)|(?:docker\s+compose|docker|podman|crictl|ctr)\s+(?:ps|images|inspect|logs)(?=\s|$)|(?:k3s\s+)?kubectl\s+(?:--\S+\s+\S+\s+)*(?:get|wait|describe|logs)(?=\s|$)|(?:sh|bash)(?:\s+-\S+)*(?:\s+\S+)*\s*<<?-?\s*\S+$|\S*(?:check|settled)[\w-]*\.(?:sh|py)(?=\s|$))/;
-const WRAPPER = /^(!\s*|"|'|\|\s*|run:\s*\|?\s*|sudo\s+(-\S+\s+)*|timeout\s+\S+\s+|(?:podman|docker|\$\w+)\s+exec\s+(?:-[weu]\s+\S+\s+|--\S+\s+|-\w+\s+)*\S+\s+|\$\{?\w+\}?\s+|sh\s+-\w*c\s+|bash\s+-\w*c\s+|if\s+!?\s*|until\s+|while\s+|for\s+.*;\s*do\s+|do\s+|then\s+)/;
+const WRAPPER = /^(!\s*|[\w-]+\(\)\s*\{\s*|[A-Za-z_]\w*=\$\(\s*|"|'|\|\s*|run:\s*\|?\s*|sudo\s+(-\S+\s+)*|timeout\s+\S+\s+|(?:podman|docker|\$\w+)\s+exec\s+(?:-[weu]\s+\S+\s+|--\S+\s+|-\w+\s+)*\S+\s+|\$\{?\w+\}?\s+|sh\s+-\w*c\s+|bash\s+-\w*c\s+|if\s+!?\s*|until\s+|while\s+|for\s+.*;\s*do\s+|do\s+|then\s+)/;
 
 function unwrap(line) {
   let s = line.trim();
@@ -124,9 +125,12 @@ function unwrap(line) {
 
 /** The first line that does something a stopped service couldn't, if any. */
 export function behaviourLine(lines) {
+  // A function is judged by its body. Calling one, by name, shows nothing.
+  // shortcut: a body counts even if nothing calls it; good enough while the page shows the line.
+  const fns = new Set(lines.flatMap((l) => /^\s*([\w-]+)\(\)\s*\{/.exec(l)?.[1] ?? []));
   for (const raw of lines) {
     const s = unwrap(raw);
-    if (!s || /^(#|\/\/)/.test(s)) continue;
+    if (!s || /^(#|\/\/)/.test(s) || fns.has(s.split(/\s/)[0])) continue;
     if (!LOOKING.test(s)) return s;
   }
   return null;
@@ -237,6 +241,26 @@ const date = (ms) => new Date(ms).toISOString().slice(0, 10);
 
 const code = (ev, ...exts) => [...ev.files].filter(([p]) => exts.some((x) => p.endsWith(x)) && !p.startsWith("examples/") && !p.startsWith("test/")).map(([, t]) => t.split("\n").filter((l) => !/^\s*(#|\/\/)/.test(l)).join("\n")).join("\n");
 
+// Code without its prose: an example address in an error message isn't a listener.
+const logic = (ev, ...exts) => code(ev, ...exts).split("\n").filter((l) => !/^\s*(description|error_message)\s*=/.test(l)).join("\n");
+
+// Shell a root step shouldn't contain. Each one is wrong wherever it appears, so a
+// hit is never a guess about who owns a directory. That class can't be read from text.
+const PRIVILEGED = [
+  [/\b(?:curl|wget)\b[^|;&\n]*\|\s*(?:sudo\s+)?(?:ba|da|z)?sh\b/, "pipes a download into a shell"],
+  [/--(?:password|passwd|pass|token|secret|api-key)[ =]\\?"?\$/, "puts a secret on a command line, where ps can read it"],
+  [/\bchmod\s+(?:-R\s+)?(?:0?777|0?666|a\+w|o\+w)(?=\s)/, "makes a path writable by everyone"],
+  [/^(?!.*Exec=).*(?:>|\btee\s+)\s*\/tmp\/[\w.$]/m, "writes to a predictable name in /tmp"],
+  [/--allow-root\b/, "tells a tool that refuses root to run as root anyway"],
+  [/--no-check-certificate|--allow-unauthenticated|\[trusted=yes\]/, "installs or downloads without checking the source"],
+];
+
+// curl with -k or --insecure, and a credential on the same command. -K is how
+// the circuits pass one on stdin. Lower-case -k is matched on its own, so -K isn't it.
+const INSECURE_CREDENTIAL = /\bcurl\b(?=[^|;&\n]*\s(?:-[a-zA-Z]*k[a-zA-Z]*|--insecure)(?=\s))(?=[^|;&\n]*\s(?:-[a-zA-Z]*K|--config\b|-u\s|--user\b|-H\s*["']?(?:Authorization|X-[A-Za-z-]*(?:Token|Key))|--cert\b|--cookie\b|--oauth2-bearer\b))/;
+// The port check from the share-a-circuit guide.
+const PORT_CHECK = /\/proc\/net\/tcp/;
+
 function downloadBlocks(hcl) {
   const out = [];
   for (const m of hcl.matchAll(/\bdownload\s*\{/g)) {
@@ -256,11 +280,17 @@ function downloadBlocks(hcl) {
 export const RUBRIC = [
   {
     id: "ci-green", group: "Testing", points: 15, gate: true,
-    title: "CI is green on main",
+    title: "CI isn't staying red on main",
     test: (ev) => {
       if (!ev.run) return fail("No finished CI run on main.");
       const on = `Run of ${date(Date.parse(ev.run.date))}`;
-      return ev.run.conclusion === "success" ? pass(`${on} passed.`) : fail(`${on} ended: ${ev.run.conclusion}.`);
+      if (ev.run.conclusion === "success") return pass(`${on} passed.`);
+      const ended = `${on} ended: ${ev.run.conclusion}`;
+      // One flaky job shouldn't drop a circuit, but a broken one on a quiet repo can't wait forever for a next push.
+      if (ev.run.attempt > 1) return fail(`${ended}, after a re-run.`);
+      if (ev.run.previous && ev.run.previous !== "success") return fail(`${ended}, and so did the run before it.`);
+      if (ev.now - Date.parse(ev.run.date) > CI_GRACE_DAYS * DAY) return fail(`${ended}, over ${CI_GRACE_DAYS} days ago, with no run since.`);
+      return pass(ev.run.previous ? `${ended}, and the run before it passed.` : `${ended}. It's the only run and hasn't been re-run.`);
     },
   },
   {
@@ -350,7 +380,8 @@ export const RUBRIC = [
     id: "images-by-digest", group: "Supply chain", points: 5,
     title: "Container images pinned by digest",
     test: (ev) => {
-      const hcl = code(ev, ".hcl", ".tf");
+      // An output naming the version isn't a pull.
+      const hcl = logic(ev, ".hcl", ".tf").split("\n").filter((l) => !/^\s*value\s*=/.test(l)).join("\n");
       const images = hcl.match(/"(?:docker\.io|ghcr\.io|quay\.io|registry\.[\w.-]+|mcr\.microsoft\.com)\/[^"\s]+"/g) ?? [];
       const loose = images.filter((i) => !i.includes("@") && /:[^/]+"$/.test(i));
       if (!images.length) return na("Pulls no images.");
@@ -378,15 +409,23 @@ export const RUBRIC = [
     id: "listen-address", group: "Supply chain", points: 5,
     title: "Default listen address",
     test: (ev) => {
-      const all = /(default\s*=\s*"(0\.0\.0\.0|::|\[::\])"|0\.0\.0\.0(?![/\d]))/.test(code(ev, ".hcl", ".tf"));
-      return all ? fail("Listens on every address by default.") : pass("Doesn't default to every address.");
+      // A lookup or comparison handles the address when a caller picks it; it doesn't listen on it.
+      const lines = logic(ev, ".hcl", ".tf").split("\n").filter((l) => !/\b(lookup|contains|setintersection|replace|coalesce)\(|[!=]=\s*"/.test(l));
+      const hit = lines.find((l) => /\bdefault\s*=\s*\[?\s*"(::|\[::\]|\*)(:\d+)?"|0\.0\.0\.0(?![/\d])|--[\w.-]*(listen|bind|addr)[\w-]*=:/.test(l));
+      return hit ? fail(`Listens on every address by default: ${hit.trim().slice(0, 80)}`) : pass("Found no default or literal that listens on every address.");
     },
   },
   {
-    id: "privileged-shell", group: "Supply chain", points: 10,
+    id: "privileged-shell", group: "Supply chain", points: 5,
     title: "Privileged shell patterns",
-    // shortcut: the patterns stay out of this public file while the check is held; add them here when it's released.
-    test: () => na("Not published yet."),
+    test: (ev) => {
+      const text = logic(ev, ".hcl", ".tf", ".sh");
+      const found = PRIVILEGED.filter(([re]) => re.test(text)).map(([, what]) => what);
+      if (INSECURE_CREDENTIAL.test(text)) {
+        found.push(`sends a credential with the certificate check off, ${PORT_CHECK.test(text) ? "after checking who holds the port, which narrows the risk without closing it" : "without checking who holds the port"}`);
+      }
+      return found.length ? fail(`Shell here ${found.join("; ")}.`) : pass("Found none of the listed patterns.");
+    },
   },
   {
     id: "signed-tags", group: "Repository", points: 5,
@@ -491,7 +530,7 @@ async function read(repo) {
     ? await get(`/repos/${repo}/git/tags/${ref.object.sha}`)
     : (await get(`/repos/${repo}/git/commits/${ref.object.sha}`));
   const runs = await get(`/repos/${repo}/actions/runs?branch=main&event=push&status=completed&per_page=20`);
-  const run = runs.workflow_runs.find((r) => r.name === "CI");
+  const [run, previous] = runs.workflow_runs.filter((r) => r.name === "CI");
   const rules = (await get(`/repos/${repo}/rules/branches/main?per_page=100`, { allow404: true })) ?? [];
   let realHost = null;
   if (files.has(".github/workflows/real-host.yml")) {
@@ -502,7 +541,7 @@ async function read(repo) {
     tag, files,
     tagVerified: Boolean(signed.verification?.verified),
     tagDate: signed.tagger?.date ?? signed.committer?.date,
-    run: run && { conclusion: run.conclusion, date: run.updated_at, url: run.html_url },
+    run: run && { conclusion: run.conclusion, date: run.updated_at, url: run.html_url, attempt: run.run_attempt, previous: previous?.conclusion },
     rules: rules.map((r) => r.type),
     realHost,
     now: Date.now(),
@@ -567,7 +606,7 @@ export function grades(list) {
   })());
 }
 
-/** What the builder has to refuse, and why: nothing while enforcement is off. */
+/** What the builder has to refuse, and why. */
 export function blocked(names, all, enforce = ENFORCE_GRADES) {
   if (!enforce) return {};
   const out = {};

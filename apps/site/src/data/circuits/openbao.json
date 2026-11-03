@@ -2,7 +2,7 @@
   "name": "openbao",
   "repo": "conn3xorg/circuit-openbao",
   "description": "OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "openbao",
     "secrets",

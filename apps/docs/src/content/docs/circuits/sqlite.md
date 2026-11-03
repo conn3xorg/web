@@ -3,7 +3,9 @@ title: SQLite
 description: "The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-sqlite at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-sqlite at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/sqlite/grade.svg)](https://conn3x.org/circuits/sqlite/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/sqlite/grade.svg)](https://conn3x.org/circuits/sqlite/grade)
 
@@ -24,7 +26,7 @@ The file format hasn't changed across these, so a database moves between them. A
 
 ```hcl
 module "sqlite" {
-  source = "github.com/conn3xorg/circuit-sqlite?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-sqlite?ref=v0.1.2"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -48,11 +50,13 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.2/examples/local).
 
 ### Databases
 
 A database that's already there keeps its contents, every time: the circuit only ever sets its owner and mode. SQLite writes a journal beside the database, so the owner needs to be able to write to the directory too. When the directory doesn't exist, the circuit creates it for the owner, with mode `0750`. When it does, it's left alone, so you can't take over `/var/lib` by accident, and write access to it is yours to arrange.
+
+Root only does this work where no other account can change any part of the path. Anywhere else, such as the owner's own directory, it's done as the owner, with only the owner's rights. That has two effects you might notice. A database in a directory the owner can write and that another user owns stops with an error until you hand it over with `chown` once. And `owner = "root"`, the default, stops with an error in a directory another account can change, since nothing there could be trusted to stay root's.
 
 The owner has to exist already. Create the user with your own step or circuit first.
 
@@ -96,7 +100,7 @@ Requires Conn3x v0.6.10 or later, and a package mirror each host can reach. amd6
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. The database's owner then created a table and wrote to it, root read the row back, the owner and mode hadn't moved, and one more plan had no changes. CI runs the same check on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. The database's owner then created a table and wrote to it, root read the row back, the owner and mode hadn't moved, and one more plan had no changes. CI runs the same check on amd64, and checks that a link at a database's path leaves what it points to unchanged.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same check passed, and after a reboot the plan had no changes and the data was still there.
 
@@ -104,10 +108,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-sqlite/blob/v0.1.0/LICENSE). SQLite is in the public domain.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-sqlite/blob/v0.1.2/LICENSE). SQLite is in the public domain.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-sqlite](https://github.com/conn3xorg/circuit-sqlite). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-sqlite/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-sqlite](https://github.com/conn3xorg/circuit-sqlite). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-sqlite/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.2/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch).

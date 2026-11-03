@@ -395,7 +395,7 @@ export function generate(data, build) {
   if (cloud && !Object.hasOwn(clouds, provider)) return { errors: [["cloud", "The builder can't create servers there."]] };
   const def = cloud && clouds[provider];
   const image = cloud && data.builder.cloud[provider][distro.id];
-  if (cloud && !image) fail("cloud", def.noImage?.[distro.id] ?? `${def.name} has no ${distro.name} image.`);
+  if (cloud && !image) fail("cloud", `${def.name} has no ${distro.name} image.`);
   // The server's address and host key aren't known until it exists, so os stands in for its facts.
   const created = (n) => ({
     address: new Ref(def.address(quote(n))),
@@ -596,7 +596,7 @@ export function generate(data, build) {
         closed: net ? [...new Set(closed.map((p) => p.port))].map((port) => ({ port, from: [net] })) : [],
       }),
       ...(variables.length ? { "variables.tf": variablesTf(variables) } : {}),
-      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length), cloud: def }),
+      "README.md": readme(data, distro, new Set(claims.map((c) => c.address)).size, placed, modules, variables, { terms: image?.plan, fw: !!fw, open, closed, net, roles: Object.values(placed).some((p) => Object.keys(p).length), cloud: def }),
     },
   };
 }
@@ -769,10 +769,6 @@ The private host key sits in the instance's user data as well as in state. Anyth
     notArm: /^Standard_[a-z]+\d+[a-z]*p[a-z]*_/i,
     resourceGroup: "conn3x",
     resourceGroupOk: /^[A-Za-z0-9_-]([A-Za-z0-9._-]{0,88}[A-Za-z0-9_-])?$/,
-    // The publisher's own image needs its Marketplace terms accepted first, and a config shouldn't do that quietly.
-    noImage: {
-      rocky10: "Rocky Linux 10 on Azure comes with Marketplace terms that you'd have to accept for your subscription, and we haven't tested it. Pick Ubuntu 24.04 or Debian 13, or bring a Rocky server you already have.",
-    },
     keyInstalledBy: "cloud-init",
     providers: { azurerm: `{ source = "hashicorp/azurerm", version = "~> 5.0" }` },
     // Through the VM, so nothing connects until it's up.
@@ -788,7 +784,7 @@ Everything goes in one new resource group, so \`az group delete\` is your way ou
 
 Each VM gets 50 GB of Standard SSD and a static public IPv4 address, and both cost money too. Azure makes a user called \`conn3x\`, with your public key and sudo, and password login is off.
 
-Cloud-init writes each host key before SSH starts on both images, so unlike Google Cloud there's no wait before connecting. If an apply ever stops with a host key error, run it again.
+Cloud-init writes each host key before SSH starts on every image here, so unlike Google Cloud there's no wait before connecting. If an apply ever stops with a host key error, run it again.
 
 The image is the newest one its publisher has out when you first apply. Later releases don't replace a running server.
 
@@ -1000,6 +996,7 @@ function azureTf(c) {
   out += `\n  admin_ssh_key {\n${attrs([["username", c.def.user], ["public_key", new Ref(`trimspace(file(pathexpand(${hcl(c.publicKey)})))`)]], "    ")}  }\n`;
   out += `\n  os_disk {\n${attrs([["caching", "ReadWrite"], ["storage_account_type", "StandardSSD_LRS"], ["disk_size_gb", 50]], "    ")}  }\n`;
   out += `\n  source_image_reference {\n${attrs([["publisher", c.image.publisher], ["offer", c.image.offer], ["sku", c.image.sku], ["version", "latest"]], "    ")}  }\n`;
+  if (c.image.plan) out += `\n  plan {\n${attrs([["name", c.image.plan.name], ["product", c.image.plan.product], ["publisher", c.image.plan.publisher]], "    ")}  }\n`;
   out += `\n  custom_data = base64encode("#cloud-config\\n\${yamlencode({\n    ssh_deletekeys = true\n    ssh_keys = {\n      ed25519_private = each.value.private_key_openssh\n      ed25519_public  = each.value.public_key_openssh\n    }\n  })}")\n`;
   out += `\n  # The firewall goes on before anything can listen.\n  depends_on = [azurerm_subnet_network_security_group_association.hosts]\n}\n`;
   return out;
@@ -1046,6 +1043,12 @@ function variablesTf(variables) {
     .join("\n");
 }
 
+// A config shouldn't accept a publisher's terms quietly, so the reader does it.
+function termsStep(distro, { publisher, product, name }) {
+  const ids = `--publisher ${publisher} --offer ${product} --plan ${name}`;
+  return `\n   ${distro.name}'s image comes with Marketplace terms, and Azure won't create the VM until your subscription has accepted them. It only takes once per subscription, and we won't do it for you in a config. Read them, then accept:\n\n   \`\`\`sh\n   az vm image terms show ${ids}\n   az vm image terms accept ${ids}\n   \`\`\`\n\n`;
+}
+
 function readme(data, distro, n, placed, modules, variables, fw) {
   let out = "# Your Conn3x config\n\n";
   out += `Written by the Circuit Builder at https://conn3x.org/build, for ${distro.name} on ${n} host${n === 1 ? "" : "s"}. `;
@@ -1067,7 +1070,7 @@ function readme(data, distro, n, placed, modules, variables, fw) {
   out += "\n## Run it\n\n";
   out += "1. Install Conn3x: https://docs.conn3x.org/get-started\n";
   out += fw.cloud
-    ? `2. ${fw.cloud.credentials}\n`
+    ? `2. ${fw.cloud.credentials}\n${fw.terms ? termsStep(distro, fw.terms) : ""}`
     : "2. Log in to each host with `ssh` once, so its key is in your known_hosts. Conn3x checks it.\n";
   if (variables.length) {
     out += "3. Set the secrets. They stay in your shell, never in a file:\n\n   ```sh\n";

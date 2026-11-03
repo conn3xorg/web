@@ -16,7 +16,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Conn3x",
-      description: "Docs for Conn3x: one plan for your cloud and the servers it creates.",
+      description: "Docs for Conn3x, the IaCC tool: infrastructure as code and configuration management in one plan.",
       logo: { light: "./src/logo.svg", dark: "./src/logo-dark.svg", replacesTitle: true },
       favicon: "/favicon.svg",
       social: [
@@ -41,7 +41,7 @@ export default defineConfig({
           label: "Tutorials",
           items: [
             { slug: "tutorials", label: "Overview" },
-            ...["try-locally", "first-server", "digitalocean", "bastion", "secrets", "drift-in-ci", "migrate-ansible", "bigquery"].map((page) => `tutorials/${page}`),
+            ...["try-locally", "first-server", "digitalocean", "google-cloud", "azure", "aws", "bastion", "secrets", "drift-in-ci", "migrate-ansible", "bigquery"].map((page) => `tutorials/${page}`),
           ],
         },
         {
@@ -77,6 +77,7 @@ export default defineConfig({
           collapsed: true,
           items: ["plan-reads", "state", "revision-and-handlers", "connections"].map((page) => `internals/${page}`),
         },
+        "reference/glossary",
         { label: "Get involved", items: ["contribute", "style", "roadmap"] },
       ],
     }),

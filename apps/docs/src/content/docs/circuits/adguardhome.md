@@ -3,7 +3,7 @@ title: AdGuard Home
 description: "AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-adguardhome at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-adguardhome at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/adguardhome/grade.svg)](https://conn3x.org/circuits/adguardhome/grade)
 
@@ -20,7 +20,7 @@ variable "adguard_password" {
 }
 
 module "adguardhome" {
-  source = "github.com/conn3xorg/circuit-adguardhome?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-adguardhome?ref=v0.1.1"
 
   hosts                = { dns = "192.168.1.2" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +56,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.1/examples/local).
 
 ### Don't run an open resolver
 
@@ -139,7 +139,7 @@ Requires Conn3x v0.6.7 or later, systemd, and amd64 or arm64 hosts. Each host ne
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes. Then it asks AdGuard Home over `dig` for `doubleclick.net`, which the AdGuard DNS filter blocks, and `ads.example.org`, which the example's own rule blocks, and expects `0.0.0.0` for both; for `example.com`, which has to resolve normally; and for `nas.home.arpa`, which has to come back as the example's `192.168.1.20`. It checks that `/control/status` accepts the example's password and turns down a wrong one. The same checks passed by hand on all four in containers on arm64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. Then it asks AdGuard Home over `dig` for `doubleclick.net`, which the AdGuard DNS filter blocks, and `ads.example.org`, which the example's own rule blocks, and expects `0.0.0.0` for both; for `example.com`, which has to resolve normally; and for `nas.home.arpa`, which has to come back as the example's `192.168.1.20`. It checks that `/control/status` accepts the example's password and turns down a wrong one. The same checks passed by hand on all four in containers on arm64.
 
 They also passed on Ubuntu 24.04 and Rocky Linux 10 droplets with 1 GB of memory. On Ubuntu, resolved's stub went, the host kept its own DNS, and AdGuard Home took port 53 on every address. From outside, a UDP query got no answer, a TCP query got `REFUSED`, and the web port didn't answer. After a reboot AdGuard Home came back, the checks passed again and the plan had no changes. Changing a rewrite and `blocking_mode = "nxdomain"` rebuilt the config, the new answers came back, and the plan after was clean. So was changing the password, after which only the new one logged in.
 
@@ -147,10 +147,10 @@ Upgrading from one `adguardhome_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-adguardhome/blob/v0.1.0/LICENSE). AdGuard Home itself is under the GPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-adguardhome/blob/v0.1.1/LICENSE). AdGuard Home itself is under the GPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-adguardhome](https://github.com/conn3xorg/circuit-adguardhome). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-adguardhome/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-adguardhome](https://github.com/conn3xorg/circuit-adguardhome). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-adguardhome/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-adguardhome/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Pi-hole](/circuits/pihole), [Unbound](/circuits/unbound), [BIND](/circuits/bind).

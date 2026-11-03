@@ -2,7 +2,7 @@
   "name": "kubeadm",
   "repo": "conn3xorg/circuit-kubeadm",
   "description": "An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "kubernetes",
     "kubeadm",

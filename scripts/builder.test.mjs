@@ -7,7 +7,6 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
 import { hcl, parseType, fieldKind, convert, unavailable, conflict, withRequired, generate, unticked, zip, linkFor, readLink, rolesOf } from "../apps/site/src/lib/builder.js";
 import { load, builds } from "./builder-combos.mjs";
 
@@ -65,9 +64,9 @@ test("convert turns typed text into typed values", () => {
   assert.equal(convert(vh, { key: "", fields: {} }), undefined);
 });
 
-test("excluded circuits and lastrack can't be reached", () => {
-  assert.ok(!existsSync(new URL("../apps/site/src/data/circuit-inputs/lastrack.json", import.meta.url)));
-  for (const name of [...Object.keys(data.builder.excluded), "lastrack"]) {
+test("excluded circuits and names outside the directory can't be reached", () => {
+  for (const name of Object.keys(data.inputs)) assert.ok(data.circuits[name], `${name} has inputs, so it must be in the directory`);
+  for (const name of [...Object.keys(data.builder.excluded), "not-in-the-directory"]) {
     assert.ok(!data.inputs[name] || data.builder.excluded[name], `${name} has no inputs file or is excluded`);
     for (const d of data.builder.distros) assert.ok(unavailable(data, name, d.id), `${name} on ${d.id}`);
     const r = generate(data, { ...base, picks: [name] });
@@ -101,8 +100,8 @@ test("builder.json names real circuits and inputs", () => {
       if (p.input) assert.ok(data.inputs[n].inputs.some((v) => v.name === p.input), `${n}.${p.input}`);
     }
   }
-  // Every official circuit has inputs, except lastrack.
-  for (const c of Object.values(data.circuits)) if (c.official && c.name !== "lastrack") assert.ok(data.inputs[c.name], c.name);
+  // Every official circuit has inputs.
+  for (const c of Object.values(data.circuits)) if (c.official) assert.ok(data.inputs[c.name], c.name);
 });
 
 test("conflicts and requirements", () => {
@@ -200,7 +199,7 @@ test("a link carries picks only, and can't smuggle in a bad build", () => {
   assert.deepEqual(readLink(data, linkFor("rocky10", ["nginx", "grafana"])), { distro: "rocky10", picks: ["nginx", "grafana"] });
   assert.deepEqual(readLink(data, "#distro=rocky10&picks="), { distro: "rocky10", picks: [] });
   assert.deepEqual(readLink(data, "#distro=rocky10&picks=nginx,apache,nginx"), { distro: "rocky10", picks: ["nginx"] }, "the clash and the repeat go");
-  assert.deepEqual(readLink(data, "#distro=rocky10&picks=kubeadm,lastrack,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
+  assert.deepEqual(readLink(data, "#distro=rocky10&picks=kubeadm,nope,nginx"), { distro: "rocky10", picks: ["nginx"] }, "excluded and unknown names go");
   assert.equal(readLink(data, "#distro=nope&picks=nginx"), null);
   assert.equal(readLink(data, "#hosts"), null, "a link inside the page isn't a build");
 });
@@ -423,17 +422,30 @@ test("Azure gets a resource group, a security group and a conn3x login with a ke
   assert.match(readme, /Windows is still to come/);
 });
 
-test("every Azure image is one we've checked, needing no Marketplace terms", () => {
+test("every Azure image is one we've checked, and only Rocky needs Marketplace terms", () => {
   assert.deepEqual(data.builder.cloud.azure, {
+    rocky10: { publisher: "resf", offer: "rockylinux-x86_64", sku: "10-base", plan: { name: "10-base", product: "rockylinux-x86_64", publisher: "resf" } },
     ubuntu2404: { publisher: "Canonical", offer: "ubuntu-24_04-lts", sku: "server" },
     debian13: { publisher: "Debian", offer: "debian-13", sku: "13-gen2" },
   });
 });
 
+test("Rocky on Azure names its plan, and the README tells you to accept the terms yourself", () => {
+  const r = generate(data, { ...base, distro: "rocky10", hosts: "web1", picks: ["nginx"], cloud: azure });
+  assert.equal(r.errors, undefined);
+  assert.match(r.files["main.tf"], /plan \{\n\s+name\s+= "10-base"\n\s+product\s+= "rockylinux-x86_64"\n\s+publisher = "resf"\n\s+\}/);
+  assert.match(r.files["README.md"], /az vm image terms accept --publisher resf --offer rockylinux-x86_64 --plan 10-base\n/);
+  for (const distro of ["ubuntu2404", "debian13"]) {
+    const other = generate(data, { ...base, distro, hosts: "web1", picks: ["nginx"], cloud: azure });
+    assert.doesNotMatch(other.files["main.tf"], /\bplan \{/, distro);
+    assert.doesNotMatch(other.files["README.md"], /image terms/, distro);
+  }
+});
+
 test("Azure refuses what can't work, and keeps typed text in strings", () => {
   const err = (b, cloud = {}) => (generate(data, { ...base, distro: "debian13", picks: ["nginx"], hosts: "web1", ...b, cloud: { ...azure, ...cloud } }).errors ?? []).map((e) => e[1]).join(" ");
   assert.equal(err({}), "");
-  assert.match(err({ distro: "rocky10" }), /Marketplace terms/);
+  assert.equal(err({ distro: "rocky10" }), "");
   assert.match(err({ distro: "fedora45" }), /Azure has no Fedora 45 image/);
   for (const resourceGroup of ['x"; evil', '${file("/etc/shadow")}', "a\nb", "ends.", "a/b", "%{ if true }", "x".repeat(91)]) assert.match(err({}, { resourceGroup }), /isn't a resource group/, resourceGroup);
   for (const resourceGroup of ["", "conn3x-ci-1", "My_Group.2"]) assert.equal(err({}, { resourceGroup }), "", resourceGroup);

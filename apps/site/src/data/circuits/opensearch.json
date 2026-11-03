@@ -2,7 +2,7 @@
   "name": "opensearch",
   "repo": "conn3xorg/circuit-opensearch",
   "description": "Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "opensearch",
     "search",

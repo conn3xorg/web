@@ -3,7 +3,7 @@ title: BIND
 description: "BIND 9 serving your zones, written as HCL, with serials that go up when records change and TSIG-signed secondaries."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-bind at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-bind at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/bind/grade.svg)](https://conn3x.org/circuits/bind/grade)
 
@@ -17,7 +17,7 @@ The same settings land on Debian, Ubuntu, Fedora and Rocky Linux. The circuit pi
 
 ```hcl
 module "dns" {
-  source = "github.com/conn3xorg/circuit-bind?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-bind?ref=v0.1.1"
 
   hosts                = { ns1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -57,7 +57,7 @@ hosts = {
 }
 ```
 
-To try a primary and a secondary on throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-bind/tree/v0.1.0/examples/local).
+To try a primary and a secondary on throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-bind/tree/v0.1.1/examples/local).
 
 ### A primary and a secondary
 
@@ -70,7 +70,7 @@ variable "tsig_secret" {
 }
 
 module "ns1" {
-  source = "github.com/conn3xorg/circuit-bind?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-bind?ref=v0.1.1"
   hosts  = { ns1 = "203.0.113.10" }
 
   tsig_keys = { transfer = var.tsig_secret }
@@ -92,7 +92,7 @@ module "ns1" {
 }
 
 module "ns2" {
-  source = "github.com/conn3xorg/circuit-bind?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-bind?ref=v0.1.1"
   hosts  = { ns2 = "198.51.100.10" }
 
   tsig_keys = { transfer = var.tsig_secret }
@@ -191,7 +191,7 @@ Requires Conn3x v0.6.7 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-bind/tree/v0.1.0/examples/local) to a primary and a secondary on amd64, pairing each distribution with a different one in each role: Rocky Linux 10 with Ubuntu 24.04 and Debian 13 with Fedora 45, both ways round, and checks that the second plan has no changes. It then checks that both answer the zone's `A`, `MX`, `TXT` and `CNAME` records with the `aa` flag and the same serial, that a missing name gets `NXDOMAIN`, that a name outside the zone is `REFUSED`, that an unsigned transfer is refused and that the secondary's came signed with the key. Then it changes a record, checks that the serial went up and the secondary answers with the new record, and that the plan is clean again. The same four pairs passed in Podman on arm64, as did a primary and a secondary both on Debian 13, both on Ubuntu 24.04 and both on Rocky Linux 10.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-bind/tree/v0.1.1/examples/local) to a primary and a secondary on amd64, pairing each distribution with a different one in each role: Rocky Linux 10 with Ubuntu 24.04 and Debian 13 with Fedora 45, both ways round, and checks that the second plan has no changes. It then checks that both answer the zone's `A`, `MX`, `TXT` and `CNAME` records with the `aa` flag and the same serial, that a missing name gets `NXDOMAIN`, that a name outside the zone is `REFUSED`, that an unsigned transfer is refused and that the secondary's came signed with the key. Then it changes a record, checks that the serial went up and the secondary answers with the new record, and that the plan is clean again. The same four pairs passed in Podman on arm64, as did a primary and a secondary both on Debian 13, both on Ubuntu 24.04 and both on Rocky Linux 10.
 
 On droplets, a Rocky Linux 10 primary and an Ubuntu 24.04 secondary passed the same checks over their public addresses, queried from each droplet in turn, with the secondary picking up a changed record from the primary's NOTIFY. Both still answered after a reboot, with the plan still at no changes. Rocky Linux ran with SELinux enforcing: BIND ran confined as `named_t`, and the audit log had no denials. On Ubuntu, BIND ran under its AppArmor profile beside systemd-resolved's stub.
 
@@ -201,10 +201,10 @@ A record that fails `named-checkzone` was tried on Ubuntu 24.04: the apply stopp
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-bind/blob/v0.1.0/LICENSE). BIND itself is MPL-2.0 too.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-bind/blob/v0.1.1/LICENSE). BIND itself is MPL-2.0 too.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-bind](https://github.com/conn3xorg/circuit-bind). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-bind/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-bind/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-bind/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-bind](https://github.com/conn3xorg/circuit-bind). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-bind/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-bind/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-bind/tree/v0.1.1/examples/local).
 - Related circuits: [Unbound](/circuits/unbound), [Firewall](/circuits/firewall), [Pi-hole](/circuits/pihole), [AdGuard Home](/circuits/adguardhome).

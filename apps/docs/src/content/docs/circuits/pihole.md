@@ -3,7 +3,7 @@ title: Pi-hole
 description: "Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-pihole at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-pihole at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/pihole/grade.svg)](https://conn3x.org/circuits/pihole/grade)
 
@@ -20,7 +20,7 @@ variable "pihole_password" {
 }
 
 module "pihole" {
-  source = "github.com/conn3xorg/circuit-pihole?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-pihole?ref=v0.1.1"
 
   hosts                = { dns = "192.168.1.2" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -49,7 +49,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.1/examples/local).
 
 ### Don't run an open resolver
 
@@ -66,7 +66,7 @@ web_port       = "127.0.0.1:8080"
 Pi-hole has two official ways in: its installer script, and the `pihole/pihole` image. This circuit uses the image, for three reasons.
 
 - **One pin covers everything.** Pi-hole is three projects: the core scripts, the web interface and FTL, the DNS server. An image tag such as `2026.10.0` fixes all three. The installer can be fetched from a tag, but it then clones the core and web repositories from their main branches and downloads FTL's latest release, so two hosts installed a week apart can differ.
-- **Upgrades are a diff.** Change `pihole_version`, and `conn3x plan` shows the new image in the unit file. The apply restarts the service on the new image, and gravity, the query log and settings stay in the `pihole` volume. With the installer, an upgrade is `pihole -up`, which moves to whatever is latest.
+- **Upgrades are a diff.** Change `pihole_version` and `image_digest`, and `conn3x plan` shows the new image in the unit file. The apply restarts the service on the new image, and gravity, the query log and settings stay in the `pihole` volume. With the installer, an upgrade is `pihole -up`, which moves to whatever is latest.
 - **The same on every distribution.** The installer supports Debian, Ubuntu, Fedora and CentOS Stream, but not Rocky Linux or AlmaLinux. Podman is in all of their repositories.
 
 The container uses the host's network rather than a published port, so Pi-hole's query log shows each device's own address, and `listening_mode` and `interface` refer to the host's real interfaces.
@@ -108,6 +108,7 @@ Blocklists the circuit adds carry the comment `Managed by Conn3x`. Lists you add
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
 | `web_password` | string, sensitive, ephemeral | Required | Password for the web interface and the API, 8 characters or more. Ephemeral and sensitive: it reaches the host's env file but never the plan or state. Changing it restarts the container. |
 | `pihole_version` | string | `"2026.10.0"` | Tag of `docker.io/pihole/pihole`. `2026.10.0` is Pi-hole core v6.5, web v6.6.1 and FTL v6.8. |
+| `image_digest` | string | The digest of `2026.10.0` | Digest of the image. Podman pulls by the digest, so set it whenever you change `pihole_version`. |
 | `upstream_dns` | list(string) | `["9.9.9.9", "149.112.112.112"]` | Servers Pi-hole forwards allowed queries to, optionally with `#port`, such as `"127.0.0.1#5335"` for a local Unbound. The default is Quad9. |
 | `listening_mode` | string | `"LOCAL"` | `LOCAL` answers devices on the host's own subnets, `SINGLE` only queries arriving on `interface`, `BIND` binds to `interface` alone, `ALL` answers anyone who can reach port 53, and `NONE` leaves it to you. |
 | `interface` | string | `null` | Interface for `SINGLE` and `BIND`, such as `"eth0"` or `"lo"`. When null, Pi-hole uses the one with the default route. |
@@ -134,7 +135,7 @@ A Raspberry Pi is the classic home for Pi-hole. Raspberry Pi OS is Debian with R
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.0/examples/local) to each on amd64, checks that the second plan has no changes, then asks Pi-hole over `dig` for `doubleclick.net`, which StevenBlack's list blocks, and expects `0.0.0.0`; for `example.com`, which has to resolve normally; and for `nas.home.arpa`, which has to come back as the example's `192.168.1.20`. It checks the extra blocklist made it into gravity with domains in it, and that the API accepts the example's password and turns down a wrong one.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, then asks Pi-hole over `dig` for `doubleclick.net`, which StevenBlack's list blocks, and expects `0.0.0.0`; for `example.com`, which has to resolve normally; and for `nas.home.arpa`, which has to come back as the example's `192.168.1.20`. It checks the extra blocklist made it into gravity with domains in it, and that the API accepts the example's password and turns down a wrong one.
 
 The same checks passed by hand on Ubuntu 24.04 and Debian 13 droplets with 1 GB of memory, both running `systemd-resolved` with its stub on: the stub went, the hosts kept their own DNS, and Pi-hole took port 53. They ran with `listening_mode = "BIND"`, `interface = "lo"` and `web_port = "127.0.0.1:8080"`; from outside, port 53 timed out and the web port didn't answer. After a reboot Pi-hole came back, the checks passed again and the plan had no changes. Emptying `blocklists` removed the extra list and left the default one, and putting it back added it again, each with a clean plan after.
 
@@ -142,10 +143,10 @@ Upgrading from one `pihole_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-pihole/blob/v0.1.0/LICENSE). Pi-hole itself is under the EUPL.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-pihole/blob/v0.1.1/LICENSE). Pi-hole itself is under the EUPL.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-pihole](https://github.com/conn3xorg/circuit-pihole). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-pihole/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-pihole](https://github.com/conn3xorg/circuit-pihole). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-pihole/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Podman](/circuits/podman), [AdGuard Home](/circuits/adguardhome), [Unbound](/circuits/unbound), [BIND](/circuits/bind).

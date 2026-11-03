@@ -3,7 +3,7 @@ title: Users
 description: "Creates users, groups and their SSH keys from one map, with optional passwordless sudo."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-users at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-users at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/users/grade.svg)](https://conn3x.org/circuits/users/grade)
 
@@ -13,7 +13,7 @@ A [Conn3x](https://conn3x.org) circuit that manages local accounts from one map:
 
 ```hcl
 module "team" {
-  source = "github.com/conn3xorg/circuit-users?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-users?ref=v0.1.1"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -42,7 +42,7 @@ module "team" {
 }
 ```
 
-Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.0/examples/local).
+Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.1/examples/local).
 
 ### Hosts with pinned host keys
 
@@ -50,7 +50,7 @@ A value in `hosts` can also be a host object, as in a circuit's own [`hosts`](/r
 
 ```hcl
 module "team" {
-  source = "github.com/conn3xorg/circuit-users?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-users?ref=v0.1.1"
 
   hosts = {
     for name, d in digitalocean_droplet.web : name => {
@@ -123,14 +123,16 @@ None.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, logs in as a user with the key and uses sudo, and checks a user with no key and no sudo can do neither.
+
+It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, `alice` was in `developers` and listed by `sudo -l`, and `bob` got `/bin/sh` as the login shell. After a reboot the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-[MPL-2.0](https://github.com/conn3xorg/circuit-users/blob/v0.1.0/LICENSE)
+[MPL-2.0](https://github.com/conn3xorg/circuit-users/blob/v0.1.1/LICENSE)
 
 ## Source
 
-- Repository: [conn3xorg/circuit-users](https://github.com/conn3xorg/circuit-users). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-users/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-users/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-users](https://github.com/conn3xorg/circuit-users). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-users/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-users/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.1/examples/local).
 - Related circuits: [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).

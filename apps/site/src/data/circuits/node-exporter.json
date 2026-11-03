@@ -2,7 +2,7 @@
   "name": "node-exporter",
   "repo": "conn3xorg/circuit-node-exporter",
   "description": "Runs Prometheus node_exporter at a pinned, checksummed version as its own system user.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "monitoring",
     "prometheus"

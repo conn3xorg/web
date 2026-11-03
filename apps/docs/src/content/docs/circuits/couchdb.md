@@ -3,7 +3,7 @@ title: CouchDB
 description: "Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin"
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-couchdb at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-couchdb at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/couchdb/grade.svg)](https://conn3x.org/circuits/couchdb/grade)
 
@@ -23,7 +23,7 @@ variable "couchdb_admin_password" {
 }
 
 module "couchdb" {
-  source = "github.com/conn3xorg/circuit-couchdb?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-couchdb?ref=v0.1.2"
 
   hosts                = { notes = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +56,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.2/examples/local).
 
 ### Obsidian Self-hosted LiveSync
 
@@ -91,7 +91,7 @@ Obsidian on iOS and Android only talks to CouchDB over HTTPS with a certificate 
 
 ```hcl
 module "couchdb" {
-  source = "github.com/conn3xorg/circuit-couchdb?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-couchdb?ref=v0.1.2"
 
   hosts                = { notes = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -194,7 +194,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Ubuntu 24.04 and Debian 13, with CouchDB 3.5.3. [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.0/examples/local), which turns on `obsidian_livesync`, was applied to each on arm64, and the second plan had no changes. On each, the admin got the welcome JSON from `GET /` and logged in on `/_session`, an anonymous request and a wrong password got 401, `_users` and `_replicator` were there, CouchDB reported the LiveSync settings and answered an `app://obsidian.md` origin with CORS headers, the ini files held only the password's hash, and epmd listened on loopback only. A database and a document survived a restart of CouchDB and of the container. Then the admin password changed: the new one worked, the old one got 401, and the plan after that was clean too. CI runs the same checks on amd64.
+Rocky Linux 10, Ubuntu 24.04 and Debian 13, with CouchDB 3.5.3. [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.2/examples/local), which turns on `obsidian_livesync`, was applied to each on arm64, and the second plan had no changes. On each, the admin got the welcome JSON from `GET /` and logged in on `/_session`, an anonymous request and a wrong password got 401, `_users` and `_replicator` were there, CouchDB reported the LiveSync settings and answered an `app://obsidian.md` origin with CORS headers, the ini files held only the password's hash, and epmd listened on loopback only. A database and a document survived a restart of CouchDB and of the container. Then the admin password changed: the new one worked, the old one got 401, and the plan after that was clean too. CI runs the same checks on amd64, and that a link beside the admin file leaves what it points to unchanged.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, the circuit applied with `bind_address = "0.0.0.0"` and a CORS origin. From another machine, `GET /` answered anonymously with the welcome JSON, the admin logged in, a database and document were created, CORS headers came back for the origin, and port 4369 was closed. Both came back after a reboot with CouchDB running, the document there and the plan clean. On Rocky Linux CouchDB runs as `unconfined_service_t`, and the audit log had no denials.
 
@@ -202,10 +202,10 @@ The circuit-caddy setup above wasn't part of these tests, and neither was the pl
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-couchdb/blob/v0.1.0/LICENSE). CouchDB itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-couchdb/blob/v0.1.2/LICENSE). CouchDB itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-couchdb](https://github.com/conn3xorg/circuit-couchdb). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-couchdb/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-couchdb](https://github.com/conn3xorg/circuit-couchdb). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-couchdb/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-couchdb/tree/v0.1.2/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).

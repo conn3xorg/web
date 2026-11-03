@@ -3,7 +3,9 @@ title: Python
 description: "Your distribution's Python with working venvs, and optional environments holding pinned packages."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-python at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-python at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/python/grade.svg)](https://conn3x.org/circuits/python/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/python/grade.svg)](https://conn3x.org/circuits/python/grade)
 
@@ -24,7 +26,7 @@ We picked this route on purpose. Distribution Python gets its security fixes wit
 
 ```hcl
 module "python" {
-  source = "github.com/conn3xorg/circuit-python?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-python?ref=v0.1.2"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -48,7 +50,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.2/examples/local).
 
 ## What it does
 
@@ -65,7 +67,7 @@ Before the circuit runs, the `conn3x_host` data source reads each host's distrib
 - It doesn't pin Python. Updates arrive with the host's other package updates.
 - It doesn't pin a package's dependencies or check hashes. pip takes what the package asks for, so those can differ between two hosts installed at different times. Use your own lock file for an application.
 - It doesn't install a compiler or headers. A package with no wheel for your Python will fail to build; add those first.
-- It doesn't set an owner on an environment: `venvs` are owned by the user applying them, root as a rule, and readable by everyone.
+- It doesn't set an owner on an environment: `venvs` are owned by the user applying them, root as a rule, and readable by everyone. Because root runs what's inside on every plan, a path another account can change, such as a home directory, stops with an error instead. Build those as their own user, outside this circuit.
 - It doesn't uninstall anything. A package or environment you take out, and everything else when you delete the module, stays on the host.
 
 ## Inputs
@@ -92,7 +94,7 @@ Requires Conn3x v0.6.10 or later, and a package mirror each host can reach, plus
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. The `cowsay` 6.1 command ran from the environment the circuit built, and a fresh `python3 -m venv` installed the same package and ran it. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. The `cowsay` 6.1 command ran from the environment the circuit built, and a fresh `python3 -m venv` installed the same package and ran it. CI runs the same checks on amd64, and checks that root doesn't run an environment another account can change.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same checks passed, and after a reboot the plan had no changes and they still passed.
 
@@ -100,10 +102,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-python/blob/v0.1.0/LICENSE). Python is under the PSF License. Packages carry their own licenses.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-python/blob/v0.1.2/LICENSE). Python is under the PSF License. Packages carry their own licenses.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-python](https://github.com/conn3xorg/circuit-python). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-python/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-python/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-python](https://github.com/conn3xorg/circuit-python). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-python/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-python/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.2/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

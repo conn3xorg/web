@@ -3,7 +3,7 @@ title: OpenSearch
 description: "Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-opensearch at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-opensearch at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/opensearch/grade.svg)](https://conn3x.org/circuits/opensearch/grade)
 
@@ -21,7 +21,7 @@ variable "opensearch_admin_password" {
 }
 
 module "opensearch" {
-  source = "github.com/conn3xorg/circuit-opensearch?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-opensearch?ref=v0.1.1"
 
   hosts                = { search = "192.168.1.40" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -59,7 +59,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.1/examples/local).
 
 ### Heap size
 
@@ -163,16 +163,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with OpenSearch 3.9.0. CI applies [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.0/examples/local) to each on amd64, checks that the second plan has no changes, that cluster health is green or yellow, and indexes a document and finds it with a search. The same ran by hand on arm64, along with an upgrade from 3.8.0 to 3.9.0 on Ubuntu 24.04 and Rocky Linux 10, which kept the indexed document, a heap change, a wrong `admin_password`, which failed the apply with the message above, a password changed with the admin certificate and then in `admin_password`, and your own certificates on Fedora 45, checked with `curl --cacert` against the new CA.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with OpenSearch 3.9.0. CI applies [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, that cluster health is green or yellow, and indexes a document and finds it with a search. The same ran by hand on arm64, along with an upgrade from 3.8.0 to 3.9.0 on Ubuntu 24.04 and Rocky Linux 10, which kept the indexed document, a heap change, a wrong `admin_password`, which failed the apply with the message above, a password changed with the admin certificate and then in `admin_password`, and your own certificates on Fedora 45, checked with `curl --cacert` against the new CA.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-2vcpu-4gb`, the circuit applied with `listen_address = "0.0.0.0"` and a 2 GB heap. Cluster health was green, and a document indexed from another machine was found by a search. Both came back after a reboot with OpenSearch running, the document still there and the second plan clean. On Rocky Linux OpenSearch runs as `unconfined_service_t`, and the audit log had no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-opensearch/blob/v0.1.0/LICENSE). OpenSearch itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-opensearch/blob/v0.1.1/LICENSE). OpenSearch itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-opensearch](https://github.com/conn3xorg/circuit-opensearch). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-opensearch/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-opensearch](https://github.com/conn3xorg/circuit-opensearch). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-opensearch/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-opensearch/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [SQLite](/circuits/sqlite).

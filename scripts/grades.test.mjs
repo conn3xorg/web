@@ -59,6 +59,13 @@ test("looking at a host isn't using it", () => {
   for (const l of ["sudo podman exec x curl -sSf localhost", "psql -h 127.0.0.1 -c 'SELECT 1'", 'out=$(curl -sSf localhost)']) assert.ok(behaviourLine([l]), l);
 });
 
+test("a function is judged by what it runs, and an assignment by what it calls", () => {
+  assert.equal(behaviourLine(["ok() { systemctl is-active x; }", "ok"]), null);
+  assert.equal(behaviourLine(["ok() {", "  systemctl is-active x", "}", "ok"]), null);
+  assert.equal(behaviourLine(["ip=$(sudo podman inspect -f '{{.NetworkSettings.IPAddress}}' x)"]), null);
+  assert.match(behaviourLine(["fetch() { curl -fsS http://x/; }", "fetch"]), /^curl/);
+});
+
 test("a step's name earns nothing, and failure-only steps don't count", () => {
   const r = evaluate(evidence(ci("      - name: Curl the page and restart it\n        run: systemctl is-active x\n")));
   assert.equal(check(r, "behaviour").state, "fail");
@@ -99,10 +106,36 @@ test("secrets in state only matter where there are secrets", () => {
 });
 
 test("real API evidence decides the repository checks", () => {
-  const bad = evaluate(evidence(ci(fetching), { tagVerified: false, rules: ["deletion"], run: { conclusion: "failure", date: "2026-10-30T00:00:00Z" }, tagDate: "2025-01-01T00:00:00Z" }));
+  const bad = evaluate(evidence(ci(fetching), { tagVerified: false, rules: ["deletion"], run: { conclusion: "failure", date: "2026-10-30T00:00:00Z", previous: "failure" }, tagDate: "2025-01-01T00:00:00Z" }));
   for (const id of ["signed-tags", "branch-protection", "ci-green", "fresh"]) assert.equal(check(bad, id).state, "fail", id);
   assert.equal(bad.passing, false, "red CI is a gate");
   assert.equal(check(evaluate(evidence(ci(fetching), { run: undefined })), "ci-green").state, "fail");
+});
+
+test("one failed CI run doesn't drop a circuit, and staying red does", () => {
+  const graded = (run) => evaluate(evidence(ci(fetching), { run: { date: "2026-10-30T00:00:00Z", ...run } }));
+  const green = (run) => check(graded(run), "ci-green").state;
+  assert.equal(green({ conclusion: "failure", attempt: 1, previous: "success" }), "pass", "one failure");
+  assert.equal(green({ conclusion: "failure", attempt: 1 }), "pass", "the only run, not re-run");
+  assert.equal(green({ conclusion: "success", attempt: 1, previous: "failure" }), "pass", "a failure, then a pass");
+  for (const run of [{ conclusion: "failure", attempt: 1, previous: "failure" }, { conclusion: "failure", attempt: 2 }]) {
+    assert.equal(green(run), "fail", JSON.stringify(run));
+    assert.ok(graded(run).gateFailed.includes("ci-green"));
+    assert.equal(graded(run).passing, false);
+  }
+  assert.ok(!graded({ conclusion: "failure", attempt: 1, previous: "success" }).gateFailed?.includes("ci-green"));
+});
+
+test("a failed re-run is red whatever came before, and a lone failure gets 3 days", () => {
+  const green = (run) => check(evaluate(evidence(ci(fetching), { run })), "ci-green").state;
+  const lone = { conclusion: "failure", attempt: 1, previous: "success" };
+  assert.equal(green({ ...lone, date: "2026-10-30T00:00:00Z", attempt: 2 }), "fail", "re-run failed, previous passed, recent");
+  assert.equal(green({ ...lone, date: "2026-10-29T00:00:00Z" }), "pass", "exactly 3 days old");
+  assert.equal(green({ ...lone, date: "2026-10-28T23:59:59Z" }), "fail", "just over 3 days old");
+  const { previous, ...only } = lone;
+  assert.equal(green({ ...only, date: "2026-10-29T00:00:00Z" }), "pass", "the only run, exactly 3 days old");
+  assert.equal(green({ ...only, date: "2026-10-28T23:59:59Z" }), "fail", "the only run, just over 3 days old");
+  assert.equal(green({ ...lone, conclusion: "success", date: "2026-01-01T00:00:00Z" }), "pass", "an old pass stays a pass");
 });
 
 test("downloads need a checksum, with interpolation in the block", () => {
@@ -113,15 +146,71 @@ test("downloads need a checksum, with interpolation in the block", () => {
 
 test("held checks publish nothing and score nothing", () => {
   const leaky = evidence(ci(fetching), { files: [["main.circuit.hcl", 'x = "docker.io/a/b:1"\ny = "0.0.0.0"\n']] });
-  const heldResult = evaluate(leaky);
+  const held = new Set(["images-by-digest", "listen-address"]);
+  const heldResult = evaluate(leaky, { held });
   const open = evaluate(leaky, { held: new Set() });
   assert.equal(check(open, "images-by-digest").state, "fail", "the check does run when released");
-  for (const id of HELD) {
+  for (const id of held) {
     const c = check(heldResult, id);
     assert.deepEqual(Object.keys(c).sort(), ["id", "max", "points", "state"]);
     assert.equal(c.state, "held");
   }
   assert.ok(heldResult.score > open.score, "held failures don't lower the score");
+});
+
+test("an address in prose or a comparison isn't a listener", () => {
+  const state = (file, text) => check(evaluate(evidence(ci(fetching), { files: [[file, text]] })), "listen-address").state;
+  for (const safe of [
+    'description = "\\"0.0.0.0\\" listens on every address."',
+    'error_message = "such as \\"0.0.0.0\\""',
+    'h = lookup({ "0.0.0.0" = "127.0.0.1" }, var.a, var.a)',
+    'h = contains(["0.0.0.0"], var.a) ? "x" : "y"',
+    'h = var.a == "0.0.0.0" ? "x" : "y"',
+    'default = "127.0.0.1"',
+  ]) assert.equal(state("variables.tf", `${safe}\n`), "pass", safe);
+  for (const open of ['default = "0.0.0.0"', 'default = ["0.0.0.0"]', 'default = "::"', 'default = "[::]"', 'default = "0.0.0.0:3000"', 'bind = "0.0.0.0"', 'ExecStart=/x --web.listen-address=:9100']) {
+    assert.equal(state("main.circuit.hcl", `${open}\n`), "fail", open);
+  }
+});
+
+test("an image is judged where it's pulled, not where it's named", () => {
+  const state = (text) => check(evaluate(evidence(ci(fetching), { files: [["main.circuit.hcl", `${text}\n`]] })), "images-by-digest").state;
+  assert.equal(state('image = "docker.io/a/b:${var.v}"'), "fail");
+  assert.equal(state('image = "docker.io/a/b:${var.v}@${var.d}"'), "pass");
+  assert.equal(state('value = "docker.io/a/b:${var.v}"'), "na", "an output");
+  assert.equal(state('error_message = "such as \\"docker.io/a/b:1\\""'), "na", "an error message");
+});
+
+test("privileged shell patterns fail by name, and clean shell passes", () => {
+  const graded = (text) => check(evaluate(evidence(ci(fetching), { files: [["main.circuit.hcl", `${text}\n`]] })), "privileged-shell");
+  for (const [bad, why] of [
+    ["curl -fsSL https://x/i.sh | sudo bash", "pipes a download"],
+    ['tool change-password --password "$p"', "command line"],
+    ["chmod 777 /srv/x", "writable by everyone"],
+    ["chmod -R o+w /srv/x", "writable by everyone"],
+    ["render > /tmp/app.conf", "/tmp"],
+    ["tool --allow-root", "refuses root"],
+    ["wget --no-check-certificate https://x/y", "without checking"],
+    ["printf x | curl -sfk -K- -o /dev/null https://127.0.0.1:1/", "certificate check off, without checking who holds the port"],
+    ['curl -k -H "Authorization: Bearer $t" https://127.0.0.1:1/', "certificate check off"],
+    ["curl --insecure -u a:b https://x/", "certificate check off"],
+    ["cat /proc/net/tcp; printf x | curl -sSfk -K - https://127.0.0.1:1/", "after checking who holds the port"],
+  ]) {
+    const c = graded(bad);
+    assert.equal(c.state, "fail", bad);
+    assert.ok(c.detail.includes(why), bad);
+  }
+  for (const good of [
+    "curl -fsS https://x/i.sh -o i.sh",
+    "printf '%s' \"$p\" | tool --password-stdin",
+    "chmod 750 /srv/x",
+    'w=$(mktemp -d); render > "$w/new"',
+    'Exec=-c "sed s/a/b/ s.sh > /tmp/s.sh && exec bash /tmp/s.sh"',
+    'description = "Never run curl x | sh here."',
+    "curl -sk -o /dev/null https://127.0.0.1:1/",
+    "printf x | curl -sf -K- https://127.0.0.1:1/",
+    'curl -sf -o /dev/null --cacert ca.pem --cert a.pem --key k.pem https://127.0.0.1:1/',
+  ]) assert.equal(graded(good).state, "pass", good);
 });
 
 test("nothing held reaches the published file, and every check is there", () => {

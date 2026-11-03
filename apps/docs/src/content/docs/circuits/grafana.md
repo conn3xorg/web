@@ -3,7 +3,7 @@ title: Grafana
 description: "Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-grafana at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-grafana at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/grafana/grade.svg)](https://conn3x.org/circuits/grafana/grade)
 
@@ -21,7 +21,7 @@ variable "grafana_admin_password" {
 }
 
 module "grafana" {
-  source = "github.com/conn3xorg/circuit-grafana?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-grafana?ref=v0.1.1"
 
   hosts                = { dash = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -63,7 +63,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.1/examples/local).
 
 ### Datasources
 
@@ -140,16 +140,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Grafana 13.3.0. [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. Then the admin password changed, and the plan after that was clean too. `/api/health` answered, `admin` logged in with the new password, and the provisioned datasource and dashboard were there. On each, renaming the datasource while keeping its `uid` replaced the old one rather than leaving both. CI runs the same checks on amd64. An upgrade from 13.2.5 to 13.3.0 on Rocky Linux 10 came back running, with the password and datasource intact.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Grafana 13.3.0. [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. Then the admin password changed, and the plan after that was clean too. `/api/health` answered, `admin` logged in with the new password, and the provisioned datasource and dashboard were there. On each, renaming the datasource while keeping its `uid` replaced the old one rather than leaving both. CI runs the same checks on amd64. An upgrade from 13.2.5 to 13.3.0 on Rocky Linux 10 came back running, with the password and datasource intact.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, the circuit applied with `http_addr = "0.0.0.0"`, `domain` and `root_url`. From another machine, `/api/health` answered, `admin` logged in, and the datasource and dashboard were there. Both came back after a password change and a reboot with Grafana running, the new password working and the second plan clean. On Rocky Linux Grafana runs as `unconfined_service_t`, and the audit log had no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-grafana/blob/v0.1.0/LICENSE). Grafana itself is AGPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-grafana/blob/v0.1.1/LICENSE). Grafana itself is AGPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-grafana](https://github.com/conn3xorg/circuit-grafana). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-grafana/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-grafana](https://github.com/conn3xorg/circuit-grafana). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-grafana/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).
