@@ -77,6 +77,7 @@ export default defineConfig({
           collapsed: true,
           items: ["plan-reads", "state", "revision-and-handlers", "connections"].map((page) => `internals/${page}`),
         },
+        "reference/glossary",
         { label: "Get involved", items: ["contribute", "style", "roadmap"] },
       ],
     }),
