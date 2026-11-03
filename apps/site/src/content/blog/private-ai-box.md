@@ -1,7 +1,7 @@
 ---
 title: "A private AI box in one apply"
 description: "One conn3x apply builds a droplet, shuts everything but SSH, and runs Ollama and Qdrant where only the box can reach them. You ask questions of your own notes through an SSH tunnel, and nothing goes to anyone's API."
-date: 2026-11-04
+date: 2026-11-03
 author: James Conway
 image: /media/blog/private-ai-box/card.png
 imageAlt: "A laptop opening an SSH tunnel to a droplet where Ollama and Qdrant listen on 127.0.0.1 only."
