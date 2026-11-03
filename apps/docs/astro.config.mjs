@@ -22,6 +22,7 @@ export default defineConfig({
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/conn3xorg/conn3x" },
         { icon: "x.com", label: "X", href: "https://x.com/conn3xone" },
+        { icon: "youtube", label: "YouTube", href: "https://www.youtube.com/@conn3xlabs" },
       ],
       editLink: { baseUrl: "https://github.com/conn3xorg/web/edit/main/apps/docs/" },
       customCss: ["./src/styles/brand.css"],

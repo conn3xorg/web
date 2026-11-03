@@ -20,4 +20,6 @@ Conn3x configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu, and e
 - [Releases](https://github.com/conn3xorg/conn3x/releases)
 - [Examples](https://github.com/conn3xorg/conn3x/tree/main/examples)
 - [Blog](https://conn3x.org/blog)
+- [Video: What is Conn3x? (4 minutes)](https://youtu.be/eXrAK-ah4Ek)
+- [YouTube channel](https://www.youtube.com/@conn3xlabs)
 - [Contributing guide](https://github.com/conn3xorg/conn3x/blob/main/CONTRIBUTING.md)
