@@ -47,6 +47,20 @@ New in v0.6.11, `known_hosts` becomes a [known_hosts](/modules/known_hosts#from-
 
 New in v0.6.12, `ansible.builtin.pip` with a `virtualenv` becomes a [pip](/modules/pip#from-ansible) step, one for each name. Without a `virtualenv` it stays for review, since a `pip` step doesn't install system-wide. So does `requirements`: that file is on the host, where the converter can't see what it pins, so give each package a step with its version.
 
+New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/file#from-ansible) step, minus any quotes around `%s`. Ansible runs `validate` without a shell, and Conn3x runs it through `sh`, so one with a pipe, a redirect, `$`, a glob or a second line stays for review.
+
+### Windows
+
+Also new in v0.7.0, Windows tasks convert into the [Windows modules](/modules/windows_file), which are experimental:
+
+- From `ansible.windows`: `win_acl`, `win_acl_inheritance`, `win_command`, `win_copy`, `win_feature`, `win_file`, `win_group`, `win_group_membership`, `win_package`, `win_powershell`, `win_regedit`, `win_service`, `win_shell`, `win_user` and `win_wait_for`.
+- From `community.windows`: `win_firewall_rule`, `win_iis_webapppool`, `win_iis_website` and `win_scheduled_task`.
+- From `microsoft.iis`, which replaces the community IIS modules: `web_app_pool` and `website`.
+
+As on Linux, the collection prefix is optional. `win_command` and `win_shell` become [windows_powershell](/modules/windows_powershell) steps with a review note above them, because PowerShell can read a command line differently from how `win_command` ran it. A `win_package` needs a SHA-256 for its MSI, or it stays for review.
+
+Every converted IIS site gets a `TODO(convert)` note. Apply refuses a [windows_iis_site](/modules/windows_iis_site) whose `physical_path` anyone but administrators can change, and a new folder under `C:\inetpub` or at the top of `C:`, with only inherited rules, is one of those. The note says what to give its [windows_directory](/modules/windows_directory) step: full control for SYSTEM and Administrators, and read for IIS_IUSRS and IUSR. A `win_iis_website` gets a second note, because Ansible used `port`, `ip` and `hostname` only when it made the site, and in Conn3x they're the site's whole list of bindings.
+
 You won't get a step for `debug`, since all it does is print. The task is dropped, and a comment in its place says so. What it printed isn't copied, because a debug message can hold a secret. A `debug` with a `when` or a `register` stays as a TODO, and its contents stay out of that comment too.
 
 A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each):
@@ -70,7 +84,8 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Anything under `no_log`.** Its values would land in the file, so they're left out of the comment too. That includes a `no_log` set on the block or the play.
 - **Control flow:** `with_*`, `when`, `register`, `ignore_errors`, `until` and similar, and any `loop` other than a plain list. A `when` becomes a choice of which hosts the circuit covers, made at plan time, and a loop over a variable or over items with fields becomes a step with [`for_each`](/reference/circuits/steps#for_each) that you write. These need a person.
 - **Jinja templates and filters.** Rewrite templates in `templatefile` syntax (`${var}`, `%{ if }`) and use a [template](/modules/template) step.
-- **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when.
+- **`win_template`.** Rewrite it in `templatefile` syntax for a [windows_file](/modules/windows_file) step, which writes line endings as they are, where `win_template` defaults to CRLF.
+- **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when. That includes every `win_reboot`: a [windows_reboot](/modules/windows_reboot) step reboots once, then again when its `triggers` change, or with `only_if_pending`.
 - **`get_url` without a sha256 checksum.** Conn3x only downloads what it can verify.
 - **A `file` link that sets `owner`, `group` or `mode`.** A Conn3x [link](/modules/link) step doesn't manage those, so the converter won't quietly drop them.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.

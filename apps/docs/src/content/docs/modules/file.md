@@ -49,6 +49,19 @@ step "db_password" {
 
 In a real configuration, set `content_wo` from a variable with `ephemeral = true`, as [Secrets in files](/concepts#secrets-in-files) shows. To read the content from a file next to your configuration, use `content = file("${path.module}/files/app.conf")`.
 
+Check a sudoers drop-in with `visudo` before it goes live, so a typo can't lock you out of `sudo`:
+
+```hcl
+step "sudoers" {
+  file {
+    path     = "/etc/sudoers.d/deploy"
+    content  = "deploy ALL=(ALL) NOPASSWD: ALL\n"
+    mode     = "0440"
+    validate = "visudo -cf %s"
+  }
+}
+```
+
 Make sure a file is gone, and stays gone:
 
 ```hcl
@@ -72,6 +85,7 @@ step "old_config" {
 | `owner` | string | No | Owning user. Left as is when unset. |
 | `path` | string | Yes | Absolute path of the file on the host. |
 | `state` | string | No | "present" (default) or "absent", which removes the file and keeps it gone. |
+| `validate` | string | No | A command that checks new content before it replaces the file, such as "visudo -cf %s". %s stands for the temporary file. Runs only when the content changes, and is kept out of state. |
 
 ## Read-only attributes
 
@@ -94,6 +108,8 @@ The login user has to be able to read the file. If it can't, the plan stops with
 
 **Writing.** If the parent directory doesn't exist, Conn3x creates it first. Conn3x writes the content to a temporary file in the same directory, sets its mode and ownership, flushes it to disk, and renames it over the old file. The directory is flushed afterwards too, so a power cut leaves the old file or the new one, never an empty one. On SELinux hosts the file is relabelled for its path with `restorecon`.
 
+**Validating.** With `validate`, Conn3x runs the command on the temporary file once it has its final mode and owner, with `%s` replaced by the temporary file's path. The path is already quoted, so write `%s` bare, not `'%s'`. If the command exits 0, the file is moved into place. If it doesn't, the original file is left untouched, the temporary file is removed, and apply fails with the command's output. With `content_wo` the output is hidden, since the command may print the secret it was checking. `validate` runs only when the content is changing, not when only the mode or ownership is. It's write-only, so adding it to an existing step doesn't show a change in the plan.
+
 **Ownership.** `owner` and `group` are only checked and set when you give them. Leave them out and Conn3x keeps whatever the file has.
 
 **Mode.** The default mode is `"0644"`, or `"0600"` for `content_wo`.
@@ -110,6 +126,6 @@ When you delete a `file` step, `on_remove` decides what happens on the host. The
 
 ## From Ansible
 
-`conn3x convert ansible` turns `copy` tasks with `content` or `src` into `file` steps, reading `src` from your playbook's `files/` directory. `copy` with `remote_src` stays a TODO, and so does `force: no`, since Ansible then writes the file only when it's missing.
+`conn3x convert ansible` turns `copy` tasks with `content` or `src` into `file` steps, reading `src` from your playbook's `files/` directory. `copy` with `remote_src` stays a TODO, and so does `force: no`, since Ansible then writes the file only when it's missing. A `validate` carries over, minus any quotes around `%s`. Ansible runs it without a shell, so a `validate` with pipes, redirects, `$`, globs, a second line or other shell syntax stays a TODO, because Conn3x would run those through `sh`.
 
 A play that sets `become_user`, or `remote_user` without `become`, sends these tasks to review with the reason, because who runs them decides who owns what they create. A circuit runs as root under `become` and otherwise as its login user.
