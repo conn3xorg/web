@@ -27,5 +27,6 @@ step "config" {
 | `group` | string | No | Group of the file. |
 | `on_remove` | string | No | `"forget"` (default) leaves the file, `"delete"` removes it. |
 | `write_only` | bool | No | `true` keeps the rendered file out of the plan and state, which record only an HMAC. Use it when `vars` hold secrets. A literal `true` or `false`. See [secrets in files](/concepts#secrets-in-files). |
+| `validate` | string | No | A command that checks the rendered file before it replaces the old one, such as `"nginx -t -c %s"`. `%s` stands for the temporary file; write it bare, not quoted. See [Validating](/modules/file#how-it-works). |
 
-A template step is a [file](/modules/file) step whose content is `templatefile(source, vars)`, so it becomes a `conn3x_file` resource. With `write_only = true`, the rendered file becomes its `content_wo`. It reads the file on the host the same way, so if the login user can't read it, the plan stops with the error described under [Reading](/modules/file#how-it-works).
+A template step is a [file](/modules/file) step whose content is `templatefile(source, vars)`, so it becomes a `conn3x_file` resource. With `write_only = true`, the rendered file becomes its `content_wo`. `validate` passes straight through to the file step, so a rendered file that fails it never replaces the one on the host. It reads the file on the host the same way, so if the login user can't read it, the plan stops with the error described under [Reading](/modules/file#how-it-works).
