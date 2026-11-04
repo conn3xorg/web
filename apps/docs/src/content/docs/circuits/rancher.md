@@ -15,7 +15,7 @@ The part that usually bites is the Kubernetes version. Rancher supports a narrow
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.4"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token

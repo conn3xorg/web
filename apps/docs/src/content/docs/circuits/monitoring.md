@@ -15,13 +15,13 @@ Pair it with [circuit-docker](/circuits/docker) to get Docker on the host, and [
 
 ```hcl
 module "docker" {
-  source = "github.com/conn3xorg/circuit-docker?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-docker?ref=v0.1.2"
 
   hosts = { monitor = "192.168.1.10" }
 }
 
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.1"
 
   hosts = {
     nas    = "192.168.1.20"

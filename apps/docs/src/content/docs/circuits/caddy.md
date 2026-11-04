@@ -41,7 +41,7 @@ For a public name such as `photos.example.com`, Caddy gets a certificate from Le
 
 ```hcl
 module "firewall" {
-  source = "github.com/conn3xorg/circuit-firewall?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-firewall?ref=v0.2.1"
 
   hosts = { edge = "203.0.113.10" }
   allow = [{ port = "80/tcp" }, { port = "443/tcp" }]

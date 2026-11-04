@@ -18,7 +18,7 @@ const example = `resource "digitalocean_droplet" "web" {
 }
 
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.1"
   hosts = {
     web1 = {
       address  = digitalocean_droplet.web.ipv4_address
