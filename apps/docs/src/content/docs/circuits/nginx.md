@@ -3,7 +3,9 @@ title: nginx
 description: "Installs nginx, writes your site, keeps the service running and opens port 80 in firewalld or ufw."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nginx at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nginx at v0.2.0. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/nginx/grade.svg)](https://conn3x.org/circuits/nginx/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/nginx/grade.svg)](https://conn3x.org/circuits/nginx/grade)
 
@@ -13,7 +15,7 @@ A [Conn3x](https://conn3x.org) circuit that installs nginx and serves one page f
 
 ```hcl
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.2.0"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -25,7 +27,7 @@ module "web" {
 }
 ```
 
-Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local).
+Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.2.0/examples/local).
 
 ### Hosts with pinned host keys
 
@@ -33,7 +35,7 @@ A value in `hosts` can also be a host object, as in a circuit's own [`hosts`](/r
 
 ```hcl
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.2.0"
 
   hosts = {
     for name, d in digitalocean_droplet.web : name => {
@@ -53,7 +55,7 @@ On every host in `hosts`, in this order:
 1. Installs the `nginx` package with dnf or apt.
 2. On Debian and Ubuntu, removes the packaged default site from `/etc/nginx/sites-enabled`, since it also claims port 80.
 3. Writes `index_html` to `/var/www/html/index.html`.
-4. Writes `/etc/nginx/conf.d/circuit-nginx.conf`, a default server on `port` that serves `/var/www/html`.
+4. Writes `/etc/nginx/conf.d/circuit-nginx.conf`, a default server on `port` that serves `/var/www/html`, testing it with `nginx -t` alongside the rest of the config before it replaces the old one. A site nginx rejects, such as one that clashes with another `default_server` on the same port, never replaces the old one: the apply fails, and a restart or a reboot still reads the last good config.
 5. Starts nginx and enables it at boot.
 6. Opens `port` in the firewall, as `firewall` says.
 7. Reloads nginx if step 2 or 4 changed anything.
@@ -62,7 +64,7 @@ On every host in `hosts`, in this order:
 
 | `firewall` | What happens |
 | --- | --- |
-| `"auto"` (default) | If firewalld is running, the port is opened in its default zone. If not, and ufw is installed, a ufw rule allows the port. On a host with neither, nothing changes. |
+| `"auto"` (default) | If firewalld is running, the port is opened in its default zone. If not, and ufw is installed, a ufw rule allows the port. If another circuit, such as circuit-firewall, is still installing ufw, or has installed firewalld and not started it yet, it waits up to five minutes for that to finish. A firewalld that was stopped on purpose isn't waited for. On a host with neither, nothing changes. |
 | `"firewalld"` | Installs firewalld, starts and enables it, and opens the port. firewalld's default zone allows SSH. |
 | `"ufw"` | Installs ufw and adds a rule that allows the port. Conn3x doesn't enable ufw; the rule takes effect once you do. |
 | `"none"` | Leaves the firewall alone. |
@@ -91,21 +93,21 @@ None.
 
 ## Requirements
 
-- Conn3x v0.6.4 or later.
+- Conn3x v0.7.0 or later.
 - Hosts running Rocky Linux, RHEL, AlmaLinux, Fedora, Debian or Ubuntu, with systemd.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, and fetches the page from outside the host, before and after restarting nginx.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, and fetches the page from outside the host, before and after restarting nginx.
 
 It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, the page answered on port 80 from outside, through circuit-firewall. After a reboot it answered again, the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-[MPL-2.0](https://github.com/conn3xorg/circuit-nginx/blob/v0.1.1/LICENSE)
+[MPL-2.0](https://github.com/conn3xorg/circuit-nginx/blob/v0.2.0/LICENSE)
 
 ## Source
 
-- Repository: [conn3xorg/circuit-nginx](https://github.com/conn3xorg/circuit-nginx). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nginx/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-nginx](https://github.com/conn3xorg/circuit-nginx). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-nginx/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-nginx/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.2.0/examples/local).
 - Related circuits: [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot), [IIS](/circuits/iis).

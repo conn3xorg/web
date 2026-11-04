@@ -51,7 +51,7 @@ With nginx from [circuit-nginx](/circuits/nginx), either `"nginx"` or `"webroot"
 
 ```hcl
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.2.0"
   hosts  = { web1 = "203.0.113.10" }
 }
 
