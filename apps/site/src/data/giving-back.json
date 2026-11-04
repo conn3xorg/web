@@ -1,6 +1,76 @@
 {
-  "otherMinutes": 57,
+  "otherMinutes": 71,
   "items": [
+    {
+      "date": "2026-11-04",
+      "repo": "prometheus/prometheus",
+      "summary": "Built the CORS default-origin fix and its base, and checked every origin setting against the API with curl.",
+      "url": "https://github.com/prometheus/prometheus/pull/20252#pullrequestreview-5764459292",
+      "minutes": 4
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "jenkinsci/packaging",
+      "summary": "Tested the new deb822 apt setup on four distros, and found the page's indent breaks it when copied.",
+      "url": "https://github.com/jenkinsci/packaging/pull/748#pullrequestreview-5764423466",
+      "minutes": 5
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "jenkins-infra/jenkins.io",
+      "summary": "Checked what's left of a security-group docs issue after an earlier fix, and asked the claimant if they're still on it.",
+      "url": "https://github.com/jenkins-infra/jenkins.io/issues/5376#issuecomment-6624638054",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "n8n-io/n8n-docs",
+      "summary": "Checked the queue-mode upgrade steps against the source, and found db:revert exits 0 even when it refuses.",
+      "url": "https://github.com/n8n-io/n8n-docs/pull/5540#pullrequestreview-5764407198",
+      "minutes": 3
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "tailscale/tailscale",
+      "summary": "Confirmed an old fork issue is already resolved upstream, and suggested closing it.",
+      "url": "https://github.com/tailscale/tailscale/issues/7436#issuecomment-6624588839",
+      "minutes": 3
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "tailscale/tailscale",
+      "summary": "Checked a DNS name fix against every short string, with no mismatches where the base had 100.",
+      "url": "https://github.com/tailscale/tailscale/pull/22107#pullrequestreview-5764383792",
+      "minutes": 6
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "n8n-io/n8n",
+      "summary": "Showed the planned fix for an npm install error would drop bindings from the Docker image again.",
+      "url": "https://github.com/n8n-io/n8n/issues/43006#issuecomment-6624573924",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Found a journal query leaves its pipeline running after close, and tested a fix.",
+      "url": "https://github.com/cockpit-project/cockpit/pull/23896#pullrequestreview-5764366931",
+      "minutes": 4
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "prometheus/node_exporter",
+      "summary": "Checked the EPEL package rename in Rocky 8, 9 and 10, and found EPEL 8 has no package at all.",
+      "url": "https://github.com/prometheus/node_exporter/pull/3822#pullrequestreview-5764354506",
+      "minutes": 8
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Reproduced broken Ubuntu logos in the ws container, and tested a fix for both themes.",
+      "url": "https://github.com/cockpit-project/cockpit/issues/23848#issuecomment-6624482290",
+      "minutes": 3
+    },
     {
       "date": "2026-10-31",
       "repo": "aquasecurity/trivy",
