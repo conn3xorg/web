@@ -2,7 +2,7 @@
   "name": "hardening",
   "repo": "conn3xorg/circuit-hardening",
   "description": "SSH and kernel hardening for a fresh server: modern SSH crypto, hardening sysctls, no core dumps, every control switchable.",
-  "version": "v0.1.0",
+  "version": "v0.2.0",
   "tags": [
     "security",
     "ssh",

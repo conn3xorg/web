@@ -3,7 +3,9 @@ title: Hardening
 description: "SSH and kernel hardening for a fresh server: modern SSH crypto, hardening sysctls, no core dumps, every control switchable."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-hardening at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-hardening at v0.2.0. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/hardening/grade.svg)](https://conn3x.org/circuits/hardening/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/hardening/grade.svg)](https://conn3x.org/circuits/hardening/grade)
 
@@ -17,7 +19,7 @@ This isn't a CIS benchmark, and applying it doesn't make a host CIS or STIG comp
 
 ```hcl
 module "hardening" {
-  source = "github.com/conn3xorg/circuit-hardening?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-hardening?ref=v0.2.0"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +54,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.0/examples/local).
 
 ### With circuit-baseline
 
@@ -88,7 +90,7 @@ To try it on a throwaway container first, see [examples/local](https://github.co
 | cron permissions | Takes group and other access off `/etc/crontab` and the `/etc/cron.*` directories that exist. | On | `cron_permissions` |
 | Legacy daemons | Removes inetd, xinetd, telnet, rsh, NIS, talk and TFTP servers when installed. | On | `remove_packages` |
 
-On each host, in order: writes `/etc/ssh/sshd_config.d/01-conn3x-hardening.conf`, checks it with `sshd -t`, and reloads sshd (`ssh` on Debian and Ubuntu) only when it changed. A failed check stops the apply before the reload, so the running sshd keeps its old settings. Then it trims the moduli file, stops apport where it runs, sets each kernel parameter in the running kernel and in `/etc/sysctl.d`, installs `kmod` if it's missing and writes `/etc/modprobe.d/conn3x-hardening.conf`, writes `/etc/security/limits.d/90-conn3x-hardening.conf` and `/etc/systemd/coredump.conf.d/conn3x-hardening.conf`, sets `UMASK`, fixes cron's permissions and removes the legacy packages. The limits file sorts after Debian's `10-coredump-debian.conf`, which would otherwise raise the hard limit back to infinity.
+On each host, in order: writes `/etc/ssh/sshd_config.d/01-conn3x-hardening.conf`, testing it with `sshd -t` alongside the rest of the config before it replaces the old one, and reloads sshd (`ssh` on Debian and Ubuntu) only when it changed. A drop-in sshd rejects never replaces the old one: the apply fails before the reload, so the running sshd keeps its old settings, and a restart or a reboot reads the last good drop-in. Then it trims the moduli file, stops apport where it runs, sets each kernel parameter in the running kernel and in `/etc/sysctl.d`, installs `kmod` if it's missing and writes `/etc/modprobe.d/conn3x-hardening.conf`, writes `/etc/security/limits.d/90-conn3x-hardening.conf` and `/etc/systemd/coredump.conf.d/conn3x-hardening.conf`, sets `UMASK`, fixes cron's permissions and removes the legacy packages. The limits file sorts after Debian's `10-coredump-debian.conf`, which would otherwise raise the hard limit back to infinity.
 
 The drop-in sorts before the distribution's own, such as Rocky Linux and Fedora's `50-redhat.conf`, so its cipher lists take the place of the system crypto policy's for sshd. The crypto policy still applies to everything else on the host.
 
@@ -112,6 +114,7 @@ Other caveats:
 - `MaxAuthTries 4` counts each key your SSH agent offers. With more than four keys loaded, point at the right one with `-i` and `IdentitiesOnly yes`.
 - On FIPS hosts, `chacha20-poly1305` isn't allowed, so set `Ciphers` to the AES ones.
 - `UMASK` in `/etc/login.defs` reaches login shells through pam_umask and new home directories through useradd. A shell that sets its own umask in `/etc/profile` or `/etc/bashrc` overrides it. Files root creates by hand with umask 027 aren't world-readable, which can surprise a web server serving them.
+- With ufw, as [circuit-firewall](/circuits/firewall) sets up on Debian and Ubuntu, leave `log_martians` to ufw. ufw sets both `log_martians` keys to 0 from `/etc/ufw/sysctl.conf` each time it starts, so every plan would show a change. Set them to `null` in `sysctl`, as the [Usage](#usage) example does, and set them in that file if you want martians logged.
 - On Ubuntu, apport turns `fs.suid_dumpable` back to 2 each time it starts, so with `core_dumps = false` the circuit stops and disables `apport.service`. It doesn't remove the package, since that takes the `ubuntu-server` metapackage with it.
 
 ## Inputs
@@ -143,20 +146,20 @@ Other caveats:
 
 ## Requirements
 
-Requires Conn3x v0.6.5 or later, systemd, and an sshd that reads `/etc/ssh/sshd_config.d`, which every supported distribution's does, with a package mirror the host can reach.
+Requires Conn3x v0.7.0 or later, systemd, and an sshd that reads `/etc/ssh/sshd_config.d`, which every supported distribution's does, with a package mirror the host can reach.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.1.0/examples/local) to each on amd64 in a privileged container, checks that the second plan has no changes, and then checks what sshd will run with through `sshd -T` (ciphers, MACs, no NIST-curve or 2048-bit key exchange, and the login and forwarding settings), that the moduli file has no small primes, that the kernel parameters read back, that `modprobe` refuses `cramfs` through `install /bin/false`, the `UMASK` line, and that a new SSH session gets a hard core limit of 0.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.0/examples/local) to each on amd64 in a privileged container, checks that the second plan has no changes, and then checks what sshd will run with through `sshd -T` (ciphers, MACs, no NIST-curve or 2048-bit key exchange, and the login and forwarding settings), that the moduli file has no small primes, that the kernel parameters read back, that `modprobe` refuses `cramfs` through `install /bin/false`, the `UMASK` line, and that a new SSH session gets a hard core limit of 0.
 
 By hand, the circuit ran alongside circuit-baseline on one Debian 13 container, and on an Ubuntu 24.04 droplet (OpenSSH 9.6) and a Rocky Linux 10.2 droplet (OpenSSH 9.9, SELinux enforcing). The same checks passed on both droplets, the second plan had no changes, and both were rebooted and planned again with no changes and the checks passing. Rocky Linux logged no SELinux denials. The Ubuntu reboot is what showed apport resetting `fs.suid_dumpable`, which the circuit now handles.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-hardening/blob/v0.1.0/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-hardening/blob/v0.2.0/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-hardening](https://github.com/conn3xorg/circuit-hardening). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-hardening/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-hardening/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-hardening](https://github.com/conn3xorg/circuit-hardening). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-hardening/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.0/examples/local).
 - Related circuits: [OpenSCAP](/circuits/openscap), [Baseline](/circuits/baseline), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

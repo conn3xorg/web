@@ -3,7 +3,9 @@ title: MySQL
 description: "MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mysql at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mysql at v0.2.0. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/mysql/grade.svg)](https://conn3x.org/circuits/mysql/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/mysql/grade.svg)](https://conn3x.org/circuits/mysql/grade)
 
@@ -23,7 +25,7 @@ variable "app_db_password" {
 }
 
 module "mysql" {
-  source = "github.com/conn3xorg/circuit-mysql?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-mysql?ref=v0.2.0"
 
   hosts                = { db = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -60,18 +62,18 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.2.0/examples/local).
 
 ## What it does
 
 On each host, in order:
 
-1. Adds MySQL's repository, [repo.mysql.com](https://repo.mysql.com), for the series in `mysql_version`: its apt repository on Ubuntu and Debian, its yum repository on Rocky Linux and the rest of Enterprise Linux 10. Both are checked against MySQL's signing key, which ships with the circuit in [files/mysql.asc](https://github.com/conn3xorg/circuit-mysql/blob/v0.1.0/files/mysql.asc).
+1. Adds MySQL's repository, [repo.mysql.com](https://repo.mysql.com), for the series in `mysql_version`: its apt repository on Ubuntu and Debian, its yum repository on Rocky Linux and the rest of Enterprise Linux 10. Both are checked against MySQL's signing key, which ships with the circuit in [files/mysql.asc](https://github.com/conn3xorg/circuit-mysql/blob/v0.2.0/files/mysql.asc).
 2. On Enterprise Linux, when `settings` sets a `port` other than 3306, installs `policycoreutils-python-utils` and labels the port `mysqld_port_t` with `semanage`, so SELinux lets MySQL bind it. Hosts with SELinux off skip the label.
 3. Installs `mysql-community-server`. On Enterprise Linux it also adds `!includedir /etc/my.cnf.d` to `/etc/my.cnf`, which MySQL's package leaves out.
-4. Writes a drop-in, `zz-conn3x.cnf`, with a `[mysqld]` section holding `bind_address` and `settings`. Its name sorts after the packages' own files, so your values win.
+4. Writes a drop-in, `zz-conn3x.cnf`, with a `[mysqld]` section holding `bind_address` and `settings`. Its name sorts after the packages' own files, so your values win. The new file is tested before it replaces the old one: `mysqld --validate-config` reads it with every other option file, the way a server start would. A misspelt setting fails the apply with MySQL's own `unknown variable` message, and the old file stays, so the running server, a restart and a reboot all keep what they had. Fix the input and apply again.
 5. On Enterprise Linux's first apply, creates the data directory with `mysqld --initialize-insecure`. Left to the server's first start, it would get a random root password written to `/var/log/mysqld.log`; this way root has none until the next steps give it socket login. Since the drop-in is already there, settings that only count when the data directory is created, such as `lower_case_table_names`, take effect. Debian's and Ubuntu's package creates it on install.
-6. Checks the new file before anything restarts. `mysqld --validate-config` reads every option file the way a server start would, so a misspelt setting fails the apply with MySQL's own `unknown variable` message, and the server keeps running on what it had. Fix the input and apply again.
+6. Checks every option file again with `mysqld --validate-config` before anything restarts, whenever the drop-in or the `/etc/my.cnf` include line changed. A change to the include line alone doesn't rewrite the drop-in, so step 4's test doesn't run for it.
 7. Restarts MySQL when the drop-in changed, then keeps it running and enabled at boot. `bind-address`, `port` and most settings do nothing until a restart.
 8. Has `root@localhost` log in with `auth_socket`: only the system's root user, over the local socket, with no password to steal. That's how the circuit connects, and it's how circuit-mariadb leaves MariaDB's root.
 9. Removes anonymous users, any `root` account that isn't on `localhost`, `127.0.0.1` or `::1`, the `test` database and the grants that let anyone use it. MySQL no longer creates any of these, so this only acts on ones someone added later.
@@ -149,20 +151,20 @@ Ubuntu 26.04 and Debian 12 are in MySQL's apt repository and the circuit accepts
 
 ## Requirements
 
-Requires Conn3x v0.6.5 or later and systemd on each host, with access to `repo.mysql.com` and the distribution's package mirrors.
+Requires Conn3x v0.7.0 or later and systemd on each host, with access to `repo.mysql.com` and the distribution's package mirrors.
 
 ## Tested on
 
-Rocky Linux 10, Ubuntu 24.04 and Debian 13, with MySQL 9.7. CI applies [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.1.0/examples/local) to each on amd64, checks that the second plan has no changes, then logs in over TCP as the example's user with its password, creates a table in its own database and reads the row back, checks it's refused the other database, restarts MySQL and reads the row again. The same ran by hand in an arm64 Rocky Linux 10 container, along with MySQL 8.4; a misspelt setting, which failed the apply and left the server running; a password containing a quote and a backslash; a move to port 3307; and an anonymous user, a `test` database and a revoked privilege added by hand, each of which the next plan caught and the apply removed or put back.
+Rocky Linux 10, Ubuntu 24.04 and Debian 13, with MySQL 9.7. CI applies [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, then logs in over TCP as the example's user with its password, creates a table in its own database and reads the row back, checks it's refused the other database, restarts MySQL and reads the row again. The same ran by hand in an arm64 Rocky Linux 10 container, along with MySQL 8.4; a misspelt setting, which failed the apply and left the server running; a password containing a quote and a backslash; a move to port 3307; and an anonymous user, a `test` database and a revoked privilege added by hand, each of which the next plan caught and the apply removed or put back.
 
 All of that ran in containers, where SELinux is off. On Ubuntu 24.04, Debian 13 and Rocky Linux 10 droplets, with SELinux enforcing on Rocky, the example's users and grants were applied with MySQL on port 3307 on Rocky. The circuit labelled 3307 `mysqld_port_t`, MySQL ran confined as `mysqld_t`, the user checks passed, data survived a restart, the second plan had no changes, and the audit log had no denials. All three came back after a reboot with MySQL running, the row still there and the second plan clean.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mysql/blob/v0.1.0/LICENSE). MySQL Community Server itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mysql/blob/v0.2.0/LICENSE). MySQL Community Server itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-mysql](https://github.com/conn3xorg/circuit-mysql). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-mysql/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-mysql/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-mysql](https://github.com/conn3xorg/circuit-mysql). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-mysql/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-mysql/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-mysql/tree/v0.2.0/examples/local).
 - Related circuits: [MariaDB](/circuits/mariadb), [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).

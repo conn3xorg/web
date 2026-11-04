@@ -37,7 +37,7 @@ locals {
 }
 
 module "mysql" {
-  source = "github.com/conn3xorg/circuit-mysql?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-mysql?ref=v0.2.0"
 
   hosts                = local.host
   ssh_private_key_file = "~/.ssh/id_ed25519"

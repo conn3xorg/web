@@ -3,7 +3,9 @@ title: Baseline
 description: "A sensible start for any server: time zone, chrony, sysctl settings and SSH that only takes keys."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-baseline at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-baseline at v0.2.0. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/baseline/grade.svg)](https://conn3x.org/circuits/baseline/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/baseline/grade.svg)](https://conn3x.org/circuits/baseline/grade)
 
@@ -15,7 +17,7 @@ Root can still log in with a key afterwards (`PermitRootLogin prohibit-password`
 
 ```hcl
 module "baseline" {
-  source = "github.com/conn3xorg/circuit-baseline?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-baseline?ref=v0.2.0"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -30,7 +32,7 @@ For hosts created in the same plan, pass host objects with the host key you gene
 
 ```hcl
 module "baseline" {
-  source = "github.com/conn3xorg/circuit-baseline?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-baseline?ref=v0.2.0"
 
   hosts = {
     for name, d in digitalocean_droplet.app : name => {
@@ -44,7 +46,7 @@ module "baseline" {
 
 Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.`
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.2.0/examples/local).
 
 ## What it does
 
@@ -53,7 +55,7 @@ On each host, in order:
 1. Installs `tzdata` and sets the time zone.
 2. Installs chrony and starts it now and at boot (`chronyd` on Rocky and Fedora, `chrony` on Debian and Ubuntu).
 3. Sets each kernel parameter in `sysctl`, in the running kernel and in `/etc/sysctl.d`.
-4. Writes `sshd_settings` to `/etc/ssh/sshd_config.d/00-conn3x-baseline.conf`, checks the result with `sshd -t`, and reloads sshd (`sshd` or `ssh`) only when the file changed.
+4. Writes `sshd_settings` to `/etc/ssh/sshd_config.d/00-conn3x-baseline.conf`, testing it with `sshd -t` alongside the rest of the config before it replaces the old one, and reloads sshd (`sshd` or `ssh`) only when the file changed. A drop-in sshd rejects never replaces the old one: the apply fails before the reload, and a restart or a reboot reads the last good drop-in.
 
 sshd keeps the first value it reads for each keyword, and all four distros include `sshd_config.d` at the top of `sshd_config`. The `00-` drop-in sorts first, so it wins over `sshd_config` and over drop-ins such as Ubuntu's `50-cloud-init.conf`. If the check fails, the apply stops before the reload and the running sshd keeps its old settings.
 
@@ -96,20 +98,20 @@ None.
 
 ## Requirements
 
-Requires Conn3x v0.6.4 or later and systemd on each host.
+Requires Conn3x v0.7.0 or later and systemd on each host.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.1.1/examples/local) to each and checks that the second plan has no changes. It then logs in over SSH with the key, checks sshd no longer offers passwords, before and after a restart, and checks the time zone is in effect and chrony reaches a time source.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.2.0/examples/local) to each and checks that the second plan has no changes. It then logs in over SSH with the key, checks sshd no longer offers passwords, before and after a restart, and checks the time zone is in effect and chrony reaches a time source.
 
 It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, the time zone was set, chrony was running, and `sshd -T` showed `passwordauthentication no` and `permitrootlogin without-password`. After a reboot the same held, the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-baseline/blob/v0.1.1/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-baseline/blob/v0.2.0/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-baseline](https://github.com/conn3xorg/circuit-baseline). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-baseline/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-baseline/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-baseline](https://github.com/conn3xorg/circuit-baseline). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-baseline/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-baseline/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-baseline/tree/v0.2.0/examples/local).
 - Related circuits: [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).
