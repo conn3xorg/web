@@ -3,6 +3,14 @@
 // SPDX-License-Identifier: MPL-2.0
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import { readdirSync } from "node:fs";
+
+// Module pages are generated flat, so the Windows ones are split out here rather than by folder.
+const modules = readdirSync(new URL("./src/content/docs/modules/", import.meta.url))
+  .filter((f) => f.endsWith(".md"))
+  .map((f) => `modules/${f.slice(0, -3)}`)
+  .sort();
+const isWindows = (slug) => slug.startsWith("modules/windows_");
 
 export default defineConfig({
   site: "https://docs.conn3x.org",
@@ -72,7 +80,19 @@ export default defineConfig({
             ),
           ],
         },
-        { label: "Modules", collapsed: true, items: [{ autogenerate: { directory: "modules" } }] },
+        {
+          label: "Modules",
+          collapsed: true,
+          items: [
+            ...modules.filter((m) => !isWindows(m)),
+            {
+              label: "Windows (preview)",
+              collapsed: true,
+              badge: { text: "Experimental", variant: "caution" },
+              items: modules.filter(isWindows),
+            },
+          ],
+        },
         {
           label: "Internals",
           collapsed: true,

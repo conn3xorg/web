@@ -80,8 +80,16 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 | [`timer`](/modules/timer) | `"delete"` | Stops the timer and removes its units. |
 | [`ufw`](/modules/ufw) | `"delete"` | Removes the rule, closing the port again. |
 | [`user`](/modules/user) | `"forget"` | Removes the account and keeps its home directory. |
+| [`windows_file`](/modules/windows_file) | `"forget"` | Deletes the file, or a link standing in its place, but never what a link points to. |
+| [`windows_firewall_rule`](/modules/windows_firewall_rule) | `"delete"` | Deletes the rule. |
+| [`windows_group`](/modules/windows_group) | `"forget"` | Deletes the group. |
+| [`windows_iis_app_pool`](/modules/windows_iis_app_pool) | `"delete"` | Deletes the pool. A site still using it won't serve until it gets another. |
+| [`windows_iis_site`](/modules/windows_iis_site) | `"delete"` | Deletes the site. Its files stay. |
+| [`windows_registry_value`](/modules/windows_registry_value) | `"forget"` | Deletes the value and leaves the key. |
+| [`windows_scheduled_task`](/modules/windows_scheduled_task) | `"delete"` | Deletes the task. |
+| [`windows_user`](/modules/windows_user) | `"forget"` | Deletes the account and leaves its profile folder. |
 
-For firewall rules, `on_remove` also applies when a change replaces the rule: with the default, the old port is closed before the new rule is added.
+For `firewalld` and `ufw` rules, `on_remove` also applies when a change replaces the rule: with the default, the old port is closed before the new rule is added. The same goes for `windows_firewall_rule`, `windows_scheduled_task`, `windows_iis_site` and `windows_iis_app_pool`: with `"delete"`, a change that replaces the step deletes the old one.
 
 ### Modules without on_remove
 
@@ -98,6 +106,14 @@ These modules don't take `on_remove`. Destroying their instances changes nothing
 | [`selinux_boolean`](/modules/selinux_boolean) | The boolean keeps its value. |
 | [`timezone`](/modules/timezone) | The time zone stays. |
 | [`wait_for`](/modules/wait_for) | Nothing happens. |
+| [`windows_acl`](/modules/windows_acl) | The rules stay as they are. |
+| [`windows_directory`](/modules/windows_directory) | The folder and everything in it stay. |
+| [`windows_feature`](/modules/windows_feature) | The feature stays as it is. Use `state = "absent"` to remove one. |
+| [`windows_package`](/modules/windows_package) | The package stays installed. Use `state = "absent"` to remove it. |
+| [`windows_powershell`](/modules/windows_powershell) | Nothing runs. |
+| [`windows_reboot`](/modules/windows_reboot) | Nothing happens. |
+| [`windows_service`](/modules/windows_service) | The service stays as it is. |
+| [`windows_wait_for`](/modules/windows_wait_for) | Nothing happens. |
 
 Handlers don't take `on_remove` either. Removing a handler changes nothing on the host.
 

@@ -33,13 +33,25 @@ step "current_release" {
 }
 ```
 
+Make sure a link is gone, and stays gone:
+
+```hcl
+step "old_python" {
+  link {
+    path  = "/usr/local/bin/python2"
+    state = "absent"
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `on_remove` | string | No | "forget" (default) leaves the link, "delete" removes it. |
 | `path` | string | Yes | Absolute path of the link. |
-| `target` | string | Yes | What the link points to, absolute or relative to the link. |
+| `state` | string | No | "present" (default) or "absent", which removes the link and keeps it gone. |
+| `target` | string | No | What the link points to, absolute or relative to the link. Required unless state is "absent". |
 
 ## Read-only attributes
 
@@ -47,6 +59,7 @@ Conn3x sets these; reference them as `conn3x_link.<circuit>__<step>["<host>"].<n
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `in_sync` | bool | With state "absent", whether the link is already gone. Null otherwise. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_link` resource, one instance per host, and connects with its circuit's `ssh` block.
@@ -54,6 +67,8 @@ A step lowers to the `conn3x_link` resource, one instance per host, and connects
 ## How it works
 
 **Reading.** Every plan reads the link on the host with `readlink` and compares its target with `target`, as written. Conn3x doesn't resolve the target or check that it exists. If a regular file or directory is at the path, Conn3x stops with an error and doesn't replace it.
+
+**Absent.** With `state = "absent"`, every plan checks only whether a link exists at the path. If one does, the plan shows the step out of sync and apply removes it. If not, the plan shows no change, and a link that comes back later is removed again by the next apply. Conn3x removes the link itself, never the file or directory it points to, and removes a link whose target is missing too. `target` can't be set alongside it. A regular file, a directory or anything else that isn't a link at the path is an error, and is left in place.
 
 **Applying.** Conn3x creates the new link under a temporary name in the same directory and renames it over the old one, so the path always points somewhere while the link changes. If the rename isn't possible, it falls back to `ln -sfn`.
 
