@@ -108,4 +108,4 @@ It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet
 
 - Repository: [conn3xorg/circuit-nginx](https://github.com/conn3xorg/circuit-nginx). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nginx/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-nginx/tree/v0.1.1/examples/local).
-- Related circuits: [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot).
+- Related circuits: [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot), [IIS](/circuits/iis).

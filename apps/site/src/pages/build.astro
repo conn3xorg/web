@@ -15,7 +15,7 @@ const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", 
 const inputs = import.meta.glob("../data/circuit-inputs/*.json");
 const offered = new Set(Object.keys(inputs).map((p) => p.split("/").pop()!.replace(".json", "")));
 const all = Object.values(files).map((f) => f.default);
-const blocked: Record<string, string> = gradeBlocks(all.filter((c) => c.official).map((c) => c.name), await allGrades());
+const blocked: Record<string, string> = gradeBlocks(all.filter((c) => c.official && offered.has(c.name)).map((c) => c.name), await allGrades());
 const excluded = { ...(builder.excluded as Record<string, string>), ...blocked };
 const circuits = all
   .filter((c) => c.official && offered.has(c.name) && !excluded[c.name])

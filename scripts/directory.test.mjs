@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 const dir = new URL("../apps/site/src/data/circuits/", import.meta.url);
-const distros = new Set(["rocky10", "fedora45", "ubuntu2404", "debian13"]);
+const distros = new Set(["rocky10", "fedora45", "ubuntu2404", "debian13", "windows2022", "windows2025"]);
 const categories = new Set(JSON.parse(readFileSync(new URL("../apps/site/src/data/categories.json", import.meta.url), "utf8")));
 
 for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {

@@ -111,8 +111,8 @@ function scriptLines(line, files) {
 }
 
 // Commands that only look at a host: they can pass on a service that doesn't work.
-const LOOKING = /^(?:(?:systemctl\s+(?:is-active|is-enabled|status|show|cat|list-\S+)|service\s+\S+\s+status|sysctl|apt-config|systemd-detect-virt|cmp|diff|sha256sum|mkdir|rm|export|ufw\s+status|firewall-cmd\s+--(?:list|query|state)\S*|pgrep|pidof|test|stat|ls|cat|grep|egrep|command\s+-v|which|type|getent|id|find|head|tail|readlink|ps|ss|wc|file|dpkg|rpm|journalctl|echo|printf|sleep|set|cd|for|while|until|do|done|if|then|else|elif|fi|case|esac|exit|true|false|run|conn3x)(?=[\s;]|$)|\[\[?\s|\S+:(?:\s|$)|[A-Za-z_]+=\S*$|[{})]|&\w+\s*\|?$|[\w-]+\(\)\s*\{|\.\/(?:up|down)\.sh|(?:(?:sudo\s+)?[\w.-]+\s+)?(?:--?version|version)(?:\s|$)|(?:docker\s+compose|docker|podman|crictl|ctr)\s+(?:ps|images|inspect|logs)(?=\s|$)|(?:k3s\s+)?kubectl\s+(?:--\S+\s+\S+\s+)*(?:get|wait|describe|logs)(?=\s|$)|(?:sh|bash)(?:\s+-\S+)*(?:\s+\S+)*\s*<<?-?\s*\S+$|\S*(?:check|settled)[\w-]*\.(?:sh|py)(?=\s|$))/;
-const WRAPPER = /^(!\s*|[\w-]+\(\)\s*\{\s*|[A-Za-z_]\w*=\$\(\s*|"|'|\|\s*|run:\s*\|?\s*|sudo\s+(-\S+\s+)*|timeout\s+\S+\s+|(?:podman|docker|\$\w+)\s+exec\s+(?:-[weu]\s+\S+\s+|--\S+\s+|-\w+\s+)*\S+\s+|\$\{?\w+\}?\s+|sh\s+-\w*c\s+|bash\s+-\w*c\s+|if\s+!?\s*|until\s+|while\s+|for\s+.*;\s*do\s+|do\s+|then\s+)/;
+const LOOKING = /^(?:(?:systemctl\s+(?:is-active|is-enabled|status|show|cat|list-\S+)|service\s+\S+\s+status|sysctl|apt-config|systemd-detect-virt|cmp|diff|sha256sum|mkdir|rm|export|ufw\s+status|firewall-cmd\s+--(?:list|query|state)\S*|pgrep|pidof|test|stat|ls|cat|grep|egrep|command\s+-v|which|type|getent|id|find|head|tail|readlink|ps|ss|wc|file|dpkg|rpm|journalctl|echo|printf|sleep|set|cd|for|while|until|do|done|if|then|else|elif|fi|case|esac|exit|true|false|run|conn3x)(?=[\s;]|$)|\[\[?\s|\S+:(?:\s|$)|[A-Za-z_]+=\S*$|[{})]|\(\$LASTEXITCODE\)\s*\{|&\w+\s*\|?$|[\w-]+\(\)\s*\{|\.\/(?:up|down)\.sh|(?:(?:sudo\s+)?[\w.-]+\s+)?(?:--?version|version)(?:\s|$)|(?:docker\s+compose|docker|podman|crictl|ctr)\s+(?:ps|images|inspect|logs)(?=\s|$)|(?:k3s\s+)?kubectl\s+(?:--\S+\s+\S+\s+)*(?:get|wait|describe|logs)(?=\s|$)|(?:sh|bash)(?:\s+-\S+)*(?:\s+\S+)*\s*<<?-?\s*\S+$|\S*(?:check|settled)[\w-]*\.(?:sh|py)(?=\s|$))/;
+const WRAPPER = /^(!\s*|[\w-]+\(\)\s*\{\s*|[A-Za-z_]\w*=\$\(\s*|"|'|\|\s*|run:\s*\|?\s*|sudo\s+(-\S+\s+)*|timeout\s+\S+\s+|(?:podman|docker|\$\w+)\s+exec\s+(?:-[weu]\s+\S+\s+|--\S+\s+|-\w+\s+)*\S+\s+|\$\w+\s*=\s*|\$\{?\w+\}?\s+|sh\s+-\w*c\s+|bash\s+-\w*c\s+|if\s+!?\s*|until\s+|while\s+|for\s+.*;\s*do\s+|do\s+|then\s+)/;
 
 function unwrap(line) {
   let s = line.trim();
@@ -263,7 +263,7 @@ const PORT_CHECK = /\/proc\/net\/tcp/;
 
 function downloadBlocks(hcl) {
   const out = [];
-  for (const m of hcl.matchAll(/\bdownload\s*\{/g)) {
+  for (const m of hcl.matchAll(/\b(?:download|windows_package)\s*\{/g)) {
     let depth = 0;
     let i = m.index + m[0].length - 1;
     do {
@@ -271,7 +271,9 @@ function downloadBlocks(hcl) {
       else if (hcl[i] === "}") depth--;
       i++;
     } while (depth && i < hcl.length);
-    out.push(hcl.slice(m.index, i));
+    const block = hcl.slice(m.index, i);
+    // A Windows package fetches only when it has a url; one from a path on the host downloads nothing.
+    if (m[0].startsWith("download") || /\burl\s*=/.test(block)) out.push(block);
   }
   return out;
 }
@@ -298,12 +300,14 @@ export const RUBRIC = [
     title: "Applied on real distributions in CI",
     test: (ev) => {
       const ids = new Set();
-      for (const job of ev.applyJobs) for (const l of job.head) for (const m of l.matchAll(/\b(rocky\d+|fedora\d+|ubuntu\d{4}|debian\d+)\b/g)) ids.add(m[1]);
+      for (const job of ev.applyJobs) for (const l of job.head) for (const m of l.matchAll(/\b(rocky\d+|fedora\d+|ubuntu\d{4}|debian\d+|windows-?20(?:22|25))\b/g)) ids.add(m[1].replace("-", ""));
       if (ev.applyJobs.length && !ids.size) ids.add("one host");
       const n = ids.size;
       if (!n) return fail("CI never applies this circuit to a host.");
       const list = [...ids].sort().join(", ");
-      return { state: n >= 4 ? "pass" : "partial", fraction: Math.min(n, 4) / 4, detail: `${n} in the matrix: ${list}.` };
+      // Conn3x runs on two Windows Server releases, so both is the whole set, as four distributions is for Linux.
+      const of = [...ids].every((d) => d.startsWith("windows")) ? 2 : 4;
+      return { state: n >= of ? "pass" : "partial", fraction: Math.min(n, of) / of, detail: `${n} in the matrix: ${list}.` };
     },
   },
   {

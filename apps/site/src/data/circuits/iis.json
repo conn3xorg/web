@@ -1,0 +1,17 @@
+{
+  "name": "iis",
+  "repo": "conn3xorg/circuit-iis",
+  "description": "Experimental. Turns Windows Server 2022 or 2025 into an IIS web server: a site, its own app pool and the firewall port open.",
+  "version": "v0.1.0",
+  "tags": [
+    "iis",
+    "web",
+    "windows"
+  ],
+  "tested": [
+    "windows2022",
+    "windows2025"
+  ],
+  "category": "Web and proxies",
+  "official": true
+}

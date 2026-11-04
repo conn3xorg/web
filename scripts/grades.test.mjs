@@ -97,6 +97,23 @@ test("the matrix earns a quarter per distribution", () => {
   assert.equal(check(evaluate(evidence(ci(fetching, "[ubuntu2404, debian13]"))), "matrix").points, 5);
 });
 
+test("a Windows circuit's matrix is its two runners", () => {
+  assert.equal(check(evaluate(evidence(ci(fetching, "[windows-2022, windows-2025]"))), "matrix").points, 10);
+  assert.equal(check(evaluate(evidence(ci(fetching, "[windows-2025]"))), "matrix").points, 5);
+});
+
+test("a PowerShell exit-code guard only looks, and the request after it is the use", () => {
+  assert.equal(behaviourLine(["if ($LASTEXITCODE) { exit $LASTEXITCODE }"]), null);
+  assert.match(behaviourLine(["if ($LASTEXITCODE) { exit $LASTEXITCODE }", "$r = Invoke-WebRequest http://127.0.0.1/"]), /^Invoke-WebRequest/);
+});
+
+test("a Windows package with a url needs a checksum, and one from the host doesn't count", () => {
+  const hcl = (body) => ({ files: [["main.circuit.hcl", `step "p" {\n  windows_package {\n${body}  }\n}\n`]] });
+  assert.equal(check(evaluate(evidence(ci(fetching), hcl('    url = "https://x/a.msi"\n    sha256 = "ab"\n'))), "downloads").state, "pass");
+  assert.equal(check(evaluate(evidence(ci(fetching), hcl('    url = "https://x/a.msi"\n'))), "downloads").state, "fail");
+  assert.equal(check(evaluate(evidence(ci(fetching), hcl('    path = "C:\\\\a.msi"\n'))), "downloads").state, "na");
+});
+
 test("secrets in state only matter where there are secrets", () => {
   const secret = ["variables.tf", 'variable "p" {\n  sensitive = true\n}\n'];
   assert.equal(check(evaluate(evidence(ci(fetching))), "secrets-in-state").state, "na");

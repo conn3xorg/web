@@ -100,8 +100,9 @@ test("builder.json names real circuits and inputs", () => {
       if (p.input) assert.ok(data.inputs[n].inputs.some((v) => v.name === p.input), `${n}.${p.input}`);
     }
   }
-  // Every official circuit has inputs.
-  for (const c of Object.values(data.circuits)) if (c.official) assert.ok(data.inputs[c.name], c.name);
+  // Every official circuit the builder could offer has inputs: one tested on a builder distribution.
+  const ids = data.builder.distros.map((d) => d.id);
+  for (const c of Object.values(data.circuits)) if (c.official && c.tested.some((d) => ids.includes(d))) assert.ok(data.inputs[c.name], c.name);
 });
 
 test("conflicts and requirements", () => {
@@ -178,6 +179,12 @@ test("hosts get the distribution's os and are checked", () => {
     assert.ok(generate(data, { ...base, hosts, picks: ["nginx"] }).errors, JSON.stringify(hosts));
   }
   assert.ok(generate(data, { ...base, ssh: { user: "root; rm" }, picks: ["nginx"] }).errors);
+});
+
+test("the builder offers only circuits tested on one of its distributions, so never a Windows one", () => {
+  const ids = data.builder.distros.map((d) => d.id);
+  for (const n of Object.keys(data.inputs)) assert.ok(data.circuits[n].tested.some((d) => ids.includes(d)), n);
+  assert.ok(data.circuits.iis && !data.inputs.iis, "iis is in the directory and not in the builder");
 });
 
 test("every build CI validates generates cleanly", () => {
