@@ -1,7 +1,7 @@
 ---
 title: "Catch the 3 a.m. fix"
 description: "Someone fixes a server by hand in the night, and the next apply quietly undoes it. Run conn3x drift every morning in GitHub Actions and hear about it the same day instead."
-date: 2026-11-29
+date: 2026-11-17
 author: James Conway
 image: /media/blog/catch-the-3am-fix/card.png
 imageAlt: "conn3x drift reporting a file and a package changed by hand on a host, then exiting 2."

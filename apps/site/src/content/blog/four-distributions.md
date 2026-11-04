@@ -1,7 +1,7 @@
 ---
 title: "Four distributions, every change"
 description: "Every pull request to Conn3x is applied to Rocky Linux, Fedora, Ubuntu and Debian hosts before it can merge. Every night, a plan builds real droplets and sets them up. Every release is signed. Here's what each check catches."
-date: 2026-12-06
+date: 2026-11-19
 author: James Conway
 image: /media/blog/four-distributions/card.png
 imageAlt: "Test output: the package lifecycle test passing on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13."

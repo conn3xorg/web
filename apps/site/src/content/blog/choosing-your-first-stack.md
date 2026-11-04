@@ -1,7 +1,7 @@
 ---
 title: "Choosing your first stack"
 description: "If you're starting out with infrastructure as code, learn one tool, not two. Here's what that looks like, and a five-minute way to try it on your own machine."
-date: 2026-11-15
+date: 2026-11-10
 author: James Conway
 image: /media/blog/choosing-your-first-stack/card.png
 imageAlt: "Write, plan, apply, plan again: the four-step loop you learn once with Conn3x."

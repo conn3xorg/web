@@ -1,7 +1,7 @@
 ---
 title: "Pick the parts, get a config you can run"
 description: "The Circuit Builder at conn3x.org/build turns a distribution and a handful of circuits into a main.tf, a README and, when there are secrets, a variables.tf. It greys out what can't work together, keeps passwords out of the file, and runs in your browser."
-date: 2026-11-06
+date: 2026-11-05
 author: James Conway
 image: /media/blog/circuit-builder/card.png
 imageAlt: "Pick the parts. Get a config you can run. Rocky Linux 10 with nginx, docker, fail2ban and firewall picked, apache greyed out because both want ports 80 and 443, and the main.tf module block it writes for nginx."

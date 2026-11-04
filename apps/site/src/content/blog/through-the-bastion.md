@@ -1,7 +1,7 @@
 ---
 title: "Through the bastion"
 description: "Your servers sit on a private network, and the only way in is a jump host. Here's how Conn3x takes that route: jump_hosts, host objects for the bastion itself, and the SSH config file you already keep."
-date: 2026-12-13
+date: 2026-11-24
 author: James Conway
 image: /media/blog/through-the-bastion/card.png
 imageAlt: "A laptop connecting through a bastion to two private servers, with the host key checked at every hop."

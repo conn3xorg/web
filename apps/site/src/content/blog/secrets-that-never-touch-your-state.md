@@ -1,7 +1,7 @@
 ---
 title: "Secrets that never touch your state"
 description: "A database password belongs on the server, not in a state file. Here's how write-only content keeps it out of state and saved plans, and still catches a hand edit."
-date: 2026-11-22
+date: 2026-11-12
 author: James Conway
 image: /media/blog/secrets-that-never-touch-your-state/card.png
 imageAlt: "A password going from a variable to a file on the server, while the state file holds only an HMAC."
