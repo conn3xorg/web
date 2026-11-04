@@ -18,7 +18,7 @@ conn3x -version
 
 ```text
 $ conn3x version
-Conn3x v0.6.12 (built on OpenTofu v1.13.2)
+Conn3x v0.7.0 (built on OpenTofu v1.13.2)
 on darwin_arm64
 agent: linux/amd64 0c2650defa3e, linux/arm64 ab936c8ebd3d
 ```
@@ -32,7 +32,7 @@ Scripts should ask for `-json`, which prints one object:
 ```text
 $ conn3x version -json
 {
-  "conn3x_version": "0.6.12",
+  "conn3x_version": "0.7.0",
   "terraform_version": "1.13.2",
   "platform": "darwin_arm64",
   "provider_selections": {},
