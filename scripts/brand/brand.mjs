@@ -30,7 +30,7 @@ export function markPaths(u, stroke) {
 // stay smooth at header and favicon sizes.
 export const LINE = 'stroke-linecap="round" stroke-linejoin="round"';
 
-export function wordmark(fontFile, size, text = "conn3x") {
+export function wordmark(fontFile, size, text = "Conn3x") {
   const font = loadFont(fontFile);
   const word = font.getPath(text, 0, 0, size).getBoundingBox();
   const c = font.getPath("c", 0, 0, size).getBoundingBox();

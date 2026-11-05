@@ -163,7 +163,7 @@ async function readmeHeaders(browser, outDir) {
 // traces are drawn here rather than by script.
 function orgBanners(outDir) {
   const W = 1280, H = 320, e = 26, hh = Math.sqrt(3) * e;
-  const L = lockup(BOLD, 104, "Conn3x");
+  const L = lockup(BOLD, 104);
   const medium = loadFont(MEDIUM);
   const tag = "One plan for your cloud and the servers it creates.";
   const tb = medium.getPath(tag, 0, 0, 30).getBoundingBox();
