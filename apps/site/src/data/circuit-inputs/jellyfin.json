@@ -1,6 +1,6 @@
 {
   "name": "jellyfin",
-  "version": "v0.1.3",
+  "version": "v0.2.0",
   "hostObjects": true,
   "inputs": [
     {

@@ -1,6 +1,6 @@
 {
   "name": "node-exporter",
-  "version": "v0.1.0",
+  "version": "v0.1.2",
   "hostObjects": true,
   "inputs": [
     {
@@ -37,7 +37,7 @@
       "name": "extra_args",
       "type": "list(string)",
       "default": [],
-      "description": "More command-line flags for node_exporter, such as [\"--collector.systemd\"].",
+      "description": "More command-line flags for node_exporter, such as [\"--collector.systemd\"]. Each one is passed as a single argument, as written.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

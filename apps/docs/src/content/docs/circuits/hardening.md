@@ -3,7 +3,7 @@ title: Hardening
 description: "SSH and kernel hardening for a fresh server: modern SSH crypto, hardening sysctls, no core dumps, every control switchable."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-hardening at v0.2.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-hardening at v0.3.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/hardening/grade.svg)](https://conn3x.org/circuits/hardening/grade)
 
@@ -17,7 +17,7 @@ This isn't a CIS benchmark, and applying it doesn't make a host CIS or STIG comp
 
 ```hcl
 module "hardening" {
-  source = "github.com/conn3xorg/circuit-hardening?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-hardening?ref=v0.3.0"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +52,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.3.0/examples/local).
 
 ### With circuit-baseline
 
@@ -148,16 +148,16 @@ Requires Conn3x v0.7.0 or later, systemd, and an sshd that reads `/etc/ssh/sshd_
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.1/examples/local) to each on amd64 in a privileged container, checks that the second plan has no changes, and then checks what sshd will run with through `sshd -T` (ciphers, MACs, no NIST-curve or 2048-bit key exchange, and the login and forwarding settings), that the moduli file has no small primes, that the kernel parameters read back, that `modprobe` refuses `cramfs` through `install /bin/false`, the `UMASK` line, and that a new SSH session gets a hard core limit of 0.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.3.0/examples/local) to each on amd64 in a privileged container, checks that the second plan has no changes, and then checks what sshd will run with through `sshd -T` (ciphers, MACs, no NIST-curve or 2048-bit key exchange, and the login and forwarding settings), that the moduli file has no small primes, that the kernel parameters read back, that `modprobe` refuses `cramfs` through `install /bin/false`, the `UMASK` line, and that a new SSH session gets a hard core limit of 0.
 
 By hand, the circuit ran alongside circuit-baseline on one Debian 13 container, and on an Ubuntu 24.04 droplet (OpenSSH 9.6) and a Rocky Linux 10.2 droplet (OpenSSH 9.9, SELinux enforcing). The same checks passed on both droplets, the second plan had no changes, and both were rebooted and planned again with no changes and the checks passing. Rocky Linux logged no SELinux denials. The Ubuntu reboot is what showed apport resetting `fs.suid_dumpable`, which the circuit now handles.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-hardening/blob/v0.2.1/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-hardening/blob/v0.3.0/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-hardening](https://github.com/conn3xorg/circuit-hardening). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-hardening/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.2.1/examples/local).
+- Repository: [conn3xorg/circuit-hardening](https://github.com/conn3xorg/circuit-hardening). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-hardening/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-hardening/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-hardening/tree/v0.3.0/examples/local).
 - Related circuits: [OpenSCAP](/circuits/openscap), [Baseline](/circuits/baseline), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto), [TruffleHog](/circuits/trufflehog).

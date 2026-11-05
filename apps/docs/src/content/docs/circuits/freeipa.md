@@ -3,7 +3,7 @@ title: FreeIPA
 description: "FreeIPA server on Rocky or Fedora, with clients on Debian, Ubuntu, Fedora and Rocky. Sets FQDNs, installs unattended, enrols over SSSD."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-freeipa at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-freeipa at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/freeipa/grade.svg)](https://conn3x.org/circuits/freeipa/grade)
 
@@ -15,7 +15,7 @@ FreeIPA is particular about names. Every host needs a fully qualified name that 
 
 ```hcl
 module "freeipa" {
-  source = "github.com/conn3xorg/circuit-freeipa?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-freeipa?ref=v0.2.0"
 
   server = { ipa = "203.0.113.10" }
   clients = {
@@ -82,7 +82,7 @@ When your DNS already has forward and reverse records for every host, set `manag
 On the server:
 
 1. Writes `/etc/cloud/cloud.cfg.d/99-conn3x-freeipa.cfg`, which tells cloud-init to keep the host's name and `/etc/hosts` as they are. Sets the host's name to its fully qualified name, removes lines in `/etc/hosts` that map that name to loopback, and maps it to the host's address. Skipped with `manage_hosts_file = false`.
-2. Installs `ipa-server` on Rocky Linux, AlmaLinux, RHEL and CentOS Stream, or `freeipa-server` on Fedora, plus the `-dns` package with `setup_dns`.
+2. Installs `ipa-server` on Rocky Linux, AlmaLinux and RHEL, or `freeipa-server` on Fedora, plus the `-dns` package with `setup_dns`.
 3. Writes the admin and Directory Manager passwords to files in `/etc/conn3x-freeipa`, a directory only root can read.
 4. Runs `ipa-server-install --unattended` with the realm, domain and name, unless the installer's own record in `/var/lib/ipa/sysrestore/sysrestore.state` says a previous install finished. It doesn't run again after that, even if you change the inputs.
 5. Checks `ipa.service` is running and starts at boot.
@@ -157,22 +157,22 @@ FreeIPA needs these open on the server, which this circuit leaves to you or to [
 
 ## Requirements
 
-Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror the host can reach. The server needs Rocky Linux 10, AlmaLinux, RHEL, CentOS Stream or Fedora, and 2 GB of memory or more; 4 GB is more comfortable. Clients need to reach the server on the ports above. FreeIPA comes from each distribution's own repositories, so its version is the one your distribution ships.
+Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror the host can reach. The server needs Rocky Linux 10, AlmaLinux, RHEL or Fedora, and 2 GB of memory or more; 4 GB is more comfortable. Clients need to reach the server on the ports above. FreeIPA comes from each distribution's own repositories, so its version is the one your distribution ships.
 
 ## Tested on
 
-Rocky Linux 10 and Fedora 45 as the server; Rocky Linux 10, Fedora 44 and 45, Debian 13 and Ubuntu 24.04 as clients. CI applies [examples/local](https://github.com/conn3xorg/circuit-freeipa/tree/v0.1.1/examples/local) on amd64 to four pairs of containers: a Rocky Linux 10 server with a Rocky Linux 10, Ubuntu 24.04 or Debian 13 client, and a Fedora 45 server with a Fedora 45 client. It checks that the second plan has no changes, adds a user on the server with `kinit admin` and `ipa user-add`, and checks that `id` and `getent passwd` find the user on the client through SSSD. The same pairs passed the same checks by hand in rootful Podman on arm64.
+Rocky Linux 10 and Fedora 45 as the server; Rocky Linux 10, Fedora 44 and 45, Debian 13 and Ubuntu 24.04 as clients. CI applies [examples/local](https://github.com/conn3xorg/circuit-freeipa/tree/v0.2.0/examples/local) on amd64 to four pairs of containers: a Rocky Linux 10 server with a Rocky Linux 10, Ubuntu 24.04 or Debian 13 client, and a Fedora 45 server with a Fedora 45 client. It checks that the second plan has no changes, adds a user on the server with `kinit admin` and `ipa user-add`, and checks that `id` and `getent passwd` find the user on the client through SSSD. The same pairs passed the same checks by hand in rootful Podman on arm64.
 
 On DigitalOcean, a Rocky Linux 10 server with 2 vCPUs, 4 GB of memory and SELinux enforcing enrolled a Fedora 44 client and an Ubuntu 24.04 client, all three named by the circuit and reaching each other on public addresses. The server's install took about eleven minutes. `kinit admin` and `ipa user-add` worked on the server, `id` and `getent passwd` found the user on both clients, and the second plan had no changes. After a reboot of all three, FreeIPA came back on its own, the names and `/etc/hosts` lines held, and the plan stayed clean. The Ubuntu client was then unenrolled and joined again with a one-time password from `ipa host-add --password`, and the plan stayed clean after that too. Neither password showed up in the installers' logs.
 
-Integrated DNS (`setup_dns`), RHEL, AlmaLinux and CentOS Stream haven't been tried.
+Integrated DNS (`setup_dns`), RHEL and AlmaLinux haven't been tried.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-freeipa/blob/v0.1.1/LICENSE). FreeIPA itself is GPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-freeipa/blob/v0.2.0/LICENSE). FreeIPA itself is GPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-freeipa](https://github.com/conn3xorg/circuit-freeipa). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-freeipa/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-freeipa/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-freeipa/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-freeipa](https://github.com/conn3xorg/circuit-freeipa). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-freeipa/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-freeipa/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-freeipa/tree/v0.2.0/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).

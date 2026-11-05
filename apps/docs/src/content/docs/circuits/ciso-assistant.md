@@ -31,7 +31,7 @@ variable "admin_password" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.3.0"
 
   hosts                = { grc = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

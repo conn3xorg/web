@@ -2,7 +2,7 @@
   "name": "perl",
   "repo": "conn3xorg/circuit-perl",
   "description": "Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm.",
-  "version": "v0.1.1",
+  "version": "v0.2.0",
   "tags": [
     "perl",
     "cpan",

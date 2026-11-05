@@ -3,7 +3,7 @@ title: HAProxy
 description: "HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-haproxy at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-haproxy at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/haproxy/grade.svg)](https://conn3x.org/circuits/haproxy/grade)
 
@@ -17,7 +17,7 @@ It runs on Debian, Ubuntu, Fedora and Rocky Linux. On Fedora and Rocky Linux it 
 
 ```hcl
 module "haproxy" {
-  source = "github.com/conn3xorg/circuit-haproxy?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-haproxy?ref=v0.2.0"
 
   hosts                = { lb1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -64,7 +64,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-haproxy/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-haproxy/tree/v0.2.0/examples/local).
 
 ### The stats page
 
@@ -136,7 +136,7 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-haproxy/tree/v0.1.1/examples/local) to each on amd64, checks the second plan has no changes, starts two small web servers behind the frontend, checks requests reach both, then stops one and checks every request still succeeds from the other, that the stats page asks for a login, and that it shows the stopped server as down.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-haproxy/tree/v0.2.0/examples/local) to each on amd64, checks the second plan has no changes, starts two small web servers behind the frontend, checks requests reach both, then stops one and checks every request still succeeds from the other, that the stats page asks for a login, and that it shows the stopped server as down.
 
 By hand on the Rocky Linux 10 container: a `tls_pem` pointing at a missing file stopped the apply with HAProxy's error and left the live config and the running HAProxy as they were; with the file in place, the TLS frontend answered; a tcp frontend with `balance leastconn` passed traffic; and the config change reloaded HAProxy under load with no failed requests.
 
@@ -144,10 +144,10 @@ On Ubuntu 24.04 and Rocky Linux 10 droplets (1 vCPU, 1 GB), the same balance-and
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-haproxy/blob/v0.1.1/LICENSE). HAProxy itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-haproxy/blob/v0.2.0/LICENSE). HAProxy itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-haproxy](https://github.com/conn3xorg/circuit-haproxy). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-haproxy/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-haproxy/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-haproxy/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-haproxy](https://github.com/conn3xorg/circuit-haproxy). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-haproxy/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-haproxy/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-haproxy/tree/v0.2.0/examples/local).
 - Related circuits: [certbot](/circuits/certbot), [Firewall](/circuits/firewall), [nginx](/circuits/nginx), [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [Traefik](/circuits/traefik), [IIS](/circuits/iis).

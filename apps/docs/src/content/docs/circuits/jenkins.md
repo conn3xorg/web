@@ -3,7 +3,7 @@ title: Jenkins
 description: "Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-jenkins at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-jenkins at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/jenkins/grade.svg)](https://conn3x.org/circuits/jenkins/grade)
 
@@ -23,7 +23,7 @@ variable "jenkins_admin_password" {
 }
 
 module "jenkins" {
-  source = "github.com/conn3xorg/circuit-jenkins?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-jenkins?ref=v0.2.0"
 
   hosts                = { ci1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -59,7 +59,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.2.0/examples/local).
 
 ### Plugins
 
@@ -144,7 +144,7 @@ When the key in `files/jenkins.asc` nears its expiry on 21 December 2028, Jenkin
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Jenkins 2.580.2 on OpenJDK 25. CI applies [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It then checks that `/login` answers, that anonymous requests to the API and a wrong password are refused, that `admin` can get a crumb and use it with the same session for a `POST` to `/whoAmI/api/json`, that `timestamper` 1.30 is installed and active, that `numExecutors` from `casc` took, and that Jenkins listens on `127.0.0.1` only. Then it restarts Jenkins, checks the same again and plans again with no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Jenkins 2.580.2 on OpenJDK 25. CI applies [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.2.0/examples/local) to each on amd64 and checks that the second plan has no changes. It then checks that `/login` answers, that anonymous requests to the API and a wrong password are refused, that `admin` can get a crumb and use it with the same session for a `POST` to `/whoAmI/api/json`, that `timestamper` 1.30 is installed and active, that `numExecutors` from `casc` took, and that Jenkins listens on `127.0.0.1` only. Then it restarts Jenkins, checks the same again and plans again with no changes.
 
 By hand, in a Fedora 45 container: a changed `admin_password`, after which the new one logged in and the old one didn't, with neither in the state; swapping `timestamper` for `build-timeout` at `latest`, which removed the one and installed the other; `url`, which reached Jenkins' location settings; a downgrade to 2.580.1 and an upgrade back to 2.580.2; and six applies in a row that each restarted Jenkins.
 
@@ -152,6 +152,6 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## Source
 
-- Repository: [conn3xorg/circuit-jenkins](https://github.com/conn3xorg/circuit-jenkins). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-jenkins/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-jenkins/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-jenkins](https://github.com/conn3xorg/circuit-jenkins). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-jenkins/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-jenkins/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-jenkins/tree/v0.2.0/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [Java](/circuits/java), [PHP-FPM](/circuits/php), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

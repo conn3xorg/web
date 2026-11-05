@@ -2,7 +2,7 @@
   "name": "suricata",
   "repo": "conn3xorg/circuit-suricata",
   "description": "Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json",
-  "version": "v0.1.3",
+  "version": "v0.2.0",
   "tags": [
     "suricata",
     "ids",

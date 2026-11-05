@@ -1,6 +1,6 @@
 {
   "name": "samba",
-  "version": "v0.1.0",
+  "version": "v0.3.0",
   "hostObjects": true,
   "inputs": [
     {

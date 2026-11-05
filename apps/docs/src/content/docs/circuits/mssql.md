@@ -3,7 +3,7 @@ title: SQL Server
 description: "SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mssql at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mssql at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/mssql/grade.svg)](https://conn3x.org/circuits/mssql/grade)
 
@@ -29,7 +29,7 @@ variable "sa_password" {
 }
 
 module "mssql" {
-  source = "github.com/conn3xorg/circuit-mssql?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-mssql?ref=v0.2.0"
 
   hosts                = { db = "192.168.1.40" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -67,14 +67,14 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container on an x86-64 Linux machine first, see [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.1.1/examples/local).
+To try it on a throwaway container on an x86-64 Linux machine first, see [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.2.0/examples/local).
 
 ## What it does
 
 On each host, in order:
 
 1. Checks the host: Ubuntu 22.04 or 24.04, or Enterprise Linux 9 or 10, on x86-64, with at least 2000 MB of memory, which `mssql-conf setup` won't go below. Anything else stops the plan with a message before the host is touched.
-2. Adds Microsoft's SQL Server 2025 repository, `packages.microsoft.com/<distro>/<version>/mssql-server-2025`, checked against Microsoft's signing keys, which ship with the circuit in [files/microsoft.asc](https://github.com/conn3xorg/circuit-mssql/blob/v0.1.1/files/microsoft.asc). It's the cumulative update repository, so a new install gets the newest CU.
+2. Adds Microsoft's SQL Server 2025 repository, `packages.microsoft.com/<distro>/<version>/mssql-server-2025`, checked against Microsoft's signing keys, which ship with the circuit in [files/microsoft.asc](https://github.com/conn3xorg/circuit-mssql/blob/v0.2.0/files/microsoft.asc). It's the cumulative update repository, so a new install gets the newest CU.
 3. Installs `mssql-server`.
 4. Writes the `sa` password to `/etc/conn3x/mssql/sa_password` (root only, mode 0600).
 5. Writes `tcp_port`, `listen_address`, `memory_limit_mb` and `settings` with `mssql-conf set`, with SQL Server stopped. `mssql-conf` refuses to set a port the running server holds, even the one it's already on.
@@ -104,7 +104,7 @@ Microsoft publishes SQL Server 2025 for Ubuntu 22.04 and 24.04 and Red Hat Enter
 
 ### Signing keys
 
-Microsoft signs these repositories with two keys, and [files/microsoft.asc](https://github.com/conn3xorg/circuit-mssql/blob/v0.1.1/files/microsoft.asc) holds both. Ubuntu's repositories carry signatures from both, and apt wants every one of them checked. Enterprise Linux 10 packages are signed with the newer key and Enterprise Linux 9 ones with the older.
+Microsoft signs these repositories with two keys, and [files/microsoft.asc](https://github.com/conn3xorg/circuit-mssql/blob/v0.2.0/files/microsoft.asc) holds both. Ubuntu's repositories carry signatures from both, and apt wants every one of them checked. Enterprise Linux 10 packages are signed with the newer key and Enterprise Linux 9 ones with the older.
 
 | Key | Fingerprint | Expires |
 | --- | --- | --- |
@@ -156,14 +156,14 @@ Requires Conn3x v0.6.9 or later, and on each host systemd, an x86-64 processor, 
 
 Ubuntu 24.04, Ubuntu 22.04, Rocky Linux 10 and Rocky Linux 9, on DigitalOcean droplets with 2 vCPUs and 4 GB, with SQL Server 2025 CU10 (17.0.5035.5). On each, the circuit installed and set up SQL Server listening on `127.0.0.1:1433` with a 2048 MB memory limit, the second plan had no changes, and `sa` logged in over TCP with `sqlcmd`, created a database and a table, wrote a row and read it back after a restart. On Ubuntu 24.04 and Rocky Linux 10, a second apply moved SQL Server from Developer to Express edition, to port 1533 on every address, and back to `127.0.0.1:1433` with a new `sa` password, and each change showed up on the server. All four came back after a reboot with SQL Server running, the row still there and the second plan clean. Both Rocky Linux droplets ran with SELinux enforcing, and their audit logs had no denials.
 
-CI applies [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.1.1/examples/local) to Ubuntu 24.04 and Rocky Linux 10 containers on GitHub's x86-64 runners, checks the second plan has no changes, then runs the same `sqlcmd` checks. Those containers can't run on an Apple-silicon Mac, so CI hadn't run when v0.1.0 was tagged; the droplet runs above are what this release rests on.
+CI applies [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.2.0/examples/local) to Ubuntu 24.04 and Rocky Linux 10 containers on GitHub's x86-64 runners, checks the second plan has no changes, then runs the same `sqlcmd` checks. Those containers can't run on an Apple-silicon Mac, so CI hadn't run when v0.1.0 was tagged; the droplet runs above are what this release rests on.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mssql/blob/v0.1.1/LICENSE). SQL Server itself is proprietary Microsoft software under its own licence terms.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mssql/blob/v0.2.0/LICENSE). SQL Server itself is proprietary Microsoft software under its own licence terms.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-mssql](https://github.com/conn3xorg/circuit-mssql). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-mssql/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-mssql/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-mssql](https://github.com/conn3xorg/circuit-mssql). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-mssql/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-mssql/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-mssql/tree/v0.2.0/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

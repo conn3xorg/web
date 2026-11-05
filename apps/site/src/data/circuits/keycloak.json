@@ -2,7 +2,7 @@
   "name": "keycloak",
   "repo": "conn3xorg/circuit-keycloak",
   "description": "Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage.",
-  "version": "v0.1.1",
+  "version": "v0.2.0",
   "tags": [
     "keycloak",
     "sso",
