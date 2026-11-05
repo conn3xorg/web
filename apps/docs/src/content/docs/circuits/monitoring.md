@@ -15,7 +15,7 @@ Pair it with [circuit-docker](/circuits/docker) to get Docker on the host, and [
 
 ```hcl
 module "docker" {
-  source = "github.com/conn3xorg/circuit-docker?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-docker?ref=v0.2.1"
 
   hosts = { monitor = "192.168.1.10" }
 }

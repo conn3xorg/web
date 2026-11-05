@@ -75,7 +75,7 @@ curl -sS --request POST "https://gitlab.example.com/api/v4/user/runners" \
 
 ```hcl
 module "docker" {
-  source = "github.com/conn3xorg/circuit-docker?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-docker?ref=v0.2.1"
 
   hosts                = { ci1 = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
