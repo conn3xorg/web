@@ -1,0 +1,72 @@
+{
+  "name": "homeassistant",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "homeassistant_version",
+      "type": "string",
+      "default": "2026.11.0",
+      "description": "Tag of the Home Assistant image, such as \"2026.11.0\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:c6c1ca9931036bf3a2c4cc088d8db25dfea3b33935a5ecc83c40349462e2f69e",
+      "description": "Digest of the image for homeassistant_version, such as \"sha256:c6c1...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "ghcr.io/home-assistant/home-assistant",
+      "description": "Where to pull Home Assistant's image from. \"docker.io/homeassistant/home-assistant\" serves the same image from Docker Hub.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_addresses",
+      "type": "list(string)",
+      "default": [
+        "127.0.0.1"
+      ],
+      "description": "Addresses Home Assistant's web server listens on, set at its first start. The default keeps it on the host for a reverse proxy in front; add the host's LAN address, or use [\"0.0.0.0\"], for phones and browsers to reach it directly.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8123,
+      "description": "Port Home Assistant's web server listens on, set at its first start.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "trusted_proxies",
+      "type": "list(string)",
+      "default": [],
+      "description": "Reverse proxies allowed to set X-Forwarded-For, as addresses or networks, such as [\"127.0.0.1\"] for a proxy on the same host. Home Assistant refuses forwarded requests from any proxy not listed. Set at its first start.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "devices",
+      "type": "list(string)",
+      "default": [],
+      "description": "Host devices to pass into the container, such as [\"/dev/ttyACM0\"] for a Zigbee or Z-Wave stick. Prefer the stable names under /dev/serial/by-id.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

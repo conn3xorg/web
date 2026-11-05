@@ -152,4 +152,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-grafana/blob/v0.2.0/
 
 - Repository: [conn3xorg/circuit-grafana](https://github.com/conn3xorg/circuit-grafana). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-grafana/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-grafana/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-grafana/tree/v0.2.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).
+- Related circuits: [Firewall](/circuits/firewall), [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios), [Uptime Kuma](/circuits/uptimekuma).

@@ -1,0 +1,19 @@
+{
+  "name": "kestra",
+  "repo": "conn3xorg/circuit-kestra",
+  "description": "The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state.",
+  "version": "v0.1.0",
+  "tags": [
+    "kestra",
+    "workflows",
+    "orchestration"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Platforms",
+  "official": true
+}

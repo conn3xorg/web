@@ -1,0 +1,19 @@
+{
+  "name": "dockge",
+  "repo": "conn3xorg/circuit-dockge",
+  "description": "Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine.",
+  "version": "v0.1.0",
+  "tags": [
+    "dockge",
+    "compose",
+    "containers"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Containers and Kubernetes",
+  "official": true
+}

@@ -1,0 +1,19 @@
+{
+  "name": "influxdb",
+  "repo": "conn3xorg/circuit-influxdb",
+  "description": "InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start.",
+  "version": "v0.1.0",
+  "tags": [
+    "influxdb",
+    "time-series",
+    "database"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Databases and caches",
+  "official": true
+}

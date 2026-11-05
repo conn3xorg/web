@@ -193,4 +193,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-otelcol/blob/v0.2.0/
 
 - Repository: [conn3xorg/circuit-otelcol](https://github.com/conn3xorg/circuit-otelcol). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-otelcol/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-otelcol/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.2.0/examples/local).
-- Related circuits: [Prometheus](/circuits/prometheus), [node_exporter](/circuits/node-exporter), [Firewall](/circuits/firewall), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).
+- Related circuits: [Prometheus](/circuits/prometheus), [node_exporter](/circuits/node-exporter), [Firewall](/circuits/firewall), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios), [Uptime Kuma](/circuits/uptimekuma).

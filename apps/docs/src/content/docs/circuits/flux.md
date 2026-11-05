@@ -167,4 +167,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-flux/blob/v0.1.2/LIC
 
 - Repository: [conn3xorg/circuit-flux](https://github.com/conn3xorg/circuit-flux). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-flux/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-flux/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.2/examples/local).
-- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio).
+- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).

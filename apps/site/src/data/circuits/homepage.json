@@ -1,0 +1,19 @@
+{
+  "name": "homepage",
+  "repo": "conn3xorg/circuit-homepage",
+  "description": "The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands.",
+  "version": "v0.1.0",
+  "tags": [
+    "homepage",
+    "dashboard",
+    "homelab"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Platforms",
+  "official": true
+}

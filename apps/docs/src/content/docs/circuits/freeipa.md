@@ -175,4 +175,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-freeipa/blob/v0.2.0/
 
 - Repository: [conn3xorg/circuit-freeipa](https://github.com/conn3xorg/circuit-freeipa). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-freeipa/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-freeipa/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-freeipa/tree/v0.2.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).
+- Related circuits: [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).

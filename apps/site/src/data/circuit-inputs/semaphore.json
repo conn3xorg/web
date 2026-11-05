@@ -1,0 +1,95 @@
+{
+  "name": "semaphore",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "semaphore_version",
+      "type": "string",
+      "default": "v2.19.17",
+      "description": "Tag of the docker.io/semaphoreui/semaphore image, such as \"v2.19.17\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:008dacd9f1adbd92e8a048f1786ae1dd9bed2a352aca2eb30b9837de5706e7f7",
+      "description": "Digest of docker.io/semaphoreui/semaphore for semaphore_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin",
+      "type": "object({\n    login = optional(string, \"admin\")\n    name  = optional(string, \"Semaphore Admin\")\n    email = string\n  })",
+      "description": "The admin Semaphore creates on its first start, such as { email = \"you@example.com\" }. Later changes don't touch the account; change it in Semaphore.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password the admin is created with on the first start. It reaches the host in a root-only env file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "public_url",
+      "type": "string",
+      "default": null,
+      "description": "The address people reach Semaphore at, such as \"https://semaphore.example.com\". Semaphore uses it in the links it sends, in alerts and in its OIDC callbacks. Sets SEMAPHORE_WEB_ROOT.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres",
+      "type": "object({\n    host     = optional(string, \"127.0.0.1\")\n    port     = optional(number, 5432)\n    database = optional(string, \"semaphore\")\n    username = optional(string, \"semaphore\")\n  })",
+      "default": null,
+      "description": "PostgreSQL to keep Semaphore's data in, such as {} for one on the same host. The role and database must exist. When null, Semaphore uses SQLite in /var/lib/semaphore/data. Semaphore picks its database on its first start only.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the postgres username. Needed with postgres. It reaches the host in a root-only env file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Semaphore listens on. The default keeps it on the host, for a reverse proxy with TLS in front.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 3000,
+      "description": "Port Semaphore listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of Semaphore's environment variables, such as { SEMAPHORE_EMAIL_ALERT = \"true\", SEMAPHORE_EMAIL_PASSWORD = \"...\" }. They go in a root-only env file and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

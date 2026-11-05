@@ -248,4 +248,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openbao/blob/v0.2.2/
 
 - Repository: [conn3xorg/circuit-openbao](https://github.com/conn3xorg/circuit-openbao). This page covers [v0.2.2](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.2); the repository's [tags](https://github.com/conn3xorg/circuit-openbao/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-openbao/tree/v0.2.2/examples/local).
-- Related circuits: [certbot](/circuits/certbot), [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).
+- Related circuits: [certbot](/circuits/certbot), [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).

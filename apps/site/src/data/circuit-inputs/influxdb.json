@@ -1,0 +1,70 @@
+{
+  "name": "influxdb",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "influxdb_version",
+      "type": "string",
+      "default": "3.12.2",
+      "description": "InfluxDB 3 Core release to install from InfluxData's repository, such as \"3.12.2\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "http_bind",
+      "type": "string",
+      "default": "127.0.0.1:8181",
+      "description": "Address and port the HTTP API listens on. Loopback by default. Set the host's own address, or 0.0.0.0:8181, to reach it from other machines.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "node_id",
+      "type": "string",
+      "default": "primary-node",
+      "description": "Node ID, the prefix InfluxDB puts on every path in its data directory. The package's default. Changing it on a server with data starts an empty one beside the old data.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "telemetry",
+      "type": "bool",
+      "default": false,
+      "description": "Send InfluxData the usage telemetry InfluxDB uploads by default. Off unless you turn it on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "set_admin_token",
+      "type": "bool",
+      "default": true,
+      "description": "Give the server admin_token as its first admin token. When false, the circuit writes no token, and you create one on the host with influxdb3 create token --admin.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_token",
+      "type": "string",
+      "default": null,
+      "description": "Admin token the server starts with, apiv3_ followed by at least 32 letters, digits, _ or -. Used only while the server has no tokens. Required when set_admin_token is true.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "map(string)",
+      "default": {},
+      "description": "More server options for /etc/influxdb3/influxdb3-core.conf, by their command-line name without the dashes, such as { gen1-duration = \"10m\" }. The circuit sets http-bind, node-id, object-store, data-dir, plugin-dir, admin-token-file and disable-telemetry-upload itself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

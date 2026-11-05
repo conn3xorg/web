@@ -120,4 +120,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-node-exporter/blob/v
 
 - Repository: [conn3xorg/circuit-node-exporter](https://github.com/conn3xorg/circuit-node-exporter). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-node-exporter/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.2/examples/local).
-- Related circuits: [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).
+- Related circuits: [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios), [Uptime Kuma](/circuits/uptimekuma).

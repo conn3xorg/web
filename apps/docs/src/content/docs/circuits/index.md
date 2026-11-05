@@ -52,6 +52,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.1.0 |
 | [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.1.1 |
 | [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.0 |
+| [InfluxDB 3 Core](/circuits/influxdb) | InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start. | v0.1.0 |
 
 ### Monitoring
 
@@ -64,6 +65,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.0 |
 | [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.1.0 |
 | [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.1.0 |
+| [Uptime Kuma](/circuits/uptimekuma) | Uptime Kuma under Podman: it watches your sites, ports and services and tells you the moment one stops answering. | v0.1.0 |
 
 ### Containers and Kubernetes
 
@@ -74,6 +76,8 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [k3s](/circuits/k3s) | A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support. | v0.1.3 |
 | [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.1.0 |
 | [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.1.0 |
+| [Dockge](/circuits/dockge) | Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine. | v0.1.0 |
+| [Portainer CE](/circuits/portainer) | Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it. | v0.1.0 |
 
 ### DNS
 
@@ -91,6 +95,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [WireGuard](/circuits/wireguard) | Joins hosts into a WireGuard network, full mesh or hub and spoke, with each private key made on its host and never leaving it. | v0.1.0 |
 | [Tailscale](/circuits/tailscale) | Installs Tailscale from Tailscale's repository and joins your hosts to your tailnet, with subnet routes, exit nodes and Tailscale SSH. | v0.1.0 |
 | [keepalived](/circuits/keepalived) | A floating IP address shared between hosts with keepalived, moving to a backup within a second when a host or a check fails. | v0.1.0 |
+| [NetBird](/circuits/netbird) | The NetBird client from NetBird's signed repo, joining your hosts to NetBird cloud or your own server. | v0.1.0 |
 
 ### Security and compliance
 
@@ -127,6 +132,8 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.1.0 |
 | [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.2.0 |
 | [Infisical](/circuits/infisical) | Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host. | v0.1.0 |
+| [Passbolt CE](/circuits/passbolt) | Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host. | v0.1.0 |
+| [Teleport](/circuits/teleport) | A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel. | v0.1.0 |
 
 ### AI
 
@@ -149,6 +156,9 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.0 |
 | [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.1.0 |
 | [n8n](/circuits/n8n) | Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply. | v0.1.0 |
+| [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
+| [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
+| [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.0 |
 
 ### Build and runtimes
 
@@ -160,6 +170,8 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.0 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.0 |
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
+| [Semaphore UI](/circuits/semaphore) | Semaphore UI under Podman: run Ansible, OpenTofu and Terraform from a web page, on SQLite or PostgreSQL. | v0.1.0 |
+| [Renovate](/circuits/renovate) | Self-hosted Renovate on a systemd timer against the repositories you list, its token kept out of state. | v0.1.0 |
 
 ### Communication and media
 

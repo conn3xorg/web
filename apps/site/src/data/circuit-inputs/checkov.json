@@ -1,13 +1,13 @@
 {
   "name": "checkov",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "checkov_version",
       "type": "string",
       "default": "3.4.3",
-      "description": "checkov release to install from PyPI. Its packages are pinned in requirements/checkov-<version>.txt, or in requirements_file.",
+      "description": "checkov release to install from PyPI. Its packages are pinned in requirements/checkov-<version>.txt, or in requirements_file. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

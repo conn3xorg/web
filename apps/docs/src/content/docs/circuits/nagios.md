@@ -167,4 +167,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nagios/blob/v0.2.1/L
 
 - Repository: [conn3xorg/circuit-nagios](https://github.com/conn3xorg/circuit-nagios). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-nagios/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-nagios/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-nagios/tree/v0.2.1/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix).
+- Related circuits: [Caddy](/circuits/caddy), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Uptime Kuma](/circuits/uptimekuma).

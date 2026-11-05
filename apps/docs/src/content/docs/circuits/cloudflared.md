@@ -138,4 +138,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cloudflared/blob/v0.
 
 - Repository: [conn3xorg/circuit-cloudflared](https://github.com/conn3xorg/circuit-cloudflared). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-cloudflared/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.1/examples/local).
-- Related circuits: [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale), [keepalived](/circuits/keepalived).
+- Related circuits: [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale), [keepalived](/circuits/keepalived), [NetBird](/circuits/netbird).

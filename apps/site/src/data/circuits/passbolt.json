@@ -1,0 +1,19 @@
+{
+  "name": "passbolt",
+  "repo": "conn3xorg/circuit-passbolt",
+  "description": "Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host.",
+  "version": "v0.1.0",
+  "tags": [
+    "passbolt",
+    "passwords",
+    "secrets"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Identity and secrets",
+  "official": true
+}

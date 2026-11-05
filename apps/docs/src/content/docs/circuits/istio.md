@@ -144,4 +144,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-istio/blob/v0.1.2/LI
 
 - Repository: [conn3xorg/circuit-istio](https://github.com/conn3xorg/circuit-istio). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-istio/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-istio/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.2/examples/local).
-- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Flux](/circuits/flux).
+- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).
