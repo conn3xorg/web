@@ -15,7 +15,7 @@ A Conn3x circuit that puts one exact Kotlin compiler on your hosts, from the zip
 
 ```hcl
 module "java" {
-  source = "github.com/conn3xorg/circuit-java?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-java?ref=v0.2.0"
 
   hosts                = { build1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

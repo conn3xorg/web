@@ -43,7 +43,7 @@ variable "langfuse_secret_key" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.3.0"
 
   hosts                = { traces = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +56,7 @@ module "postgres" {
 # Langfuse queues work in Valkey, so it must never evict keys. noeviction
 # is circuit-valkey's default.
 module "valkey" {
-  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-valkey?ref=v0.2.0"
 
   hosts                = { traces = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

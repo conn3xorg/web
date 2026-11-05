@@ -3,7 +3,7 @@ title: Automatic updates
 description: "Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-auto-updates at v0.2.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-auto-updates at v0.3.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/auto-updates/grade.svg)](https://conn3x.org/circuits/auto-updates/grade)
 
@@ -15,7 +15,7 @@ The updates run from a systemd timer on each host, so they keep going whether or
 
 ```hcl
 module "auto_updates" {
-  source = "github.com/conn3xorg/circuit-auto-updates?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-auto-updates?ref=v0.3.0"
 
   hosts                = { web = "192.168.1.20", db = "192.168.1.21" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -44,7 +44,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.2.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.3.0/examples/local).
 
 ## What it does
 
@@ -112,16 +112,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host. Debian and Ubuntu host
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, that the upgrade timer is enabled, active and set to the example's schedule, and that the package manager reads the example's settings: with `apt-config dump` and an `unattended-upgrade --dry-run` on Debian and Ubuntu, and by reading `/etc/dnf/automatic.conf` back through dnf's own parser on Fedora and Rocky Linux, including the reboot command.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.3.0/examples/local) to each on amd64, checks that the second plan has no changes, that the upgrade timer is enabled, active and set to the example's schedule, and that the package manager reads the example's settings: with `apt-config dump` and an `unattended-upgrade --dry-run` on Debian and Ubuntu, and by reading `/etc/dnf/automatic.conf` back through dnf's own parser on Fedora and Rocky Linux, including the reboot command.
 
 The CI containers run with SELinux off. On a Rocky Linux 10 droplet with SELinux enforcing, the example was applied by hand with `reboot = "never"` and the same checks passed. One run of `dnf-automatic.service` then installed the pending updates without rebooting, and the audit log had no denials. On Fedora 44 and AlmaLinux 10 droplets, also enforcing, the apply and second plan were clean and the timer was enabled, before and after a reboot; Fedora 44 names it `dnf5-automatic.timer`, with `dnf-automatic.timer` as an alias.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-auto-updates/blob/v0.2.1/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-auto-updates/blob/v0.3.0/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-auto-updates](https://github.com/conn3xorg/circuit-auto-updates). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-auto-updates/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.2.1/examples/local).
+- Repository: [conn3xorg/circuit-auto-updates](https://github.com/conn3xorg/circuit-auto-updates). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-auto-updates/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-auto-updates/tree/v0.3.0/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto), [TruffleHog](/circuits/trufflehog).

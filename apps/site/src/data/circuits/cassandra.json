@@ -2,7 +2,7 @@
   "name": "cassandra",
   "repo": "conn3xorg/circuit-cassandra",
   "description": "Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply.",
-  "version": "v0.1.1",
+  "version": "v0.2.0",
   "tags": [
     "cassandra",
     "database",

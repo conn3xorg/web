@@ -34,7 +34,7 @@ For Let's Encrypt to issue a certificate, each site's host has to resolve to the
 
 ```hcl
 module "firewall" {
-  source = "github.com/conn3xorg/circuit-firewall?ref=v0.2.2"
+  source = "github.com/conn3xorg/circuit-firewall?ref=v0.3.0"
 
   hosts = { edge = "203.0.113.10" }
   allow = [{ port = "80/tcp" }, { port = "443/tcp" }]

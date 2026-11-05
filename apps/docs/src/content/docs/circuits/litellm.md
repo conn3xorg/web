@@ -39,7 +39,7 @@ variable "anthropic_api_key" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.3.0"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -221,7 +221,7 @@ LiteLLM speaks plain HTTP. [circuit-caddy](/circuits/caddy) on the same host can
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.2"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.3.0"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

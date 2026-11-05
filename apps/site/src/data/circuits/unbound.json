@@ -2,7 +2,7 @@
   "name": "unbound",
   "repo": "conn3xorg/circuit-unbound",
   "description": "A validating, caching DNS resolver with Unbound: DNSSEC on, optional DNS over TLS upstreams and local records for your network.",
-  "version": "v0.1.1",
+  "version": "v0.2.0",
   "tags": [
     "unbound",
     "dns",

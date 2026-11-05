@@ -3,7 +3,7 @@ title: WireGuard
 description: "Joins hosts into a WireGuard network, full mesh or hub and spoke, with each private key made on its host and never leaving it."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-wireguard at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-wireguard at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/wireguard/grade.svg)](https://conn3x.org/circuits/wireguard/grade)
 
@@ -15,7 +15,7 @@ By default every host connects to every other. Name one host as `hub` and the re
 
 ```hcl
 module "wireguard" {
-  source = "github.com/conn3xorg/circuit-wireguard?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-wireguard?ref=v0.2.0"
 
   hosts = {
     web  = "203.0.113.10"
@@ -52,7 +52,7 @@ hosts = {
 }
 ```
 
-To try it on two throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.1.1/examples/local).
+To try it on two throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.2.0/examples/local).
 
 ## Where the keys come from
 
@@ -143,7 +143,7 @@ Requires Conn3x v0.6.6 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.1.1/examples/local) to two containers of each on amd64, checks that the second plan has no changes, has each ping the other's tunnel address through `wg0`, checks for a handshake, the extra peer and the file modes, then switches to hub and spoke, plans again with no changes and pings once more. The same checks ran by hand on arm64, the switch to hub and spoke on Debian 13 only.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.2.0/examples/local) to two containers of each on amd64, checks that the second plan has no changes, has each ping the other's tunnel address through `wg0`, checks for a handshake, the extra peer and the file modes, then switches to hub and spoke, plans again with no changes and pings once more. The same checks ran by hand on arm64, the switch to hub and spoke on Debian 13 only.
 
 A three-host hub and spoke ran by hand on Rocky Linux 10 containers, with the third host reached through a jump host and `endpoint = ""`: the two spokes pinged each other through the hub. The two hosts that already had keys kept them under the new state.
 
@@ -151,10 +151,10 @@ Over the internet, an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet, SELinux
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-wireguard/blob/v0.1.1/LICENSE). WireGuard is a registered trademark of Jason A. Donenfeld; wireguard-tools is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-wireguard/blob/v0.2.0/LICENSE). WireGuard is a registered trademark of Jason A. Donenfeld; wireguard-tools is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-wireguard](https://github.com/conn3xorg/circuit-wireguard). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-wireguard/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-wireguard/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-wireguard](https://github.com/conn3xorg/circuit-wireguard). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-wireguard/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-wireguard/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.2.0/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Tailscale](/circuits/tailscale), [keepalived](/circuits/keepalived), [Cloudflare Tunnel](/circuits/cloudflared).

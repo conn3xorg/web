@@ -15,7 +15,7 @@ Zabbix keeps its data in PostgreSQL. Pair this circuit with [circuit-postgres](/
 
 ```hcl
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.3.0"
 
   hosts                = { zabbix = { address = "203.0.113.10", os = "ubuntu" } }
   ssh_private_key_file = "~/.ssh/id_ed25519"

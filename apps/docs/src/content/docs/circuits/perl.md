@@ -3,7 +3,7 @@ title: Perl
 description: "Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-perl at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-perl at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/perl/grade.svg)](https://conn3x.org/circuits/perl/grade)
 
@@ -24,7 +24,7 @@ If you need one Perl version everywhere, this isn't the circuit for it. Distro m
 
 ```hcl
 module "perl" {
-  source = "github.com/conn3xorg/circuit-perl?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-perl?ref=v0.2.0"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -39,7 +39,7 @@ module "perl" {
 
 Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.`
 
-`distro_modules` takes package names, one list for each family, because the two families name the same module differently. `debian` covers Debian and Ubuntu; `redhat` covers Fedora, Rocky Linux, AlmaLinux, RHEL and CentOS Stream. On Rocky Linux and the like, some modules are only in EPEL, which this circuit doesn't add.
+`distro_modules` takes package names, one list for each family, because the two families name the same module differently. `debian` covers Debian and Ubuntu; `redhat` covers Fedora, Rocky Linux, AlmaLinux and RHEL. On Rocky Linux and the like, some modules are only in EPEL, which this circuit doesn't add.
 
 For hosts created in the same plan, pass host objects with the host key you generated, so Conn3x checks it without a known_hosts entry. Give each one's distribution in `os` too: the circuit picks packages by distribution, and Conn3x can't ask a host that doesn't exist yet. If `os` turns out not to match the host, Conn3x stops before configuring it. Set `os` as well when you put `depends_on` on this module: `depends_on` holds back reading the hosts until the apply, so without `os` the plan fails with `Invalid for_each argument`.
 
@@ -53,7 +53,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.2.0/examples/local).
 
 ## What it does
 
@@ -100,7 +100,7 @@ Requires Conn3x v0.6.9 or later, and a package mirror each host can reach. With 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. A script then used Try::Tiny from the distribution and Text::Trim 1.04 from CPAN together, and each loaded from where it should. CI runs the same check on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.2.0/examples/local) was applied to each on arm64, and the second plan had no changes. A script then used Try::Tiny from the distribution and Text::Trim 1.04 from CPAN together, and each loaded from where it should. CI runs the same check on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64: the same script passed, along with JSON::XS 4.04 from CPAN, which compiles C. After a reboot the plan had no changes and the script still passed.
 
@@ -108,10 +108,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-perl/blob/v0.1.1/LICENSE). Perl is under the Artistic License or the GPL, at your choice. Modules carry their own licenses.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-perl/blob/v0.2.0/LICENSE). Perl is under the Artistic License or the GPL, at your choice. Modules carry their own licenses.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-perl](https://github.com/conn3xorg/circuit-perl). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-perl/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-perl/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-perl](https://github.com/conn3xorg/circuit-perl). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-perl/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-perl/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-perl/tree/v0.2.0/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

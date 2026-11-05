@@ -3,7 +3,7 @@ title: PostgreSQL
 description: "Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-postgres at v0.2.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-postgres at v0.3.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/postgres/grade.svg)](https://conn3x.org/circuits/postgres/grade)
 
@@ -21,7 +21,7 @@ variable "app_db_password" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.3.0"
 
   hosts                = { db = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -60,13 +60,13 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.3.0/examples/local).
 
 ## What it does
 
 On each host, in order:
 
-1. Adds the PGDG repository and its signing key, from the keys in [files](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1/files): `apt.postgresql.org` on Debian and Ubuntu, `download.postgresql.org` on Rocky Linux, AlmaLinux and RHEL. On Fedora it uses Fedora's own packages instead (see below).
+1. Adds the PGDG repository and its signing key, from the keys in [files](https://github.com/conn3xorg/circuit-postgres/tree/v0.3.0/files): `apt.postgresql.org` on Debian and Ubuntu, `download.postgresql.org` on Rocky Linux, AlmaLinux and RHEL. On Fedora it uses Fedora's own packages instead (see below).
 2. On the Red Hat family, before PostgreSQL starts, when `settings` sets a `port` other than 5432, installs `policycoreutils-python-utils` and labels the port `postgresql_port_t` with `semanage`, so SELinux lets PostgreSQL bind it. Hosts with SELinux off skip the label.
 3. Installs the server for `postgres_version`: `postgresql-18` on Debian and Ubuntu, `postgresql18-server` on the Red Hat family.
 4. Creates the cluster if it doesn't exist. Debian and Ubuntu do this when the package installs; on the Red Hat family the circuit runs `postgresql-18-setup initdb`, or `postgresql-setup --initdb` on Fedora, once.
@@ -135,16 +135,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with PostgreSQL 18. CI applies [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, and connects over TCP as the example's user with its password. The same was run by hand on arm64, along with a misspelt setting, a bad value and a rejected `pg_hba.conf` rule, each of which failed the apply and left the server running, and a move to port 5433.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with PostgreSQL 18. CI applies [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.3.0/examples/local) to each on amd64, checks that the second plan has no changes, and connects over TCP as the example's user with its password. The same was run by hand on arm64, along with a misspelt setting, a bad value and a rejected `pg_hba.conf` rule, each of which failed the apply and left the server running, and a move to port 5433.
 
 All of that ran in containers, where SELinux is off. On a Rocky Linux 10 droplet with SELinux enforcing, a server on port 5433 was applied by hand: the circuit labelled 5433 `postgresql_port_t`, the second plan had no changes, `SELECT 1` worked over TCP, and the audit log had no denials. PGDG's server runs as `unconfined_service_t` there, so the label wasn't what let it bind. Fedora's own server runs confined as `postgresql_t`, and on a Fedora 44 droplet with SELinux enforcing the same checks passed with no denials. An AlmaLinux 10 droplet behaved like Rocky. Both came back after a reboot with the server running and the second plan clean.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-postgres/blob/v0.2.1/LICENSE). PostgreSQL itself is under the PostgreSQL License.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-postgres/blob/v0.3.0/LICENSE). PostgreSQL itself is under the PostgreSQL License.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-postgres](https://github.com/conn3xorg/circuit-postgres). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-postgres/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1/examples/local).
+- Repository: [conn3xorg/circuit-postgres](https://github.com/conn3xorg/circuit-postgres). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-postgres/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-postgres/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.3.0/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

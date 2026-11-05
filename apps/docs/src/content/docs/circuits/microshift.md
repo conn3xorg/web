@@ -3,7 +3,7 @@ title: MicroShift
 description: "Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-microshift at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-microshift at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/microshift/grade.svg)](https://conn3x.org/circuits/microshift/grade)
 
@@ -15,7 +15,7 @@ It installs the community build from [microshift-io](https://github.com/microshi
 
 ```hcl
 module "microshift" {
-  source = "github.com/conn3xorg/circuit-microshift?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-microshift?ref=v0.2.0"
 
   hosts                = { node = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -65,7 +65,7 @@ The catch: OpenShift's mirror keeps only the newest build of each package. When 
 ### What it doesn't do
 
 - More than one node. MicroShift is single-node by design.
-- Ubuntu, Debian, Fedora, aarch64, or Rocky Linux 9. The plan fails on any host that isn't x86_64 Rocky Linux 10, AlmaLinux 10, CentOS Stream 10 or RHEL 10, and only Rocky Linux 10 has been tried.
+- Ubuntu, Debian, Fedora, aarch64, or Rocky Linux 9. The plan fails on any host that isn't x86_64 Rocky Linux 10, AlmaLinux 10 or RHEL 10, and only Rocky Linux 10 has been tried.
 - Storage (TopoLVM), Operator Lifecycle Manager or OVN-Kubernetes. microshift-io ships them as extra packages; this circuit doesn't install them.
 - Tested upgrades. Changing `release` installs from the new tarball and restarts MicroShift, but no upgrade between two releases has been tried.
 - Removal. Deleting the module leaves MicroShift running. `microshift-cleanup-data --all` and `dnf remove 'microshift*'` take it off.
@@ -97,7 +97,7 @@ Requires Conn3x v0.6.5 or later. MicroShift asks for at least 2 CPUs, 2 GB of me
 
 ## Tested on
 
-Rocky Linux 10 only. MicroShift needs a kernel of its own, which the containers the other circuits test in can't give it, so CI applies [examples/local](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1/examples/local) to a Rocky Linux 10 VM under KVM on amd64 instead, with 4 CPUs and 8 GB of memory. It checks that the second plan has no changes, deploys an app with a Service and a `Route`, and fetches it from the runner through the router. Then it reboots the VM, fetches the app again and plans again with no changes.
+Rocky Linux 10 only. MicroShift needs a kernel of its own, which the containers the other circuits test in can't give it, so CI applies [examples/local](https://github.com/conn3xorg/circuit-microshift/tree/v0.2.0/examples/local) to a Rocky Linux 10 VM under KVM on amd64 instead, with 4 CPUs and 8 GB of memory. It checks that the second plan has no changes, deploys an app with a Service and a `Route`, and fetches it from the runner through the router. Then it reboots the VM, fetches the app again and plans again with no changes.
 
 It was also applied by hand to a DigitalOcean droplet with 4 CPUs and 8 GB of memory and SELinux enforcing.
 
@@ -105,10 +105,10 @@ From a fresh droplet, the first apply took about five minutes and the second pla
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-microshift/blob/v0.1.1/LICENSE). MicroShift is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-microshift/blob/v0.2.0/LICENSE). MicroShift is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-microshift](https://github.com/conn3xorg/circuit-microshift). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-microshift/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1/examples/local), [examples/single-node](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1/examples/single-node).
+- Repository: [conn3xorg/circuit-microshift](https://github.com/conn3xorg/circuit-microshift). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-microshift/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-microshift/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-microshift/tree/v0.2.0/examples/local), [examples/single-node](https://github.com/conn3xorg/circuit-microshift/tree/v0.2.0/examples/single-node).
 - Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).
