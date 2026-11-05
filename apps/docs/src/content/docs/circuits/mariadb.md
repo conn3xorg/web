@@ -142,4 +142,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mariadb/blob/v0.2.1/
 
 - Repository: [conn3xorg/circuit-mariadb](https://github.com/conn3xorg/circuit-mariadb). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-mariadb/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.1/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).
+- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

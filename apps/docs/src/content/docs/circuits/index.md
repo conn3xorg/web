@@ -50,6 +50,8 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.1.0 |
 | [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.1.0 |
 | [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.1.0 |
+| [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.1.0 |
+| [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.0 |
 
 ### Monitoring
 
@@ -101,6 +103,10 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.2.0 |
 | [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.0 |
 | [auditd](/circuits/auditd) | Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability | v0.1.0 |
+| [checkov](/circuits/checkov) | A pinned checkov in its own venv, installed from a hash-checked lock, for scanning infrastructure code. | v0.1.0 |
+| [cosign](/circuits/cosign) | A pinned, checksum-verified cosign on your hosts, for checking signatures on images and files. | v0.1.0 |
+| [in-toto](/circuits/in-toto) | in-toto in its own venv, from hash-locked requirements, for verifying how software was built. | v0.1.0 |
+| [TruffleHog](/circuits/trufflehog) | A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer. | v0.1.0 |
 
 ### Storage and backup
 
@@ -153,6 +159,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.1.0 |
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.0 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.0 |
+| [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
 
 ### Communication and media
 
@@ -169,3 +176,4 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Zeek](/circuits/zeek) | Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change. | v0.1.0 |
 | [osquery](/circuits/osquery) | osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment. | v0.1.0 |
 | [Velociraptor](/circuits/velociraptor) | Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state. | v0.1.0 |
+| [Falco](/circuits/falco) | Falco from its official repository on the modern eBPF probe, with your own rules validated before they load. | v0.1.0 |

@@ -112,4 +112,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-sqlite/blob/v0.1.3/L
 
 - Repository: [conn3xorg/circuit-sqlite](https://github.com/conn3xorg/circuit-sqlite). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-sqlite/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.3/examples/local).
-- Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch).
+- Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

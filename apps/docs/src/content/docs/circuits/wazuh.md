@@ -212,4 +212,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-wazuh/blob/v0.1.5/LI
 
 - Repository: [conn3xorg/circuit-wazuh](https://github.com/conn3xorg/circuit-wazuh). This page covers [v0.1.5](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.5); the repository's [tags](https://github.com/conn3xorg/circuit-wazuh/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-wazuh/tree/v0.1.5/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor).
+- Related circuits: [Firewall](/circuits/firewall), [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor), [Falco](/circuits/falco).

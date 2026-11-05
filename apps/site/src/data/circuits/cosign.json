@@ -1,0 +1,19 @@
+{
+  "name": "cosign",
+  "repo": "conn3xorg/circuit-cosign",
+  "description": "A pinned, checksum-verified cosign on your hosts, for checking signatures on images and files.",
+  "version": "v0.1.0",
+  "tags": [
+    "cosign",
+    "sigstore",
+    "signing"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Security and compliance",
+  "official": true
+}

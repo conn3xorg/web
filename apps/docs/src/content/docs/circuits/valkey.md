@@ -149,4 +149,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-valkey/blob/v0.1.1/L
 
 - Repository: [conn3xorg/circuit-valkey](https://github.com/conn3xorg/circuit-valkey). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-valkey/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.1/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).
+- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

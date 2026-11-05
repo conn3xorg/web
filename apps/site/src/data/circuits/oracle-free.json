@@ -1,0 +1,16 @@
+{
+  "name": "oracle-free",
+  "repo": "conn3xorg/circuit-oracle-free",
+  "description": "Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front.",
+  "version": "v0.1.0",
+  "tags": [
+    "oracle",
+    "database",
+    "sql"
+  ],
+  "tested": [
+    "rocky10"
+  ],
+  "category": "Databases and caches",
+  "official": true
+}

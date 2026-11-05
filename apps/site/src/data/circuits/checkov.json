@@ -1,0 +1,19 @@
+{
+  "name": "checkov",
+  "repo": "conn3xorg/circuit-checkov",
+  "description": "A pinned checkov in its own venv, installed from a hash-checked lock, for scanning infrastructure code.",
+  "version": "v0.1.0",
+  "tags": [
+    "checkov",
+    "iac",
+    "scanning"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Security and compliance",
+  "official": true
+}

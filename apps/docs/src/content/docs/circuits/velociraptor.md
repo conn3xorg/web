@@ -177,4 +177,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-velociraptor/blob/v0
 
 - Repository: [conn3xorg/circuit-velociraptor](https://github.com/conn3xorg/circuit-velociraptor). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-velociraptor/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.1/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Wazuh](/circuits/wazuh).
+- Related circuits: [Firewall](/circuits/firewall), [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Wazuh](/circuits/wazuh), [Falco](/circuits/falco).

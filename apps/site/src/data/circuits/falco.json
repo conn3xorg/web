@@ -1,0 +1,19 @@
+{
+  "name": "falco",
+  "repo": "conn3xorg/circuit-falco",
+  "description": "Falco from its official repository on the modern eBPF probe, with your own rules validated before they load.",
+  "version": "v0.1.0",
+  "tags": [
+    "falco",
+    "runtime-security",
+    "ebpf"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Detection and response",
+  "official": true
+}

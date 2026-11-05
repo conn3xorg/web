@@ -147,4 +147,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-postgres/blob/v0.2.1
 
 - Repository: [conn3xorg/circuit-postgres](https://github.com/conn3xorg/circuit-postgres). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-postgres/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-postgres/tree/v0.2.1/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).
+- Related circuits: [Firewall](/circuits/firewall), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

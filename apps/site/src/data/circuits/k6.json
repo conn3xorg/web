@@ -1,0 +1,19 @@
+{
+  "name": "k6",
+  "repo": "conn3xorg/circuit-k6",
+  "description": "A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs.",
+  "version": "v0.1.0",
+  "tags": [
+    "k6",
+    "load-testing",
+    "performance"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

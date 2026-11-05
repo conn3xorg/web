@@ -1,0 +1,19 @@
+{
+  "name": "trufflehog",
+  "repo": "conn3xorg/circuit-trufflehog",
+  "description": "A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer.",
+  "version": "v0.1.0",
+  "tags": [
+    "trufflehog",
+    "secrets",
+    "scanning"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Security and compliance",
+  "official": true
+}
