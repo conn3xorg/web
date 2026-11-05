@@ -3,7 +3,7 @@ title: kubeadm
 description: "An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kubeadm at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kubeadm at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/kubeadm/grade.svg)](https://conn3x.org/circuits/kubeadm/grade)
 
@@ -15,7 +15,7 @@ This is the work a Terraform-plus-Ansible setup usually splits in two: Terraform
 
 ```hcl
 module "kubeadm" {
-  source = "github.com/conn3xorg/circuit-kubeadm?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-kubeadm?ref=v0.2.1"
 
   control_planes = { cp1 = "203.0.113.10" }
   workers = {
@@ -55,7 +55,7 @@ Give three control planes, and put a load balancer or a virtual IP in front of t
 
 ```hcl
 module "kubeadm" {
-  source = "github.com/conn3xorg/circuit-kubeadm?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-kubeadm?ref=v0.2.1"
 
   control_planes = {
     cp1 = "10.0.0.10"
@@ -84,7 +84,7 @@ workers = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1/examples/local).
 
 ### Getting a kubeconfig
 
@@ -106,7 +106,7 @@ On every node, in order:
 1. Makes sure the kernel has `br_netfilter`. Rocky Linux 10 and other EL10 images ship it in `kernel-modules-extra`, which they don't install, so on those hosts the circuit installs `kernel-modules-extra` for the running kernel with `dnf`.
 2. Loads `overlay` and `br_netfilter` now and at boot, and sets `net.ipv4.ip_forward` and the two `net.bridge.bridge-nf-call-*` sysctls to `1`.
 3. Adds Docker's repository and installs `containerd.io` from it, then writes `/etc/containerd/config.toml` with CRI on and the systemd cgroup driver, and starts containerd.
-4. Adds the pkgs.k8s.io repository for `kubernetes_version` and installs `kubelet`, `kubeadm` and `kubectl`. The keys for both repositories are in [files](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.0/files).
+4. Adds the pkgs.k8s.io repository for `kubernetes_version` and installs `kubelet`, `kubeadm` and `kubectl`. The keys for both repositories are in [files](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1/files).
 5. Enables the kubelet, which kubeadm starts once it has a configuration.
 
 Then, on the first control plane:
@@ -168,16 +168,16 @@ Requires Conn3x v0.6.4 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes and that the node is Ready, and joins a worker to a control plane from [test/cluster](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.0/test/cluster).
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes and that the node is Ready, and joins a worker to a control plane from [test/cluster](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1/test/cluster).
 
 Also checked by hand on DigitalOcean: two control planes on Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, a worker on Debian 13, and a second worker on Rocky Linux 9 added later, with Kubernetes 1.37.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kubeadm/blob/v0.2.0/LICENSE). Kubernetes and containerd are Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kubeadm/blob/v0.2.1/LICENSE). Kubernetes and containerd are Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-kubeadm](https://github.com/conn3xorg/circuit-kubeadm). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-kubeadm/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-kubeadm](https://github.com/conn3xorg/circuit-kubeadm). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-kubeadm/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1/examples/local).
 - Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).
