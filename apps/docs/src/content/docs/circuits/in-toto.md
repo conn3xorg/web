@@ -3,7 +3,7 @@ title: in-toto
 description: "in-toto in its own venv, from hash-locked requirements, for verifying how software was built."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-in-toto at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-in-toto at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/in-toto/grade.svg)](https://conn3x.org/circuits/in-toto/grade)
 
@@ -15,7 +15,7 @@ Each host gets in-toto 3.1.0 in a virtual environment of its own under `/opt/in-
 
 ```hcl
 module "in_toto" {
-  source = "github.com/conn3xorg/circuit-in-toto?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-in-toto?ref=v0.1.1"
 
   hosts                = { build = "203.0.113.10", release = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -36,13 +36,13 @@ Where the result lands, `in-toto-verify` checks the links against a layout the p
 in-toto-verify --layout root.layout --verification-keys owner.pub
 ```
 
-The keys are PEM files: PKCS8 for the private ones, SubjectPublicKeyInfo for the public. in-toto takes ed25519, RSA and ECDSA P-256 keys; the example uses ed25519. in-toto 3 has no command to make keys or layouts any more, so [examples/local/check.sh](https://github.com/conn3xorg/circuit-in-toto/blob/v0.1.0/examples/local/check.sh) does both with a few lines of Python from the same venv. It's a whole working example: three keys, a two-step layout with an inspection, and the two kinds of tampering it catches.
+The keys are PEM files: PKCS8 for the private ones, SubjectPublicKeyInfo for the public. in-toto takes ed25519, RSA and ECDSA P-256 keys; the example uses ed25519. in-toto 3 has no command to make keys or layouts any more, so [examples/local/check.sh](https://github.com/conn3xorg/circuit-in-toto/blob/v0.1.1/examples/local/check.sh) does both with a few lines of Python from the same venv. It's a whole working example: three keys, a two-step layout with an inspection, and the two kinds of tampering it catches.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.1/examples/local).
 
 ## Which version, and why
 
-The default is 3.1.0, the latest release on PyPI when this was written. A Python package isn't one file, so pinning in-toto alone would leave its dependencies to pip's choice on the day. [requirements.txt](https://github.com/conn3xorg/circuit-in-toto/blob/v0.1.0/requirements.txt) pins all ten packages, each with the hashes of every file PyPI has for that version, and the install uses:
+The default is 3.1.0, the latest release on PyPI when this was written. A Python package isn't one file, so pinning in-toto alone would leave its dependencies to pip's choice on the day. [requirements.txt](https://github.com/conn3xorg/circuit-in-toto/blob/v0.1.1/requirements.txt) pins all ten packages, each with the hashes of every file PyPI has for that version, and the install uses:
 
 - `--require-hashes`, so a file whose SHA-256 isn't listed is refused before it's installed
 - `--only-binary :all:`, so only wheels are used and no package's build code runs
@@ -108,16 +108,18 @@ Requires Conn3x v0.7.0 or later. Hosts need to reach PyPI, or a mirror pip is se
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with in-toto 3.1.0. [examples/local](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.0/examples/local) was applied to each in a container on arm64, and CI does the same on amd64: it checks that the second plan has no changes, then runs `check.sh`, which makes three ed25519 keys and a two-step layout with an inspection, runs the build through `in-toto-run`, and checks that `in-toto-verify` accepts it and refuses both a source file changed between the steps and a tarball swapped afterwards. Then it restarts the container, plans again with no changes, and runs the check again. On Debian 13, requirements with one hash changed failed the apply with pip's hash mismatch, and an `in_toto_version` without `requirements` stopped the plan.
+Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with in-toto 3.1.0. [examples/local](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.1/examples/local) was applied to each in a container on arm64, and CI does the same on amd64: it checks that the second plan has no changes, then runs `check.sh`, which makes three ed25519 keys and a two-step layout with an inspection, runs the build through `in-toto-run`, and checks that `in-toto-verify` accepts it and refuses both a source file changed between the steps and a tarball swapped afterwards. Then it restarts the container, plans again with no changes, and runs the check again. On Debian 13, requirements with one hash changed failed the apply with pip's hash mismatch, and an `in_toto_version` without `requirements` stopped the plan.
+
+Upgrades are tested too. CI starts a fresh host, applies in-toto 3.0.0 from the requirements in [tests/upgrade](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.1/tests/upgrade), then applies the circuit's own 3.1.0 over it. The plan after has no changes and `check.sh` passes on 3.1.0. That also ran in a container on arm64 on Rocky Linux 10 and Debian 13.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, the circuit was applied and the same check passed. Changed requirements installed again, and the plan after had no changes. After a reboot the plan had no changes and the check passed again. Debian 13 and Fedora 45 ran in containers only.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-in-toto/blob/v0.1.0/LICENSE). in-toto is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-in-toto/blob/v0.1.1/LICENSE). in-toto is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-in-toto](https://github.com/conn3xorg/circuit-in-toto). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-in-toto/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-in-toto](https://github.com/conn3xorg/circuit-in-toto). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-in-toto/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-in-toto/tree/v0.1.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [TruffleHog](/circuits/trufflehog).
