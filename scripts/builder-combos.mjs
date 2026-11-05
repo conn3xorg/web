@@ -62,6 +62,7 @@ export const samples = {
   "matrix.server_name": "example.com",
   // In the page only a person's tick sets this; CI stands in for one.
   "mssql.accept_eula": true,
+  "oracle-free.accept_oracle_license": true,
   "matrix.public_baseurl": "https://matrix.example.com/",
   "restic.repository": "/srv/restic",
   "users.users": { key: "alice", fields: { keys: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGq0QnwYqaJ1f0rOq5U8qfQ8m0T3bqJ6r5zH6r4yYw1C alice", sudo: true } },

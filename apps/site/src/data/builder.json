@@ -427,6 +427,9 @@
   "mustTick": {
     "mssql": [
       "accept_eula"
+    ],
+    "oracle-free": [
+      "accept_oracle_license"
     ]
   },
   "choices": {
