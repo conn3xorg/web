@@ -1,6 +1,6 @@
 ---
 title: Passbolt CE
-description: "Passbolt CE, the team password manager, under Podman with its own MariaDB, the database passwords and server GPG key made on the host."
+description: "Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-passbolt at v0.1.0. -->

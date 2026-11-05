@@ -1,6 +1,6 @@
 ---
 title: NetBird
-description: "Installs the NetBird client from NetBird's signed repository and joins your hosts to your NetBird network, cloud or self-hosted, with the setup key kept out of state."
+description: "The NetBird client from NetBird's signed repo, joining your hosts to NetBird cloud or your own server."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-netbird at v0.1.0. -->

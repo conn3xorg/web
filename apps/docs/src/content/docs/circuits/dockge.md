@@ -1,6 +1,6 @@
 ---
 title: Dockge
-description: "Dockge under Podman, so you write, deploy and update compose stacks from the browser, against Podman's Docker-compatible socket with no Docker engine."
+description: "Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-dockge at v0.1.0. -->

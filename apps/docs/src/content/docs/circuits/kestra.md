@@ -1,6 +1,6 @@
 ---
 title: Kestra
-description: "The Kestra workflow orchestrator under Podman, on H2 or PostgreSQL, its config validated and the admin password and flow secrets kept out of state."
+description: "The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-kestra at v0.1.0. -->

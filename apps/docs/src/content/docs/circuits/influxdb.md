@@ -1,6 +1,6 @@
 ---
 title: InfluxDB 3 Core
-description: "InfluxDB 3 Core from InfluxData's signed repository under systemd, on loopback, with your own admin token from the first start and telemetry off."
+description: "InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-influxdb at v0.1.0. -->

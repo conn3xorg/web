@@ -1,6 +1,6 @@
 ---
 title: Home Assistant
-description: "Home Assistant Container under Podman, on the host's network for discovery, with the web server on loopback until you choose otherwise."
+description: "Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-homeassistant at v0.1.0. -->

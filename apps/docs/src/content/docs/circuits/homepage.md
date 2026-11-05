@@ -1,6 +1,6 @@
 ---
 title: Homepage
-description: "The Homepage dashboard under Podman, one page for every service you run, its config validated before it replaces the old one and secrets kept out of state."
+description: "The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-homepage at v0.1.0. -->

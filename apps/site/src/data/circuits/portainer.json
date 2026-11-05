@@ -1,7 +1,7 @@
 {
   "name": "portainer",
   "repo": "conn3xorg/circuit-portainer",
-  "description": "Portainer CE and its optional agent under Podman, HTTPS on loopback, with the admin password set before anyone else can claim it.",
+  "description": "Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it.",
   "version": "v0.1.0",
   "tags": [
     "portainer",

@@ -1,6 +1,6 @@
 ---
 title: Portainer CE
-description: "Portainer CE and its optional agent under Podman, HTTPS on loopback, with the admin password set before anyone else can claim it."
+description: "Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-portainer at v0.1.0. -->

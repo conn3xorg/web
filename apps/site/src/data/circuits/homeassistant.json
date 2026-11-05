@@ -1,7 +1,7 @@
 {
   "name": "homeassistant",
   "repo": "conn3xorg/circuit-homeassistant",
-  "description": "Home Assistant Container under Podman, on the host's network for discovery, with the web server on loopback until you choose otherwise.",
+  "description": "Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback.",
   "version": "v0.1.0",
   "tags": [
     "home-assistant",

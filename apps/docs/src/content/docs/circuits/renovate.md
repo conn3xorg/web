@@ -1,6 +1,6 @@
 ---
 title: Renovate
-description: "Self-hosted Renovate on a systemd timer against the repositories you list, its config checked with the strict validator and its token kept out of state."
+description: "Self-hosted Renovate on a systemd timer against the repositories you list, its token kept out of state."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-renovate at v0.1.0. -->

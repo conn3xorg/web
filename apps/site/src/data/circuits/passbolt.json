@@ -1,7 +1,7 @@
 {
   "name": "passbolt",
   "repo": "conn3xorg/circuit-passbolt",
-  "description": "Passbolt CE, the team password manager, under Podman with its own MariaDB, the database passwords and server GPG key made on the host.",
+  "description": "Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host.",
   "version": "v0.1.0",
   "tags": [
     "passbolt",

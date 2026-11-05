@@ -1,7 +1,7 @@
 {
   "name": "influxdb",
   "repo": "conn3xorg/circuit-influxdb",
-  "description": "InfluxDB 3 Core from InfluxData's signed repository under systemd, on loopback, with your own admin token from the first start and telemetry off.",
+  "description": "InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start.",
   "version": "v0.1.0",
   "tags": [
     "influxdb",

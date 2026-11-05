@@ -1,7 +1,7 @@
 {
   "name": "netbird",
   "repo": "conn3xorg/circuit-netbird",
-  "description": "Installs the NetBird client from NetBird's signed repository and joins your hosts to your NetBird network, cloud or self-hosted, with the setup key kept out of state.",
+  "description": "The NetBird client from NetBird's signed repo, joining your hosts to NetBird cloud or your own server.",
   "version": "v0.1.0",
   "tags": [
     "netbird",

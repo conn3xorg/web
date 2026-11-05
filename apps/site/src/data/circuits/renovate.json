@@ -1,7 +1,7 @@
 {
   "name": "renovate",
   "repo": "conn3xorg/circuit-renovate",
-  "description": "Self-hosted Renovate on a systemd timer against the repositories you list, its config checked with the strict validator and its token kept out of state.",
+  "description": "Self-hosted Renovate on a systemd timer against the repositories you list, its token kept out of state.",
   "version": "v0.1.0",
   "tags": [
     "renovate",

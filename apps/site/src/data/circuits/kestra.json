@@ -1,7 +1,7 @@
 {
   "name": "kestra",
   "repo": "conn3xorg/circuit-kestra",
-  "description": "The Kestra workflow orchestrator under Podman, on H2 or PostgreSQL, its config validated and the admin password and flow secrets kept out of state.",
+  "description": "The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state.",
   "version": "v0.1.0",
   "tags": [
     "kestra",

@@ -1,6 +1,6 @@
 ---
 title: Teleport
-description: "A Teleport Community Edition cluster from Teleport's signed repository: auth and proxy on one host, SSH nodes joining over a reverse tunnel with an expiring token."
+description: "A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-teleport at v0.1.0. -->

@@ -1,6 +1,6 @@
 ---
 title: Semaphore UI
-description: "Semaphore UI under Podman, a web page for running Ansible, OpenTofu and Terraform, on SQLite or your own PostgreSQL, with its secrets made on the host."
+description: "Semaphore UI under Podman: run Ansible, OpenTofu and Terraform from a web page, on SQLite or PostgreSQL."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-semaphore at v0.1.0. -->

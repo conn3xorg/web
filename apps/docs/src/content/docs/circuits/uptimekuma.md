@@ -1,6 +1,6 @@
 ---
 title: Uptime Kuma
-description: "Uptime Kuma under Podman: it watches your sites, ports and services and tells you the moment one stops answering, with the admin created on first apply."
+description: "Uptime Kuma under Podman: it watches your sites, ports and services and tells you the moment one stops answering."
 ---
 
 <!-- Generated from the README, variables and outputs of conn3xorg/circuit-uptimekuma at v0.1.0. -->
