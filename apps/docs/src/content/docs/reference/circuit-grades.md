@@ -73,7 +73,7 @@ These checks read files and API responses. They don't run the circuit or review 
 - **The image check only knows the registries it lists.** An image from another registry, or a short name such as `alpine:3`, isn't seen.
 - **Key expiry doesn't check signatures or revocations.** It reads the dates.
 - **CI on main can differ from the tag.** The CI file is read at the tag, and the run comes from main.
-- **Real-host and upgrade checks are hard to earn today.** No circuit has either yet. That's the honest state of things, so we count them.
+- **Real-host checks are hard to earn today.** No circuit has one yet, and upgrade tests only started arriving in November 2026. That's the honest state of things, so we count them.
 
 If the GitHub API fails during a build, a circuit keeps its last good result. The date on its page is the date the result was read, so an old date means an old reading.
 
