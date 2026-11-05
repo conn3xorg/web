@@ -1,0 +1,25 @@
+{
+  "name": "checkov",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "checkov_version",
+      "type": "string",
+      "default": "3.4.3",
+      "description": "checkov release to install from PyPI. Its packages are pinned in requirements/checkov-<version>.txt, or in requirements_file.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "requirements_file",
+      "type": "string",
+      "default": null,
+      "description": "Path, on the machine running Conn3x, of a pip requirements file that pins checkov_version and every package it needs, each with --hash. When null, the one this circuit ships for checkov_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "in-toto",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "in_toto_version",
+      "type": "string",
+      "default": "3.1.0",
+      "description": "in-toto release to install from PyPI. Any other than 3.1.0 needs requirements to match.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "requirements",
+      "type": "string",
+      "default": null,
+      "description": "Hash-locked pip requirements for in_toto_version, in place of the module's requirements.txt for 3.1.0. Every line pins one version with --hash=sha256 values.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

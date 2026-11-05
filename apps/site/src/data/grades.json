@@ -1407,6 +1407,134 @@
       }
     ]
   },
+  "cassandra": {
+    "name": "cassandra",
+    "repo": "conn3xorg/circuit-cassandra",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-05T16:14:53.334Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-cassandra/actions/runs/42056740811",
+    "grade": "A",
+    "score": 92,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Write and read a row over CQL\" runs: c='cqlsh --credentials /etc/conn3x/cassandra/credentials'"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "CI fails if a secret shows up in state."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "All 1 download steps have a checksum."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "1 pinned, none expires."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.1."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.1 is 0 days old."
+      }
+    ]
+  },
   "certbot": {
     "name": "certbot",
     "repo": "conn3xorg/circuit-certbot",
@@ -1532,6 +1660,134 @@
         "state": "pass",
         "points": 5,
         "detail": "v0.1.0 is 3 days old."
+      }
+    ]
+  },
+  "checkov": {
+    "name": "checkov",
+    "repo": "conn3xorg/circuit-checkov",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:14:53.581Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-checkov/actions/runs/42052653338",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Scan a planted Terraform file and check checkov reports CKV_AWS_24\" runs: mktemp -d)"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
       }
     ]
   },
@@ -2175,6 +2431,134 @@
       }
     ]
   },
+  "cosign": {
+    "name": "cosign",
+    "repo": "conn3xorg/circuit-cosign",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:14:55.693Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-cosign/actions/runs/42052689228",
+    "grade": "A",
+    "score": 90,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Sign a file with a local key, verify it, and check a changed copy fails\" runs: &check sudo podman exec -i circuit-cosign sh -s 3.1.4 < check.sh"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "All 1 download steps have a checksum."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
+      }
+    ]
+  },
   "couchdb": {
     "name": "couchdb",
     "repo": "conn3xorg/circuit-couchdb",
@@ -2684,6 +3068,134 @@
         "state": "pass",
         "points": 5,
         "detail": "v0.2.0 is 4 days old."
+      }
+    ]
+  },
+  "falco": {
+    "name": "falco",
+    "repo": "conn3xorg/circuit-falco",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:14:58.487Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-falco/actions/runs/42052761771",
+    "grade": "A",
+    "score": 90,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Read /etc/shadow and the canary, check Falco logged both alerts\" runs: &check sudo podman exec -i circuit-falco sh < check.sh"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "files/falcosecurity-packages.asc expires on 2028-12-10."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
       }
     ]
   },
@@ -4479,6 +4991,134 @@
       }
     ]
   },
+  "in-toto": {
+    "name": "in-toto",
+    "repo": "conn3xorg/circuit-in-toto",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:15:02.629Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-in-toto/actions/runs/42052726807",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Run a two-step build with in-toto-run, verify it, and check tampering fails\" runs: &check sudo podman exec -i circuit-in-toto sh -s 3.1.0 < check.sh"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
+      }
+    ]
+  },
   "infisical": {
     "name": "infisical",
     "repo": "conn3xorg/circuit-infisical",
@@ -5244,6 +5884,134 @@
         "state": "pass",
         "points": 5,
         "detail": "v0.1.5 is 1 days old."
+      }
+    ]
+  },
+  "k6": {
+    "name": "k6",
+    "repo": "conn3xorg/circuit-k6",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:15:03.846Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-k6/actions/runs/42052613523",
+    "grade": "A",
+    "score": 90,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Run a k6 test against a local listener and check its summary\" runs: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq pyth"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "All 1 download steps have a checksum."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
       }
     ]
   },
@@ -8834,6 +9602,134 @@
       }
     ]
   },
+  "oracle-free": {
+    "name": "oracle-free",
+    "repo": "conn3xorg/circuit-oracle-free",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:15:13.366Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-oracle-free/actions/runs/42052578602",
+    "grade": "B",
+    "score": 86,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "partial",
+        "points": 5,
+        "detail": "2 in the matrix: rocky10, rocky9."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Write and read a row over the listener\" runs: sq='runuser -u oracle -- env ORACLE_HOME=/opt/oracle/product/26ai/dbhomeFree /op"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "CI fails if a secret shows up in state."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
+      }
+    ]
+  },
   "osquery": {
     "name": "osquery",
     "repo": "conn3xorg/circuit-osquery",
@@ -11778,6 +12674,134 @@
         "state": "pass",
         "points": 5,
         "detail": "v0.1.0 is 2 days old."
+      }
+    ]
+  },
+  "trufflehog": {
+    "name": "trufflehog",
+    "repo": "conn3xorg/circuit-trufflehog",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-05T16:15:20.169Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-trufflehog/actions/runs/42053279632",
+    "grade": "A",
+    "score": 90,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-05 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Plant a fake secret, scan through the timer's service, check the findings\" runs: &check sudo podman exec -i circuit-trufflehog sh < check.sh"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "CI restarts it and checks again."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "All 1 download steps have a checksum."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
       }
     ]
   },

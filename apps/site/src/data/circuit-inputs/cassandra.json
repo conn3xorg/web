@@ -1,0 +1,87 @@
+{
+  "name": "cassandra",
+  "version": "v0.1.1",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "cassandra_version",
+      "type": "string",
+      "default": "5.0.9",
+      "description": "Apache Cassandra 5.0 release to install, such as \"5.0.9\". Change cassandra_sha256 with it. Raising it installs the new release beside the old one and restarts Cassandra on it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "cassandra_sha256",
+      "type": "string",
+      "default": "eee1460b47ebe188a29521207230617f22aad7f9e1674f5ea454f10c8f344d61",
+      "description": "SHA-256 of apache-cassandra-VERSION-bin.tar.gz, from the .sha256 file Apache publishes beside it. Change it with cassandra_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "description": "Password for Cassandra's cassandra superuser, which the circuit changes from the default on the first apply. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "cluster_name",
+      "type": "string",
+      "default": "Conn3x Cluster",
+      "description": "cluster_name. Every node in a cluster needs the same one, and Cassandra refuses to start on data from a cluster with another name.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IP address nodes talk to each other on, its listen_address. A host object's own listen_address wins over it, which a cluster needs since each node has its own.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rpc_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "IP address CQL clients connect to, its rpc_address. \"0.0.0.0\" listens on every address and tells clients the node's listen_address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "seeds",
+      "type": "list(string)",
+      "default": [],
+      "description": "listen_address of the seed nodes new nodes contact to join, such as [\"10.0.0.5\", \"10.0.0.6\"]. When empty, each node is its own seed, which suits a single node.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "heap_size",
+      "type": "string",
+      "default": null,
+      "description": "JVM heap, its MAX_HEAP_SIZE, such as \"2G\" or \"512M\". When null, Cassandra picks it from the host's memory: half of it up to 1G, or a quarter up to 8G, whichever is more.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "any",
+      "default": {},
+      "description": "More cassandra.yaml settings, such as { concurrent_writes = 64, num_tokens = 8 }. Values can be maps and lists. The apply checks them before they replace the old file, and changing them restarts Cassandra.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

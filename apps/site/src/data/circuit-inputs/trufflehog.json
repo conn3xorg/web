@@ -1,0 +1,95 @@
+{
+  "name": "trufflehog",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "trufflehog_version",
+      "type": "string",
+      "default": "3.99.8",
+      "description": "TruffleHog release to install from GitHub. Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "7c3b02f160f28929a467e29e20fba98746e0729f6e37c3c25761e4f8789abe08",
+        "arm64": "a0382d83dd58c967af5dd0175cc732c62c836ab1d15dc9ae71b01a2d3f0911b2"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's trufflehog_<version>_checksums.txt. Change these with trufflehog_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "targets",
+      "type": "list(string)",
+      "default": [],
+      "description": "Absolute paths to scan on a timer, all in one report. When empty, the circuit installs TruffleHog and sets up no scan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "exclude_paths",
+      "type": "list(string)",
+      "default": [],
+      "description": "Regular expressions for files to leave out, matched against each file's absolute path, such as \"^/srv/backups/\" or \"\\\\.log$\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "verify",
+      "type": "bool",
+      "default": true,
+      "description": "Check each secret found against the service it belongs to, as TruffleHog does by default. This sends the secret to that service. False only reports what each detector matched.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "results",
+      "type": "list(string)",
+      "default": [
+        "verified",
+        "unknown",
+        "unverified"
+      ],
+      "description": "Which findings to report, from verified, unknown (verification failed with an error) and unverified.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": "daily",
+      "description": "When the scan timer runs, as a systemd OnCalendar expression such as \"daily\" or \"Sun 03:00\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "keep",
+      "type": "number",
+      "default": 7,
+      "description": "Number of scans to keep under /var/lib/conn3x-trufflehog. Older ones are deleted after each scan.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "run_now",
+      "type": "bool",
+      "default": false,
+      "description": "Scan during the apply: on the first apply, and again whenever the scan's settings change. Needs targets.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

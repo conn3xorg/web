@@ -1,0 +1,61 @@
+{
+  "name": "falco",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "falco_version",
+      "type": "string",
+      "default": "0.45.2",
+      "description": "Falco release to install from Falco's package repository.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "hold_package",
+      "type": "bool",
+      "default": true,
+      "description": "Hold falco at falco_version, so apt upgrade or dnf upgrade leaves it there: an apt pin on Debian and Ubuntu, a dnf versionlock on Rocky Linux and Fedora. False releases the hold.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "priority",
+      "type": "string",
+      "default": "debug",
+      "description": "Lowest priority of alert Falco logs, from emergency, alert, critical, error, warning, notice, informational and debug. Falco's default, debug, logs every rule that fires.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "json_output",
+      "type": "bool",
+      "default": false,
+      "description": "Log each alert as a JSON object rather than a line of text, for log shippers.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rules",
+      "type": "string",
+      "default": "",
+      "description": "Falco rules of your own, as YAML, written to /etc/falco/rules.d/conn3x.yaml. They can use the macros and lists in Falco's default rules. Empty removes the file.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "rules_updates",
+      "type": "bool",
+      "default": false,
+      "description": "Let falcoctl fetch new versions of Falco's default rules every week. When false, the rules stay those that came with falco_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

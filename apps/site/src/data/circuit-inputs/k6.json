@@ -1,0 +1,28 @@
+{
+  "name": "k6",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "k6_version",
+      "type": "string",
+      "default": "2.3.0",
+      "description": "k6 release to install from GitHub, without the v. Change checksums with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "checksums",
+      "type": "map(string)",
+      "default": {
+        "amd64": "39c3117b6af817592dcd0ce4242105c0a7af10948c2a425306f0be8f7a8a8ab1",
+        "arm64": "5ca3433e8201da72a284aaa241a1bb5fb47f4abb4e384d39410ddd8062f49b90"
+      },
+      "description": "SHA-256 of the release tarball for each architecture, from the release's k6-v<version>-checksums.txt. Change these with k6_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}
