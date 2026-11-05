@@ -7,8 +7,6 @@ description: "Track compliance work with the CISO Assistant community app, in Po
 
 [![Conn3x grade](https://conn3x.org/circuits/ciso-assistant/grade.svg)](https://conn3x.org/circuits/ciso-assistant/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/ciso-assistant/grade.svg)](https://conn3x.org/circuits/ciso-assistant/grade)
-
 A Conn3x circuit that runs the community edition of [CISO Assistant](https://intuitem.com), the open-source governance, risk and compliance app, on your own hosts. If your audit prep lives in four spreadsheets and a shared folder, this gives it one home: frameworks with their requirements already written out, your assessments against them, risks, controls and evidence, all on a machine you run.
 
 **This helps you track compliance work. It doesn't make anyone compliant.** Installing it, or loading a framework into it, certifies nothing and satisfies no requirement. That still takes your controls, your evidence and, where the framework calls for one, your auditor.

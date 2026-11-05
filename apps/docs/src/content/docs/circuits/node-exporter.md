@@ -7,8 +7,6 @@ description: "Runs Prometheus node_exporter at a pinned, checksummed version as 
 
 [![Conn3x grade](https://conn3x.org/circuits/node-exporter/grade.svg)](https://conn3x.org/circuits/node-exporter/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/node-exporter/grade.svg)](https://conn3x.org/circuits/node-exporter/grade)
-
 A Conn3x circuit that installs the Prometheus [node_exporter](https://github.com/prometheus/node_exporter) on your hosts and keeps it running. It downloads a pinned release, checks its SHA-256 before using it, and runs it as its own `node_exporter` user under systemd. x86_64 and arm64 hosts each get the right build.
 
 ## Usage

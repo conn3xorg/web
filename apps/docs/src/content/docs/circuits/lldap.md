@@ -7,8 +7,6 @@ description: "LLDAP, one small directory every service signs people in against, 
 
 [![Conn3x grade](https://conn3x.org/circuits/lldap/grade.svg)](https://conn3x.org/circuits/lldap/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/lldap/grade.svg)](https://conn3x.org/circuits/lldap/grade)
-
 Use this Conn3x circuit to install [LLDAP](https://github.com/lldap/lldap), a self-hosted directory for shared logins. It gives services such as Authelia, Nextcloud, Jellyfin, Gitea and Forgejo one account directory for users and groups.
 
 The circuit verifies a pinned LLDAP release and runs it as a systemd service. LDAP and the web interface listen only on `127.0.0.1` by default, and LLDAP stores data in SQLite. The admin password and generated secrets stay out of the Conn3x plan and state. Change `admin_password` and apply again to set a new admin password.

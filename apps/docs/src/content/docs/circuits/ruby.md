@@ -7,8 +7,6 @@ description: "Your distribution's Ruby, with optional gems at pinned versions."
 
 [![Conn3x grade](https://conn3x.org/circuits/ruby/grade.svg)](https://conn3x.org/circuits/ruby/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/ruby/grade.svg)](https://conn3x.org/circuits/ruby/grade)
-
 A Conn3x circuit that installs Ruby from each distribution's own packages, and the gems your scripts need on top at versions you pin.
 
 Be clear on one thing before you use it. **The Ruby version differs per distribution**, because the distributions ship it and this circuit takes what they ship:

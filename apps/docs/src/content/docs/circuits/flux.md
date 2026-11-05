@@ -7,8 +7,6 @@ description: "Flux CD on a k3s cluster at a pinned version, synced from a Git re
 
 [![Conn3x grade](https://conn3x.org/circuits/flux/grade.svg)](https://conn3x.org/circuits/flux/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/flux/grade.svg)](https://conn3x.org/circuits/flux/grade)
-
 A Conn3x circuit that installs [Flux](https://fluxcd.io) on a k3s cluster and points it at a Git repository you name. Everything after that happens in Git: push a manifest, and it reaches the cluster without anyone running an apply.
 
 It's for the cluster you've already built with [circuit-k3s](/circuits/k3s), and for the step `flux bootstrap` usually handles. Bootstrap wants write access to your repository and commits Flux's own manifests into it. This circuit installs Flux from one pinned, checksummed release file and only ever reads your repository, so a read-only deploy key is enough.

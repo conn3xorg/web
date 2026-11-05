@@ -7,8 +7,6 @@ description: "Run your Puppet manifests without a server, using the OpenVox agen
 
 [![Conn3x grade](https://conn3x.org/circuits/openvox/grade.svg)](https://conn3x.org/circuits/openvox/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/openvox/grade.svg)](https://conn3x.org/circuits/openvox/grade)
-
 A Conn3x circuit that runs your Puppet manifests on a host without a server. It installs the OpenVox agent, the community build of Puppet, checks the package against its SHA-256, and runs `puppet apply` from a path on the host, once on apply and on a systemd timer if you ask for one.
 
 You'd want it when you already have manifests and don't want to run a server just to apply them, or when you're moving hosts off a Puppet server one at a time. Conn3x puts the agent and the schedule in place, and your manifests stay what they are.

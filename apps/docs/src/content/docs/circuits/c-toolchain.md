@@ -7,8 +7,6 @@ description: "gcc, g++, make, gdb and nasm from your distribution's packages, fo
 
 [![Conn3x grade](https://conn3x.org/circuits/c-toolchain/grade.svg)](https://conn3x.org/circuits/c-toolchain/grade)
 
-[![Conn3x grade](https://conn3x.org/circuits/c-toolchain/grade.svg)](https://conn3x.org/circuits/c-toolchain/grade)
-
 A Conn3x circuit that turns a host into somewhere you can build C, C++ and assembly: `gcc`, `g++`, `make`, `gdb` and `nasm`, from each distribution's own packages, plus the C library's headers.
 
 Be clear on one thing before you use it. **The versions differ per distribution**, because the distributions ship them and this circuit takes what they ship:
