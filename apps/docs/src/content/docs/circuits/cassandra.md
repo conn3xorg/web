@@ -3,7 +3,7 @@ title: Cassandra
 description: "Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cassandra at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cassandra at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/cassandra/grade.svg)](https://conn3x.org/circuits/cassandra/grade)
 
@@ -23,7 +23,7 @@ variable "cassandra_password" {
 }
 
 module "cassandra" {
-  source = "github.com/conn3xorg/circuit-cassandra?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-cassandra?ref=v0.1.1"
 
   hosts                = { db = "192.168.1.40" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +46,7 @@ For a cluster, give each host its own `listen_address`, the address the nodes re
 
 ```hcl
 module "cassandra" {
-  source = "github.com/conn3xorg/circuit-cassandra?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-cassandra?ref=v0.1.1"
 
   hosts = {
     cass1 = { address = "203.0.113.10", listen_address = "10.0.0.10" }
@@ -74,7 +74,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.1/examples/local).
 
 ## What it does
 
@@ -154,7 +154,7 @@ Requires Conn3x v0.7.0 or later, systemd on each host, and outbound HTTPS to arc
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Cassandra 5.0.9 on Temurin 17. CI applies [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes and that the password isn't in the state. It then logs in with the new password, creates a keyspace and table, writes a row and reads it back, checks the default password is refused and `nodetool status` shows the node up, restarts the host, reads the row again and plans again with no changes. The same checks passed in arm64 containers of all four by hand.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Cassandra 5.0.9 on Temurin 17. CI applies [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes and that the password isn't in the state. It then logs in with the new password, creates a keyspace and table, writes a row and reads it back, checks the default password is refused and `nodetool status` shows the node up, restarts the host, reads the row again and plans again with no changes. The same checks passed in arm64 containers of all four by hand.
 
 Also by hand, in containers: a misspelt setting, which failed the apply with Cassandra's message and left the old file and the running node alone; and a change to `admin_password` without changing it in Cassandra first, which failed the apply with the message above.
 
@@ -162,10 +162,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cassandra/blob/v0.1.0/LICENSE). Apache Cassandra is Apache-2.0, and Temurin is GPL-2.0 with the Classpath Exception.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cassandra/blob/v0.1.1/LICENSE). Apache Cassandra is Apache-2.0, and Temurin is GPL-2.0 with the Classpath Exception.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-cassandra](https://github.com/conn3xorg/circuit-cassandra). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-cassandra/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-cassandra](https://github.com/conn3xorg/circuit-cassandra). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-cassandra/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.1.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Oracle AI Database Free](/circuits/oracle-free).
