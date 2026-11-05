@@ -1,0 +1,19 @@
+{
+  "name": "lempa-homelab",
+  "repo": "conn3xorg/circuit-lempa-homelab",
+  "description": "Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away.",
+  "version": "v0.1.1",
+  "tags": [
+    "homelab",
+    "stack",
+    "traefik"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Platforms",
+  "official": true
+}

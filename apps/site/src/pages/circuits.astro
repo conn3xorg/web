@@ -17,8 +17,10 @@ type Circuit = {
   official: boolean;
 };
 import categoryList from "../data/categories.json";
+import creditData from "../data/credits.json";
 import { allGrades } from "../lib/grade-data";
 
+const credits = creditData as Record<string, { text: string; links: string[][] }>;
 const grades = (await allGrades()) as Record<string, { grade: string; passing: boolean }>;
 
 const files = import.meta.glob<{ default: Circuit }>("../data/circuits/*.json", { eager: true });
@@ -79,6 +81,13 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
             {c.official && <span class="badge">Official</span>}
           </div>
           <p class="desc">{c.description}</p>
+          {credits[c.name] && (
+            <p class="meta">
+              {credits[c.name].text}: {credits[c.name].links.map(([label, href], i) => (
+                <>{i > 0 && (i === credits[c.name].links.length - 1 ? " and " : ", ")}<a href={href}>{label}</a></>
+              ))}.
+            </p>
+          )}
           <p class="meta">
             <span>{c.repo}</span> · <span>{c.version}</span>
             {c.official && <> · <a href={`https://docs.conn3x.org/circuits/${c.name}`}>Docs</a></>}
