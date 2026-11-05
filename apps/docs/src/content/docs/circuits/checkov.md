@@ -3,7 +3,7 @@ title: checkov
 description: "A pinned checkov in its own venv, installed from a hash-checked lock, for scanning infrastructure code."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-checkov at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-checkov at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/checkov/grade.svg)](https://conn3x.org/circuits/checkov/grade)
 
@@ -15,7 +15,7 @@ It installs the tool and stops there. What you scan, and when, is up to you.
 
 ```hcl
 module "checkov" {
-  source = "github.com/conn3xorg/circuit-checkov?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-checkov?ref=v0.2.1"
 
   hosts                = { ci = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -32,11 +32,11 @@ checkov -d ./infra --framework terraform
 
 checkov exits 1 when a check fails, so a pipeline step stops on its own.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.1/examples/local).
 
 ## How it's pinned
 
-checkov is a Python program with a long list of dependencies, and `pip install checkov` gives you whatever versions of them PyPI has that day. So this circuit ships a lock: [requirements/checkov-3.4.3.txt](https://github.com/conn3xorg/circuit-checkov/blob/v0.2.0/requirements/checkov-3.4.3.txt) names an exact version of checkov and of each package it needs, with the SHA-256 of every file PyPI has for that version. On each host, pip runs with `--require-hashes`, so a file whose hash isn't in the lock is refused, and `--only-binary :all:`, so nothing is compiled on the host and no build tool is fetched outside the lock.
+checkov is a Python program with a long list of dependencies, and `pip install checkov` gives you whatever versions of them PyPI has that day. So this circuit ships a lock: [requirements/checkov-3.4.3.txt](https://github.com/conn3xorg/circuit-checkov/blob/v0.2.1/requirements/checkov-3.4.3.txt) names an exact version of checkov and of each package it needs, with the SHA-256 of every file PyPI has for that version. On each host, pip runs with `--require-hashes`, so a file whose hash isn't in the lock is refused, and `--only-binary :all:`, so nothing is compiled on the host and no build tool is fetched outside the lock.
 
 That's also why it isn't the release zip on GitHub. That's a single x86_64 binary with no published checksum, so there would be nothing to check it against and nothing for arm64.
 
@@ -116,18 +116,20 @@ Requires Conn3x v0.7.0 or later. Hosts need to reach PyPI, `pypi.org` and `files
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with checkov 3.4.3. [examples/local](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.0/examples/local) was applied to each in a container on arm64, and CI does the same on amd64. It checks that the second plan has no changes, plants a Terraform file with a security group open to `0.0.0.0/0` on port 22, and checks checkov exits 1 and reports `CKV_AWS_24` against `aws_security_group.ssh`. Then it narrows the group to `192.0.2.0/24` and checks the same check passes. After a restart of the container, `checkov --version` runs and the plan has no changes. On Ubuntu 24.04 and Debian 13, pip refused the lock with checkov's hash changed.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with checkov 3.4.3. [examples/local](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.1/examples/local) was applied to each in a container on arm64, and CI does the same on amd64. It checks that the second plan has no changes, plants a Terraform file with a security group open to `0.0.0.0/0` on port 22, and checks checkov exits 1 and reports `CKV_AWS_24` against `aws_security_group.ssh`. Then it narrows the group to `192.0.2.0/24` and checks the same check passes. After a restart of the container, `checkov --version` runs and the plan has no changes. On Ubuntu 24.04 and Debian 13, pip refused the lock with checkov's hash changed.
+
+Upgrades are tested the same way. CI starts a fresh host, applies checkov 3.3.30 from the lock in [tests/upgrade](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.1/tests/upgrade), then applies the circuit's own lock over it. The plan after has no changes, `checkov --version` prints 3.4.3, and the `CKV_AWS_24` check passes again. That also ran in a container on arm64 on Rocky Linux 10 and Debian 13.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, the circuit was applied to both hosts at once and the same check passed. After a reboot, checkov ran and the plan had no changes.
 
-Not run: Debian 13 or Fedora 45 on a real host, arm64 on a real host, a move to a new lock.
+Not run: Debian 13 or Fedora 45 on a real host, arm64 on a real host, an upgrade on a real host.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-checkov/blob/v0.2.0/LICENSE). checkov is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-checkov/blob/v0.2.1/LICENSE). checkov is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-checkov](https://github.com/conn3xorg/circuit-checkov). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-checkov/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-checkov](https://github.com/conn3xorg/circuit-checkov). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-checkov/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-checkov/tree/v0.2.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto), [TruffleHog](/circuits/trufflehog).

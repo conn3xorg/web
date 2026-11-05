@@ -2,7 +2,7 @@
   "name": "in-toto",
   "repo": "conn3xorg/circuit-in-toto",
   "description": "in-toto in its own venv, from hash-locked requirements, for verifying how software was built.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "in-toto",
     "supply-chain",
