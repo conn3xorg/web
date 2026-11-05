@@ -1,6 +1,55 @@
 {
-  "otherMinutes": 71,
+  "otherMinutes": 76,
   "items": [
+    {
+      "date": "2026-11-05",
+      "repo": "tailscale/tailscale",
+      "summary": "Checked that every other DNS manager call is safe in builds without DNS, after a fix for a crash on queries to 100.100.100.100.",
+      "url": "https://github.com/tailscale/tailscale/pull/22153#pullrequestreview-5780888053",
+      "minutes": 25
+    },
+    {
+      "date": "2026-11-05",
+      "repo": "prometheus/prometheus",
+      "summary": "Confirmed from Go's source why the API left multipart temp files on disk, and showed the test checks the helper but not the fix.",
+      "url": "https://github.com/prometheus/prometheus/pull/20314#pullrequestreview-5780878949",
+      "minutes": 25
+    },
+    {
+      "date": "2026-11-05",
+      "repo": "prometheus/alertmanager",
+      "summary": "Checked all five replaced docs links: every old one is a 404 and every new one loads.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5717#pullrequestreview-5780873968",
+      "minutes": 15
+    },
+    {
+      "date": "2026-11-05",
+      "repo": "jenkins-infra/jenkins.io",
+      "summary": "Checked the TLS chain of every host the site build downloads from, so turning certificate checks back on won't break it.",
+      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9555#pullrequestreview-5780866518",
+      "minutes": 30
+    },
+    {
+      "date": "2026-11-05",
+      "repo": "tailscale/tailscale",
+      "summary": "Found that a fix for serve redirects would let a request starting with two slashes redirect to another host, and suggested a one-line guard.",
+      "url": "https://github.com/tailscale/tailscale/pull/22118#pullrequestreview-5780858488",
+      "minutes": 40
+    },
+    {
+      "date": "2026-11-05",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Traced why the new journal test fails on every CentOS Stream run but passes on Fedora, and suggested a way that doesn't depend on PATH.",
+      "url": "https://github.com/cockpit-project/cockpit/pull/23896#issuecomment-6651557841",
+      "minutes": 40
+    },
+    {
+      "date": "2026-11-04",
+      "repo": "tailscale/tailscale",
+      "summary": "Showed a second pass of the serve hostname fix still failed for mixed-case SNI at the certificate lookup, then approved the third.",
+      "url": "https://github.com/tailscale/tailscale/pull/22141#pullrequestreview-5772753817",
+      "minutes": 35
+    },
     {
       "date": "2026-11-04",
       "repo": "tailscale/tailscale",
