@@ -3,7 +3,9 @@ title: Go
 description: "One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-go at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-go at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/go/grade.svg)](https://conn3x.org/circuits/go/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/go/grade.svg)](https://conn3x.org/circuits/go/grade)
 
@@ -15,7 +17,7 @@ If your hosts need command-line tools written in Go, list those too, each at an 
 
 ```hcl
 module "go" {
-  source = "github.com/conn3xorg/circuit-go?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-go?ref=v0.1.1"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -37,7 +39,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-go/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-go/tree/v0.1.1/examples/local).
 
 ### Changing the release
 
@@ -99,7 +101,7 @@ Requires Conn3x v0.6.10 or later, a package mirror each host can reach, and outb
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-go/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. `go` then built and ran a small module, and `oapi-codegen` 2.8.1 reported its version. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-go/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. `go` then built and ran a small module, and `oapi-codegen` 2.8.1 reported its version. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same checks passed, and after a reboot the plan had no changes and they still passed. On the Ubuntu droplet a wrong checksum failed the apply, and moving to 1.26.10 repointed `go`, rebuilt the tool, and left a clean plan.
 
@@ -107,10 +109,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-go/blob/v0.1.0/LICENSE). Go is under a BSD-style license. Tools carry their own licenses.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-go/blob/v0.1.1/LICENSE). Go is under a BSD-style license. Tools carry their own licenses.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-go](https://github.com/conn3xorg/circuit-go). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-go/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-go/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-go/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-go](https://github.com/conn3xorg/circuit-go). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-go/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-go/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-go/tree/v0.1.1/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

@@ -3,7 +3,9 @@ title: Infisical
 description: "Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-infisical at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-infisical at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/infisical/grade.svg)](https://conn3x.org/circuits/infisical/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/infisical/grade.svg)](https://conn3x.org/circuits/infisical/grade)
 
@@ -31,7 +33,7 @@ variable "valkey_password" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
 
   hosts                = { secrets = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -42,7 +44,7 @@ module "postgres" {
 }
 
 module "valkey" {
-  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.1"
 
   hosts                = { secrets = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -51,7 +53,7 @@ module "valkey" {
 }
 
 module "infisical" {
-  source = "github.com/conn3xorg/circuit-infisical?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-infisical?ref=v0.1.1"
 
   depends_on = [module.postgres, module.valkey]
 
@@ -78,7 +80,7 @@ Infisical listens on `127.0.0.1:8080`. Put a reverse proxy in front for TLS, suc
 
 PostgreSQL and Valkey can live elsewhere, such as a managed database. Give their addresses in the two URIs, and leave out `depends_on`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.1/examples/local).
 
 ### The first admin
 
@@ -170,7 +172,7 @@ The whole stack, Infisical with PostgreSQL and Valkey beside it, ran on 2 GB of 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.0/examples/local) to each on amd64, with circuit-postgres and circuit-valkey on the same host, and checks that the second plan has no changes. It then checks `/api/status` answers `Ok`, bootstraps the first admin through `/api/v1/admin/bootstrap`, uses the admin identity's token to create a project and store a secret, and reads it back. A second bootstrap has to be refused. It restarts Infisical and reads the secret again with the same token, which only works if the database, `ENCRYPTION_KEY` and `AUTH_SECRET` all came through the restart.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.1/examples/local) to each on amd64, with circuit-postgres and circuit-valkey on the same host, and checks that the second plan has no changes. It then checks `/api/status` answers `Ok`, bootstraps the first admin through `/api/v1/admin/bootstrap`, uses the admin identity's token to create a project and store a secret, and reads it back. A second bootstrap has to be refused. It restarts Infisical and reads the secret again with the same token, which only works if the database, `ENCRYPTION_KEY` and `AUTH_SECRET` all came through the restart.
 
 The same checks passed by hand on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, each with 2 GB of memory and the whole stack on one host. From outside, port 8080 didn't answer. After a reboot Infisical came back on its own, the secret read back with the token from before, the second plan was clean, and the Rocky audit log had no denials.
 
@@ -178,10 +180,10 @@ Upgrading from one `infisical_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-infisical/blob/v0.1.0/LICENSE). Infisical itself is under the MIT license, apart from its `ee` directories.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-infisical/blob/v0.1.1/LICENSE). Infisical itself is under the MIT license, apart from its `ee` directories.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-infisical](https://github.com/conn3xorg/circuit-infisical). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-infisical/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-infisical](https://github.com/conn3xorg/circuit-infisical). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-infisical/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-infisical/tree/v0.1.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Valkey](/circuits/valkey), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [authentik](/circuits/authentik).

@@ -3,7 +3,9 @@ title: Bun
 description: "Install one pinned Bun release, checksum-verified, on every Linux host."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-bun at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-bun at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/bun/grade.svg)](https://conn3x.org/circuits/bun/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/bun/grade.svg)](https://conn3x.org/circuits/bun/grade)
 
@@ -13,7 +15,7 @@ A Conn3x circuit that puts one exact Bun release on all your hosts. Distribution
 
 ```hcl
 module "bun" {
-  source = "github.com/conn3xorg/circuit-bun?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-bun?ref=v0.1.1"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -33,7 +35,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1/examples/local).
 
 ### Changing the release
 
@@ -100,7 +102,7 @@ Requires Conn3x v0.6.10 or later, and hosts with outbound HTTPS to github.com. a
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. In a login shell, `bun` and `bunx` both reported 1.4.4, `bun add --exact semver@7.8.5` pinned that version in `package.json`, and a TypeScript script importing it ran and gave the right answers. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. In a login shell, `bun` and `bunx` both reported 1.4.4, `bun add --exact semver@7.8.5` pinned that version in `package.json`, and a TypeScript script importing it ran and gave the right answers. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64: the same checks passed. A wrong checksum failed the apply and left `bun` on 1.4.4, with an empty `/opt/bun/1.4.3` behind it. Moving to 1.4.3 repointed `bun` and `bunx`, and moving back was clean. After a reboot the plan had no changes and `bun` still ran.
 
@@ -108,10 +110,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-bun/blob/v0.1.0/LICENSE). Bun is under the MIT license, with the bundled components listed in its own license file.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-bun/blob/v0.1.1/LICENSE). Bun is under the MIT license, with the bundled components listed in its own license file.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-bun](https://github.com/conn3xorg/circuit-bun). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-bun/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-bun/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-bun](https://github.com/conn3xorg/circuit-bun). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-bun/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

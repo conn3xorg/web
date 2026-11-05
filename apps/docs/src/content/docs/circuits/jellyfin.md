@@ -3,7 +3,9 @@ title: Jellyfin
 description: "Jellyfin media server: official apt repo or Podman image, read-only media, GPU groups, optional admin that skips the setup wizard."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-jellyfin at v0.1.3. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-jellyfin at v0.1.4. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/jellyfin/grade.svg)](https://conn3x.org/circuits/jellyfin/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/jellyfin/grade.svg)](https://conn3x.org/circuits/jellyfin/grade)
 
@@ -22,7 +24,7 @@ variable "jellyfin_admin_password" {
 }
 
 module "jellyfin" {
-  source = "github.com/conn3xorg/circuit-jellyfin?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-jellyfin?ref=v0.1.4"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -53,7 +55,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.4/examples/local).
 
 ### Reading your media
 
@@ -151,7 +153,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3/examples/local) to each on amd64 and checks that the second plan has no changes, that `/health` answers `Healthy`, that `/System/Info/Public` shows the wizard finished, that the administrator can sign in and a wrong password can't, and that all of it holds after Jellyfin restarts, with a plan that still has no changes. CI also checks that a link at `network.xml` leaves where it points unchanged.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.4/examples/local) to each on amd64 and checks that the second plan has no changes, that `/health` answers `Healthy`, that `/System/Info/Public` shows the wizard finished, that the administrator can sign in and a wrong password can't, and that all of it holds after Jellyfin restarts, with a plan that still has no changes. CI also checks that a link at `network.xml` leaves where it points unchanged.
 
 By hand, in containers: a custom `data_dir`, `cache_dir` and `port` on a fresh Debian 13 host, and the same change on an existing Rocky Linux 10 host, which came up as a new server with the administrator created again.
 
@@ -159,10 +161,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-jellyfin/blob/v0.1.3/LICENSE). Jellyfin itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-jellyfin/blob/v0.1.4/LICENSE). Jellyfin itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-jellyfin](https://github.com/conn3xorg/circuit-jellyfin). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-jellyfin/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.3/examples/local).
+- Repository: [conn3xorg/circuit-jellyfin](https://github.com/conn3xorg/circuit-jellyfin). This page covers [v0.1.4](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.4); the repository's [tags](https://github.com/conn3xorg/circuit-jellyfin/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-jellyfin/tree/v0.1.4/examples/local).
 - Related circuits: [Samba](/circuits/samba), [NFS](/circuits/nfs), [Firewall](/circuits/firewall), [Podman](/circuits/podman), [Caddy](/circuits/caddy), [Matrix Synapse](/circuits/matrix).

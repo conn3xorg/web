@@ -2,7 +2,7 @@
   "name": "kotlin",
   "repo": "conn3xorg/circuit-kotlin",
   "description": "One exact Kotlin compiler from JetBrains' releases, checked against its checksum, on a Java you provide.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "kotlin",
     "jvm",

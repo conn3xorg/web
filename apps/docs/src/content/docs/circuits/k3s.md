@@ -3,7 +3,9 @@ title: k3s
 description: "A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-k3s at v0.1.5. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-k3s at v0.1.6. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/k3s/grade.svg)](https://conn3x.org/circuits/k3s/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/k3s/grade.svg)](https://conn3x.org/circuits/k3s/grade)
 
@@ -15,7 +17,7 @@ It replaces the usual hand-off where Terraform makes the VMs and an Ansible play
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers = { cp1 = "203.0.113.10" }
   agents = {
@@ -40,7 +42,7 @@ For a highly available control plane, give three servers. The first by name star
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers = {
     cp1 = "10.0.0.10"
@@ -63,7 +65,7 @@ servers = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.5/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.6/examples/local).
 
 ### Raspberry Pi
 
@@ -71,7 +73,7 @@ Raspberry Pi OS boots with the memory cgroup turned off, and k3s won't start wit
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers      = { pi1 = "192.168.1.31" }
   agents       = { pi2 = "192.168.1.32", pi3 = "192.168.1.33" }
@@ -175,7 +177,7 @@ Requires Conn3x v0.6.9 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.5/examples/local) to each on amd64, checks that the second plan has no changes, that the node is Ready, that k3s's CRDs are Established and that Traefik is running, and builds a cluster of three servers and an agent from [test/cluster](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.5/test/cluster). Three etcd members in containers on one shared runner are slow to agree, so that job skips etcd's fsync and still fails now and then. A server on a Rocky Linux 10 droplet with SELinux enforcing and an agent on Ubuntu 24.04 were also checked by hand. So was `raspberry_pi`, on a Debian 13 droplet with a stand-in `cmdline.txt`, which checks the edit and the reboot but not a Pi's kernel.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.6/examples/local) to each on amd64, checks that the second plan has no changes, that the node is Ready, that k3s's CRDs are Established and that Traefik is running, and builds a cluster of three servers and an agent from [test/cluster](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.6/test/cluster). Three etcd members in containers on one shared runner are slow to agree, so that job skips etcd's fsync and still fails now and then. A server on a Rocky Linux 10 droplet with SELinux enforcing and an agent on Ubuntu 24.04 were also checked by hand. So was `raspberry_pi`, on a Debian 13 droplet with a stand-in `cmdline.txt`, which checks the edit and the reboot but not a Pi's kernel.
 
 The high-availability layout was also run on four Ubuntu 24.04 droplets, three servers and an agent on a private network, with etcd's fsync on. The cluster came up with all four nodes Ready and three healthy etcd members, and the second plan had no changes. Changing `server_config` restarted the servers one at a time, and the API on the first server answered throughout the other two restarts. Upgrading k3s from v1.37.0 to v1.37.1 did the same, servers one at a time and then the agent, and at every moment at least one server's API answered. Rebooting the first server moved etcd's leader to another, the API kept answering there, and the plan stayed clean.
 
@@ -183,10 +185,10 @@ The first start was run 26 times on fresh droplets, 14 on Ubuntu 24.04 and 12 on
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-k3s/blob/v0.1.5/LICENSE). k3s itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-k3s/blob/v0.1.6/LICENSE). k3s itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-k3s](https://github.com/conn3xorg/circuit-k3s). This page covers [v0.1.5](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.5); the repository's [tags](https://github.com/conn3xorg/circuit-k3s/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.5/examples/local).
+- Repository: [conn3xorg/circuit-k3s](https://github.com/conn3xorg/circuit-k3s). This page covers [v0.1.6](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.6); the repository's [tags](https://github.com/conn3xorg/circuit-k3s/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-k3s/tree/v0.1.6/examples/local).
 - Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).

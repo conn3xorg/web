@@ -2,7 +2,7 @@
   "name": "microshift",
   "repo": "conn3xorg/circuit-microshift",
   "description": "Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "microshift",
     "openshift",

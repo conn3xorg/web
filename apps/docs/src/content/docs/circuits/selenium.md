@@ -3,7 +3,9 @@ title: Selenium Grid
 description: "Selenium Grid under Podman, official images pinned by digest, on loopback by default."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-selenium at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-selenium at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/selenium/grade.svg)](https://conn3x.org/circuits/selenium/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/selenium/grade.svg)](https://conn3x.org/circuits/selenium/grade)
 
@@ -15,7 +17,7 @@ A Conn3x circuit that runs a Selenium Grid under Podman: a hub and a browser nod
 
 ```hcl
 module "selenium" {
-  source = "github.com/conn3xorg/circuit-selenium?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-selenium?ref=v0.1.1"
 
   hosts                = { grid = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -45,7 +47,7 @@ driver.quit()
 
 The Grid's own page is at `http://127.0.0.1:4444/ui`, and `/status` says which nodes have registered.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.1/examples/local).
 
 ## Opening it up
 
@@ -126,16 +128,16 @@ Requires Conn3x v0.6.10 or later and systemd on each host. Hosts need to reach t
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with Selenium 4.51.0. [examples/local](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.0/examples/local) was applied to each in a container on arm64 with both browsers, and CI does the same on amd64. It checks that the second plan has no changes and that only port 4444 is published, on loopback. Then a real WebDriver session in each browser, through that port, loads a page served only inside the node and reads back its title. Chromium does it again after the hub restarts.
+Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with Selenium 4.51.0. [examples/local](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.1/examples/local) was applied to each in a container on arm64 with both browsers, and CI does the same on amd64. It checks that the second plan has no changes and that only port 4444 is published, on loopback. Then a real WebDriver session in each browser, through that port, loads a page served only inside the node and reads back its title. Chromium does it again after the hub restarts.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-2gb` and running Chromium only, the same check passed three times in a row. From outside, ports 4444 and 4442 didn't answer. With `listen_address = "0.0.0.0"` on the Ubuntu droplet, 4444 answered from outside and 4442 still didn't. After a reboot the services came back, the session check passed and the plan had no changes. `node_max_sessions` above 1 wasn't tried.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-selenium/blob/v0.1.0/LICENSE). Selenium and its Docker images are Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-selenium/blob/v0.1.1/LICENSE). Selenium and its Docker images are Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-selenium](https://github.com/conn3xorg/circuit-selenium). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-selenium/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-selenium](https://github.com/conn3xorg/circuit-selenium). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-selenium/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-selenium/tree/v0.1.1/examples/local).
 - Related circuits: [Podman](/circuits/podman), [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

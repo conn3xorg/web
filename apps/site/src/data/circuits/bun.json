@@ -2,7 +2,7 @@
   "name": "bun",
   "repo": "conn3xorg/circuit-bun",
   "description": "Install one pinned Bun release, checksum-verified, on every Linux host.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "bun",
     "javascript",

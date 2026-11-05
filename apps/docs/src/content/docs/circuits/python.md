@@ -3,7 +3,7 @@ title: Python
 description: "Your distribution's Python with working venvs, and optional environments holding pinned packages."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-python at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-python at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/python/grade.svg)](https://conn3x.org/circuits/python/grade)
 
@@ -26,7 +26,7 @@ We picked this route on purpose. Distribution Python gets its security fixes wit
 
 ```hcl
 module "python" {
-  source = "github.com/conn3xorg/circuit-python?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-python?ref=v0.1.3"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -50,7 +50,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.3/examples/local).
 
 ## What it does
 
@@ -94,7 +94,7 @@ Requires Conn3x v0.6.10 or later, and a package mirror each host can reach, plus
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. The `cowsay` 6.1 command ran from the environment the circuit built, and a fresh `python3 -m venv` installed the same package and ran it. CI runs the same checks on amd64, and checks that root doesn't run an environment another account can change.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.3/examples/local) was applied to each on arm64, and the second plan had no changes. The `cowsay` 6.1 command ran from the environment the circuit built, and a fresh `python3 -m venv` installed the same package and ran it. CI runs the same checks on amd64, and checks that root doesn't run an environment another account can change.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same checks passed, and after a reboot the plan had no changes and they still passed.
 
@@ -102,10 +102,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-python/blob/v0.1.2/LICENSE). Python is under the PSF License. Packages carry their own licenses.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-python/blob/v0.1.3/LICENSE). Python is under the PSF License. Packages carry their own licenses.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-python](https://github.com/conn3xorg/circuit-python). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-python/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-python/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-python](https://github.com/conn3xorg/circuit-python). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-python/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-python/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-python/tree/v0.1.3/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

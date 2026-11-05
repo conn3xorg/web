@@ -3,7 +3,9 @@ title: Kotlin
 description: "One exact Kotlin compiler from JetBrains' releases, checked against its checksum, on a Java you provide."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kotlin at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kotlin at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/kotlin/grade.svg)](https://conn3x.org/circuits/kotlin/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/kotlin/grade.svg)](https://conn3x.org/circuits/kotlin/grade)
 
@@ -15,14 +17,14 @@ A Conn3x circuit that puts one exact Kotlin compiler on your hosts, from the zip
 
 ```hcl
 module "java" {
-  source = "github.com/conn3xorg/circuit-java?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-java?ref=v0.1.1"
 
   hosts                = { build1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
 }
 
 module "kotlin" {
-  source = "github.com/conn3xorg/circuit-kotlin?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-kotlin?ref=v0.1.1"
 
   hosts                = { build1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -44,7 +46,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.1/examples/local).
 
 ### Changing the release
 
@@ -91,7 +93,7 @@ Requires Conn3x v0.6.10 or later, a `java` on the `PATH` (Java 25 is what was te
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. Each had the Java 25 runtime from circuit-java v0.1.0, and `kotlinc` compiled a small program that ran under both `java -jar` and `kotlin`. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. Each had the Java 25 runtime from circuit-java v0.1.0, and `kotlinc` compiled a small program that ran under both `java -jar` and `kotlin`. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same checks passed, and after a reboot the plan had no changes and they still passed.
 
@@ -99,10 +101,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kotlin/blob/v0.1.0/LICENSE). Kotlin is under the Apache-2.0 license.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kotlin/blob/v0.1.1/LICENSE). Kotlin is under the Apache-2.0 license.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-kotlin](https://github.com/conn3xorg/circuit-kotlin). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-kotlin/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-kotlin](https://github.com/conn3xorg/circuit-kotlin). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-kotlin/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-kotlin/tree/v0.1.1/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

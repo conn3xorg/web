@@ -3,11 +3,13 @@ title: Samba
 description: "Samba file shares with per-user passwords kept out of state, SMB2 minimum, NetBIOS off and SELinux labels."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-samba at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-samba at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/samba/grade.svg)](https://conn3x.org/circuits/samba/grade)
 
-A Conn3x circuit that turns a Linux box into a file server for the Windows, macOS and Linux machines around it, with Samba. You list the shares and who can use them; the circuit installs Samba, creates the folders, writes `smb.conf`, checks it with `testparm`, and adds each user to Samba with the password you pass at run time. It's the file-sharing half of a homelab NAS, or the shared drive in a small office.
+[![Conn3x grade](https://conn3x.org/circuits/samba/grade.svg)](https://conn3x.org/circuits/samba/grade)
+
+A Conn3x circuit that turns a Linux box into a file server for the Windows, macOS and Linux machines around it, with Samba. You list the shares and who can use them; the circuit installs Samba, creates the folders, checks `smb.conf` with `testparm` before writing it, and adds each user to Samba with the password you pass at run time. It's the file-sharing half of a homelab NAS, or the shared drive in a small office.
 
 The defaults are the ones you'd pick by hand today. SMB1 is off and the oldest dialect accepted is SMB2. NetBIOS is off too, so `nmbd` doesn't run and the server listens on 445 only. On Rocky Linux and Fedora with SELinux enforcing, each share's folder gets the `samba_share_t` label, so smbd can read and write it without turning SELinux off.
 
@@ -21,7 +23,7 @@ variable "samba_passwords" {
 }
 
 module "samba" {
-  source = "github.com/conn3xorg/circuit-samba?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-samba?ref=v0.2.0"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -58,7 +60,7 @@ conn3x apply
 
 A second `conn3x plan` says `No changes.` On Windows, open `\\192.168.1.20\family` in File Explorer; on a Mac, Finder's Go > Connect to Server with `smb://192.168.1.20/family`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.2.0/examples/local).
 
 ### Passwords
 
@@ -99,7 +101,7 @@ On each host, in order:
 1. Installs `samba`.
 2. Creates a Unix account, with no home and no login shell, for each of `users` that doesn't have one.
 3. Creates each share's folder with its `owner`, `group` and `mode`.
-4. Writes `/etc/samba/smb.conf` and checks it with `testparm -s`. A value Samba rejects fails the apply before anything reloads, and the running server keeps what it had.
+4. Writes `/etc/samba/smb.conf`, checking the new file with `testparm -s` before it replaces the old one. A config testparm rejects never replaces the old one: the apply fails, nothing reloads, and a restart or a reboot still reads the last good config.
 5. Restarts smbd on a host's first apply and when `netbios` changes, since that's the only way it picks up which ports to listen on. On Debian and Ubuntu the package has already started it listening on 139 as well as 445.
 6. Starts smbd now and at boot (`smbd` on Debian and Ubuntu, `smb` on the Red Hat family). Stops and disables nmbd unless `netbios` is on.
 7. Writes each password to `/etc/conn3x/samba/<user>`, adds the user to Samba's password database when it's missing from it, and sets the password again when it changes.
@@ -144,20 +146,20 @@ The `[global]` section sets `server role = standalone server`, `security = user`
 
 ## Requirements
 
-Requires Conn3x v0.6.5 or later and systemd on each host, with a package mirror the host can reach. Samba comes from each distribution's own repositories.
+Requires Conn3x v0.7.0 or later and systemd on each host, with a package mirror the host can reach. Samba comes from each distribution's own repositories.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes. Then, with `smbclient` on the host, it lists the shares, puts a file on the private share as `alice` and gets it back, checks the file is owned by `alice`, and checks that a wrong password, a guest on the private share, a guest writing to the read-only guest share, and anything on port 139 are all refused. By hand, the same container runs also changed `alice`'s password: the new one worked, the old one was refused, and neither appeared in the state file.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.2.0/examples/local) to each on amd64 and checks that the second plan has no changes. Then, with `smbclient` on the host, it lists the shares, puts a file on the private share as `alice` and gets it back, checks the file is owned by `alice`, and checks that a wrong password, a guest on the private share, a guest writing to the read-only guest share, and anything on port 139 are all refused. By hand, the same container runs also changed `alice`'s password: the new one worked, the old one was refused, and neither appeared in the state file.
 
 The CI containers run with SELinux off. On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, the same checks passed, before and after a reboot, and the plan after the reboot had no changes. On Rocky, smbd ran confined as `smbd_t`, the uploaded file was labelled `samba_share_t`, and the audit log had no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-samba/blob/v0.1.0/LICENSE). Samba itself is GPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-samba/blob/v0.2.0/LICENSE). Samba itself is GPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-samba](https://github.com/conn3xorg/circuit-samba). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-samba/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-samba/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-samba](https://github.com/conn3xorg/circuit-samba). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-samba/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-samba/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.2.0/examples/local).
 - Related circuits: [Users](/circuits/users), [Firewall](/circuits/firewall), [NFS](/circuits/nfs), [restic](/circuits/restic).

@@ -3,7 +3,9 @@ title: Istio
 description: "A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-istio at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-istio at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/istio/grade.svg)](https://conn3x.org/circuits/istio/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/istio/grade.svg)](https://conn3x.org/circuits/istio/grade)
 
@@ -15,7 +17,7 @@ Two things tend to catch people on k3s, and this circuit handles both. Istio sup
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token
@@ -23,7 +25,7 @@ module "k3s" {
 }
 
 module "istio" {
-  source     = "github.com/conn3xorg/circuit-istio?ref=v0.1.1"
+  source     = "github.com/conn3xorg/circuit-istio?ref=v0.1.2"
   depends_on = [module.k3s]
 
   server               = "203.0.113.10"
@@ -41,7 +43,7 @@ Run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` 
 
 Without an ingress gateway you get Istio's `minimal` profile, just `istiod`, and Traefik carries on handling traffic into the cluster.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.2/examples/local).
 
 ### Traefik and the ingress gateway
 
@@ -91,7 +93,7 @@ Each plan compares a hash of the operator file and the image `istiod` runs with 
 ### What it doesn't do
 
 - It doesn't install k3s. Use circuit-k3s, or any k3s whose binary is at `k3s` in the `PATH` with its kubeconfig at `/etc/rancher/k3s/k3s.yaml`.
-- It doesn't turn on mutual TLS for you. Sidecars use it when both ends have one, and a `PeerAuthentication` set to `STRICT` makes it required, as [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.1/examples/local/check.sh) does for its own namespace.
+- It doesn't turn on mutual TLS for you. Sidecars use it when both ends have one, and a `PeerAuthentication` set to `STRICT` makes it required, as [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.2/examples/local/check.sh) does for its own namespace.
 - It doesn't restart your workloads, so after an upgrade your sidecars stay on the old version until you do: `kubectl rollout restart`.
 - It doesn't open firewall ports or configure ambient mode, and it doesn't uninstall. `istioctl uninstall --purge` removes Istio.
 
@@ -128,7 +130,7 @@ Requires Conn3x v0.6.10 or later, circuit-k3s v0.1.4 or later if that's what bui
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1/examples/local) to each in a container on amd64, checks that the plan after it has no changes, and runs [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.1/examples/local/check.sh): both pods in the mesh get a sidecar, the client reaches the server with Envoy's header on the answer, and with mutual TLS required a pod outside the mesh can't reach it. The same four containers also passed by hand on arm64, and a k3s setup with Traefik enabled stopped `ingress_gateway = true` with its message on Ubuntu 24.04.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.2/examples/local) to each in a container on amd64, checks that the plan after it has no changes, and runs [check.sh](https://github.com/conn3xorg/circuit-istio/blob/v0.1.2/examples/local/check.sh): both pods in the mesh get a sidecar, the client reaches the server with Envoy's header on the answer, and with mutual TLS required a pod outside the mesh can't reach it. The same four containers also passed by hand on arm64, and a k3s setup with Traefik enabled stopped `ingress_gateway = true` with its message on Ubuntu 24.04.
 
 The rest was run by hand on 2 vCPU, 4 GB droplets with one node each. On Rocky Linux 10 with SELinux enforcing: the same checks, an upgrade from 1.31.2 to 1.31.3 with the pods restarted afterwards, then a reboot with no changes in the plan and the checks passing again. On Ubuntu 24.04: the same checks and a reboot, with Traefik off and `ingress_gateway = true`, and on a second droplet a `Gateway` and `VirtualService` answering 200 from outside on port 80 through the gateway.
 
@@ -138,10 +140,10 @@ Not run: more than one node, arm64 on a real host, ambient mode, an upgrade betw
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-istio/blob/v0.1.1/LICENSE). Istio is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-istio/blob/v0.1.2/LICENSE). Istio is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-istio](https://github.com/conn3xorg/circuit-istio). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-istio/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-istio](https://github.com/conn3xorg/circuit-istio). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-istio/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-istio/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-istio/tree/v0.1.2/examples/local).
 - Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Flux](/circuits/flux).

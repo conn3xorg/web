@@ -3,7 +3,9 @@ title: Caddy
 description: "Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-caddy at v0.2.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-caddy at v0.2.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/caddy/grade.svg)](https://conn3x.org/circuits/caddy/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/caddy/grade.svg)](https://conn3x.org/circuits/caddy/grade)
 
@@ -15,7 +17,7 @@ Every change to `sites` shows up in `conn3x plan` as a diff of the Caddyfile. Th
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.2"
 
   hosts                = { edge = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -41,7 +43,7 @@ For a public name such as `photos.example.com`, Caddy gets a certificate from Le
 
 ```hcl
 module "firewall" {
-  source = "github.com/conn3xorg/circuit-firewall?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-firewall?ref=v0.2.2"
 
   hosts = { edge = "203.0.113.10" }
   allow = [{ port = "80/tcp" }, { port = "443/tcp" }]
@@ -60,15 +62,15 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/local). To create a server and serve a page with a real certificate in one apply, see [examples/gcp](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/gcp), on Google Cloud.
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2/examples/local). To create a server and serve a page with a real certificate in one apply, see [examples/gcp](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2/examples/gcp), on Google Cloud.
 
 ## What it does
 
 On each host, in order:
 
 1. Installs Caddy 2.11.7.
-   - On Debian and Ubuntu, from Caddy's own apt repository at `dl.cloudsmith.io/public/caddy/stable`, with the signing key in [files](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/files), copied from that repository. An apt pin in `/etc/apt/preferences.d/caddy` keeps `apt upgrade` from moving it off that version.
-   - On Rocky Linux, Fedora and the rest of the Red Hat family, from the release archive on GitHub, checked against a pinned SHA-256. Caddy's RPMs come from a COPR repository that can trail releases and can't be pinned to an exact version, so the circuit does what the package would: it creates the `caddy` user and group with a home of `/var/lib/caddy`, links `/usr/bin/caddy` to the binary under `/opt/caddy`, and installs Caddy's own [unit file](https://github.com/conn3xorg/circuit-caddy/blob/v0.2.1/files/caddy.service) as `/etc/systemd/system/caddy.service`.
+   - On Debian and Ubuntu, from Caddy's own apt repository at `dl.cloudsmith.io/public/caddy/stable`, with the signing key in [files](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2/files), copied from that repository. An apt pin in `/etc/apt/preferences.d/caddy` keeps `apt upgrade` from moving it off that version.
+   - On Rocky Linux, Fedora and the rest of the Red Hat family, from the release archive on GitHub, checked against a pinned SHA-256. Caddy's RPMs come from a COPR repository that can trail releases and can't be pinned to an exact version, so the circuit does what the package would: it creates the `caddy` user and group with a home of `/var/lib/caddy`, links `/usr/bin/caddy` to the binary under `/opt/caddy`, and installs Caddy's own [unit file](https://github.com/conn3xorg/circuit-caddy/blob/v0.2.2/files/caddy.service) as `/etc/systemd/system/caddy.service`.
 2. Reloads systemd and restarts Caddy when the version the circuit pins or its unit file changes, so a new release of this circuit runs the new binary.
 3. Renders the Caddyfile from `sites` and `email` to `/etc/caddy/Caddyfile.conn3x`.
 4. Runs `caddy validate` on that file. If it passes, copies it to `/etc/caddy/Caddyfile`. If someone edits the live Caddyfile by hand, the next apply puts it back.
@@ -118,14 +120,14 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, and fetches a static page through a reverse proxy over plain HTTP. The CI containers run with SELinux off. The example was also applied by hand to a Rocky Linux 10 droplet with SELinux enforcing, where Caddy runs as `unconfined_service_t`: the second plan had no changes, the proxied page came back, and the audit log had no denials. The same held on Fedora 44 and AlmaLinux 10 droplets with SELinux enforcing, and again on both after a reboot. CI doesn't cover certificates, since a test container has no public DNS name. They were tried by hand on an Ubuntu 24.04 droplet, with a site named after its address through sslip.io: Caddy got a certificate from Let's Encrypt, the page came back over HTTPS, and the second plan had no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2/examples/local) to each on amd64, checks that the second plan has no changes, and fetches a static page through a reverse proxy over plain HTTP. The CI containers run with SELinux off. The example was also applied by hand to a Rocky Linux 10 droplet with SELinux enforcing, where Caddy runs as `unconfined_service_t`: the second plan had no changes, the proxied page came back, and the audit log had no denials. The same held on Fedora 44 and AlmaLinux 10 droplets with SELinux enforcing, and again on both after a reboot. CI doesn't cover certificates, since a test container has no public DNS name. They were tried by hand on an Ubuntu 24.04 droplet, with a site named after its address through sslip.io: Caddy got a certificate from Let's Encrypt, the page came back over HTTPS, and the second plan had no changes.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-caddy/blob/v0.2.1/LICENSE). Caddy itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-caddy/blob/v0.2.2/LICENSE). Caddy itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-caddy](https://github.com/conn3xorg/circuit-caddy). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-caddy/tags) list every release.
-- Examples: [examples/gcp](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/gcp), [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.1/examples/local).
+- Repository: [conn3xorg/circuit-caddy](https://github.com/conn3xorg/circuit-caddy). This page covers [v0.2.2](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2); the repository's [tags](https://github.com/conn3xorg/circuit-caddy/tags) list every release.
+- Examples: [examples/gcp](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2/examples/gcp), [examples/local](https://github.com/conn3xorg/circuit-caddy/tree/v0.2.2/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [nginx](/circuits/nginx), [Apache httpd](/circuits/apache), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [certbot](/circuits/certbot), [IIS](/circuits/iis).

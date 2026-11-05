@@ -3,7 +3,9 @@ title: Apache httpd
 description: "Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-apache at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-apache at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/apache/grade.svg)](https://conn3x.org/circuits/apache/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/apache/grade.svg)](https://conn3x.org/circuits/apache/grade)
 
@@ -17,7 +19,7 @@ Apache is the same server on Debian and on Rocky Linux, but it doesn't look it. 
 
 ```hcl
 module "apache" {
-  source = "github.com/conn3xorg/circuit-apache?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-apache?ref=v0.1.1"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -64,7 +66,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.1.1/examples/local).
 
 ### TLS certificates
 
@@ -125,7 +127,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.1.0/examples/local) to each on amd64, checks that the second plan has no changes, fetches a page by its name and by its alias, fetches a second page through a reverse proxy and checks the header the proxy adds, and checks `extra_config` overrides the distribution's `ServerTokens`. The CI containers run with SELinux off.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, fetches a page by its name and by its alias, fetches a second page through a reverse proxy and checks the header the proxy adds, and checks `extra_config` overrides the distribution's `ServerTokens`. The CI containers run with SELinux off.
 
 By hand, on Debian 13 and Rocky Linux 10 containers: a TLS virtual host on 8443 proxying to a second TLS virtual host over `https://` served its page; a misspelled directive in `extra_config` stopped the apply with Apache's error and left the live config and the running server as they were; on Rocky Linux, so did a certificate path that didn't exist; and a hand edit to the live config showed in the next plan and was put back by the apply.
 
@@ -133,10 +135,10 @@ On Ubuntu 24.04 and Rocky Linux 10 droplets (1 vCPU, 1 GB), the example's virtua
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-apache/blob/v0.1.0/LICENSE). The Apache HTTP Server itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-apache/blob/v0.1.1/LICENSE). The Apache HTTP Server itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-apache](https://github.com/conn3xorg/circuit-apache). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-apache/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-apache/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-apache](https://github.com/conn3xorg/circuit-apache). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-apache/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-apache/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.1.1/examples/local).
 - Related circuits: [certbot](/circuits/certbot), [Firewall](/circuits/firewall), [nginx](/circuits/nginx), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [IIS](/circuits/iis).

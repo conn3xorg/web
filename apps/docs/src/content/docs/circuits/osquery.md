@@ -3,7 +3,9 @@ title: osquery
 description: "osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-osquery at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-osquery at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/osquery/grade.svg)](https://conn3x.org/circuits/osquery/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/osquery/grade.svg)](https://conn3x.org/circuits/osquery/grade)
 
@@ -15,7 +17,7 @@ osquery turns a Linux host into a set of tables you can query with SQL: users, p
 
 ```hcl
 module "osquery" {
-  source = "github.com/conn3xorg/circuit-osquery?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-osquery?ref=v0.1.1"
 
   hosts                = { web = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -53,7 +55,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.1/examples/local).
 
 ### Scheduled queries and packs
 
@@ -166,16 +168,16 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with osquery 5.24.0. [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. On each, `osqueryd` was running, the 10-second `os_version` query reached `osqueryd.results.log` and a file touched under `/etc` showed up there from `file_events` within 30 seconds, and `osqueryi --json "SELECT version FROM osquery_info"` answered. CI runs the same checks on amd64. On Rocky Linux 10, an unknown option failed the apply at the check, before the restart, a 1 KB `log_rotate_size` rotated and compressed the logs, and `fleet` with a made-up address wrote the secret file with mode `0600`, kept it out of state, and left osqueryd running and retrying its enrollment.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with osquery 5.24.0. [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. On each, `osqueryd` was running, the 10-second `os_version` query reached `osqueryd.results.log` and a file touched under `/etc` showed up there from `file_events` within 30 seconds, and `osqueryi --json "SELECT version FROM osquery_info"` answered. CI runs the same checks on amd64. On Rocky Linux 10, an unknown option failed the apply at the check, before the restart, a 1 KB `log_rotate_size` rotated and compressed the logs, and `fleet` with a made-up address wrote the secret file with mode `0600`, kept it out of state, and left osqueryd running and retrying its enrollment.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, the example's inputs applied, the same checks passed, and after a reboot osqueryd was running, a new file change was logged and the plan was clean. On Rocky Linux osqueryd runs as `unconfined_service_t`, and the audit log had no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-osquery/blob/v0.1.0/LICENSE). osquery itself is Apache-2.0 or GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-osquery/blob/v0.1.1/LICENSE). osquery itself is Apache-2.0 or GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-osquery](https://github.com/conn3xorg/circuit-osquery). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-osquery/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-osquery](https://github.com/conn3xorg/circuit-osquery). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-osquery/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-osquery/tree/v0.1.1/examples/local).
 - Related circuits: [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [Velociraptor](/circuits/velociraptor), [Wazuh](/circuits/wazuh).

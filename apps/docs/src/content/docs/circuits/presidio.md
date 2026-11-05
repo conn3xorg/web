@@ -3,7 +3,9 @@ title: Presidio
 description: "Presidio's PII analyzer and anonymizer on loopback in Podman, to scrub prompts and documents before a model sees them."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-presidio at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-presidio at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/presidio/grade.svg)](https://conn3x.org/circuits/presidio/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/presidio/grade.svg)](https://conn3x.org/circuits/presidio/grade)
 
@@ -17,7 +19,7 @@ Presidio is two small HTTP services. The analyzer finds PII, using spaCy's Engli
 
 ```hcl
 module "presidio" {
-  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.1"
 
   hosts                = { gateway = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +48,7 @@ curl -s -H 'Content-Type: application/json' \
 
 and the text comes back as `My name is <PERSON> and my email is <EMAIL_ADDRESS>`. The [analyzer](https://presidio.dataprivacystack.org/api-docs/api-docs.html) and anonymizer APIs take more options, such as which entities to look for, a score threshold, and how to replace each kind of finding.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.1/examples/local).
 
 ### Your own recognizers
 
@@ -54,7 +56,7 @@ Most organisations have something Presidio has never heard of: project code name
 
 ```hcl
 module "presidio" {
-  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.1"
 
   hosts                = { gateway = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -134,7 +136,7 @@ When other machines need it, leave Presidio on loopback and put a reverse proxy 
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.2"
 
   hosts                = { gateway = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -219,7 +221,7 @@ The analyzer holds spaCy's large English model in memory: it used about 850 MB i
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes. It then asks the analyzer about "My name is David Johnson and my email is david@example.com" and expects `PERSON` and `EMAIL_ADDRESS`, hands those to the anonymizer and expects `My name is <PERSON> and my email is <EMAIL_ADDRESS>`, and expects the example's deny-list and pattern to find a made-up code name and an employee ID. It restarts both services and runs the checks again.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It then asks the analyzer about "My name is David Johnson and my email is david@example.com" and expects `PERSON` and `EMAIL_ADDRESS`, hands those to the anonymizer and expects `My name is <PERSON> and my email is <EMAIL_ADDRESS>`, and expects the example's deny-list and pattern to find a made-up code name and an employee ID. It restarts both services and runs the checks again.
 
 The same checks passed by hand on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, each with 2 GB of memory. From outside, port 5002 didn't answer. After a reboot both services came back on their own, the checks passed again, the second plan was clean, and the Rocky audit log had no denials.
 
@@ -229,10 +231,10 @@ Upgrading from one `presidio_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-presidio/blob/v0.1.0/LICENSE). Presidio itself is under the MIT license.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-presidio/blob/v0.1.1/LICENSE). Presidio itself is under the MIT license.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-presidio](https://github.com/conn3xorg/circuit-presidio). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-presidio/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-presidio](https://github.com/conn3xorg/circuit-presidio). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-presidio/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-presidio/tree/v0.1.1/examples/local).
 - Related circuits: [LiteLLM](/circuits/litellm), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [Ollama](/circuits/ollama), [Qdrant](/circuits/qdrant), [Open WebUI](/circuits/openwebui), [Langfuse](/circuits/langfuse), [Agent box](/circuits/agentbox).

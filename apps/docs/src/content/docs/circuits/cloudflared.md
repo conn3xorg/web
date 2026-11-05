@@ -3,7 +3,9 @@ title: Cloudflare Tunnel
 description: "Run a Cloudflare Tunnel from a pinned, checksummed cloudflared under systemd, with the token kept out of plan and state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cloudflared at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cloudflared at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/cloudflared/grade.svg)](https://conn3x.org/circuits/cloudflared/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/cloudflared/grade.svg)](https://conn3x.org/circuits/cloudflared/grade)
 
@@ -15,7 +17,7 @@ Your tunnel token is passed in through an ephemeral variable. It lands in one fi
 
 ```hcl
 module "cloudflared" {
-  source = "github.com/conn3xorg/circuit-cloudflared?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-cloudflared?ref=v0.1.1"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -43,7 +45,7 @@ Set `quick_tunnel_url` instead of `tunnel_token`, and the service runs a [Quick 
 
 ```hcl
 module "cloudflared" {
-  source = "github.com/conn3xorg/circuit-cloudflared?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-cloudflared?ref=v0.1.1"
 
   hosts            = { box = "203.0.113.10" }
   quick_tunnel_url = "http://localhost:8080"
@@ -63,7 +65,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.1/examples/local).
 
 ### Upgrading
 
@@ -124,7 +126,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, on amd64 or arm64, wit
 
 With a real tunnel and token, on an Ubuntu 24.04 droplet: the apply finished, the second plan had no changes, the service ran and registered its connections with Cloudflare, and after a reboot it came back active with a plan that had no changes. The token wasn't in state, the plan or the apply output. That run had no public hostname, so serving traffic through a named tunnel, and running replicas, haven't been tried. The Quick Tunnel checks below do fetch a page through Cloudflare.
 
-Also run, on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13: CI applies [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.0/examples/local) to each on amd64 with a Quick Tunnel, checks that the second plan has no changes and the service runs as the `cloudflared` user, and fetches a page from an origin on the host through the trycloudflare.com address. When Cloudflare refuses a Quick Tunnel, those checks are skipped with a warning. The CI containers run with SELinux off.
+Also run, on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13: CI applies [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.1/examples/local) to each on amd64 with a Quick Tunnel, checks that the second plan has no changes and the service runs as the `cloudflared` user, and fetches a page from an origin on the host through the trycloudflare.com address. When Cloudflare refuses a Quick Tunnel, those checks are skipped with a warning. The CI containers run with SELinux off.
 
 CI then applies a made-up token, which Cloudflare's edge turns down with `Failed to get tunnel`. That shows the token reaches `cloudflared` from the file, and that a tunnel that can't connect fails the apply. The check confirms the token is in the file, owned by `cloudflared` with mode `0600`, and isn't in state, the plan, the apply output, the unit or the process list.
 
@@ -132,10 +134,10 @@ By hand, the Quick Tunnel run passed on an Ubuntu 24.04 droplet and a Rocky Linu
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cloudflared/blob/v0.1.0/LICENSE). cloudflared itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cloudflared/blob/v0.1.1/LICENSE). cloudflared itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-cloudflared](https://github.com/conn3xorg/circuit-cloudflared). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-cloudflared/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-cloudflared](https://github.com/conn3xorg/circuit-cloudflared). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-cloudflared/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-cloudflared/tree/v0.1.1/examples/local).
 - Related circuits: [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale), [keepalived](/circuits/keepalived).

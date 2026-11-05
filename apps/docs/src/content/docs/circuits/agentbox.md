@@ -3,7 +3,9 @@ title: Agent box
 description: "Remote dev box for coding agents: key-only user, git, tmux, ripgrep, Node.js LTS, agent CLIs via npm. Works with Orca or plain SSH."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-agentbox at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-agentbox at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/agentbox/grade.svg)](https://conn3x.org/circuits/agentbox/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/agentbox/grade.svg)](https://conn3x.org/circuits/agentbox/grade)
 
@@ -17,7 +19,7 @@ The circuit never sees an API key or a subscription. Each agent logs itself in t
 
 ```hcl
 module "agentbox" {
-  source = "github.com/conn3xorg/circuit-agentbox?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-agentbox?ref=v0.1.1"
 
   hosts                = { box = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -58,7 +60,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.1/examples/local).
 
 ### With circuit-baseline and circuit-hardening
 
@@ -135,7 +137,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror,
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45. CI applies [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes. It then logs in over SSH as `dev` with the example's key, in a login shell, and checks `git`, Node.js 26, `tmux`, `rg`, `jq` and `cc` run, that `cowsay` and `semver`, installed through `npm_packages` as stand-ins for agents, run from `~/.local/bin`, that git has the example's email, and that the example repository is cloned and owned by `dev`. It also checks the account has no password.
+Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45. CI applies [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It then logs in over SSH as `dev` with the example's key, in a login shell, and checks `git`, Node.js 26, `tmux`, `rg`, `jq` and `cc` run, that `cowsay` and `semver`, installed through `npm_packages` as stand-ins for agents, run from `~/.local/bin`, that git has the example's email, and that the example repository is cloned and owned by `dev`. It also checks the account has no password.
 
 The same apply and checks passed by hand on arm64 containers of all four, and on Ubuntu 24.04 and Rocky Linux 10 droplets, with SELinux enforcing on Rocky Linux. On the droplets `npm_packages` also held `@anthropic-ai/claude-code`, and `claude --version` ran as `dev`. As `dev`, an SSH local port forward opened, as Orca needs. After a reboot, the plan still had no changes and the checks passed again, and Rocky Linux's audit log had no denials.
 
@@ -143,6 +145,6 @@ Moving `node_major` from 24 to 26 was tried by hand on Debian 13 and Rocky Linux
 
 ## Source
 
-- Repository: [conn3xorg/circuit-agentbox](https://github.com/conn3xorg/circuit-agentbox). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-agentbox/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-agentbox](https://github.com/conn3xorg/circuit-agentbox). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-agentbox/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-agentbox/tree/v0.1.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Users](/circuits/users), [Ollama](/circuits/ollama), [Qdrant](/circuits/qdrant), [Open WebUI](/circuits/openwebui), [LiteLLM](/circuits/litellm), [Presidio](/circuits/presidio), [Langfuse](/circuits/langfuse).

@@ -2,7 +2,7 @@
   "name": "presidio",
   "repo": "conn3xorg/circuit-presidio",
   "description": "Presidio's PII analyzer and anonymizer on loopback in Podman, to scrub prompts and documents before a model sees them.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "presidio",
     "pii",

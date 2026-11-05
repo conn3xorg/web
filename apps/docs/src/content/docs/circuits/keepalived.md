@@ -3,7 +3,9 @@ title: keepalived
 description: "A floating IP address shared between hosts with keepalived, moving to a backup within a second when a host or a check fails."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-keepalived at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-keepalived at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/keepalived/grade.svg)](https://conn3x.org/circuits/keepalived/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/keepalived/grade.svg)](https://conn3x.org/circuits/keepalived/grade)
 
@@ -15,7 +17,7 @@ The usual case is a pair of HAProxy or nginx boxes in front of everything else. 
 
 ```hcl
 module "keepalived" {
-  source = "github.com/conn3xorg/circuit-keepalived?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-keepalived?ref=v0.1.1"
 
   hosts = {
     lb1 = { address = "203.0.113.10", vrrp_address = "10.0.0.11" }
@@ -41,7 +43,7 @@ Hosts send their adverts to each other's `vrrp_address`, or to the address Conn3
 
 The circuit pairs with [circuit-haproxy](/circuits/haproxy). Bind its frontends to the floating address, such as `bind = "10.0.0.100:80"`: the circuit sets `net.ipv4.ip_nonlocal_bind`, so HAProxy on the backup starts and listens on an address it doesn't hold yet.
 
-To try it on two throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.0/examples/local).
+To try it on two throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.1/examples/local).
 
 ### Priorities
 
@@ -110,16 +112,16 @@ Requires Conn3x v0.6.7 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10 (keepalived 2.2.8), Fedora 45 (2.3.4), Ubuntu 24.04 (2.2.8) and Debian 13 (2.3.3). CI applies [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.0/examples/local) to two hosts of each on amd64, checks that the second plan has no changes, checks the floating address is on the first host, moves to the second when keepalived stops and when the track script fails, and comes back each time. It then applies with `nopreempt` and checks the address stays put when the first host returns.
+Rocky Linux 10 (keepalived 2.2.8), Fedora 45 (2.3.4), Ubuntu 24.04 (2.2.8) and Debian 13 (2.3.3). CI applies [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.1/examples/local) to two hosts of each on amd64, checks that the second plan has no changes, checks the floating address is on the first host, moves to the second when keepalived stops and when the track script fails, and comes back each time. It then applies with `nopreempt` and checks the address stays put when the first host returns.
 
 On two Ubuntu 24.04 droplets in one DigitalOcean VPC, VRRP ran between their private addresses on `eth1` with an unused VPC address as the floating one: the first droplet held it, it moved to the second when keepalived stopped and when the track script failed, and it came back each time. After both rebooted, the first held it again and the plan had no changes. Other machines couldn't reach the floating address there, as [Cloud floating IPs](#cloud-floating-ips) describes.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-keepalived/blob/v0.1.0/LICENSE). keepalived itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-keepalived/blob/v0.1.1/LICENSE). keepalived itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-keepalived](https://github.com/conn3xorg/circuit-keepalived). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-keepalived/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-keepalived](https://github.com/conn3xorg/circuit-keepalived). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-keepalived/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-keepalived/tree/v0.1.1/examples/local).
 - Related circuits: [HAProxy](/circuits/haproxy), [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale), [Cloudflare Tunnel](/circuits/cloudflared).

@@ -3,7 +3,7 @@ title: MariaDB
 description: "MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mariadb at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mariadb at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/mariadb/grade.svg)](https://conn3x.org/circuits/mariadb/grade)
 
@@ -23,7 +23,7 @@ variable "app_db_password" {
 }
 
 module "mariadb" {
-  source = "github.com/conn3xorg/circuit-mariadb?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-mariadb?ref=v0.2.1"
 
   hosts                = { db = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -60,7 +60,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.1/examples/local).
 
 ## What it does
 
@@ -132,16 +132,16 @@ Requires Conn3x v0.7.0 or later and systemd on each host, with access to the dis
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, then logs in over TCP as the example's user with its password, creates a table in its database, and checks it's refused the other database. The same ran by hand in arm64 containers, along with a misspelt setting, which failed the apply and left the server running; a password containing a quote and a backslash, then a password change; a move to port 3307; a second user with only `SELECT` and `SHOW VIEW`, which couldn't delete rows; a grant on a database with `_` in its name; and an anonymous user, a remote `root`, a `test` database and a revoked privilege added by hand, each of which the next plan caught and the apply removed or put back.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, then logs in over TCP as the example's user with its password, creates a table in its database, and checks it's refused the other database. The same ran by hand in arm64 containers, along with a misspelt setting, which failed the apply and left the server running; a password containing a quote and a backslash, then a password change; a move to port 3307; a second user with only `SELECT` and `SHOW VIEW`, which couldn't delete rows; a grant on a database with `_` in its name; and an anonymous user, a remote `root`, a `test` database and a revoked privilege added by hand, each of which the next plan caught and the apply removed or put back.
 
 All of that ran in containers, where SELinux is off. On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, the example's users and grants were applied by hand, with MariaDB on port 3307 on Rocky. The circuit labelled 3307 `mysqld_port_t`, MariaDB ran confined as `mysqld_t`, the user checks passed, the second plan had no changes, and the audit log had no denials. Both came back after a reboot with MariaDB running, the checks passing and the second plan clean.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mariadb/blob/v0.2.0/LICENSE). MariaDB itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mariadb/blob/v0.2.1/LICENSE). MariaDB itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-mariadb](https://github.com/conn3xorg/circuit-mariadb). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-mariadb/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-mariadb](https://github.com/conn3xorg/circuit-mariadb). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-mariadb/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-mariadb/tree/v0.2.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).

@@ -2,7 +2,7 @@
   "name": "cinc",
   "repo": "conn3xorg/circuit-cinc",
   "description": "Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "cinc",
     "chef",

@@ -3,7 +3,9 @@ title: MicroShift
 description: "Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-microshift at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-microshift at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/microshift/grade.svg)](https://conn3x.org/circuits/microshift/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/microshift/grade.svg)](https://conn3x.org/circuits/microshift/grade)
 
@@ -15,7 +17,7 @@ It installs the community build from [microshift-io](https://github.com/microshi
 
 ```hcl
 module "microshift" {
-  source = "github.com/conn3xorg/circuit-microshift?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-microshift?ref=v0.1.1"
 
   hosts                = { node = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -41,15 +43,16 @@ The API listens on port 6443, and the OpenShift router serves `Route`s on 80 and
 
 On each host, in order:
 
-1. Installs `kernel-modules-extra` for the running kernel. Cloud images often ship only `kernel-modules-core`, and kube-proxy needs `xt_conntrack` and `xt_comment` from the extra set. Without them the pod network never comes up.
-2. Loads `nf_conntrack` now and at boot, through `/etc/modules-load.d/microshift.conf`.
-3. Raises `fs.inotify.max_user_watches` and `fs.inotify.max_user_instances`, as MicroShift asks.
-4. Downloads the release's `microshift-rpms-x86_64.tgz` and the five RPMs in `dependency_rpms` to `/var/lib/conn3x-microshift`, checking each against its SHA-256, then unpacks the release.
-5. Installs `microshift` and `microshift-kindnet` from the unpacked release, with the dependency RPMs alongside. It runs again whenever `release` or `dependency_rpms` changes.
-6. If firewalld is running, trusts `10.42.0.0/16` (the pods) and `169.254.169.1` (cluster DNS), and opens 6443/tcp. If it isn't running, leaves the firewall alone.
-7. Writes `config` to `/etc/microshift/config.yaml`.
-8. Starts and enables `microshift`, and restarts it when `config`, `release` or `dependency_rpms` changes.
-9. Waits up to 15 minutes for the node to turn Ready.
+1. Stops with an error that says so if the host is named `localhost`, before installing anything. MicroShift puts the host's name in its certificates and won't start with that one, and some cloud images boot as `localhost` when nothing sets a name. `node.hostnameOverride` doesn't get around it, so give the host a name first.
+2. Installs `kernel-modules-extra` for the running kernel. Cloud images often ship only `kernel-modules-core`, and kube-proxy needs `xt_conntrack` and `xt_comment` from the extra set. Without them the pod network never comes up.
+3. Loads `nf_conntrack` now and at boot, through `/etc/modules-load.d/microshift.conf`.
+4. Raises `fs.inotify.max_user_watches` and `fs.inotify.max_user_instances`, as MicroShift asks.
+5. Downloads the release's `microshift-rpms-x86_64.tgz` and the five RPMs in `dependency_rpms` to `/var/lib/conn3x-microshift`, checking each against its SHA-256, then unpacks the release.
+6. Installs `microshift` and `microshift-kindnet` from the unpacked release, with the dependency RPMs alongside. It runs again whenever `release` or `dependency_rpms` changes.
+7. If firewalld is running, trusts `10.42.0.0/16` (the pods) and `169.254.169.1` (cluster DNS), and opens 6443/tcp. If it isn't running, leaves the firewall alone.
+8. Writes `config` to `/etc/microshift/config.yaml`.
+9. Starts and enables `microshift`, and restarts it when `config`, `release` or `dependency_rpms` changes.
+10. Waits up to 15 minutes for the node to turn Ready.
 
 The pod network is kindnet, not OVN-Kubernetes. No storage driver is installed, so a `PersistentVolumeClaim` stays pending until you add one.
 
@@ -96,16 +99,18 @@ Requires Conn3x v0.6.5 or later. MicroShift asks for at least 2 CPUs, 2 GB of me
 
 ## Tested on
 
-Rocky Linux 10 only, by hand, on a DigitalOcean droplet with 4 CPUs and 8 GB of memory and SELinux enforcing. CI only validates the configuration: MicroShift needs a real kernel, and the containers the other circuits test in can't give it one.
+Rocky Linux 10 only. MicroShift needs a kernel of its own, which the containers the other circuits test in can't give it, so CI applies [examples/local](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1/examples/local) to a Rocky Linux 10 VM under KVM on amd64 instead, with 4 CPUs and 8 GB of memory. It checks that the second plan has no changes, deploys an app with a Service and a `Route`, and fetches it from the runner through the router. Then it reboots the VM, fetches the app again and plans again with no changes.
+
+It was also applied by hand to a DigitalOcean droplet with 4 CPUs and 8 GB of memory and SELinux enforcing.
 
 From a fresh droplet, the first apply took about five minutes and the second plan had no changes. A `whoami` deployment exposed through a `Route` answered on port 80, `oc` worked from another machine with the kubeconfig for the `subjectAltNames` address, and a pod resolved a service name through cluster DNS. The same checks passed after starting firewalld and applying again, and again after a reboot, where the second plan stayed clean. The audit log had no denials at any point.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-microshift/blob/v0.1.0/LICENSE). MicroShift is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-microshift/blob/v0.1.1/LICENSE). MicroShift is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-microshift](https://github.com/conn3xorg/circuit-microshift). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-microshift/tags) list every release.
-- Examples: [examples/single-node](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.0/examples/single-node).
+- Repository: [conn3xorg/circuit-microshift](https://github.com/conn3xorg/circuit-microshift). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-microshift/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1/examples/local), [examples/single-node](https://github.com/conn3xorg/circuit-microshift/tree/v0.1.1/examples/single-node).
 - Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).

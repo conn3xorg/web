@@ -2,7 +2,7 @@
   "name": "qdrant",
   "repo": "conn3xorg/circuit-qdrant",
   "description": "Runs the Qdrant vector database from its official release under systemd, on loopback until you open it, with an optional API key.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "qdrant",
     "vector-database",

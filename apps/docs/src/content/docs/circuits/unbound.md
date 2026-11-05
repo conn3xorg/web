@@ -3,7 +3,9 @@ title: Unbound
 description: "A validating, caching DNS resolver with Unbound: DNSSEC on, optional DNS over TLS upstreams and local records for your network."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-unbound at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-unbound at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/unbound/grade.svg)](https://conn3x.org/circuits/unbound/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/unbound/grade.svg)](https://conn3x.org/circuits/unbound/grade)
 
@@ -15,7 +17,7 @@ The same settings land on Debian, Ubuntu, Fedora and Rocky Linux. The circuit pi
 
 ```hcl
 module "unbound" {
-  source = "github.com/conn3xorg/circuit-unbound?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-unbound?ref=v0.1.1"
 
   hosts                = { dns = "192.168.1.2" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -60,7 +62,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.1/examples/local).
 
 ### Who may ask
 
@@ -148,7 +150,7 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.0/examples/local) to each on amd64, once resolving from the root servers and once forwarding over TLS to Cloudflare and Quad9, and checks that the second plan has no changes. It then checks that `example.com` comes back with the `ad` flag, that `dnssec-failed.org` gets `SERVFAIL`, that `nas.home.arpa` answers from `local_data` and other `home.arpa` names get `NXDOMAIN`, that a repeat query counts as a cache hit in `unbound-control stats_noreset`, and that a query from the container's own address, outside `access_control`, is refused. The same checks passed in Podman on arm64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.1/examples/local) to each on amd64, once resolving from the root servers and once forwarding over TLS to Cloudflare and Quad9, and checks that the second plan has no changes. It then checks that `example.com` comes back with the `ad` flag, that `dnssec-failed.org` gets `SERVFAIL`, that `nas.home.arpa` answers from `local_data` and other `home.arpa` names get `NXDOMAIN`, that a repeat query counts as a cache hit in `unbound-control stats_noreset`, and that a query from the container's own address, outside `access_control`, is refused. The same checks passed in Podman on arm64.
 
 On Ubuntu 24.04, Debian 13 and Rocky Linux 10 droplets, the same checks passed with the default `interfaces`, beside systemd-resolved's stub on Ubuntu and Debian, then with `0.0.0.0`, where a query to the droplet's public address was refused. With `use_as_system_resolver`, `getent hosts` found `nas.home.arpa` and Unbound's query count rose with each lookup on all three, through nss-resolve on Debian, and still did after a reboot, with the plan still at no changes. Forwarding over TLS held open connections to port 853 on all three. Rocky Linux ran with SELinux enforcing: Unbound ran confined as `named_t`, and the audit log had no denials.
 
@@ -156,10 +158,10 @@ A config that fails `unbound-checkconf` was tried on Rocky Linux 10: the apply s
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-unbound/blob/v0.1.0/LICENSE). Unbound itself is BSD-3-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-unbound/blob/v0.1.1/LICENSE). Unbound itself is BSD-3-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-unbound](https://github.com/conn3xorg/circuit-unbound). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-unbound/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-unbound](https://github.com/conn3xorg/circuit-unbound). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-unbound/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-unbound/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Pi-hole](/circuits/pihole), [AdGuard Home](/circuits/adguardhome), [BIND](/circuits/bind).

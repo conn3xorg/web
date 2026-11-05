@@ -3,7 +3,9 @@ title: Prometheus
 description: "Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-prometheus at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-prometheus at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/prometheus/grade.svg)](https://conn3x.org/circuits/prometheus/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/prometheus/grade.svg)](https://conn3x.org/circuits/prometheus/grade)
 
@@ -15,14 +17,14 @@ A config change doesn't restart Prometheus. The circuit checks the new file with
 
 ```hcl
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.2"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
 }
 
 module "prometheus" {
-  source = "github.com/conn3xorg/circuit-prometheus?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-prometheus?ref=v0.1.1"
 
   hosts                = { mon1 = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +58,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.0/examples/local). It runs node_exporter from circuit-node-exporter next to Prometheus and scrapes it.
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.1/examples/local). It runs node_exporter from circuit-node-exporter next to Prometheus and scrapes it.
 
 ### Rocky Linux and port 9090
 
@@ -92,7 +94,7 @@ Set `prometheus_version` and `checksums` together. Take both checksums from the 
 
 ```hcl
 module "prometheus" {
-  source = "github.com/conn3xorg/circuit-prometheus?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-prometheus?ref=v0.1.1"
 
   hosts              = { mon1 = "203.0.113.20" }
   prometheus_version = "3.15.1"
@@ -136,16 +138,16 @@ Requires Conn3x v0.6.7 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.0/examples/local) to each on amd64, checks that the second plan has no changes, and checks through the HTTP API that the `node` target is up and `up{job="node"}` is 1. It then changes the scrape interval, applies again, and checks that Prometheus picked it up without restarting. The same checks passed by hand in arm64 containers.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, and checks through the HTTP API that the `node` target is up and `up{job="node"}` is 1. It then changes the scrape interval, applies again, and checks that Prometheus picked it up without restarting. The same checks passed by hand in arm64 containers.
 
 It was also applied by hand, with circuit-node-exporter, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On Rocky Linux, the default `127.0.0.1:9090` collided with `cockpit.socket` and the apply stopped at the ready check; with `listen_address = "127.0.0.1:9091"` both came up, scraped node_exporter, and reloaded in place on a scrape interval change. After a reboot Prometheus came back, the plan had no changes, and the audit log had no SELinux denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-prometheus/blob/v0.1.0/LICENSE). Prometheus itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-prometheus/blob/v0.1.1/LICENSE). Prometheus itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-prometheus](https://github.com/conn3xorg/circuit-prometheus). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-prometheus/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-prometheus](https://github.com/conn3xorg/circuit-prometheus). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-prometheus/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-prometheus/tree/v0.1.1/examples/local).
 - Related circuits: [node_exporter](/circuits/node-exporter), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios).

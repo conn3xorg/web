@@ -3,7 +3,9 @@ title: .NET
 description: "One exact .NET SDK with ASP.NET Core from Microsoft's tarballs, checked against its checksum, with telemetry off by default."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-dotnet at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-dotnet at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/dotnet/grade.svg)](https://conn3x.org/circuits/dotnet/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/dotnet/grade.svg)](https://conn3x.org/circuits/dotnet/grade)
 
@@ -15,7 +17,7 @@ It also turns the CLI's telemetry off. Left alone, the `dotnet` command sends Mi
 
 ```hcl
 module "dotnet" {
-  source = "github.com/conn3xorg/circuit-dotnet?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-dotnet?ref=v0.1.1"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -35,7 +37,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1/examples/local).
 
 ### Changing the release
 
@@ -102,7 +104,7 @@ Requires Conn3x v0.6.10 or later, a package mirror each host can reach, and outb
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.0/examples/local) was applied to each on arm64, and the second plan had no changes. `dotnet new web` then built a minimal ASP.NET Core app, whose own launcher started and answered `Hello World!` over HTTP. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. `dotnet new web` then built a minimal ASP.NET Core app, whose own launcher started and answered `Hello World!` over HTTP. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same checks passed, and after a reboot the plan had no changes and they still passed.
 
@@ -110,10 +112,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-dotnet/blob/v0.1.0/LICENSE). The .NET SDK tarball is under the MIT license, per its own `LICENSE.txt`, with bundled components listed in `ThirdPartyNotices.txt`.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-dotnet/blob/v0.1.1/LICENSE). The .NET SDK tarball is under the MIT license, per its own `LICENSE.txt`, with bundled components listed in `ThirdPartyNotices.txt`.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-dotnet](https://github.com/conn3xorg/circuit-dotnet). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-dotnet/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-dotnet](https://github.com/conn3xorg/circuit-dotnet). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-dotnet/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [C toolchain](/circuits/c-toolchain).

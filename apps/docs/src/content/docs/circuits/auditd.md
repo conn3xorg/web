@@ -3,7 +3,9 @@ title: auditd
 description: "Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability"
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-auditd at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-auditd at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/auditd/grade.svg)](https://conn3x.org/circuits/auditd/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/auditd/grade.svg)](https://conn3x.org/circuits/auditd/grade)
 
@@ -15,7 +17,7 @@ You pick from the rule sets the audit package itself ships, such as PCI DSS or t
 
 ```hcl
 module "auditd" {
-  source = "github.com/conn3xorg/circuit-auditd?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-auditd?ref=v0.1.1"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +54,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.0/examples/local). A container can't load audit rules, so that shows you the files, not the events.
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.1/examples/local). A container can't load audit rules, so that shows you the files, not the events.
 
 ## Presets
 
@@ -178,16 +180,16 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Fedora 45 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.0/examples/local) to each in a container on amd64 and checks that the second plan has no changes. Containers can't load audit rules, so CI checks what a container can: the `auditd.conf` settings, the copied presets, the rules `augenrules` builds from them with `-D` first and Fedora's `-a task,never` gone, and that auditd is enabled.
+Ubuntu 24.04, Debian 13, Fedora 45 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.1/examples/local) to each in a container on amd64 and checks that the second plan has no changes. Containers can't load audit rules, so CI checks what a container can: the `auditd.conf` settings, the copied presets, the rules `augenrules` builds from them with `-D` first and Fedora's `-a task,never` gone, and that auditd is enabled.
 
 Loading was tested by hand on Ubuntu 24.04, Debian 13, Rocky Linux 10 (SELinux enforcing) and Fedora 44 droplets, amd64, with `11-loginuid`, `30-pci-dss-v31` and the watch `-w /etc/conn3x-test -p wa -k conn3x`. On each, `auditctl -l` listed the rules, touching `/etc/conn3x-test` left an event `ausearch -k conn3x` found, the `auditd.conf` reload showed up as a `DAEMON_CONFIG` success in the audit log, and the second plan had no changes. After a reboot, the rules were loaded again and the plan still had no changes. With `immutable = true`, `auditctl -s` showed `enabled 2`; adding a rule then applied cleanly, left the old rules running, and the new rule was loaded after a reboot. A watch on a folder that doesn't exist failed the apply on all four, and each was back on its previous rules. Rocky Linux and Fedora logged no SELinux denials. `30-stig` loaded on Rocky Linux and Fedora and was turned down on Debian and Ubuntu, as in [Presets](#presets).
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-auditd/blob/v0.1.0/LICENSE). The Linux audit userspace and its sample rules are GPL-2.0-or-later; the circuit copies the samples from each host's own package and doesn't ship them.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-auditd/blob/v0.1.1/LICENSE). The Linux audit userspace and its sample rules are GPL-2.0-or-later; the circuit copies the samples from each host's own package and doesn't ship them.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-auditd](https://github.com/conn3xorg/circuit-auditd). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-auditd/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-auditd](https://github.com/conn3xorg/circuit-auditd). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-auditd/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-auditd/tree/v0.1.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).

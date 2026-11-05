@@ -2,7 +2,7 @@
   "name": "prometheus",
   "repo": "conn3xorg/circuit-prometheus",
   "description": "Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "prometheus",
     "monitoring",

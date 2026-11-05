@@ -3,7 +3,9 @@ title: certbot
 description: "Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-certbot at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-certbot at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/certbot/grade.svg)](https://conn3x.org/circuits/certbot/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/certbot/grade.svg)](https://conn3x.org/circuits/certbot/grade)
 
@@ -15,7 +17,7 @@ It's for nginx, HAProxy, Postfix, or anything else that reads a certificate from
 
 ```hcl
 module "certbot" {
-  source = "github.com/conn3xorg/circuit-certbot?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-certbot?ref=v0.1.1"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -35,7 +37,7 @@ Start with `staging = true`. Let's Encrypt's staging server works the same way, 
 
 Every domain has to point at the host already, and port 80 on the host has to be reachable from the internet, since Let's Encrypt checks each domain over plain HTTP. Wildcard certificates need a DNS challenge, which this circuit doesn't do.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.0/examples/local). It runs against Pebble, a test ACME server, since a container can't get a real certificate.
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.1/examples/local). It runs against Pebble, a test ACME server, since a container can't get a real certificate.
 
 ### Choosing a method
 
@@ -51,12 +53,12 @@ With nginx from [circuit-nginx](/circuits/nginx), either `"nginx"` or `"webroot"
 
 ```hcl
 module "web" {
-  source = "github.com/conn3xorg/circuit-nginx?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-nginx?ref=v0.2.1"
   hosts  = { web1 = "203.0.113.10" }
 }
 
 module "certbot" {
-  source     = "github.com/conn3xorg/circuit-certbot?ref=v0.1.0"
+  source     = "github.com/conn3xorg/circuit-certbot?ref=v0.1.1"
   depends_on = [module.web]
 
   hosts       = { web1 = { address = "203.0.113.10", os = "ubuntu" } }
@@ -141,16 +143,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.0/examples/local) to each on amd64 against Pebble, Let's Encrypt's test server, checks that the second plan has no changes, checks the certificate has the example's domains, that the deploy hook ran and the renewal timer is on, and runs `certbot renew --dry-run`. On Rocky Linux 10, the `"nginx"` method with circuit-nginx was also tried against Pebble, then switched to `"webroot"`, which replaced the certificate and again left no changes.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.1/examples/local) to each on amd64 against Pebble, Let's Encrypt's test server, checks that the second plan has no changes, checks the certificate has the example's domains, that the deploy hook ran and the renewal timer is on, and runs `certbot renew --dry-run`. On Rocky Linux 10, the `"nginx"` method with circuit-nginx was also tried against Pebble, then switched to `"webroot"`, which replaced the certificate and again left no changes.
 
 Against Let's Encrypt's staging server, on `s-1vcpu-1gb` droplets with sslip.io names: Ubuntu 24.04 with `"standalone"`, and Rocky Linux 10 with SELinux enforcing, `"nginx"` and circuit-nginx v0.1.0. Both got their certificates, planned with no changes, passed `certbot renew --dry-run`, and had their timers running and no changes to plan after a reboot. The Rocky Linux host's audit log had no denials. Production Let's Encrypt wasn't used in testing.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-certbot/blob/v0.1.0/LICENSE). certbot itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-certbot/blob/v0.1.1/LICENSE). certbot itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-certbot](https://github.com/conn3xorg/circuit-certbot). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-certbot/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-certbot](https://github.com/conn3xorg/circuit-certbot). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-certbot/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-certbot/tree/v0.1.1/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [nginx](/circuits/nginx), [Firewall](/circuits/firewall), [Apache httpd](/circuits/apache), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [IIS](/circuits/iis).

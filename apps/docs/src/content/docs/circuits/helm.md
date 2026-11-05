@@ -3,7 +3,9 @@ title: Helm
 description: "A pinned, checksum-verified Helm, with optional chart releases kept as you configured them."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-helm at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-helm at v0.1.3. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/helm/grade.svg)](https://conn3x.org/circuits/helm/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/helm/grade.svg)](https://conn3x.org/circuits/helm/grade)
 
@@ -17,7 +19,7 @@ Only the binary:
 
 ```hcl
 module "helm" {
-  source = "github.com/conn3xorg/circuit-helm?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-helm?ref=v0.1.3"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -28,7 +30,7 @@ With a release, on a cluster built by [circuit-k3s](/circuits/k3s):
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token
@@ -36,7 +38,7 @@ module "k3s" {
 }
 
 module "helm" {
-  source     = "github.com/conn3xorg/circuit-helm?ref=v0.1.2"
+  source     = "github.com/conn3xorg/circuit-helm?ref=v0.1.3"
   depends_on = [module.k3s]
 
   hosts                = { cp1 = "203.0.113.10" }
@@ -64,7 +66,7 @@ Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No chang
 
 For a chart in an OCI registry, set `chart = "oci://ghcr.io/stefanprodan/charts/podinfo"` and leave out `repository`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.3/examples/local).
 
 ### Secrets in values
 
@@ -200,7 +202,7 @@ Requires Conn3x v0.6.10 or later, circuit-k3s v0.1.4 or later if that's what bui
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2/examples/local) to each in a container on amd64 and checks that the plan after it has no changes. It asks the running pods for a value through their service, changes the value and asks again, checks that a values file stayed out of state, and checks that a secret-looking value is refused. A container shows that the install works. It doesn't show that a release survives a reboot. The same four containers also passed by hand on arm64, along with an upgrade done by hand showing up in a plan, a wrong chart `sha256` stopping the apply, an `oci://` chart with no `sha256`, and the binary on its own with no releases, the last two on Debian 13.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.3/examples/local) to each in a container on amd64 and checks that the plan after it has no changes. It asks the running pods for a value through their service, changes the value and asks again, checks that a values file stayed out of state, and checks that a secret-looking value is refused. A container shows that the install works. It doesn't show that a release survives a reboot. The same four containers also passed by hand on arm64, along with an upgrade done by hand showing up in a plan, a wrong chart `sha256` stopping the apply, an `oci://` chart with no `sha256`, and the binary on its own with no releases, the last two on Debian 13.
 
 The rest was run by hand on 2 vCPU, 4 GB droplets with one node each: Ubuntu 24.04, and Rocky Linux 10. On both, the value change showed in the pods, the secret wasn't in state, and after a reboot the plan had no changes and the pods still gave the right answer.
 
@@ -210,10 +212,10 @@ Not run: Helm 3, a cluster that isn't k3s, more than one host, a real secret cha
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-helm/blob/v0.1.2/LICENSE). Helm is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-helm/blob/v0.1.3/LICENSE). Helm is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-helm](https://github.com/conn3xorg/circuit-helm). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-helm/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-helm](https://github.com/conn3xorg/circuit-helm). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-helm/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-helm/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.3/examples/local).
 - Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Istio](/circuits/istio), [Flux](/circuits/flux).

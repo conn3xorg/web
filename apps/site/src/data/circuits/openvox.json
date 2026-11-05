@@ -2,7 +2,7 @@
   "name": "openvox",
   "repo": "conn3xorg/circuit-openvox",
   "description": "Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "openvox",
     "puppet",

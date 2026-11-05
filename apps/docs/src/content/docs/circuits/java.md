@@ -3,7 +3,9 @@ title: Java
 description: "OpenJDK or Eclipse Temurin 21 or 25 on Debian, Ubuntu, Fedora and Rocky, set as the default java with JAVA_HOME exported."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-java at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-java at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/java/grade.svg)](https://conn3x.org/circuits/java/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/java/grade.svg)](https://conn3x.org/circuits/java/grade)
 
@@ -15,7 +17,7 @@ It then points `java` at that release through the alternatives system and export
 
 ```hcl
 module "java" {
-  source = "github.com/conn3xorg/circuit-java?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-java?ref=v0.1.1"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -30,7 +32,7 @@ For a build host, set `jdk = true` to get `javac` and the rest of the JDK. For T
 
 ```hcl
 module "java" {
-  source = "github.com/conn3xorg/circuit-java?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-java?ref=v0.1.1"
 
   hosts       = { ci1 = "203.0.113.20" }
   java_source = "temurin"
@@ -50,7 +52,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-java/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-java/tree/v0.1.1/examples/local).
 
 ### Which releases you can pick
 
@@ -73,7 +75,7 @@ To install a second release without taking over `java`, use another module with 
 
 ```hcl
 module "java17" {
-  source = "github.com/conn3xorg/circuit-java?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-java?ref=v0.1.1"
 
   hosts        = { app1 = "203.0.113.10" }
   java_version = 17
@@ -89,7 +91,7 @@ A circuit that runs a Java service can depend on this one and use `java_home` ra
 
 ```hcl
 module "java" {
-  source = "github.com/conn3xorg/circuit-java?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-java?ref=v0.1.1"
   hosts  = { app1 = "203.0.113.10" }
 }
 
@@ -162,16 +164,16 @@ Requires Conn3x v0.6.9 or later, and a package mirror each host can reach. With 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, from both sources. [examples/local](https://github.com/conn3xorg/circuit-java/tree/v0.1.0/examples/local) was applied to each on arm64 with Java 25, once from the distribution and once from Temurin, and the second plan had no changes. In a login shell, `java -version` reported 25, `JAVA_HOME` pointed at the same Java as `java`, and `javac` was there. The runtime alone (`jdk = false`) was applied the same way on Rocky Linux 10 and Debian 13 from both sources. On Rocky Linux 10 and Ubuntu 24.04, switching a host from the distribution's OpenJDK to Temurin and back moved `java` and `JAVA_HOME` each time, with clean plans after. CI runs the same checks on amd64, and the switch on each distribution.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, from both sources. [examples/local](https://github.com/conn3xorg/circuit-java/tree/v0.1.1/examples/local) was applied to each on arm64 with Java 25, once from the distribution and once from Temurin, and the second plan had no changes. In a login shell, `java -version` reported 25, `JAVA_HOME` pointed at the same Java as `java`, and `javac` was there. The runtime alone (`jdk = false`) was applied the same way on Rocky Linux 10 and Debian 13 from both sources. On Rocky Linux 10 and Ubuntu 24.04, switching a host from the distribution's OpenJDK to Temurin and back moved `java` and `JAVA_HOME` each time, with clean plans after. CI runs the same checks on amd64, and the switch on each distribution.
 
 On an Ubuntu 24.04 droplet, OpenJDK 21 from the distribution went on with `set_default = false` next to the Temurin 25 JDK as the default. On a Rocky Linux 10 droplet with SELinux enforcing, the OpenJDK 25 runtime was the default next to a 21 JDK with `set_default = false`. Both `s-1vcpu-1gb`, amd64. On each, `java` and `JAVA_HOME` were the default release, the other release ran from its `java_home`, and after a reboot they still were and the plan was clean.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-java/blob/v0.1.0/LICENSE). OpenJDK and Temurin are GPL-2.0 with the Classpath Exception.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-java/blob/v0.1.1/LICENSE). OpenJDK and Temurin are GPL-2.0 with the Classpath Exception.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-java](https://github.com/conn3xorg/circuit-java). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-java/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-java/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-java/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-java](https://github.com/conn3xorg/circuit-java). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-java/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-java/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-java/tree/v0.1.1/examples/local).
 - Related circuits: [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

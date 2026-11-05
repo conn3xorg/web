@@ -2,7 +2,7 @@
   "name": "c-toolchain",
   "repo": "conn3xorg/circuit-c-toolchain",
   "description": "gcc, g++, make, gdb and nasm from your distribution's packages, for C, C++ and assembly. Versions differ per distribution.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "c",
     "cpp",

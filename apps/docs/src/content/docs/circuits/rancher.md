@@ -3,7 +3,9 @@ title: Rancher
 description: "Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-rancher at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-rancher at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/rancher/grade.svg)](https://conn3x.org/circuits/rancher/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/rancher/grade.svg)](https://conn3x.org/circuits/rancher/grade)
 
@@ -15,7 +17,7 @@ The part that usually bites is the Kubernetes version. Rancher supports a narrow
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token
@@ -30,7 +32,7 @@ module "k3s" {
 }
 
 module "rancher" {
-  source     = "github.com/conn3xorg/circuit-rancher?ref=v0.1.1"
+  source     = "github.com/conn3xorg/circuit-rancher?ref=v0.1.2"
   depends_on = [module.k3s]
 
   server               = "203.0.113.10"
@@ -58,7 +60,7 @@ Open `https://rancher.example.org`, log in as `admin` with the bootstrap passwor
 
 For a highly available Rancher, give circuit-k3s three servers and point `hostname` at a load balancer. `server` is still one of them: it's only where Helm runs. The chart runs up to three Rancher pods, one per node.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.2/examples/local).
 
 ### Your own certificates
 
@@ -139,7 +141,7 @@ Requires Conn3x v0.6.9 or later, circuit-k3s v0.1.4 or later if that's what buil
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.1/examples/local) to each in a container on amd64, checks that the second plan has no changes, and runs [check.sh](https://github.com/conn3xorg/circuit-rancher/blob/v0.1.1/examples/local/check.sh): the API answers `/ping`, the bootstrap password logs in, a wrong one gets a 401, and the local cluster is `active`. A container shows that the install works. It doesn't show that Rancher survives a reboot or is reachable from outside. The same four containers also passed by hand on arm64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.2/examples/local) to each in a container on amd64, checks that the second plan has no changes, and runs [check.sh](https://github.com/conn3xorg/circuit-rancher/blob/v0.1.2/examples/local/check.sh): the API answers `/ping`, the bootstrap password logs in, a wrong one gets a 401, and the local cluster is `active`. A container shows that the install works. It doesn't show that Rancher survives a reboot or is reachable from outside. The same four containers also passed by hand on arm64.
 
 The rest was run by hand on 4 vCPU, 16 GB droplets, Rancher's minimum, with one node each: Ubuntu 24.04, and Rocky Linux 10 with SELinux enforcing. On both, the same checks passed, `/ping` answered from outside through the `sslip.io` name, the password wasn't in state, and after a reboot the plan had no changes and the checks passed again. A k3s version outside `k3s_minors` stopped the apply with its message on Rocky Linux 10.
 
@@ -147,10 +149,10 @@ Not run: more than one node, arm64 on a real host, Let's Encrypt or your own cer
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-rancher/blob/v0.1.1/LICENSE). Rancher and cert-manager are Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-rancher/blob/v0.1.2/LICENSE). Rancher and cert-manager are Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-rancher](https://github.com/conn3xorg/circuit-rancher). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-rancher/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-rancher](https://github.com/conn3xorg/circuit-rancher). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-rancher/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-rancher/tree/v0.1.2/examples/local).
 - Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).

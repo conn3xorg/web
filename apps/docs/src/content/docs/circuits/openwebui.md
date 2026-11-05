@@ -3,7 +3,9 @@ title: Open WebUI
 description: "Open WebUI in Podman: private chat for Ollama or a gateway, first admin from code, sign-up closed, per-user model access, no telemetry"
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openwebui at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openwebui at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/openwebui/grade.svg)](https://conn3x.org/circuits/openwebui/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/openwebui/grade.svg)](https://conn3x.org/circuits/openwebui/grade)
 
@@ -23,7 +25,7 @@ variable "admin_password" {
 }
 
 module "ollama" {
-  source = "github.com/conn3xorg/circuit-ollama?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-ollama?ref=v0.1.2"
 
   hosts                = { ai = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -32,7 +34,7 @@ module "ollama" {
 }
 
 module "openwebui" {
-  source = "github.com/conn3xorg/circuit-openwebui?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-openwebui?ref=v0.1.1"
 
   depends_on = [module.ollama]
 
@@ -55,7 +57,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the password too, sin
 
 Open WebUI listens on `127.0.0.1:8080` and talks to Ollama at `http://127.0.0.1:11434`, circuit-ollama's default. Put a reverse proxy in front for TLS, such as [circuit-caddy](/circuits/caddy) with `reverse_proxy 127.0.0.1:8080`, and sign in with the admin account. To reach it without a proxy, tunnel over SSH: `ssh -L 8080:127.0.0.1:8080 root@192.168.1.50`, then open `http://localhost:8080`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.1/examples/local).
 
 ### Hosted models through a gateway
 
@@ -77,7 +79,7 @@ Open WebUI keeps its data in SQLite inside its volume unless you give it `databa
 
 ```hcl
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
 
   hosts                = { ai = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -193,7 +195,7 @@ Open WebUI on its own used under 1 GB of memory in testing. A model in Ollama be
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.0/examples/local) to each on amd64 and checks that the second plan has no changes. It then checks `/health`, signs in as the admin the circuit created through `/api/v1/auths/signin`, and checks that `/api/v1/auths/signup` refuses a new account with 403. It starts a stand-in OpenAI-compatible server and checks that `/api/models` lists its model. It restarts Open WebUI and checks that the session token from before still works and the admin can still sign in, which needs both `WEBUI_SECRET_KEY` and the database to come through, and that the plan is still clean. CI doesn't run Ollama: the runners have no GPU, and the stand-in shows the connection works without a model download.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It then checks `/health`, signs in as the admin the circuit created through `/api/v1/auths/signin`, and checks that `/api/v1/auths/signup` refuses a new account with 403. It starts a stand-in OpenAI-compatible server and checks that `/api/models` lists its model. It restarts Open WebUI and checks that the session token from before still works and the admin can still sign in, which needs both `WEBUI_SECRET_KEY` and the database to come through, and that the plan is still clean. CI doesn't run Ollama: the runners have no GPU, and the stand-in shows the connection works without a model download.
 
 The same checks passed by hand on two droplets. On Ubuntu 24.04 with 4 GB of memory, Open WebUI ran beside circuit-ollama with `qwen2.5:0.5b` and kept its data in PostgreSQL from circuit-postgres through `database_url`; `/api/models` listed the model and a chat through `/api/chat/completions` got an answer. On Rocky Linux 10 with 2 GB of memory and SELinux enforcing, it ran on SQLite with the stand-in server. On both, port 8080 didn't answer from outside, Open WebUI used about 700 MB of memory, and after a reboot it came back on its own, the admin could sign in, and the second plan was clean. The Rocky audit log had no denials.
 
@@ -201,10 +203,10 @@ Upgrading from one `openwebui_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openwebui/blob/v0.1.0/LICENSE). Open WebUI itself is under its own [Open WebUI License](https://github.com/open-webui/open-webui/blob/main/LICENSE), a BSD-3-Clause license with a branding clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openwebui/blob/v0.1.1/LICENSE). Open WebUI itself is under its own [Open WebUI License](https://github.com/open-webui/open-webui/blob/main/LICENSE), a BSD-3-Clause license with a branding clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-openwebui](https://github.com/conn3xorg/circuit-openwebui). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-openwebui/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-openwebui](https://github.com/conn3xorg/circuit-openwebui). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-openwebui/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-openwebui/tree/v0.1.1/examples/local).
 - Related circuits: [Ollama](/circuits/ollama), [Caddy](/circuits/caddy), [PostgreSQL](/circuits/postgres), [Podman](/circuits/podman), [restic](/circuits/restic), [Qdrant](/circuits/qdrant), [LiteLLM](/circuits/litellm), [Presidio](/circuits/presidio), [Langfuse](/circuits/langfuse), [Agent box](/circuits/agentbox).

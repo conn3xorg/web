@@ -2,7 +2,7 @@
   "name": "rust",
   "repo": "conn3xorg/circuit-rust",
   "description": "One exact Rust toolchain from static.rust-lang.org on every distribution, checksum-verified and system-wide, without rustup.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "rust",
     "cargo",

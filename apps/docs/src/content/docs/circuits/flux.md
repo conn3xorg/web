@@ -3,7 +3,9 @@ title: Flux
 description: "Flux CD on a k3s cluster at a pinned version, synced from a Git repository you name, with credentials kept out of state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-flux at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-flux at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/flux/grade.svg)](https://conn3x.org/circuits/flux/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/flux/grade.svg)](https://conn3x.org/circuits/flux/grade)
 
@@ -15,7 +17,7 @@ It's for the cluster you've already built with [circuit-k3s](/circuits/k3s), and
 
 ```hcl
 module "k3s" {
-  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-k3s?ref=v0.1.6"
 
   servers              = { cp1 = "203.0.113.10" }
   token                = var.k3s_token
@@ -23,7 +25,7 @@ module "k3s" {
 }
 
 module "flux" {
-  source     = "github.com/conn3xorg/circuit-flux?ref=v0.1.1"
+  source     = "github.com/conn3xorg/circuit-flux?ref=v0.1.2"
   depends_on = [module.k3s]
 
   server               = "203.0.113.10"
@@ -41,7 +43,7 @@ variable "k3s_token" {
 
 Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` The apply waits until Flux has read the repository and applied what's at `git_path`, so a wrong URL, a refused key or a broken manifest fails the apply, after up to five minutes, with Flux's own message.
 
-To try it on a throwaway container first, with a small Git server and no account anywhere, see [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, with a small Git server and no account anywhere, see [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.2/examples/local).
 
 ### A private repository
 
@@ -151,7 +153,7 @@ Requires Conn3x v0.6.9 or later, circuit-k3s v0.1.4 or later if that's what buil
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.1/examples/local) to each in a container on amd64, against a Git server on the same host over SSH. It checks that the second plan has no changes and the private key isn't in state, then runs [check.sh](https://github.com/conn3xorg/circuit-flux/blob/v0.1.1/examples/local/check.sh): the repository's ConfigMaps reach the cluster, and a commit that changes one and deletes the other takes effect with no apply. The same four containers also passed by hand on arm64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.2/examples/local) to each in a container on amd64, against a Git server on the same host over SSH. It checks that the second plan has no changes and the private key isn't in state, then runs [check.sh](https://github.com/conn3xorg/circuit-flux/blob/v0.1.2/examples/local/check.sh): the repository's ConfigMaps reach the cluster, and a commit that changes one and deletes the other takes effect with no apply. The same four containers also passed by hand on arm64.
 
 The rest was run by hand. On 2 vCPU, 4 GB droplets, Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing passed the same checks on x86_64, with no SELinux denials on Rocky. After a reboot the plan had no changes, and another commit reached the cluster. A k3s version outside `k3s_minors` stopped the apply with its message on Ubuntu.
 
@@ -161,10 +163,10 @@ Not run: more than one node, arm64 on a real host, a real Git hosting service, a
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-flux/blob/v0.1.1/LICENSE). Flux is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-flux/blob/v0.1.2/LICENSE). Flux is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-flux](https://github.com/conn3xorg/circuit-flux). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-flux/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-flux/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-flux](https://github.com/conn3xorg/circuit-flux). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-flux/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-flux/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-flux/tree/v0.1.2/examples/local).
 - Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio).

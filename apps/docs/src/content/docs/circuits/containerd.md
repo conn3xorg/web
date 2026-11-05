@@ -3,7 +3,9 @@ title: containerd
 description: "Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-containerd at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-containerd at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/containerd/grade.svg)](https://conn3x.org/circuits/containerd/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/containerd/grade.svg)](https://conn3x.org/circuits/containerd/grade)
 
@@ -27,7 +29,7 @@ Pick one per host: this circuit, or [circuit-docker](/circuits/docker). [circuit
 
 ```hcl
 module "containerd" {
-  source = "github.com/conn3xorg/circuit-containerd?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-containerd?ref=v0.1.1"
 
   hosts                = { node1 = "203.0.113.10", node2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +54,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.1/examples/local).
 
 ### Changing a release
 
@@ -135,7 +137,7 @@ Requires Conn3x v0.6.10 or later, systemd, and hosts with outbound HTTPS to gith
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.0/examples/local) was applied to each on arm64, in a privileged container with `/var/lib/containerd` on a volume, and the second plan had no changes. On each, `containerd` was active and enabled, `ctr` reported 2.4.2 for client and server, runc and the CNI `bridge` plugin reported their pinned versions, the CRI plugin loaded, and `ctr` pulled `ghcr.io/containerd/busybox:1.36` and ran it. On Rocky Linux 10, a config with a TOML error failed the apply and left the live file and the service alone, and a valid change restarted the service. CI runs the apply, the second plan and the `ctr` check on amd64 across the four distributions.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.1/examples/local) was applied to each on arm64, in a privileged container with `/var/lib/containerd` on a volume, and the second plan had no changes. On each, `containerd` was active and enabled, `ctr` reported 2.4.2 for client and server, runc and the CNI `bridge` plugin reported their pinned versions, the CRI plugin loaded, and `ctr` pulled `ghcr.io/containerd/busybox:1.36` and ran it. On Rocky Linux 10, a config with a TOML error failed the apply and left the live file and the service alone, and a valid change restarted the service. CI runs the apply, the second plan and the `ctr` check on amd64 across the four distributions.
 
 A container can't cover everything, so these ran on droplets: an Ubuntu 24.04 and a Rocky Linux 10 with SELinux enforcing, both `s-1vcpu-1gb`, amd64. The same checks passed. With a bridge network written by hand in `/etc/cni/net.d`, `ctr run --cni` got an address from `host-local` and pinged its gateway, so the plugins work. A running container stayed up through moving containerd to 2.4.1 and back, with the daemon on the new release each time. After a reboot, containerd was running with the `overlay` module loaded, `ctr` ran a container, and the plan had no changes.
 
@@ -145,10 +147,10 @@ Fedora 45 ran in a container only, as DigitalOcean has no image of it. Neither a
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-containerd/blob/v0.1.0/LICENSE). containerd, runc and the CNI plugins are under the Apache License 2.0, and `files/containerd.service` is copied from containerd unchanged.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-containerd/blob/v0.1.1/LICENSE). containerd, runc and the CNI plugins are under the Apache License 2.0, and `files/containerd.service` is copied from containerd unchanged.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-containerd](https://github.com/conn3xorg/circuit-containerd). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-containerd/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-containerd](https://github.com/conn3xorg/circuit-containerd). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-containerd/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-containerd/tree/v0.1.1/examples/local).
 - Related circuits: [Docker](/circuits/docker), [kubeadm](/circuits/kubeadm), [Podman](/circuits/podman), [k3s](/circuits/k3s), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).

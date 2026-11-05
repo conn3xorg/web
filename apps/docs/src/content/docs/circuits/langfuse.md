@@ -3,7 +3,9 @@ title: Langfuse
 description: "Langfuse LLM observability on one host: prompts, costs and evals traced into ClickHouse, keys generated on the host, sign-up off."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-langfuse at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-langfuse at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/langfuse/grade.svg)](https://conn3x.org/circuits/langfuse/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/langfuse/grade.svg)](https://conn3x.org/circuits/langfuse/grade)
 
@@ -43,7 +45,7 @@ variable "langfuse_secret_key" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
 
   hosts                = { traces = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +58,7 @@ module "postgres" {
 # Langfuse queues work in Valkey, so it must never evict keys. noeviction
 # is circuit-valkey's default.
 module "valkey" {
-  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.1"
 
   hosts                = { traces = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -65,7 +67,7 @@ module "valkey" {
 }
 
 module "langfuse" {
-  source = "github.com/conn3xorg/circuit-langfuse?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-langfuse?ref=v0.1.1"
 
   depends_on = [module.postgres, module.valkey]
 
@@ -105,7 +107,7 @@ export LANGFUSE_PUBLIC_KEY=pk-lf-support-bot
 export LANGFUSE_SECRET_KEY=sk-lf-...
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.1/examples/local).
 
 ### Memory
 
@@ -226,7 +228,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with about 4 GB of mem
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Rocky Linux 10 with SELinux enforcing, and Fedora 44, each a 4 GB DigitalOcean droplet on amd64 running [examples/local](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.0/examples/local) with circuit-postgres and circuit-valkey on the same host. On each, the second plan was clean; `/api/public/health` answered `OK`; a sign-up was refused with `Sign up is disabled.`; the keys from headless initialization sent a trace over OTLP, and the worker had it in ClickHouse, readable through `/api/public/v2/observations`, within three seconds. A wrong secret key got a 401. On Debian, all four services were restarted and the same trace read back. Ubuntu and Rocky were rebooted: everything came back on its own, the trace was still there, the plan was clean, and Rocky's audit log had no SELinux denials. From outside the Rocky droplet, ports 3000 and 9002 didn't answer.
+Ubuntu 24.04, Debian 13, Rocky Linux 10 with SELinux enforcing, and Fedora 44, each a 4 GB DigitalOcean droplet on amd64 running [examples/local](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.1/examples/local) with circuit-postgres and circuit-valkey on the same host. On each, the second plan was clean; `/api/public/health` answered `OK`; a sign-up was refused with `Sign up is disabled.`; the keys from headless initialization sent a trace over OTLP, and the worker had it in ClickHouse, readable through `/api/public/v2/observations`, within three seconds. A wrong secret key got a 401. On Debian, all four services were restarted and the same trace read back. Ubuntu and Rocky were rebooted: everything came back on its own, the trace was still there, the plan was clean, and Rocky's audit log had no SELinux denials. From outside the Rocky droplet, ports 3000 and 9002 didn't answer.
 
 Rocky Linux turned up one thing worth knowing: its cloud image has Cockpit on port 9090, where Langfuse's Compose file puts MinIO, which is why the circuit uses 9002.
 
@@ -236,10 +238,10 @@ Upgrading from one `langfuse_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-langfuse/blob/v0.1.0/LICENSE). Langfuse itself is under the MIT license, apart from its `ee` directories. ClickHouse is under the Apache License 2.0, and MinIO under the AGPL v3.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-langfuse/blob/v0.1.1/LICENSE). Langfuse itself is under the MIT license, apart from its `ee` directories. ClickHouse is under the Apache License 2.0, and MinIO under the AGPL v3.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-langfuse](https://github.com/conn3xorg/circuit-langfuse). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-langfuse/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-langfuse](https://github.com/conn3xorg/circuit-langfuse). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-langfuse/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-langfuse/tree/v0.1.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Valkey](/circuits/valkey), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Ollama](/circuits/ollama), [Qdrant](/circuits/qdrant), [Open WebUI](/circuits/openwebui), [LiteLLM](/circuits/litellm), [Presidio](/circuits/presidio), [Agent box](/circuits/agentbox).

@@ -3,7 +3,9 @@ title: LiteLLM
 description: "Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-team keys, budgets, Presidio guardrails and Langfuse tracing."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-litellm at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-litellm at v0.2.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/litellm/grade.svg)](https://conn3x.org/circuits/litellm/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/litellm/grade.svg)](https://conn3x.org/circuits/litellm/grade)
 
@@ -39,7 +41,7 @@ variable "anthropic_api_key" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -50,7 +52,7 @@ module "postgres" {
 }
 
 module "litellm" {
-  source = "github.com/conn3xorg/circuit-litellm?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-litellm?ref=v0.2.1"
 
   depends_on = [module.postgres]
 
@@ -95,7 +97,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the secrets too, sinc
 
 LiteLLM listens on `127.0.0.1:4000`. Put a reverse proxy in front for TLS (see below) before anything off the host uses it.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.1/examples/local).
 
 ### Keys for teams and people
 
@@ -127,7 +129,7 @@ LiteLLM runs on the host's network, so it reaches an [Ollama](/circuits/ollama) 
 
 ```hcl
 module "ollama" {
-  source = "github.com/conn3xorg/circuit-ollama?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-ollama?ref=v0.1.2"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -152,7 +154,7 @@ LiteLLM can send every request through [Presidio](/circuits/presidio) before a m
 
 ```hcl
 module "presidio" {
-  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-presidio?ref=v0.1.1"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -221,7 +223,7 @@ LiteLLM speaks plain HTTP. [circuit-caddy](/circuits/caddy) on the same host can
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.2"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -352,7 +354,7 @@ LiteLLM used about 620 MB of memory in testing. With PostgreSQL beside it, it ra
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.0/examples/local) to each on amd64, with circuit-postgres and circuit-presidio on the same host, and checks that the second plan has no changes. It then runs a stand-in for an OpenAI-compatible provider, so no real API key is involved, and checks that `/health/liveliness` answers, that `/key/generate` refuses a wrong master key and a budget over `max_key_budget`, and that a key made for one model can use it, through the provider key that came in by `api_keys`, and gets a `403` for the other. The request has to show up in the spend logs in PostgreSQL with a price and without its content. A message with a name and an email address has to reach the stand-in with both masked by the Presidio guardrail. After a restart, the same key works again, which needs the database and both generated keys unchanged. The same checks, before the guardrail was added, passed by hand on arm64 containers of all four.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.1/examples/local) to each on amd64, with circuit-postgres and circuit-presidio on the same host, and checks that the second plan has no changes. It then runs a stand-in for an OpenAI-compatible provider, so no real API key is involved, and checks that `/health/liveliness` answers, that `/key/generate` refuses a wrong master key and a budget over `max_key_budget`, and that a key made for one model can use it, through the provider key that came in by `api_keys`, and gets a `403` for the other. The request has to show up in the spend logs in PostgreSQL with a price and without its content. A message with a name and an email address has to reach the stand-in with both masked by the Presidio guardrail. After a restart, the same key works again, which needs the database and both generated keys unchanged. The same checks, before the guardrail was added, passed by hand on arm64 containers of all four.
 
 They passed by hand on a Rocky Linux 10 droplet with 2 GB of memory and SELinux enforcing, too. An Ubuntu 24.04 droplet with 4 GB ran circuit-ollama beside it with `smollm2:135m`, and a team key limited to that model got an answer from it through LiteLLM. On both, port 4000 didn't answer from outside. After each of two reboots LiteLLM came back on its own, the second plan was clean, the Ubuntu team key from before still worked, and the CI checks passed again on Rocky. The Rocky audit log had no denials. Turning `log_prompts` on stored the next request and answer in the spend logs; turning it off restarted LiteLLM, and the apply waited until it answered.
 
@@ -362,10 +364,10 @@ Upgrading from one `litellm_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-litellm/blob/v0.2.0/LICENSE). LiteLLM itself is under the MIT license, apart from its `enterprise` directory.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-litellm/blob/v0.2.1/LICENSE). LiteLLM itself is under the MIT license, apart from its `enterprise` directory.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-litellm](https://github.com/conn3xorg/circuit-litellm). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-litellm/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-litellm](https://github.com/conn3xorg/circuit-litellm). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-litellm/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-litellm/tree/v0.2.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Ollama](/circuits/ollama), [Presidio](/circuits/presidio), [Langfuse](/circuits/langfuse), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Qdrant](/circuits/qdrant), [Open WebUI](/circuits/openwebui), [Agent box](/circuits/agentbox).

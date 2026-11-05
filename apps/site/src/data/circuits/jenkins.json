@@ -2,7 +2,7 @@
   "name": "jenkins",
   "repo": "conn3xorg/circuit-jenkins",
   "description": "Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "jenkins",
     "ci",

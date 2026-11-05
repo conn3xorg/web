@@ -3,7 +3,9 @@ title: NFS
 description: "Share folders over NFSv4 from the kernel NFS server, with each export checked by exportfs and v3 off unless you want it."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nfs at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nfs at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/nfs/grade.svg)](https://conn3x.org/circuits/nfs/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/nfs/grade.svg)](https://conn3x.org/circuits/nfs/grade)
 
@@ -15,7 +17,7 @@ The server speaks NFSv4 only unless you ask for v3. That means one port, TCP 204
 
 ```hcl
 module "nfs" {
-  source = "github.com/conn3xorg/circuit-nfs?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-nfs?ref=v0.1.1"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -43,7 +45,7 @@ conn3x apply
 
 A second `conn3x plan` says `No changes.` The media server at 192.168.1.30 can now read and write `/srv/nfs/media`, everything else on the LAN can read it, and only `backup.lan` can mount `/srv/nfs/backups`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.1/examples/local).
 
 ### Mounting from a client
 
@@ -162,16 +164,16 @@ An NFS server can't run in an unprivileged container, and it can't export a fold
 
 Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.
 
-**CI** applies [examples/local](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.0/examples/local) to each in a privileged container on amd64 and checks that the second plan has no changes. Two client containers on the same network then mount from it: the allowed client mounts `/srv/nfs/projects` over NFSv4.2 and writes a file, which shows on the server owned by `nobody`, and its NFSv3 mount is refused. The client that isn't on the list can't mount `/srv/nfs/projects`, and can mount the read-only `/srv/nfs/public` but not write to it. By hand, the same container runs also turned `nfs_v3` on (a v3 mount worked) and off again, and checked that an unknown option and a host name that doesn't resolve both fail the apply.
+**CI** applies [examples/local](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.1/examples/local) to each in a privileged container on amd64 and checks that the second plan has no changes. Two client containers on the same network then mount from it: the allowed client mounts `/srv/nfs/projects` over NFSv4.2 and writes a file, which shows on the server owned by `nobody`, and its NFSv3 mount is refused. The client that isn't on the list can't mount `/srv/nfs/projects`, and can mount the read-only `/srv/nfs/public` but not write to it. By hand, the same container runs also turned `nfs_v3` on (a v3 mount worked) and off again, and checked that an unknown option and a host name that doesn't resolve both fail the apply.
 
 **Droplets** cover what containers can't: a real kernel, SELinux and reboots. An Ubuntu 24.04 server and a Rocky Linux 10 server with SELinux enforcing each exported `/srv/nfs/projects` to a third Ubuntu 24.04 droplet over the private network. That client mounted both with the `mount` step shown above and wrote to each; each server refused the other when it tried to mount, and both refused NFSv3. After rebooting all three, the plan had no changes, the client had both mounts back, NFSv3 was still off, and Rocky's audit log had no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nfs/blob/v0.1.0/LICENSE). nfs-utils itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nfs/blob/v0.1.1/LICENSE). nfs-utils itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-nfs](https://github.com/conn3xorg/circuit-nfs). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-nfs/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-nfs](https://github.com/conn3xorg/circuit-nfs). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nfs/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-nfs/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Samba](/circuits/samba), [restic](/circuits/restic).

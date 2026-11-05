@@ -2,7 +2,7 @@
   "name": "restic",
   "repo": "conn3xorg/circuit-restic",
   "description": "Scheduled, encrypted backups with restic to SFTP, S3, rest-server or a local path, with retention and repository checks.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "restic",
     "backup",

@@ -2,7 +2,7 @@
   "name": "mariadb",
   "repo": "conn3xorg/circuit-mariadb",
   "description": "MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "mariadb",
     "mysql",

@@ -3,7 +3,9 @@ title: CISO Assistant
 description: "Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-ciso-assistant at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-ciso-assistant at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/ciso-assistant/grade.svg)](https://conn3x.org/circuits/ciso-assistant/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/ciso-assistant/grade.svg)](https://conn3x.org/circuits/ciso-assistant/grade)
 
@@ -31,7 +33,7 @@ variable "admin_password" {
 }
 
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
 
   hosts                = { grc = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -42,7 +44,7 @@ module "postgres" {
 }
 
 module "ciso_assistant" {
-  source = "github.com/conn3xorg/circuit-ciso-assistant?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-ciso-assistant?ref=v0.1.1"
 
   depends_on = [module.postgres]
 
@@ -68,7 +70,7 @@ Be patient with the first one. Before it opens its port, the backend migrates th
 
 A second `conn3x plan` says `No changes.` Every plan needs the same values, since Conn3x checks the env files on the host against them.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.1/examples/local).
 
 ### Put HTTPS in front
 
@@ -199,7 +201,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with about 4 GB of mem
 
 ## Tested on
 
-Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each a 4 GB, 2-vCPU DigitalOcean droplet on amd64 running [examples/local](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.0/examples/local) with circuit-postgres on the same host. On each, the second plan was clean; the API login worked and a wrong password was refused; a login through the web interface's form worked; a library request with no token got a 401; and the SOC 2, ISO 27001 and HIPAA libraries in the table above each loaded and showed up as frameworks. From outside each droplet, ports 3000 and 8000 didn't answer. Both were rebooted: everything came back on its own, the frameworks and the login were still there, the plan was clean, and Rocky had no SELinux denials. The state held neither password nor the secret key.
+Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each a 4 GB, 2-vCPU DigitalOcean droplet on amd64 running [examples/local](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.1/examples/local) with circuit-postgres on the same host. On each, the second plan was clean; the API login worked and a wrong password was refused; a login through the web interface's form worked; a library request with no token got a 401; and the SOC 2, ISO 27001 and HIPAA libraries in the table above each loaded and showed up as frameworks. From outside each droplet, ports 3000 and 8000 didn't answer. Both were rebooted: everything came back on its own, the frameworks and the login were still there, the plan was clean, and Rocky had no SELinux denials. The state held neither password nor the secret key.
 
 Rocky Linux 10, Debian 13, Fedora 45 and Ubuntu 24.04 ran in local containers from Conn3x's test images, on arm64, through the same checks with a restart of the three services in place of the reboot. Debian and Fedora have only run in containers, not on real hosts. The Ubuntu container run came just before the wait and request timeouts were raised, which the Ubuntu droplet then covered. Separately, a local container with `public_url` set to an HTTPS name, behind Caddy with the routes above, passed the health check and both logins, and its web interface refused a form post from another origin.
 
@@ -209,10 +211,10 @@ Upgrading from one `ciso_assistant_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-ciso-assistant/blob/v0.1.0/LICENSE). CISO Assistant's community edition is under the AGPL v3, apart from its `enterprise` directory, and upstream publishes the community images under the AGPL v3 too. This circuit only installs them and includes none of upstream's code.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-ciso-assistant/blob/v0.1.1/LICENSE). CISO Assistant's community edition is under the AGPL v3, apart from its `enterprise` directory, and upstream publishes the community images under the AGPL v3 too. This circuit only installs them and includes none of upstream's code.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-ciso-assistant](https://github.com/conn3xorg/circuit-ciso-assistant). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-ciso-assistant/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-ciso-assistant](https://github.com/conn3xorg/circuit-ciso-assistant). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-ciso-assistant/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-ciso-assistant/tree/v0.1.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [ZAP](/circuits/zap).

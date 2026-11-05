@@ -2,7 +2,7 @@
   "name": "haproxy",
   "repo": "conn3xorg/circuit-haproxy",
   "description": "HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "haproxy",
     "load-balancer",

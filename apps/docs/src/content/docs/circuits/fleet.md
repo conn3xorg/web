@@ -3,7 +3,9 @@ title: Fleet
 description: "Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-fleet at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-fleet at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/fleet/grade.svg)](https://conn3x.org/circuits/fleet/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/fleet/grade.svg)](https://conn3x.org/circuits/fleet/grade)
 
@@ -37,7 +39,7 @@ locals {
 }
 
 module "mysql" {
-  source = "github.com/conn3xorg/circuit-mysql?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-mysql?ref=v0.2.1"
 
   hosts                = local.host
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -51,7 +53,7 @@ module "mysql" {
 }
 
 module "valkey" {
-  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.1"
 
   hosts                = local.host
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -60,7 +62,7 @@ module "valkey" {
 }
 
 module "fleet" {
-  source = "github.com/conn3xorg/circuit-fleet?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-fleet?ref=v0.1.1"
 
   depends_on = [module.mysql, module.valkey]
 
@@ -89,7 +91,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the secrets too, sinc
 
 For hosts created in the same plan, pass host objects with the host key you generated, so Conn3x checks it without a known_hosts entry. Give each one's distribution in `os` too. Set `os` as well when you put `depends_on` on this module, as above: `depends_on` holds back reading the hosts until the apply, so without `os` the plan fails with `Invalid for_each argument`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.1/examples/local).
 
 ## Finish setup before you open it up
 
@@ -122,7 +124,7 @@ Use [circuit-osquery](/circuits/osquery) on every host you want in Fleet. With a
 
 ```hcl
 module "osquery" {
-  source = "github.com/conn3xorg/circuit-osquery?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-osquery?ref=v0.1.1"
 
   hosts                = { web1 = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -223,7 +225,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, amd64 only, since Flee
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10, with Fleet 4.94.0, MySQL 8.4 from circuit-mysql, Valkey from circuit-valkey and osquery 5.24.0 from circuit-osquery, all on one host. CI applies [examples/local](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.0/examples/local) to each on amd64 and checks that the plan after it has no changes. It then completes Fleet's setup through its API, sets the enroll secret, enrolls the host with osquery, plans again, and checks these: the tier is free, setup is closed, a wrong enroll secret gets a 401, the host is listed and online, and it answers a live query. It also checks that no secret reached the state file. The same ran by hand in containers on an amd64 machine.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10, with Fleet 4.94.0, MySQL 8.4 from circuit-mysql, Valkey from circuit-valkey and osquery 5.24.0 from circuit-osquery, all on one host. CI applies [examples/local](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.1/examples/local) to each on amd64 and checks that the plan after it has no changes. It then completes Fleet's setup through its API, sets the enroll secret, enrolls the host with osquery, plans again, and checks these: the tier is free, setup is closed, a wrong enroll secret gets a 401, the host is listed and online, and it answers a live query. It also checks that no secret reached the state file. The same ran by hand in containers on an amd64 machine.
 
 The same checks passed on Ubuntu 24.04 and Rocky Linux 10 droplets, the Rocky one with SELinux enforcing and no denials logged, and again after rebooting each, when the plan also had no changes.
 
@@ -233,10 +235,10 @@ Not tested: a reverse proxy with `tls = false`, certificates of your own, a data
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-fleet/blob/v0.1.0/LICENSE). Fleet's free version is MIT-licensed, apart from its `ee/` directory, which is under Fleet's commercial license.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-fleet/blob/v0.1.1/LICENSE). Fleet's free version is MIT-licensed, apart from its `ee/` directory, which is under Fleet's commercial license.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-fleet](https://github.com/conn3xorg/circuit-fleet). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-fleet/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-fleet](https://github.com/conn3xorg/circuit-fleet). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-fleet/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-fleet/tree/v0.1.1/examples/local).
 - Related circuits: [MySQL](/circuits/mysql), [Valkey](/circuits/valkey), [osquery](/circuits/osquery), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n).

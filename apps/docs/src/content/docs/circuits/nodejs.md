@@ -3,7 +3,9 @@ title: Node.js
 description: "One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nodejs at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nodejs at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/nodejs/grade.svg)](https://conn3x.org/circuits/nodejs/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/nodejs/grade.svg)](https://conn3x.org/circuits/nodejs/grade)
 
@@ -15,7 +17,7 @@ If your hosts need command-line tools from npm, you can list those too, each at 
 
 ```hcl
 module "nodejs" {
-  source = "github.com/conn3xorg/circuit-nodejs?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-nodejs?ref=v0.1.2"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -37,7 +39,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.2/examples/local).
 
 ### Changing the release
 
@@ -101,7 +103,7 @@ Requires Conn3x v0.6.9 or later, and hosts with outbound HTTPS to nodejs.org, pl
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. In a login shell, `node` was v26.13.0 and ran a small script, and the global `semver` command accepted a version inside a range and rejected one outside it. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. In a login shell, `node` was v26.13.0 and ran a small script, and the global `semver` command accepted a version inside a range and rejected one outside it. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64: the same checks passed. A wrong checksum failed the apply and left nothing behind. Moving to 24.22.2 repointed `node` with the global package still working, and moving back was clean. After a reboot the plan had no changes and the checks still passed.
 
@@ -109,10 +111,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nodejs/blob/v0.1.1/LICENSE). Node.js is under the MIT license, with the bundled components listed in its own LICENSE file.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nodejs/blob/v0.1.2/LICENSE). Node.js is under the MIT license, with the bundled components listed in its own LICENSE file.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-nodejs](https://github.com/conn3xorg/circuit-nodejs). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nodejs/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-nodejs](https://github.com/conn3xorg/circuit-nodejs). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-nodejs/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-nodejs/tree/v0.1.2/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain).

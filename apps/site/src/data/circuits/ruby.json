@@ -2,7 +2,7 @@
   "name": "ruby",
   "repo": "conn3xorg/circuit-ruby",
   "description": "Your distribution's Ruby, with optional gems at pinned versions.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "ruby",
     "gems",

@@ -3,7 +3,9 @@ title: Matrix Synapse
 description: "Synapse Matrix homeserver under Podman, behind your reverse proxy, with host-generated secrets and SQLite or Postgres."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-matrix at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-matrix at v0.1.2. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/matrix/grade.svg)](https://conn3x.org/circuits/matrix/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/matrix/grade.svg)](https://conn3x.org/circuits/matrix/grade)
 
@@ -28,7 +30,7 @@ variable "admin_password" {
 }
 
 module "matrix" {
-  source = "github.com/conn3xorg/circuit-matrix?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-matrix?ref=v0.1.2"
 
   hosts                = { chat = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -54,7 +56,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.2/examples/local).
 
 ### Behind a reverse proxy
 
@@ -67,7 +69,7 @@ With [circuit-caddy](/circuits/caddy) on the same host, that's:
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.2.2"
 
   hosts                = { chat = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -97,7 +99,7 @@ The password goes to the container's env file, mode `0600`, as `PGPASSWORD`, and
 
 ```hcl
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.2.1"
 
   hosts                = { chat = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -212,7 +214,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, which needs to reach i
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It checks `/_matrix/client/versions` answers, the example's admin logs in through `/_matrix/client/v3/login` and is an admin, a wrong password is turned down, and `/.well-known/matrix/server` names the server. It checks the generated secrets are root's and not in `homeserver.yaml`. Then it restarts Synapse, logs in again and plans again.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.2/examples/local) to each on amd64 and checks that the second plan has no changes. It checks `/_matrix/client/versions` answers, the example's admin logs in through `/_matrix/client/v3/login` and is an admin, a wrong password is turned down, and `/.well-known/matrix/server` names the server. It checks the generated secrets are root's and not in `homeserver.yaml`. Then it restarts Synapse, logs in again and plans again.
 
 The same checks passed by hand on arm64 containers of all four, and on two 2 GB droplets. On Ubuntu 24.04, Synapse ran against PostgreSQL 18 from circuit-postgres v0.2.0, with the database created as shown above, and ran as the `matrix-synapse` user with ID 999, since 991 is `systemd-resolve` there. On Rocky Linux 10, with SELinux enforcing, it ran on SQLite with no denials in the audit log. Adding a setting restarted Synapse with a clean plan after, and both came back after a reboot with the admin still able to log in and no changes in the plan.
 
@@ -220,10 +222,10 @@ Upgrading from one `synapse_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-matrix/blob/v0.1.1/LICENSE). Synapse itself is AGPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-matrix/blob/v0.1.2/LICENSE). Synapse itself is AGPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-matrix](https://github.com/conn3xorg/circuit-matrix). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-matrix/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-matrix](https://github.com/conn3xorg/circuit-matrix). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-matrix/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-matrix/tree/v0.1.2/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [Jellyfin](/circuits/jellyfin).

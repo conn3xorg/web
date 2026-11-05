@@ -3,7 +3,9 @@ title: Valkey
 description: "Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-valkey at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-valkey at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/valkey/grade.svg)](https://conn3x.org/circuits/valkey/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/valkey/grade.svg)](https://conn3x.org/circuits/valkey/grade)
 
@@ -21,7 +23,7 @@ variable "valkey_password" {
 }
 
 module "valkey" {
-  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-valkey?ref=v0.1.1"
 
   hosts                = { cache = "192.168.1.40" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -54,7 +56,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.1/examples/local).
 
 ## Where Valkey comes from
 
@@ -137,16 +139,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.0/examples/local) to each on amd64, checks that the second plan has no changes, then uses `valkey-cli` to `SET` and `GET` a key with the password, checks a command without it gets `NOAUTH`, checks the example's eviction policy and append-only file are on, restarts Valkey and reads the key back. The same ran by hand on arm64 containers, along with a password containing a space, a double quote and a backslash, and a move to port 6380 with persistence off and a new password, after which the second plan was clean.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, then uses `valkey-cli` to `SET` and `GET` a key with the password, checks a command without it gets `NOAUTH`, checks the example's eviction policy and append-only file are on, restarts Valkey and reads the key back. The same ran by hand on arm64 containers, along with a password containing a space, a double quote and a backslash, and a move to port 6380 with persistence off and a new password, after which the second plan was clean.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, the same checks passed by hand, the Rocky one on port 6380. There the circuit labelled 6380 `redis_port_t`, Valkey ran confined as `redis_t`, and the audit log had no denials. Both came back after a reboot with Valkey running, the key still there and the second plan clean.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-valkey/blob/v0.1.0/LICENSE). Valkey itself is BSD-3-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-valkey/blob/v0.1.1/LICENSE). Valkey itself is BSD-3-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-valkey](https://github.com/conn3xorg/circuit-valkey). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-valkey/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-valkey](https://github.com/conn3xorg/circuit-valkey). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-valkey/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-valkey/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite).

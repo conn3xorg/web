@@ -2,7 +2,7 @@
   "name": "go",
   "repo": "conn3xorg/circuit-go",
   "description": "One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "go",
     "golang",

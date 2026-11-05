@@ -2,7 +2,7 @@
   "name": "lldap",
   "repo": "conn3xorg/circuit-lldap",
   "description": "LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "lldap",
     "ldap",

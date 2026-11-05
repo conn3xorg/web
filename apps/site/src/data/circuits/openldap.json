@@ -2,7 +2,7 @@
   "name": "openldap",
   "repo": "conn3xorg/circuit-openldap",
   "description": "OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds.",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "tags": [
     "openldap",
     "ldap",

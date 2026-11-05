@@ -2,7 +2,7 @@
   "name": "grafana",
   "repo": "conn3xorg/circuit-grafana",
   "description": "Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "grafana",
     "monitoring",

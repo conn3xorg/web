@@ -3,7 +3,9 @@ title: Trivy
 description: "Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-trivy at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-trivy at v0.1.1. -->
+
+[![Conn3x grade](https://conn3x.org/circuits/trivy/grade.svg)](https://conn3x.org/circuits/trivy/grade)
 
 [![Conn3x grade](https://conn3x.org/circuits/trivy/grade.svg)](https://conn3x.org/circuits/trivy/grade)
 
@@ -15,7 +17,7 @@ It only looks. Nothing gets patched, and the scan runs in a systemd sandbox that
 
 ```hcl
 module "trivy" {
-  source = "github.com/conn3xorg/circuit-trivy?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-trivy?ref=v0.1.1"
 
   hosts                = { web = "203.0.113.10", db = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -45,7 +47,7 @@ HIGH 1572
 
 Don't be alarmed by a big number on a fresh image. Those counts are what the distribution's advisories list against the installed packages, and they include findings with no fix published yet. `root.txt` shows which is which, with the fixed version where there is one.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.1/examples/local).
 
 ## Which version, and why
 
@@ -179,16 +181,16 @@ Requires Conn3x v0.6.9 or later and systemd on each host. Hosts need to reach Gi
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10, with Trivy 0.76.1. [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.0/examples/local) was applied to each in a container on arm64, and CI does the same on amd64: it checks that the second plan has no changes, plants lodash 4.17.4 under `/opt`, scans through `conn3x-trivy.service`, and checks that the report names CVE-2019-10744 and the path, that it holds only the severities asked for, and that the scan changed no files outside its own directories, the logs and systemd's state. On Rocky Linux 10, a run with two targets and `skip_dirs` reported the packages in each target, left out the directories matching an exact path and a glob, and ignored a copy outside the targets. A missing target failed the service and left `latest` alone.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10, with Trivy 0.76.1. [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.1/examples/local) was applied to each in a container on arm64, and CI does the same on amd64: it checks that the second plan has no changes, plants lodash 4.17.4 under `/opt`, scans through `conn3x-trivy.service`, and checks that the report names CVE-2019-10744 and the path, that it holds only the severities asked for, and that the scan changed no files outside its own directories, the logs and systemd's state. On Rocky Linux 10, a run with two targets and `skip_dirs` reported the packages in each target, left out the directories matching an exact path and a glob, and ignored a copy outside the targets. A missing target failed the service and left `latest` alone.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-2gb`, the circuit was applied with `run_now` and the same check passed. While a scan ran, its root filesystem was mounted read-only, writing to `/etc` from inside its mount namespace failed while writing to its results directory worked, and its only effective capability was `CAP_DAC_READ_SEARCH`. After a reboot the timer was active, the plan had no changes and another scan ran. Debian 13 ran in a container only, where the sandbox isn't enforced.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-trivy/blob/v0.1.0/LICENSE). Trivy is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-trivy/blob/v0.1.1/LICENSE). Trivy is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-trivy](https://github.com/conn3xorg/circuit-trivy). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-trivy/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-trivy](https://github.com/conn3xorg/circuit-trivy). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-trivy/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-trivy/tree/v0.1.1/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap).
