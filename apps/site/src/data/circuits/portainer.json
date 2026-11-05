@@ -1,0 +1,19 @@
+{
+  "name": "portainer",
+  "repo": "conn3xorg/circuit-portainer",
+  "description": "Portainer CE and its optional agent under Podman, HTTPS on loopback, with the admin password set before anyone else can claim it.",
+  "version": "v0.1.0",
+  "tags": [
+    "portainer",
+    "containers",
+    "podman"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Containers and Kubernetes",
+  "official": true
+}

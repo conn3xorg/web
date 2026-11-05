@@ -168,4 +168,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cassandra/blob/v0.2.
 
 - Repository: [conn3xorg/circuit-cassandra](https://github.com/conn3xorg/circuit-cassandra). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-cassandra/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-cassandra/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-cassandra/tree/v0.2.0/examples/local).
-- Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Oracle AI Database Free](/circuits/oracle-free).
+- Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Oracle AI Database Free](/circuits/oracle-free), [InfluxDB 3 Core](/circuits/influxdb).

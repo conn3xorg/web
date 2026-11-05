@@ -1,0 +1,19 @@
+{
+  "name": "semaphore",
+  "repo": "conn3xorg/circuit-semaphore",
+  "description": "Semaphore UI under Podman, a web page for running Ansible, OpenTofu and Terraform, on SQLite or your own PostgreSQL, with its secrets made on the host.",
+  "version": "v0.1.0",
+  "tags": [
+    "semaphore",
+    "ansible",
+    "automation"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Build and runtimes",
+  "official": true
+}

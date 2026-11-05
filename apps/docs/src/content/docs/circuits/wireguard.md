@@ -157,4 +157,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-wireguard/blob/v0.2.
 
 - Repository: [conn3xorg/circuit-wireguard](https://github.com/conn3xorg/circuit-wireguard). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-wireguard/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-wireguard/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-wireguard/tree/v0.2.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [Tailscale](/circuits/tailscale), [keepalived](/circuits/keepalived), [Cloudflare Tunnel](/circuits/cloudflared).
+- Related circuits: [Firewall](/circuits/firewall), [Tailscale](/circuits/tailscale), [keepalived](/circuits/keepalived), [Cloudflare Tunnel](/circuits/cloudflared), [NetBird](/circuits/netbird).

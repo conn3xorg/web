@@ -1,0 +1,18 @@
+{
+  "name": "teleport",
+  "repo": "conn3xorg/circuit-teleport",
+  "description": "A Teleport Community Edition cluster from Teleport's signed repository: auth and proxy on one host, SSH nodes joining over a reverse tunnel with an expiring token.",
+  "version": "v0.1.0",
+  "tags": [
+    "teleport",
+    "ssh",
+    "access"
+  ],
+  "tested": [
+    "rocky10",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Identity and secrets",
+  "official": true
+}

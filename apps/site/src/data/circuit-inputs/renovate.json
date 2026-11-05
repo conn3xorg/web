@@ -1,0 +1,112 @@
+{
+  "name": "renovate",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "platform",
+      "type": "string",
+      "description": "Where the repositories live: \"github\", \"gitlab\", \"forgejo\", \"gitea\", \"bitbucket\", \"bitbucket-server\" or \"azure\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "endpoint",
+      "type": "string",
+      "default": null,
+      "description": "The platform's API address, such as \"https://git.example.com/api/v1\" for Forgejo or \"https://gitlab.example.com/api/v4\". When null, the platform's public service, such as GitHub.com.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "repositories",
+      "type": "list(string)",
+      "description": "Repositories to run on, such as [\"acme/api\", \"acme/web\"]. The token's account needs write access to each.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "token",
+      "type": "string",
+      "description": "Access token for the platform, for the account Renovate opens pull requests as. It goes to a root-only env file, written from the ephemeral value, and never reaches the plan or state. Pass it at run time with -var or TF_VAR_token.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": true
+    },
+    {
+      "name": "github_com_token",
+      "type": "string",
+      "default": null,
+      "description": "A read-only GitHub.com token, for release notes and lookups on GitHub when platform isn't github. Without one, GitHub's rate limit for anonymous calls applies. Kept out of the plan and state like token.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "git_author",
+      "type": "string",
+      "default": null,
+      "description": "Author of Renovate's commits, such as \"Renovate Bot <bot@example.com>\". When null, Renovate's default, or the token account's details on platforms that give them.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "config",
+      "type": "any",
+      "default": {},
+      "description": "More of Renovate's self-hosted and repository options, merged over the ones above, such as { onboarding = false, requireConfig = \"optional\" }. Renovate's validator checks them before they're written. Put no secrets here: the config is in the plan and state.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "schedule",
+      "type": "string",
+      "default": "hourly",
+      "description": "When Renovate runs, as a systemd calendar expression, such as \"hourly\" or \"*-*-* 02:00:00\". A run missed while the host was off happens at the next boot. Renovate's own schedule option still decides when it opens pull requests.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "log_level",
+      "type": "string",
+      "default": "info",
+      "description": "How much Renovate logs to the journal: \"debug\", \"info\", \"warn\" or \"error\".",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "renovate_version",
+      "type": "string",
+      "default": "44.220.0",
+      "description": "Tag of the Renovate image, such as \"44.220.0\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:71599a2007228ada2cc6acb5ed836cf2c088537ffe76dafee1ee6a1c5c45d5e5",
+      "description": "Digest of the image for renovate_version, such as \"sha256:7159...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "ghcr.io/renovatebot/renovate",
+      "description": "Where to pull Renovate's image from. \"docker.io/renovate/renovate\" serves the same image, by the same digest.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

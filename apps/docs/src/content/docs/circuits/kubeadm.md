@@ -180,4 +180,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kubeadm/blob/v0.2.1/
 
 - Repository: [conn3xorg/circuit-kubeadm](https://github.com/conn3xorg/circuit-kubeadm). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-kubeadm/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-kubeadm/tree/v0.2.1/examples/local).
-- Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux).
+- Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).

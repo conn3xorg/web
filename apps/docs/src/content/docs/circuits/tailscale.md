@@ -128,4 +128,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-tailscale/blob/v0.2.
 
 - Repository: [conn3xorg/circuit-tailscale](https://github.com/conn3xorg/circuit-tailscale). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-tailscale/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-tailscale/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-tailscale/tree/v0.2.1/examples/local).
-- Related circuits: [WireGuard](/circuits/wireguard), [keepalived](/circuits/keepalived), [Cloudflare Tunnel](/circuits/cloudflared).
+- Related circuits: [WireGuard](/circuits/wireguard), [keepalived](/circuits/keepalived), [Cloudflare Tunnel](/circuits/cloudflared), [NetBird](/circuits/netbird).

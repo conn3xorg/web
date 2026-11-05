@@ -1,0 +1,19 @@
+{
+  "name": "homeassistant",
+  "repo": "conn3xorg/circuit-homeassistant",
+  "description": "Home Assistant Container under Podman, on the host's network for discovery, with the web server on loopback until you choose otherwise.",
+  "version": "v0.1.0",
+  "tags": [
+    "home-assistant",
+    "home-automation",
+    "iot"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Platforms",
+  "official": true
+}

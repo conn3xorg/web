@@ -1,0 +1,122 @@
+{
+  "name": "homepage",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "homepage_version",
+      "type": "string",
+      "default": "v2.7.0",
+      "description": "Tag of the Homepage image, such as \"v2.7.0\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:19c5c09184458a41b7b5915e71463a39f36cd33540f41bdbed008791b8182d5f",
+      "description": "Digest of the image for homepage_version, such as \"sha256:19c5...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "ghcr.io/gethomepage/homepage",
+      "description": "Where to pull Homepage's image from, without a tag.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Homepage listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 3000,
+      "description": "Port Homepage listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "allowed_hosts",
+      "type": "list(string)",
+      "default": [],
+      "description": "Host names, with a port where people type one, that Homepage answers to, such as [\"home.example.com\"]. It refuses any other Host header with a 400. The address it listens on is always allowed.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "settings",
+      "type": "any",
+      "default": {
+        "title": "Homepage"
+      },
+      "description": "settings.yaml: a map, such as { title = \"Home\", theme = \"dark\" }, or the file's YAML as a string. See https://gethomepage.dev/configs/settings/.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "services",
+      "type": "any",
+      "default": [],
+      "description": "services.yaml: a list of groups, each a map of a group name to its services, or the file's YAML as a string. See https://gethomepage.dev/configs/services/.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "bookmarks",
+      "type": "any",
+      "default": [],
+      "description": "bookmarks.yaml: a list of groups, or the file's YAML as a string. See https://gethomepage.dev/configs/bookmarks/.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "widgets",
+      "type": "any",
+      "default": [
+        {
+          "resources": {
+            "cpu": true,
+            "memory": true,
+            "disk": "/"
+          }
+        },
+        {
+          "search": {
+            "provider": "duckduckgo",
+            "target": "_blank"
+          }
+        }
+      ],
+      "description": "widgets.yaml: the information widgets along the top, as a list, or the file's YAML as a string. The default is Homepage's own sample. See https://gethomepage.dev/widgets/.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of Homepage's environment variables, such as { HOMEPAGE_VAR_PROXMOX_PASSWORD = \"...\" }, which the config files can use as {{HOMEPAGE_VAR_PROXMOX_PASSWORD}}. They go in a root-only env file and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

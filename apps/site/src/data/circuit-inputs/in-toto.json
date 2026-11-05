@@ -1,13 +1,13 @@
 {
   "name": "in-toto",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "in_toto_version",
       "type": "string",
       "default": "3.1.0",
-      "description": "in-toto release to install from PyPI. Any other than 3.1.0 needs requirements to match.",
+      "description": "in-toto release to install from PyPI. Any other than 3.1.0 needs requirements to match. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

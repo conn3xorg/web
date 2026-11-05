@@ -1,0 +1,96 @@
+{
+  "name": "passbolt",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "public_url",
+      "type": "string",
+      "description": "The address people reach Passbolt at, such as \"https://passbolt.example.com\". Passbolt builds every link from it and checks it at each sign-in, so it must be the address in the browser. Use https: the browser extension expects it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": true
+    },
+    {
+      "name": "admin",
+      "type": "object({\n    email      = string\n    first_name = string\n    last_name  = string\n  })",
+      "default": null,
+      "description": "The first admin to register, such as { email = \"you@example.com\", first_name = \"Sam\", last_name = \"Rivera\" }. The first apply writes their invitation link to /etc/passbolt/admin-invite.txt on the host. When null, register one yourself, as the README shows.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "server_key_email",
+      "type": "string",
+      "default": null,
+      "description": "Email address on the OpenPGP key Passbolt makes for itself on its first start. When null, passbolt@ and the host of public_url.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "passbolt_version",
+      "type": "string",
+      "default": "5.17.0-1-ce-non-root",
+      "description": "Tag of the docker.io/passbolt/passbolt image, such as \"5.17.0-1-ce-non-root\". Only the ce-non-root images fit: they serve on port 8080 as an ordinary user. Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:ef8f2cb58b671ff9ad888ce05d0f48d788dd3538bb09b1d4fc07f4c026c1d70b",
+      "description": "Digest of docker.io/passbolt/passbolt for passbolt_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "mariadb_version",
+      "type": "string",
+      "default": "10.11.19",
+      "description": "Tag of the docker.io/library/mariadb image for Passbolt's database, such as \"10.11.19\". 10.11 is the series Passbolt's own Compose file uses. Change mariadb_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "mariadb_digest",
+      "type": "string",
+      "default": "sha256:d769e37960821dfdcf096954f6e7ac89f747e116c1bba98e48edd265dfc7deae",
+      "description": "Digest of docker.io/library/mariadb for mariadb_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Passbolt listens on for plain HTTP. The default keeps it on the host, for a reverse proxy with TLS in front.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8080,
+      "description": "Port Passbolt listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More of Passbolt's environment variables, such as { EMAIL_TRANSPORT_DEFAULT_HOST = \"smtp.example.com\", EMAIL_TRANSPORT_DEFAULT_PASSWORD = \"...\" }. They go in a root-only env file and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "uptimekuma",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "uptimekuma_version",
+      "type": "string",
+      "default": "2.5.9",
+      "description": "Tag of the Uptime Kuma image, such as \"2.5.9\" or \"2.5.9-slim\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:e88415a90dd2f7efecdbc18de0490aff292764a3ac471531bf1d0481725591bd",
+      "description": "Digest of the image for uptimekuma_version, such as \"sha256:e884...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "ghcr.io/louislam/uptime-kuma",
+      "description": "Where to pull Uptime Kuma's image from. \"docker.io/louislam/uptime-kuma\" serves the same image, by the same digest, with Docker Hub's pull limits.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Uptime Kuma listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 3001,
+      "description": "Port Uptime Kuma listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

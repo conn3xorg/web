@@ -119,4 +119,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-oracle-free/blob/v0.
 
 - Repository: [conn3xorg/circuit-oracle-free](https://github.com/conn3xorg/circuit-oracle-free). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-oracle-free/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.0/examples/local).
-- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra).
+- Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [InfluxDB 3 Core](/circuits/influxdb).

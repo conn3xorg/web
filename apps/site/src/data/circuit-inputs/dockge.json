@@ -1,0 +1,61 @@
+{
+  "name": "dockge",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "dockge_version",
+      "type": "string",
+      "default": "1.5.0",
+      "description": "Tag of the Dockge image, such as \"1.5.0\". Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:335c6368b880ecc203236ed89e6e5232e0d6578e8ef5920e4a502390451502bf",
+      "description": "Digest of the image for dockge_version, such as \"sha256:335c...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "docker.io/louislam/dockge",
+      "description": "Where to pull Dockge's image from, without a tag. Upstream publishes it on Docker Hub only.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address Dockge listens on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" listens on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 5001,
+      "description": "Port Dockge listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "stacks_dir",
+      "type": "string",
+      "default": "/opt/stacks",
+      "description": "Directory holding a folder per stack, each with its compose.yaml. Dockge sees it at the same path.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

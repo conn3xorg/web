@@ -1,0 +1,115 @@
+{
+  "name": "kestra",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "kestra_version",
+      "type": "string",
+      "default": "v2.0.9-slim",
+      "description": "Tag of the Kestra image, such as \"v2.0.9-slim\", Kestra with its core tasks only, or \"v2.0.9\", with every plugin. Change image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:3ee725f92e7aba3d8f11242a6b2a773702e0315ba472d4049a5e56441e9aed84",
+      "description": "Digest of the image for kestra_version, such as \"sha256:3ee7...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_repository",
+      "type": "string",
+      "default": "docker.io/kestra/kestra",
+      "description": "Where to pull Kestra's image from, such as a mirror of docker.io/kestra/kestra.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Host address Kestra's web server is published on. The default keeps it on the host for a reverse proxy in front; \"0.0.0.0\" publishes it on every address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 8080,
+      "description": "Host port Kestra's web server is published on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "public_url",
+      "type": "string",
+      "default": null,
+      "description": "The address people reach Kestra at, such as \"https://kestra.example.com\". Kestra uses it for links in notifications and webhook URLs. When null, the local address from listen_address and port.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin",
+      "type": "object({\n    email = string\n  })",
+      "default": null,
+      "description": "The account to sign in with, such as { email = \"you@example.com\" }. Kestra's open-source edition has one. When null, Kestra shows a setup page to whoever opens it first.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password for admin. Needed with admin. Kestra wants 8 to 256 characters with an uppercase letter, a lowercase letter and a digit. Pass it at run time with -var or TF_VAR_admin_password; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "postgres",
+      "type": "object({\n    host     = string\n    port     = optional(number, 5432)\n    database = optional(string, \"kestra\")\n    username = optional(string, \"kestra\")\n  })",
+      "default": null,
+      "description": "PostgreSQL to keep Kestra's flows, executions and queue in, such as { host = \"db1.lan\" }. The role and database must exist. When null, Kestra uses an H2 database in /var/lib/kestra/db.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "postgres_password",
+      "type": "string",
+      "default": null,
+      "description": "Password of the postgres username. Needed with postgres. Pass it at run time; it never reaches state or the plan.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "secrets",
+      "type": "map(string)",
+      "default": {},
+      "description": "Secrets your flows read with secret(\"NAME\"), such as { GITHUB_TOKEN = \"...\" }. The circuit base64-encodes each one into SECRET_NAME, the form Kestra reads, in a root-only env file. They never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "environment",
+      "type": "map(string)",
+      "default": {},
+      "description": "More environment variables for Kestra, such as { KESTRA_TASKS_TMPDIR_PATH = \"/app/storage/tmp\" }. Kestra reads any of its settings from a variable named after it. They go in the root-only env file and never reach the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    }
+  ]
+}

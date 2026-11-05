@@ -1,0 +1,115 @@
+{
+  "name": "portainer",
+  "version": "v0.1.0",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "server",
+      "type": "bool",
+      "default": true,
+      "description": "Run the Portainer server, with its web UI, on each host.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "agent",
+      "type": "bool",
+      "default": false,
+      "description": "Run the Portainer agent on each host, so a Portainer server elsewhere can manage its Podman.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "portainer_version",
+      "type": "string",
+      "default": "2.45.3",
+      "description": "Tag of the portainer/portainer-ce and portainer/agent images, such as \"2.45.3\". Change image_digest and agent_image_digest with it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "image_digest",
+      "type": "string",
+      "default": "sha256:3609c307943bca8e5c492f69ddd6965df177208b50678a4cff28391c8dd4e96e",
+      "description": "Digest of docker.io/portainer/portainer-ce for portainer_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "agent_image_digest",
+      "type": "string",
+      "default": "sha256:6e6d2d5d8967da5b4d45eab32b7268af170395395d753d3f34ecb4d6ca5bd388",
+      "description": "Digest of docker.io/portainer/agent for portainer_version.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password Portainer gives the admin user on its first start. Needed with server. At least 12 characters, Portainer's own minimum. It reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "agent_secret",
+      "type": "string",
+      "default": null,
+      "description": "Shared secret for the server and agent, set as AGENT_SECRET on both. With it, an agent answers any server that has the same secret. Without it, an agent belongs to the first server that connects. It reaches the host in root-only files and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the server's HTTPS UI and its Edge tunnel listen on. The default keeps both on the host, for a reverse proxy or an SSH tunnel.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "port",
+      "type": "number",
+      "default": 9443,
+      "description": "Port the server's HTTPS UI and API listen on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tunnel_port",
+      "type": "number",
+      "default": 8000,
+      "description": "Port of the server's tunnel for Edge agents. Portainer listens on it even when no Edge agent uses it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "agent_listen_address",
+      "type": "string",
+      "default": "127.0.0.1",
+      "description": "Address the agent listens on. A server on another host can't reach the default: set the address it reaches this host at, such as a private network address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "agent_port",
+      "type": "number",
+      "default": 9001,
+      "description": "Port the agent listens on.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}

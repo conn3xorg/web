@@ -216,4 +216,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-helm/blob/v0.1.3/LIC
 
 - Repository: [conn3xorg/circuit-helm](https://github.com/conn3xorg/circuit-helm). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-helm/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-helm/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-helm/tree/v0.1.3/examples/local).
-- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Istio](/circuits/istio), [Flux](/circuits/flux).
+- Related circuits: [k3s](/circuits/k3s), [Docker](/circuits/docker), [Podman](/circuits/podman), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).

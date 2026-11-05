@@ -172,4 +172,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openldap/blob/v0.2.0
 
 - Repository: [conn3xorg/circuit-openldap](https://github.com/conn3xorg/circuit-openldap). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-openldap/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.0/examples/local).
-- Related circuits: [certbot](/circuits/certbot), [LLDAP](/circuits/lldap), [Firewall](/circuits/firewall), [Users](/circuits/users), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik).
+- Related circuits: [certbot](/circuits/certbot), [LLDAP](/circuits/lldap), [Firewall](/circuits/firewall), [Users](/circuits/users), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
