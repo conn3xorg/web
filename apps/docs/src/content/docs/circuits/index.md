@@ -159,6 +159,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
 | [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.0 |
+| [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.1 |
 
 ### Build and runtimes
 

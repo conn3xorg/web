@@ -7,6 +7,7 @@ import SiteFooter from "../../../components/SiteFooter.astro";
 import PageHero from "../../../components/PageHero.astro";
 import { allGrades } from "../../../lib/grade-data";
 import { RUBRIC, PASS_MARK } from "../../../lib/grades.js";
+import allCredits from "../../../data/credits.json";
 
 export async function getStaticPaths() {
   const all = await allGrades();
@@ -14,6 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { g } = Astro.props as { g: any };
+const credit = (allCredits as Record<string, { text: string; links: string[][] }>)[g.name];
 const rubric = "https://docs.conn3x.org/reference/circuit-grades";
 const url = `https://conn3x.org/circuits/${g.name}/grade`;
 const snippet = `[![Conn3x grade](${url}.svg)](${url})`;
@@ -48,6 +50,13 @@ const blocker = g.gateFailed?.length
         This tells you what we checked. It doesn't tell you the circuit is safe, because no grade can: it runs as root on
         your servers, so read it before you run it.
       </p>
+      {credit && (
+        <p>
+          {credit.text}: {credit.links.map(([label, href], i) => (
+            <>{i > 0 && (i === credit.links.length - 1 ? " and " : ", ")}<a href={href}>{label}</a></>
+          ))}.
+        </p>
+      )}
     </PageHero>
 
     <div class="wrap page">

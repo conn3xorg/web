@@ -197,4 +197,4 @@ Kestra's open-source edition is under the Apache License 2.0.
 
 - Repository: [conn3xorg/circuit-kestra](https://github.com/conn3xorg/circuit-kestra). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-kestra/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.0/examples/local).
-- Related circuits: [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant).
+- Related circuits: [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Lempa homelab](/circuits/lempa-homelab).

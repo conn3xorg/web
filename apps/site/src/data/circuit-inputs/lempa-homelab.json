@@ -1,0 +1,223 @@
+{
+  "name": "lempa-homelab",
+  "version": "v0.1.1",
+  "hostObjects": true,
+  "inputs": [
+    {
+      "name": "network",
+      "type": "bool",
+      "default": true,
+      "description": "Traefik in front of every web app, on ports 80 and 443, and BIND serving a zone with a name for each one.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "dashboard",
+      "type": "bool",
+      "default": true,
+      "description": "Homepage, with a tile for each app the stack runs.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "monitoring",
+      "type": "bool",
+      "default": true,
+      "description": "Uptime Kuma, Prometheus and Grafana, with Prometheus already a Grafana datasource.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "smart_home",
+      "type": "bool",
+      "default": false,
+      "description": "Home Assistant, on the host's network so it can find devices.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "ai",
+      "type": "bool",
+      "default": false,
+      "description": "Ollama, and Open WebUI to chat with its models.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "automation",
+      "type": "bool",
+      "default": false,
+      "description": "Kestra and Semaphore UI, and Renovate when renovate is set.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "code",
+      "type": "bool",
+      "default": false,
+      "description": "GitLab CE, and a GitLab Runner when gitlab_runner is true. GitLab wants a host with 8 GB of memory to itself.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "databases",
+      "type": "bool",
+      "default": false,
+      "description": "MariaDB, PostgreSQL and InfluxDB 3 Core, each on loopback.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "security",
+      "type": "bool",
+      "default": false,
+      "description": "authentik, with a PostgreSQL of its own, and Suricata. Wazuh too, when wazuh_server is set.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "containers_ui",
+      "type": "bool",
+      "default": false,
+      "description": "Portainer CE and Dockge, both managing Podman.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "domain",
+      "type": "string",
+      "default": "home.arpa",
+      "description": "Zone the app names live in, such as \"lab.example.com\". Each app gets a name under it, such as grafana.home.arpa. home.arpa is set aside for home networks (RFC 8375), so it can't clash with a real domain.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "address",
+      "type": "string",
+      "default": null,
+      "description": "IPv4 address the app names point at and BIND answers on, besides 127.0.0.1: the server's address on your network. When null, the address in hosts, which then has to be an IPv4 address.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_email",
+      "type": "string",
+      "default": null,
+      "description": "Email for the admin accounts the apps create, such as \"you@example.com\". Needed by ai, automation and security.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "admin_password",
+      "type": "string",
+      "default": null,
+      "description": "Password for every admin account the stack sets up: Grafana's admin, and the admins of Open WebUI, Kestra, Semaphore, Portainer, GitLab, authentik and Wazuh when those run. Ephemeral: it reaches the hosts in root-only files and never the plan or state. Use passwords to give an app its own.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "passwords",
+      "type": "map(string)",
+      "default": {},
+      "description": "Passwords that replace admin_password for one app, by name: grafana, openwebui, kestra, semaphore, portainer, gitlab, authentik, wazuh_admin or wazuh_api. Each one has to pass that app's own rules. Ephemeral, like admin_password.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "ollama_models",
+      "type": "list(string)",
+      "default": [],
+      "description": "Models Ollama pulls with the ai category, such as [\"llama3.2:3b\"].",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "renovate",
+      "type": "object({\n    platform     = string\n    repositories = list(string)\n    endpoint     = optional(string)\n  })",
+      "default": null,
+      "description": "Where Renovate runs with the automation category, such as { platform = \"gitlab\", endpoint = \"https://gitlab.example.com/api/v4\", repositories = [\"lab/infra\"] }. When null, no Renovate.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "renovate_token",
+      "type": "string",
+      "default": null,
+      "description": "Token Renovate signs in to the platform with. Needed with renovate. Ephemeral: it reaches the host in a root-only file and never the plan or state.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "gitlab_runner",
+      "type": "bool",
+      "default": false,
+      "description": "Run a GitLab Runner with the code category, registered with gitlab_runner_token. Create the runner in GitLab first, so this goes on with the second apply.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "gitlab_runner_token",
+      "type": "string",
+      "default": null,
+      "description": "The glrt- token GitLab shows when you create a runner. Needed with gitlab_runner. Ephemeral, like admin_password.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "db_users",
+      "type": "list(string)",
+      "default": [],
+      "description": "Apps that get their own database, such as [\"nextcloud\"]. With the databases category, each name becomes a user and a database owned by it, in MariaDB and in PostgreSQL. Each needs a password in db_passwords.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "db_passwords",
+      "type": "map(string)",
+      "default": {},
+      "description": "Password for each of db_users, by name. Ephemeral, like admin_password.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "influxdb_token",
+      "type": "string",
+      "default": null,
+      "description": "Admin token InfluxDB starts with: apiv3_ followed by at least 32 letters, digits, _ or -, such as apiv3_ and the output of openssl rand -hex 24. Needed with databases. Ephemeral, like admin_password.",
+      "sensitive": true,
+      "ephemeral": true,
+      "required": false
+    },
+    {
+      "name": "wazuh_server",
+      "type": "any",
+      "default": null,
+      "description": "A host of its own for the Wazuh manager, indexer and dashboard, in the same form as hosts. With the security category, the homelab server joins it as an agent. Wazuh asks for 4 vCPUs and 8 GiB. When null, no Wazuh.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    }
+  ]
+}
