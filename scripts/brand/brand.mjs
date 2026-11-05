@@ -30,14 +30,14 @@ export function markPaths(u, stroke) {
 // stay smooth at header and favicon sizes.
 export const LINE = 'stroke-linecap="round" stroke-linejoin="round"';
 
-export function wordmark(fontFile, size) {
+export function wordmark(fontFile, size, text = "conn3x") {
   const font = loadFont(fontFile);
-  const word = font.getPath("conn3x", 0, 0, size).getBoundingBox();
+  const word = font.getPath(text, 0, 0, size).getBoundingBox();
   const c = font.getPath("c", 0, 0, size).getBoundingBox();
   const xHeight = c.y2 - c.y1;
   return {
     // Path drawn with its top-left at (0, 0).
-    d: (dx = 0, dy = 0) => font.getPath("conn3x", dx - word.x1, dy - word.y1, size).toPathData(3),
+    d: (dx = 0, dy = 0) => font.getPath(text, dx - word.x1, dy - word.y1, size).toPathData(3),
     width: word.x2 - word.x1,
     height: word.y2 - word.y1,
     // Vertical centre of the lowercase c, measured from the top of the wordmark.
@@ -47,8 +47,8 @@ export function wordmark(fontFile, size) {
 }
 
 // Lockup: mark + wordmark, junction line on the centre of the c.
-export function lockup(fontFile, size) {
-  const w = wordmark(fontFile, size);
+export function lockup(fontFile, size, text) {
+  const w = wordmark(fontFile, size, text);
   const stroke = w.xHeight * 0.25;
   const u = w.xHeight * 0.42;
   const m = markPaths(u, stroke);

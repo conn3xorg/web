@@ -4,10 +4,12 @@
 // Rebuilds every brand asset from the geometry in brand.mjs.
 //
 //   node scripts/brand/build.mjs [--readme <dir>]
+//   node scripts/brand/build.mjs --org <dir>
 //
 // Writes the logo, mark and favicon SVGs, the PNG icons, favicon.ico and
 // the social card into apps/site. With --readme, also renders the animated
-// README header GIFs (needs gifski) into <dir>.
+// README header GIFs (needs gifski) into <dir>. With --org, writes only the
+// GitHub organisation profile's animated header SVGs into <dir>.
 
 import { optimize } from "svgo";
 import { chromium } from "@playwright/test";
@@ -155,7 +157,79 @@ async function readmeHeaders(browser, outDir) {
   }
 }
 
+// The GitHub organisation profile's header: the site hero's honeycomb, with
+// signals running along a few traces, behind the logo spelled "Conn3x".
+// Plain SVG with CSS animation, which GitHub plays inside an <img>, so the
+// traces are drawn here rather than by script.
+function orgBanners(outDir) {
+  const W = 1280, H = 320, e = 26, hh = Math.sqrt(3) * e;
+  const L = lockup(BOLD, 104, "Conn3x");
+  const medium = loadFont(MEDIUM);
+  const tag = "One plan for your cloud and the servers it creates.";
+  const tb = medium.getPath(tag, 0, 0, 30).getBoundingBox();
+  const x0 = (W - L.width) / 2, y0 = 92;
+  const tagD = medium.getPath(tag, (W - (tb.x2 - tb.x1)) / 2 - tb.x1, y0 + L.height + 34 - tb.y1, 30).toPathData(2);
+  const tile = `M0 ${f(hh / 2)}L${e / 2} 0H${1.5 * e}L${2 * e} ${f(hh / 2)}H${3 * e}M${2 * e} ${f(hh / 2)}L${1.5 * e} ${f(hh)}H${e / 2}L0 ${f(hh / 2)}`;
+
+  // The same seeded walk as the hero (Traces.astro): a diagonal, then a
+  // flat edge, the moves the mark makes.
+  const walk = (seed, col, row, steps) => {
+    let s = seed;
+    const rnd = () => (s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+    let x = 3 * e * col, y = hh / 2 + hh * row, d = `M${f(x)} ${f(y)}`;
+    for (let i = 0; i < steps; i++) {
+      const up = y - hh / 2 < 40 ? false : y + hh / 2 > H - 40 ? true : rnd() < 0.5;
+      x += e / 2;
+      y += up ? -hh / 2 : hh / 2;
+      d += `L${f(x)} ${f(y)}H${f((x += e))}`;
+    }
+    return { d, x, y };
+  };
+  const traces = [[7, 0, 1, 7], [19, 1, 4, 6], [42, 11, 0, 5], [77, 12, 5, 6], [5, 15, 2, 6], [91, 3, 6, 5]]
+    .map(([seed, col, row, steps], i) => {
+      const t = walk(seed, col, row, steps);
+      const delay = -((i * 1.7) % 5.5).toFixed(1);
+      return `<g><path class="lit" d="${t.d}"/><path class="pulse" pathLength="1" d="${t.d}" style="animation-delay:${delay}s"/><circle class="node" cx="${f(t.x)}" cy="${f(t.y)}" r="4.5" style="animation-delay:${delay}s"/></g>`;
+    })
+    .join("");
+
+  const svg = (c) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Conn3x: one plan for your cloud and the servers it creates.">
+<style>
+.cell{fill:none;stroke:${c.grid};stroke-width:1}
+.lit{fill:none;stroke:${c.accent};stroke-opacity:.3;stroke-width:1.5;stroke-linejoin:round}
+.pulse{fill:none;stroke:${c.accent};stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:.08 .92;stroke-dashoffset:.08;opacity:0}
+.node{fill:${c.accent};opacity:.85;transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:no-preference){
+.pulse{opacity:1;animation:run 5.5s linear infinite}
+.node{animation:land 5.5s ease-out infinite}
+}
+@keyframes run{from{stroke-dashoffset:.08}to{stroke-dashoffset:-.92}}
+@keyframes land{0%,85%{transform:scale(1)}92%{transform:scale(1.7)}100%{transform:scale(1)}}
+</style>
+<defs>
+<pattern id="hex" width="${3 * e}" height="${f(hh)}" patternUnits="userSpaceOnUse"><path class="cell" d="${tile}"/></pattern>
+<radialGradient id="calm" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="${c.bg}"/><stop offset=".55" stop-color="${c.bg}" stop-opacity=".92"/><stop offset="1" stop-color="${c.bg}" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="${W}" height="${H}" fill="${c.bg}"/>
+<rect width="${W}" height="${H}" fill="url(#hex)"/>
+${traces}
+<ellipse cx="${W / 2}" cy="${H / 2 + 6}" rx="430" ry="150" fill="url(#calm)"/>
+<g transform="translate(${f(x0)} ${f(y0 + L.markY)})">${markSvg(L.m, L.stroke, c)}</g>
+<path fill="${c.text}" d="${L.w.d(x0 + L.m.width + L.gap, y0 + L.wordY)}"/>
+<path fill="${c.muted}" d="${tagD}"/>
+</svg>`;
+
+  mkdirSync(outDir, { recursive: true });
+  for (const [name, c] of Object.entries(COLORS)) writeFileSync(join(outDir, `header-${name}.svg`), svg(c));
+}
+
 const args = process.argv.slice(2);
+const org = args.includes("--org") ? args[args.indexOf("--org") + 1] : null;
+if (org) {
+  orgBanners(org);
+  console.log(`organisation profile headers in ${org}`);
+  process.exit(0);
+}
 const readme = args.includes("--readme") ? args[args.indexOf("--readme") + 1] : null;
 const svgs = vectors();
 const browser = await chromium.launch();
