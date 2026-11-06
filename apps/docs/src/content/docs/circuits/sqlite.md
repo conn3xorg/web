@@ -3,7 +3,7 @@ title: SQLite
 description: "The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-sqlite at v0.1.3. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-sqlite at v0.1.4. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/sqlite/grade.svg)](https://conn3x.org/circuits/sqlite/grade)
 
@@ -24,7 +24,7 @@ The file format hasn't changed across these, so a database moves between them. A
 
 ```hcl
 module "sqlite" {
-  source = "github.com/conn3xorg/circuit-sqlite?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-sqlite?ref=v0.1.4"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -48,7 +48,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.3/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.4/examples/local).
 
 ### Databases
 
@@ -98,7 +98,7 @@ Requires Conn3x v0.6.10 or later, and a package mirror each host can reach. amd6
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.3/examples/local) was applied to each on arm64, and the second plan had no changes. The database's owner then created a table and wrote to it, root read the row back, the owner and mode hadn't moved, and one more plan had no changes. CI runs the same check on amd64, and checks that a link at a database's path leaves what it points to unchanged.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.4/examples/local) was applied to each on arm64, and the second plan had no changes. The database's owner then created a table and wrote to it, root read the row back, the owner and mode hadn't moved, and one more plan had no changes. CI runs the same check on amd64, and checks that a link at a database's path leaves what it points to unchanged.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same check passed, and after a reboot the plan had no changes and the data was still there.
 
@@ -106,10 +106,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-sqlite/blob/v0.1.3/LICENSE). SQLite is in the public domain.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-sqlite/blob/v0.1.4/LICENSE). SQLite is in the public domain.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-sqlite](https://github.com/conn3xorg/circuit-sqlite). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-sqlite/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.3/examples/local).
+- Repository: [conn3xorg/circuit-sqlite](https://github.com/conn3xorg/circuit-sqlite). This page covers [v0.1.4](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.4); the repository's [tags](https://github.com/conn3xorg/circuit-sqlite/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-sqlite/tree/v0.1.4/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free), [InfluxDB 3 Core](/circuits/influxdb).
