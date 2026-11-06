@@ -2,7 +2,7 @@
   "name": "proxmox",
   "repo": "conn3xorg/circuit-proxmox",
   "description": "Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "proxmox",
     "virtualization",
