@@ -1,6 +1,34 @@
 {
-  "otherMinutes": 76,
+  "otherMinutes": 81,
   "items": [
+    {
+      "date": "2026-11-06",
+      "repo": "n8n-io/n8n-docs",
+      "summary": "Timed the HTTP Request node's batching against a test server and found a docs example promising one request per second actually sends 50 at once unless you change one more setting.",
+      "url": "https://github.com/n8n-io/n8n-docs/pull/5636#pullrequestreview-5806398272",
+      "minutes": 40
+    },
+    {
+      "date": "2026-11-06",
+      "repo": "prometheus/alertmanager",
+      "summary": "Showed the email notifier can still hang on a mail server that accepts the connection but never replies, and tested a two-line fix that stops it on time.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5690#pullrequestreview-5806359505",
+      "minutes": 35
+    },
+    {
+      "date": "2026-11-06",
+      "repo": "jenkins-infra/jenkins.io",
+      "summary": "Started Jenkins with JKS, PKCS12 and JCEKS keystores to confirm the new HTTPS docs say which formats work and from which version.",
+      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9515#pullrequestreview-5806323239",
+      "minutes": 25
+    },
+    {
+      "date": "2026-11-06",
+      "repo": "tailscale/tailscale",
+      "summary": "Built the Linux packages before and after a fix under two build setups and confirmed every file now installs with the same permissions wherever it was built.",
+      "url": "https://github.com/tailscale/tailscale/pull/22203#pullrequestreview-5806319427",
+      "minutes": 30
+    },
     {
       "date": "2026-11-06",
       "repo": "cockpit-project/cockpit",
