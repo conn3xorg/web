@@ -3,7 +3,7 @@ title: Nomad
 description: "A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nomad at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-nomad at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/nomad/grade.svg)](https://conn3x.org/circuits/nomad/grade)
 
@@ -30,7 +30,7 @@ If you need an open source licence today, this circuit isn't the way to get one.
 
 ```hcl
 module "nomad" {
-  source = "github.com/conn3xorg/circuit-nomad?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-nomad?ref=v0.1.2"
 
   servers = {
     server1 = { address = "203.0.113.10", advertise = "10.0.0.10" }
@@ -59,7 +59,7 @@ The number of servers has to be odd, and the plan stops if it isn't. Raft needs 
 
 `advertise` is the address the other nodes reach a host on. Set it on any host with more than one network, such as a droplet, or Nomad may pick one the others can't reach. If Conn3x and your nodes see the servers on different addresses and you don't use `advertise`, set `join_addresses`.
 
-To try it on throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.1/examples/local).
+To try it on throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.2/examples/local).
 
 ### Your first token
 
@@ -73,7 +73,7 @@ Put the `Secret ID` it prints in your password manager, and use it as `NOMAD_TOK
 
 ### Running a job
 
-The clients have Nomad's built-in `exec` driver ready, which needs nothing else installed. [examples/local/hello.nomad.hcl](https://github.com/conn3xorg/circuit-nomad/blob/v0.1.1/examples/local/hello.nomad.hcl) is a small job that uses it:
+The clients have Nomad's built-in `exec` driver ready, which needs nothing else installed. [examples/local/hello.nomad.hcl](https://github.com/conn3xorg/circuit-nomad/blob/v0.1.2/examples/local/hello.nomad.hcl) is a small job that uses it:
 
 ```sh
 export NOMAD_ADDR=http://203.0.113.10:4646 NOMAD_TOKEN=...
@@ -152,16 +152,16 @@ Requires Conn3x v0.6.10 or later, systemd on each host, and outbound HTTPS to `r
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.1/examples/local) to a server and a client of each, checks that the second plan has no changes and that the gossip key stayed out of state, then bootstraps ACLs, checks an anonymous request gets a 403, runs [hello.nomad.hcl](https://github.com/conn3xorg/circuit-nomad/blob/v0.1.1/examples/local/hello.nomad.hcl) with the `exec` driver and reads the job's output back from the client. A second CI job does the same with three servers and a client, and a third checks that an even number of servers is refused. Those runs were also done by hand in containers on arm64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.2/examples/local) to a server and a client of each, checks that the second plan has no changes and that the gossip key stayed out of state, then bootstraps ACLs, checks an anonymous request gets a 403, runs [hello.nomad.hcl](https://github.com/conn3xorg/circuit-nomad/blob/v0.1.2/examples/local/hello.nomad.hcl) with the `exec` driver and reads the job's output back from the client. A second CI job does the same with three servers and a client, and a third checks that an even number of servers is refused. Those runs were also done by hand in containers on arm64.
 
 The same check passed on five droplets on a private network: servers on Ubuntu 24.04, Rocky Linux 10 and Debian 13, clients on Ubuntu 24.04 and Rocky Linux 10, with `advertise` set. SELinux was enforcing on the Rocky hosts, with no denials for Nomad. After rebooting two of the servers and a client, one at a time, the cluster had three peers and a leader, and the plan stayed clean. Changing `nomad_version` replaced the binary everywhere and the second plan was clean; that was tried between 2.1.1 and 2.1.0, both ways, not on a real upgrade across minor versions. Fedora 45 wasn't available as a droplet, so it has only run in containers, with SELinux off.
 
 ## License
 
-The circuit is MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nomad/blob/v0.1.1/LICENSE). Nomad itself is BUSL-1.1, as [above](#nomads-licence).
+The circuit is MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-nomad/blob/v0.1.2/LICENSE). Nomad itself is BUSL-1.1, as [above](#nomads-licence).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-nomad](https://github.com/conn3xorg/circuit-nomad). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-nomad/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-nomad](https://github.com/conn3xorg/circuit-nomad). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-nomad/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-nomad/tree/v0.1.2/examples/local).
 - Related circuits: [Docker](/circuits/docker), [Podman](/circuits/podman), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).

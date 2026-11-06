@@ -127,7 +127,7 @@ LiteLLM runs on the host's network, so it reaches an [Ollama](/circuits/ollama) 
 
 ```hcl
 module "ollama" {
-  source = "github.com/conn3xorg/circuit-ollama?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-ollama?ref=v0.1.4"
 
   hosts                = { gateway = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
