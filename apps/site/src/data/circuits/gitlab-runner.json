@@ -2,7 +2,7 @@
   "name": "gitlab-runner",
   "repo": "conn3xorg/circuit-gitlab-runner",
   "description": "GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state.",
-  "version": "v0.1.2",
+  "version": "v0.1.3",
   "tags": [
     "gitlab-runner",
     "ci",
