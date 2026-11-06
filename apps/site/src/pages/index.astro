@@ -69,6 +69,7 @@ const compare = [
         <h2 class="lead" id="s3"><strong>Your playbooks come with you.</strong> The converter rewrites each task it can prove, and marks the rest with the reason. Nothing gets guessed.</h2>
       </div>
       <ConvertFlow />
+      <p class="more"><a href={`${docs}/guides/migrate-from-ansible`}>Migrate from Ansible →</a></p>
     </section>
 
     <Band />
@@ -84,7 +85,7 @@ const compare = [
         ))}
       </ul>
       <p class="more"><a href={`${docs}/modules/package`}>Every module in the docs →</a></p>
-      <p class="more">Windows Server 2022 and 2025 are in preview today, and Active Directory is what we're building now. The first network-device circuits are out too. <a href={`${docs}/roadmap`}>See the roadmap →</a></p>
+      <p class="more">Windows Server 2022 and 2025 are in <a href={`${docs}/reference/maturity`}>preview</a> today, and Active Directory is what we're building now. The first network-device circuits are out too, as experimental. <a href={`${docs}/roadmap`}>See the roadmap →</a></p>
     </section>
 
     <section class="sec wrap" aria-labelledby="s5">
@@ -93,7 +94,7 @@ const compare = [
         <h2 class="lead" id="s5"><strong>Don't write the nginx setup again.</strong> Borrow a circuit with one <code>module</code> block, or share your own on the directory.</h2>
       </div>
       <CircuitCards />
-      <p class="more"><a href="/circuits">Browse every circuit →</a></p>
+      <p class="more"><a href="/circuits">Browse circuits →</a> · <a href="/build">Build a configuration →</a></p>
     </section>
 
     <section class="sec wrap" aria-labelledby="s6">
@@ -167,11 +168,11 @@ const compare = [
     <section class="closing" aria-labelledby="close">
       <div class="wrap">
         <h2 id="close">Fifteen minutes to your<br />first circuit.</h2>
-        <p>All you need is one Linux server you can reach over SSH. No server handy? Try it on a throwaway container, in about five.</p>
+        <p>All you need is one Linux server you can reach over SSH. No server handy? Try it on a throwaway container, in about ten.</p>
         <div class="cta">
-          <a class="btn" href={`${docs}/get-started`}>Get started</a>
+          <a class="btn" href={`${docs}/get-started`}>Configure your first server</a>
           <a class="btn btn-ghost" href={`${docs}/tutorials/try-locally`}>Try it locally</a>
-          <a class="btn btn-ghost" href={docs}>Read the docs</a>
+          <a class="btn btn-ghost" href={`${docs}/guides/migrate-from-ansible`}>Migrate from Ansible</a>
         </div>
         <p class="watch">Rather watch first? <a href="https://youtu.be/eXrAK-ah4Ek">What is Conn3x, in four minutes</a>.</p>
       </div>
