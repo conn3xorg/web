@@ -62,7 +62,7 @@ circuit-apache serves the files, and hands `.php` to the pool's socket through `
 
 ```hcl
 module "apache" {
-  source = "github.com/conn3xorg/circuit-apache?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-apache?ref=v0.2.1"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -90,7 +90,7 @@ The socket's directory differs between the two families, and circuit-apache writ
 
 ```hcl
 module "apache" {
-  source   = "github.com/conn3xorg/circuit-apache?ref=v0.2.0"
+  source   = "github.com/conn3xorg/circuit-apache?ref=v0.2.1"
   for_each = local.hosts
 
   hosts = { (each.key) = each.value }

@@ -3,7 +3,7 @@ title: Cockpit
 description: "Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cockpit at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cockpit at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/cockpit/grade.svg)](https://conn3x.org/circuits/cockpit/grade)
 
@@ -15,7 +15,7 @@ You pick the port, the address, the extra pages and the certificate once, and th
 
 ```hcl
 module "cockpit" {
-  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.2.1"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -41,7 +41,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.1/examples/local).
 
 ### A real certificate
 
@@ -51,13 +51,13 @@ With [circuit-certbot](/circuits/certbot), use the paths under `live`, and have 
 
 ```hcl
 module "certbot" {
-  source = "github.com/conn3xorg/circuit-certbot?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-certbot?ref=v0.2.1"
   # ...
   deploy_hook = "systemctl try-restart cockpit"
 }
 
 module "cockpit" {
-  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-cockpit?ref=v0.2.1"
   # ...
   tls_certificate = "/etc/letsencrypt/live/cockpit.example.com/fullchain.pem"
   tls_key         = "/etc/letsencrypt/live/cockpit.example.com/privkey.pem"
@@ -147,7 +147,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, that `cockpit.socket` is on and the login page answers on 9090 with the example's title, then creates a test user in the container and checks it logs in, a wrong password doesn't, and root is turned away.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, that `cockpit.socket` is on and the login page answers on 9090 with the example's title, then creates a test user in the container and checks it logs in, a wrong password doesn't, and root is turned away.
 
 The CI containers run with SELinux off. On a Rocky Linux 10 droplet with SELinux enforcing, which came with `cockpit.socket` already on 9090, the circuit moved Cockpit to port 9443 with a certificate under `/etc/letsencrypt/live`, `cockpit-podman` and `cockpit-selinux`. A test user logged in, Cockpit served the certificate, and after replacing it, `systemctl try-restart cockpit` served the new one. On an Ubuntu 24.04 droplet, Cockpit and `cockpit-podman` came from `noble-backports` and a test user logged in. Both came back after a reboot with no changes in the next plan, and the Rocky Linux audit log had no denials.
 
@@ -155,10 +155,10 @@ A loopback address with `behind_proxy`, `allow_unencrypted` and `root_login` was
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cockpit/blob/v0.2.0/LICENSE). Cockpit itself is LGPL-2.1-or-later.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cockpit/blob/v0.2.1/LICENSE). Cockpit itself is LGPL-2.1-or-later.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-cockpit](https://github.com/conn3xorg/circuit-cockpit). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-cockpit/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-cockpit](https://github.com/conn3xorg/circuit-cockpit). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-cockpit/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-cockpit/tree/v0.2.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [certbot](/circuits/certbot), [Apache httpd](/circuits/apache), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab).
