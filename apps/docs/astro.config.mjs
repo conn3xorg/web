@@ -44,7 +44,7 @@ export default defineConfig({
         { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
         { tag: "meta", attrs: { name: "twitter:image", content: "https://docs.conn3x.org/og.png" } },
         // Cloudflare Web Analytics, shared with conn3x.org; filter by host to see the docs.
-        { tag: "script", attrs: { type: "module", src: "https://static.cloudflareinsights.com/beacon.min.js", "data-cf-beacon": '{"token": "a6d1b39fdbab4414a50520fcbe318d8a"}' } },
+        { tag: "script", content: 'if(/(^|\\.)conn3x\\.org$/.test(location.hostname)){const s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.dataset.cfBeacon=\'{"token":"a6d1b39fdbab4414a50520fcbe318d8a"}\';document.head.append(s)}' },
       ],
       sidebar: [
         { label: "Start here", items: ["install", "get-started", "concepts"] },

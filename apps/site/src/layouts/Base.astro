@@ -30,7 +30,8 @@ const props = Astro.props;
     <Font cssVariable="--font-schibsted" preload />
     <Font cssVariable="--font-jetbrains" preload />
     <Seo {...props} />
-    <script is:inline type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "a6d1b39fdbab4414a50520fcbe318d8a"}'></script>
+    <!-- Cloudflare Web Analytics, only on the real hosts: the beacon may only report from them. -->
+    <script is:inline>if(/(^|\.)conn3x\.org$/.test(location.hostname)){const s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.dataset.cfBeacon='{"token":"a6d1b39fdbab4414a50520fcbe318d8a"}';document.head.append(s)}</script>
   </head>
   <body>
     <slot />
