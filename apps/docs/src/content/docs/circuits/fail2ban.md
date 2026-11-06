@@ -3,7 +3,7 @@ title: fail2ban
 description: "Bans addresses that keep failing SSH logins, through nftables, with room for jails of your own."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-fail2ban at v0.3.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-fail2ban at v0.3.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/fail2ban/grade.svg)](https://conn3x.org/circuits/fail2ban/grade)
 
@@ -15,7 +15,7 @@ You set the ban time, the window and the number of tries once, and the same sett
 
 ```hcl
 module "fail2ban" {
-  source = "github.com/conn3xorg/circuit-fail2ban?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-fail2ban?ref=v0.3.1"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +46,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.1/examples/local).
 
 ### SSH on another port, or behind a port forward
 
@@ -107,7 +107,7 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.0/examples/local) to each on amd64, checks that the second plan has no changes, checks the `sshd` jail runs with the example's ban time, bans an address to check it lands in nftables, and bans it again to check `recidive` picks it up from fail2ban's log.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.1/examples/local) to each on amd64, checks that the second plan has no changes, checks the `sshd` jail runs with the example's ban time, bans an address to check it lands in nftables, and bans it again to check `recidive` picks it up from fail2ban's log. Then it restarts the container and checks the `sshd` jail comes back with the same ban time, the ban is in nftables again, and the plan has no changes.
 
 The CI containers run with SELinux off. On Fedora and Rocky Linux, `fail2ban-server` pulls in `fail2ban-selinux` when the targeted policy is installed. On a Rocky Linux 10 droplet with SELinux enforcing, the same checks passed by hand: fail2ban ran confined as `fail2ban_t`, the ban landed in nftables, `recidive` picked it up, and the audit log had no denials. On Fedora 44 and AlmaLinux 10 droplets, also enforcing, the `sshd` jail came up and came back after a reboot with no denials; bans weren't retried there.
 
@@ -115,10 +115,10 @@ SSH on another port was tried by hand on an Ubuntu 24.04 droplet with sshd on po
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-fail2ban/blob/v0.3.0/LICENSE). fail2ban itself is GPL-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-fail2ban/blob/v0.3.1/LICENSE). fail2ban itself is GPL-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-fail2ban](https://github.com/conn3xorg/circuit-fail2ban). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-fail2ban/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.0/examples/local).
+- Repository: [conn3xorg/circuit-fail2ban](https://github.com/conn3xorg/circuit-fail2ban). This page covers [v0.3.1](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.1); the repository's [tags](https://github.com/conn3xorg/circuit-fail2ban/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-fail2ban/tree/v0.3.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto), [TruffleHog](/circuits/trufflehog).

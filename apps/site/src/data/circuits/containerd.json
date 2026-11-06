@@ -2,7 +2,7 @@
   "name": "containerd",
   "repo": "conn3xorg/circuit-containerd",
   "description": "Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "containerd",
     "containers",

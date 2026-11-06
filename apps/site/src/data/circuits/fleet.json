@@ -2,7 +2,7 @@
   "name": "fleet",
   "repo": "conn3xorg/circuit-fleet",
   "description": "Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "fleet",
     "osquery",

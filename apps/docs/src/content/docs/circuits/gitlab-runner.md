@@ -3,7 +3,7 @@ title: GitLab Runner
 description: "GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-gitlab-runner at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-gitlab-runner at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/gitlab-runner/grade.svg)](https://conn3x.org/circuits/gitlab-runner/grade)
 
@@ -23,7 +23,7 @@ variable "runner_token" {
 }
 
 module "gitlab_runner" {
-  source = "github.com/conn3xorg/circuit-gitlab-runner?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-gitlab-runner?ref=v0.1.2"
 
   hosts                = { ci1 = "203.0.113.20", ci2 = "203.0.113.21" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -50,7 +50,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.2/examples/local).
 
 ### Getting a token from the API
 
@@ -82,7 +82,7 @@ module "docker" {
 }
 
 module "gitlab_runner" {
-  source     = "github.com/conn3xorg/circuit-gitlab-runner?ref=v0.1.1"
+  source     = "github.com/conn3xorg/circuit-gitlab-runner?ref=v0.1.2"
   depends_on = [module.docker]
 
   hosts                = { ci1 = { address = "203.0.113.20", os = "ubuntu" } }
@@ -176,7 +176,7 @@ The package signing key that dnf checks expires on 26 February 2027. When GitLab
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10, with GitLab Runner 19.5.2. CI applies [examples/local](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.1/examples/local) to each in a container on amd64, with a placeholder token and no GitLab, and checks that the second plan has no changes and that the token isn't in the state. Then it checks that both packages are at 19.5.2, that the service runs and hands jobs to `gitlab-runner`, that `config.toml` is root's alone, and that the runner loaded it: `gitlab-runner list` shows the example's runner and URL, and the runner's log shows the example's `concurrent = 2`. Without a GitLab, no job runs there.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10, with GitLab Runner 19.5.2. CI applies [examples/local](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.2/examples/local) to each in a container on amd64, with a placeholder token and no GitLab, and checks that the second plan has no changes and that the token isn't in the state. Then it checks that both packages are at 19.5.2, that the service runs and hands jobs to `gitlab-runner`, that `config.toml` is root's alone, and that the runner loaded it: `gitlab-runner list` shows the example's runner and URL, and the runner's log shows the example's `concurrent = 2`. CI then restarts the container and checks the runner loads `config.toml` again, with the plan still empty. Without a GitLab, no job runs there.
 
 Before tagging, the same checks passed by hand in arm64 containers of all three on Apple silicon. On Debian 13 and Rocky Linux 10, installing 19.5.1 and then raising `runner_version` to 19.5.2 moved both packages up together, each followed by a clean plan. Restarting the Ubuntu container gave a clean plan too.
 
@@ -186,10 +186,10 @@ Fedora isn't tested, since GitLab Runner has no packages for Fedora 45.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-gitlab-runner/blob/v0.1.1/LICENSE). GitLab Runner itself is MIT.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-gitlab-runner/blob/v0.1.2/LICENSE). GitLab Runner itself is MIT.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-gitlab-runner](https://github.com/conn3xorg/circuit-gitlab-runner). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-gitlab-runner/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-gitlab-runner](https://github.com/conn3xorg/circuit-gitlab-runner). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-gitlab-runner/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-gitlab-runner/tree/v0.1.2/examples/local).
 - Related circuits: [GitLab CE](/circuits/gitlab), [Docker](/circuits/docker), [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).
