@@ -1,0 +1,22 @@
+{
+  "name": "proxmox-network",
+  "repo": "conn3xorg/circuit-proxmox-network",
+  "description": "Manages a Proxmox VE node's bridges, VLAN interfaces, SDN zones and VNets through the Proxmox API.",
+  "version": "v0.1.0",
+  "tags": [
+    "proxmox",
+    "vlan",
+    "sdn",
+    "homelab",
+    "network"
+  ],
+  "tested": [],
+  "device": {
+    "tested": "Proxmox VE 9.2.26",
+    "provider": "bpg/proxmox",
+    "providerVersion": "0.120.0",
+    "maintainer": "bpg (BPG Labs)"
+  },
+  "category": "Network",
+  "official": true
+}

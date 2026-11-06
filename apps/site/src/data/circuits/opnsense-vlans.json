@@ -1,0 +1,22 @@
+{
+  "name": "opnsense-vlans",
+  "repo": "conn3xorg/circuit-opnsense-vlans",
+  "description": "Builds trusted, IoT and guest VLANs on OPNsense, with Kea DHCP, firewall rules and local names in Unbound.",
+  "version": "v0.1.0",
+  "tags": [
+    "opnsense",
+    "firewall",
+    "vlan",
+    "dhcp",
+    "network"
+  ],
+  "tested": [],
+  "device": {
+    "tested": "OPNsense 26.7",
+    "provider": "browningluke/opnsense",
+    "providerVersion": "0.26.0",
+    "maintainer": "Luke Browning"
+  },
+  "category": "Network",
+  "official": true
+}

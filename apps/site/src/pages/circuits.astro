@@ -13,6 +13,7 @@ type Circuit = {
   version: string;
   tags: string[];
   tested: string[];
+  device?: { tested: string; provider: string; providerVersion: string; maintainer: string };
   category: string;
   official: boolean;
 };
@@ -95,9 +96,18 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           </p>
           <pre><code>{source(c)}</code></pre>
           <button class="copy" type="button" data-copy={source(c)}>Copy</button>
-          <p class="tested">
-            Tested on {c.tested.map((t) => distro[t] ?? t).join(", ")}
-          </p>
+          {c.device ? (
+            <>
+              <p class="tested">Tested on {c.device.tested}, virtual, not hardware</p>
+              <p class="tested">
+                Uses the <a href={`https://search.opentofu.org/provider/${c.device.provider}/v${c.device.providerVersion}`}>{c.device.provider}</a> provider {c.device.providerVersion}, maintained by {c.device.maintainer}
+              </p>
+            </>
+          ) : (
+            <p class="tested">
+              Tested on {c.tested.map((t) => distro[t] ?? t).join(", ")}
+            </p>
+          )}
           <ul class="tags">
             {c.tags.map((t) => <li>{t}</li>)}
           </ul>

@@ -15,14 +15,22 @@ const categories = new Set(JSON.parse(readFileSync(new URL("../apps/site/src/dat
 for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
   test(`circuit ${file}`, () => {
     const c = JSON.parse(readFileSync(new URL(file, dir), "utf8"));
-    assert.deepEqual(Object.keys(c).sort(), ["category", "description", "name", "official", "repo", "tags", "tested", "version"]);
+    const { device, ...rest } = c;
+    assert.deepEqual(Object.keys(rest).sort(), ["category", "description", "name", "official", "repo", "tags", "tested", "version"]);
     assert.equal(file, `${c.name}.json`, "file is named after the circuit");
     assert.match(c.name, /^[a-z0-9][a-z0-9-]*$/);
     assert.match(c.repo, /^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/, "repo is OWNER/NAME on GitHub");
     assert.match(c.version, /^v\d+\.\d+\.\d+$/, "version is a release tag like v1.2.3");
     assert.ok(c.description.length >= 20 && c.description.length <= 140, "description is one line");
     assert.ok(Array.isArray(c.tags) && c.tags.every((t) => /^[a-z0-9-]+$/.test(t)));
-    assert.ok(c.tested.length > 0 && c.tested.every((d) => distros.has(d)), "tested names known distros");
+    // A network device circuit names the device it was tested on and the provider it uses instead.
+    if (device) {
+      assert.deepEqual(Object.keys(device).sort(), ["maintainer", "provider", "providerVersion", "tested"]);
+      assert.ok(Object.values(device).every((v) => typeof v === "string" && v.length > 0));
+      assert.match(device.provider, /^[a-z0-9-]+\/[a-z0-9-]+$/, "provider is NAMESPACE/NAME");
+      assert.equal(c.tested.length, 0, "a device circuit tests on its device, not a distribution");
+    } else assert.ok(c.tested.length > 0, "tested names a distribution");
+    assert.ok(c.tested.every((d) => distros.has(d)), "tested names known distros");
     assert.ok(categories.has(c.category), "category is one of data/categories.json");
     assert.equal(typeof c.official, "boolean");
     if (c.official) assert.ok(c.repo.startsWith("conn3xorg/"), "only conn3xorg circuits are official");

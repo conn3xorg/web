@@ -258,6 +258,8 @@ const PRIVILEGED = [
 // curl with -k or --insecure, and a credential on the same command. -K is how
 // the circuits pass one on stdin. Lower-case -k is matched on its own, so -K isn't it.
 const INSECURE_CREDENTIAL = /\bcurl\b(?=[^|;&\n]*\s(?:-[a-zA-Z]*k[a-zA-Z]*|--insecure)(?=\s))(?=[^|;&\n]*\s(?:-[a-zA-Z]*K|--config\b|-u\s|--user\b|-H\s*["']?(?:Authorization|X-[A-Za-z-]*(?:Token|Key))|--cert\b|--cookie\b|--oauth2-bearer\b))/;
+// What a circuit that configures hosts has: the host data source, a circuit block, or a module (another circuit).
+const HOST_CODE = /\bconn3x_host\b|^\s*(?:circuit|module)\s+"/m;
 // The port check from the share-a-circuit guide.
 const PORT_CHECK = /\/proc\/net\/tcp/;
 
@@ -299,6 +301,8 @@ export const RUBRIC = [
     id: "matrix", group: "Testing", points: 10,
     title: "Applied on real distributions in CI",
     test: (ev) => {
+      // A circuit that only drives a device through a provider has no Linux host to vary.
+      if (!HOST_CODE.test(code(ev, ".hcl", ".tf"))) return na("Configures no host: no conn3x_host, circuit or module block, only provider resources.");
       const ids = new Set();
       for (const job of ev.applyJobs) for (const l of job.head) for (const m of l.matchAll(/\b(rocky\d+|fedora\d+|ubuntu\d{4}|debian\d+|windows-?20(?:22|25))\b/g)) ids.add(m[1].replace("-", ""));
       if (ev.applyJobs.length && !ids.size) ids.add("one host");
