@@ -4,7 +4,6 @@
 import providers from "../../data/providers.json";
 import Traces from "./Traces.astro";
 
-const repo = "https://github.com/conn3xorg/conn3x";
 const docs = "https://docs.conn3x.org";
 const install = "brew install conn3xorg/tap/conn3x";
 const marks = [
@@ -26,11 +25,8 @@ const marks = [
       one binary, one plan, one state, for your cloud and every server it creates.
     </p>
     <div class="cta">
-      <a class="btn" href={`${docs}/get-started`}>Get started</a>
-      <a class="btn btn-ghost" href={repo}>
-        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 .6l2.2 4.6 5 .7-3.6 3.5.9 5L8 12 3.5 14.4l.9-5L.8 5.9l5-.7z"/></svg>
-        Star on GitHub
-      </a>
+      <a class="btn" href={`${docs}/tutorials/try-locally`}>Try it locally</a>
+      <a class="btn btn-ghost" href={`${docs}/guides/migrate-from-ansible`}>Migrate from Ansible</a>
     </div>
     <div class="install">
       <code><span class="p" aria-hidden="true">$</span> {install}</code>

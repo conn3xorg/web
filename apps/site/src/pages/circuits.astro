@@ -63,7 +63,7 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <span class="visually-hidden">Search circuits</span>
           <input id="q" type="search" placeholder="Search circuits" autocomplete="off" />
         </label>
-        <a class="btn" href="/build">Build a config</a>
+        <a class="btn" href="/build">Build a configuration</a>
         <a class="btn btn-ghost" href="#share">Share yours</a>
       </div>
       <div class="filters" role="group" aria-label="Filter by category">
@@ -98,7 +98,7 @@ const source = (c: Circuit) => `source = "github.com/${c.repo}?ref=${c.version}"
           <button class="copy" type="button" data-copy={source(c)}>Copy</button>
           {c.device ? (
             <>
-              <p class="tested">Tested on {c.device.tested}, virtual, not hardware</p>
+              <p class="tested"><a href="https://docs.conn3x.org/reference/maturity">Experimental</a>: tested on {c.device.tested}, virtual, not hardware</p>
               <p class="tested">
                 Uses the <a href={`https://search.opentofu.org/provider/${c.device.provider}/v${c.device.providerVersion}`}>{c.device.provider}</a> provider {c.device.providerVersion}, maintained by {c.device.maintainer}
               </p>

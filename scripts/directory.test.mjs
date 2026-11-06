@@ -46,6 +46,8 @@ test("providers", () => {
     assert.ok(!seen.has(p.source), `${p.source} is listed once`);
     seen.add(p.source);
     assert.ok(p.name && p.description);
-    assert.equal(typeof p.inDocs, "boolean");
+    assert.ok(p.tutorial === null || /^[a-z-]+$/.test(p.tutorial), `${p.source} names a tutorial or null`);
   }
+  // Only clouds with a tutorial and a Builder test applied on real servers count as tested, DigitalOcean last.
+  assert.deepEqual(ps.filter((p) => p.tutorial).map((p) => p.name), ["AWS", "Azure", "Google Cloud", "DigitalOcean"]);
 });

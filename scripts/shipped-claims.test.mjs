@@ -10,7 +10,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const SHIPPED = [
-  { feature: "Windows Server preview (v0.7.0)", stale: [/Windows (?:servers?|Server) (?:comes?|is) next/i, /Windows support is coming/i] },
+  { feature: "Windows Server preview (v0.7.0)", stale: [/Windows (?:servers?|Server) (?:comes?|is) next/i, /Windows support is coming/i, /Windows comes next/i] },
   { feature: "network-device circuits (N1)", stale: [/Then network devices\./] },
 ];
 
