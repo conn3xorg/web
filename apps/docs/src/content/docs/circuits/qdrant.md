@@ -3,7 +3,7 @@ title: Qdrant
 description: "Runs the Qdrant vector database from its official release under systemd, on loopback until you open it, with an optional API key."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-qdrant at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-qdrant at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/qdrant/grade.svg)](https://conn3x.org/circuits/qdrant/grade)
 
@@ -22,7 +22,7 @@ variable "qdrant_api_key" {
 }
 
 module "qdrant" {
-  source = "github.com/conn3xorg/circuit-qdrant?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-qdrant?ref=v0.1.2"
 
   hosts                = { vectors1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -57,7 +57,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.2/examples/local).
 
 ## What it does
 
@@ -89,7 +89,7 @@ Set `qdrant_version` and `checksums` together. The release page lists each asset
 
 ```hcl
 module "qdrant" {
-  source = "github.com/conn3xorg/circuit-qdrant?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-qdrant?ref=v0.1.2"
 
   hosts          = { vectors1 = "203.0.113.10" }
   qdrant_version = "1.20.0"
@@ -135,16 +135,16 @@ Requires Conn3x v0.6.5 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.1/examples/local) to each on amd64 with an API key, checks that the second plan has no changes, then creates a collection over the REST API, upserts two points, searches and gets the nearer one back, and checks that a request without the key gets `401`.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.2/examples/local) to each on amd64 with an API key, checks that the second plan has no changes, then creates a collection over the REST API, upserts two points, searches and gets the nearer one back, and checks that a request without the key gets `401`.
 
 The same checks passed by hand on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both with 1 vCPU and 2 GB of memory. Qdrant listened on `127.0.0.1` only and ran as `unconfined_service_t` on Rocky Linux, with no denials in the audit log. After a reboot it came back with the stored point, and the plan had no changes.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-qdrant/blob/v0.1.1/LICENSE). Qdrant itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-qdrant/blob/v0.1.2/LICENSE). Qdrant itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-qdrant](https://github.com/conn3xorg/circuit-qdrant). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-qdrant/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-qdrant](https://github.com/conn3xorg/circuit-qdrant). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-qdrant/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-qdrant/tree/v0.1.2/examples/local).
 - Related circuits: [Ollama](/circuits/ollama), [Caddy](/circuits/caddy), [Firewall](/circuits/firewall), [Open WebUI](/circuits/openwebui), [LiteLLM](/circuits/litellm), [Presidio](/circuits/presidio), [Langfuse](/circuits/langfuse), [Agent box](/circuits/agentbox).

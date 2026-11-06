@@ -3,7 +3,7 @@ title: Traefik
 description: "Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-traefik at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-traefik at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/traefik/grade.svg)](https://conn3x.org/circuits/traefik/grade)
 
@@ -15,7 +15,7 @@ Sites live in a file Traefik watches, so adding or changing one takes effect wit
 
 ```hcl
 module "traefik" {
-  source = "github.com/conn3xorg/circuit-traefik?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-traefik?ref=v0.1.2"
 
   hosts                = { edge = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -45,7 +45,7 @@ While you're trying things out, set `acme_staging = true`. Let's Encrypt's [stag
 
 Without `acme_email`, every site uses Traefik's self-signed default certificate, which is fine behind another proxy or for testing, where `curl -k` will do.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.2/examples/local).
 
 ## What it does
 
@@ -132,14 +132,14 @@ Requires Conn3x v0.6.7 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.1/examples/local) to each on amd64 and checks that the second plan has no changes. It then fetches a site through Traefik over HTTPS and sees it balanced across two backends, checks that plain HTTP redirects to HTTPS, and adds a second site and fetches it from the same Traefik process, unrestarted. The CI containers run with SELinux off. Certificates were tried by hand on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, each with a site named after its address through sslip.io and `acme_staging = true`: Traefik got a staging certificate from Let's Encrypt, the site came back over HTTPS, HTTP redirected, `acme.json` was mode `0600`, and the second plan had no changes. On Rocky, Traefik ran as `unconfined_service_t` and the audit log had no denials. After a reboot both sites came back and the plan still had no changes. On the Ubuntu droplet, with Docker from circuit-docker and `docker_provider = true`, a labelled container got its own staging certificate and was served through Traefik.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.2/examples/local) to each on amd64 and checks that the second plan has no changes. It then fetches a site through Traefik over HTTPS and sees it balanced across two backends, checks that plain HTTP redirects to HTTPS, and adds a second site and fetches it from the same Traefik process, unrestarted. The CI containers run with SELinux off. Certificates were tried by hand on an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, each with a site named after its address through sslip.io and `acme_staging = true`: Traefik got a staging certificate from Let's Encrypt, the site came back over HTTPS, HTTP redirected, `acme.json` was mode `0600`, and the second plan had no changes. On Rocky, Traefik ran as `unconfined_service_t` and the audit log had no denials. After a reboot both sites came back and the plan still had no changes. On the Ubuntu droplet, with Docker from circuit-docker and `docker_provider = true`, a labelled container got its own staging certificate and was served through Traefik.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-traefik/blob/v0.1.1/LICENSE). Traefik itself is MIT.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-traefik/blob/v0.1.2/LICENSE). Traefik itself is MIT.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-traefik](https://github.com/conn3xorg/circuit-traefik). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-traefik/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-traefik](https://github.com/conn3xorg/circuit-traefik). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-traefik/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-traefik/tree/v0.1.2/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [nginx](/circuits/nginx), [Apache httpd](/circuits/apache), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [certbot](/circuits/certbot), [IIS](/circuits/iis).
