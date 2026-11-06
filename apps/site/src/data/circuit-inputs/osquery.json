@@ -1,13 +1,13 @@
 {
   "name": "osquery",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "osquery_version",
       "type": "string",
       "default": "5.24.0",
-      "description": "osquery release to install, such as \"5.24.0\". Raising it upgrades osquery in place.",
+      "description": "osquery release to install, such as \"5.24.0\". Raising it upgrades osquery in place. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

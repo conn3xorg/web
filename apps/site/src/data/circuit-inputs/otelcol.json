@@ -1,6 +1,6 @@
 {
   "name": "otelcol",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -16,7 +16,7 @@
       "name": "otelcol_version",
       "type": "string",
       "default": "0.164.0",
-      "description": "Collector release to install, without the leading v. Raising it upgrades the collector in place.",
+      "description": "Collector release to install, without the leading v. Raising it upgrades the collector in place. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

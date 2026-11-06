@@ -3,7 +3,7 @@ title: Zeek
 description: "Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-zeek at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-zeek at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/zeek/grade.svg)](https://conn3x.org/circuits/zeek/grade)
 
@@ -17,7 +17,7 @@ It runs on Ubuntu 24.04 and Debian 13. Zeek doesn't build packages for Rocky Lin
 
 ```hcl
 module "zeek" {
-  source = "github.com/conn3xorg/circuit-zeek?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-zeek?ref=v0.1.3"
 
   hosts                = { sensor1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +56,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.3/examples/local).
 
 ### Watching the host's own traffic
 
@@ -72,7 +72,7 @@ A sensor on a mirror port or tap sees the checksums that went over the wire, and
 
 On each host, in order:
 
-1. Adds Zeek's repository on the openSUSE Build Service, `download.opensuse.org/repositories/security:/zeek/`, for the host's release (`xUbuntu_24.04` or `Debian_13`), with its signing key from [files/zeek-obs.asc](https://github.com/conn3xorg/circuit-zeek/blob/v0.1.2/files/zeek-obs.asc). That key expires on 2 December 2026; see [The signing key](#the-signing-key).
+1. Adds Zeek's repository on the openSUSE Build Service, `download.opensuse.org/repositories/security:/zeek/`, for the host's release (`xUbuntu_24.04` or `Debian_13`), with its signing key from [files/zeek-obs.asc](https://github.com/conn3xorg/circuit-zeek/blob/v0.1.3/files/zeek-obs.asc). That key expires on 2 December 2026; see [The signing key](#the-signing-key).
 2. Installs `zeekctl-9.0`, which pulls in `zeek-9.0-core`. Both live under `/opt/zeek`. The `zeek-9.0` package would add the compilers and headers for building plugins, which a sensor doesn't need.
 3. Writes `/opt/zeek/etc/node.cfg` with one standalone node on your interface, `/opt/zeek/etc/networks.cfg` from `networks`, and `/opt/zeek/etc/zeekctl.cfg` with the package's settings and your log retention. Then writes `/opt/zeek/share/zeek/site/conn3x.zeek`, which loads `policy/tuning/json-logs` and your `local_zeek` lines. zeekctl loads it after the package's own `local.zeek`, which stays as shipped.
 4. Runs `zeekctl check`, and only if it passes, `zeekctl install`, which copies the config and scripts to where the running Zeek reads them. A script error stops the apply with Zeek's own message, such as `error in /opt/zeek/share/zeek/site/conn3x.zeek, line 4: syntax error`, and the running Zeek carries on with the last config that passed. The next apply runs the check again.
@@ -146,7 +146,9 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with access to `downlo
 
 ## Tested on
 
-Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.2/examples/local) to each on amd64, checks the second plan has no changes and that `zeek` and `zeek-cron.timer` are active, then makes a DNS lookup and an HTTP request from inside the container and checks `zeekctl status` shows Zeek running, the lookup is in `dns.log`, the request is in `http.log`, its connection is in `conn.log`, and all three are valid JSON. The container gets `NET_RAW` and no other added privilege.
+Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.3/examples/local) to each on amd64, checks the second plan has no changes and that `zeek` and `zeek-cron.timer` are active, then makes a DNS lookup and an HTTP request from inside the container and checks `zeekctl status` shows Zeek running, the lookup is in `dns.log`, the request is in `http.log`, its connection is in `conn.log`, and all three are valid JSON. The container gets `NET_RAW` and no other added privilege.
+
+CI then restarts the container and checks `zeek` and `zeek-cron.timer` come back by themselves, the same DNS, HTTP and connection checks pass, and the plan has no changes.
 
 By hand on the same containers on arm64: the same checks passed; a syntax error in `local_zeek` stopped the apply at `zeekctl check` while the running Zeek kept its process and its installed scripts; Zeek killed with `SIGKILL` came back on the next `zeek-cron.service` run and stayed up after the unit finished; and on Debian 13, after a container restart, Zeek came back and the plan had no changes. Without `ignore_checksums`, the container's own HTTP request didn't reach `http.log`.
 
@@ -154,10 +156,10 @@ On Ubuntu 24.04 and Debian 13 droplets (1 vCPU, 2 GB) with Zeek 9.0.1 on `eth0`,
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zeek/blob/v0.1.2/LICENSE). Zeek itself is BSD-3-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-zeek/blob/v0.1.3/LICENSE). Zeek itself is BSD-3-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-zeek](https://github.com/conn3xorg/circuit-zeek). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-zeek/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-zeek](https://github.com/conn3xorg/circuit-zeek). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-zeek/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-zeek/tree/v0.1.3/examples/local).
 - Related circuits: [Suricata](/circuits/suricata), [osquery](/circuits/osquery), [Velociraptor](/circuits/velociraptor), [Wazuh](/circuits/wazuh), [Falco](/circuits/falco).

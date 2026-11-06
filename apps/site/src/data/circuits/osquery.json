@@ -2,7 +2,7 @@
   "name": "osquery",
   "repo": "conn3xorg/circuit-osquery",
   "description": "osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "osquery",
     "fim",

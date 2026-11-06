@@ -2,7 +2,7 @@
   "name": "otelcol",
   "repo": "conn3xorg/circuit-otelcol",
   "description": "OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "opentelemetry",
     "otel",
