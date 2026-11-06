@@ -9,7 +9,7 @@ In this tutorial you'll put a database password on a host without it appearing i
 
 ## Prerequisites
 
-- Conn3x v0.6.3 [installed](/install).
+- Conn3x v0.7.1 [installed](/install).
 - The container from [Try Conn3x locally](/tutorials/try-locally), running. If you've removed it, start it again from `conn3x/examples/try-it-locally` with `./up.sh`.
 
 ## The configuration
@@ -157,6 +157,7 @@ conn3x plan
       ~ content_wo   = (write-only attribute)
         id           = "127.0.0.1:2222:/root/db-password"
       ~ revision     = "2ff8a412f4e0a982" -> (known after apply)
+      ~ validate     = (write-only attribute)
         # (3 unchanged attributes hidden)
 
         # (1 unchanged block hidden)
