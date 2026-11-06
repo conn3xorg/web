@@ -3,7 +3,7 @@ title: Proxmox VE
 description: "Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-proxmox at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-proxmox at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/proxmox/grade.svg)](https://conn3x.org/circuits/proxmox/grade)
 
@@ -15,7 +15,7 @@ Doing it by hand is an afternoon of copying commands out of the wiki and answeri
 
 ```hcl
 module "proxmox" {
-  source = "github.com/conn3xorg/circuit-proxmox?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-proxmox?ref=v0.1.2"
 
   hosts                = { pve1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -54,7 +54,7 @@ hosts = {
 
 ### Then manage guests with OpenTofu
 
-Once the node is up, OpenTofu's [bpg/proxmox](https://registry.opentofu.org/providers/bpg/proxmox) provider can create containers and VMs on it through the API. [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/lxc) does that: it adds a storage directory, fetches the Debian 13 container template and starts one container. It needs an API token, which you can make on the node:
+Once the node is up, OpenTofu's [bpg/proxmox](https://registry.opentofu.org/providers/bpg/proxmox) provider can create containers and VMs on it through the API. [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/lxc) does that: it adds a storage directory, fetches the Debian 13 container template and starts one container. It needs an API token, which you can make on the node:
 
 ```sh
 ssh root@203.0.113.10 pveum user token add root@pam tofu --privsep 0
@@ -71,8 +71,9 @@ On each host, in order:
 5. Installs `proxmox-default-kernel`, then reboots into it and waits for the host to come back. On a BIOS host it first tells the `grub-pc` package which disk to install to, the one holding `/boot`; cloud images boot GRUB without that package, and its install stops to ask otherwise.
 6. Installs `proxmox-ve`, `postfix`, `open-iscsi` and `chrony`. postfix is set up as `Local only`, so it listens on loopback and nothing else. chrony replaces `systemd-timesyncd`, as Proxmox recommends.
 7. Removes Debian's kernel, every installed `linux-image-*` package, and runs `update-grub`. It checks first that the host is running a Proxmox kernel, and fails rather than remove the one it's running.
-8. Removes `os-prober`, which would otherwise add your guests' disks to the boot menu.
-9. Makes sure `pveproxy` runs and is enabled, and waits for port 8006.
+8. Adds `source /etc/network/interfaces.d/*` to the end of `/etc/network/interfaces` when it isn't there, and to the pending `/etc/network/interfaces.new` the install leaves, which Proxmox moves over the file on its next network reload. The rest of each file is left alone. Proxmox's SDN writes its zones and VNets to `/etc/network/interfaces.d/sdn`, so without that line, which a Debian cloud image's file lacks and the ISO's has, the VNets are created and never come up. It also starts the `networking` service that comes with `ifupdown2`, which otherwise wouldn't run until the next boot, so applying a network change from the web interface works straight away.
+9. Removes `os-prober`, which would otherwise add your guests' disks to the boot menu.
+10. Makes sure `pveproxy` runs and is enabled, and waits for port 8006.
 
 The reboot happens once, the first time the circuit is applied to a host. It doesn't happen again on later applies. A host that already runs Proxmox VE still reboots that first time.
 
@@ -86,10 +87,10 @@ Changing `repository` runs `apt-get full-upgrade` again.
 
 ### What it doesn't do
 
-- It doesn't touch the network configuration. Proxmox's guide has you create a Linux bridge, `vmbr0`, to put guests on your network, and that means moving the host's own address from its network interface to the bridge. Doing that over the SSH connection that's configuring it can cut the host off, so it's left to you. Use **System > Network** in the web interface, which checks and applies the change in one go, or follow [Default configuration using a bridge](https://pve.proxmox.com/wiki/Network_Configuration#_default_configuration_using_a_bridge). A container without a network, like the one in [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/lxc), works without it.
+- Beyond that one `source` line, it doesn't touch the network configuration. Proxmox's guide has you create a Linux bridge, `vmbr0`, to put guests on your network, and that means moving the host's own address from its network interface to the bridge. Doing that over the SSH connection that's configuring it can cut the host off, so it's left to you. Use **System > Network** in the web interface, which checks and applies the change in one go, or follow [Default configuration using a bridge](https://pve.proxmox.com/wiki/Network_Configuration#_default_configuration_using_a_bridge). A container without a network, like the one in [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/lxc), works without it.
 - It doesn't hide the "No valid subscription" message the web interface shows on login. That takes patching Proxmox's JavaScript, which an update puts back.
 - It doesn't set a root password. You log in to the web interface with root's existing password, so set one with `passwd` if your host only takes SSH keys.
-- It doesn't create clusters, storage, users or guests. Use the web interface, `pvecm`, or the bpg/proxmox provider, as in [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/lxc).
+- It doesn't create clusters, storage, users or guests. Use the web interface, `pvecm`, or the bpg/proxmox provider, as in [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/lxc).
 - It doesn't keep the node up to date after the first install. Run `apt full-upgrade` yourself, or use [circuit-auto-updates](/circuits/auto-updates).
 - Deleting the module leaves Proxmox VE installed as it is.
 
@@ -120,22 +121,22 @@ Requires Conn3x v0.6.5 or later, and on each host x86_64 Debian 13 with root acc
 
 ## Tested on
 
-Debian 13 only. This circuit installs a kernel and reboots into it, which the containers the other circuits test in can't do, so CI applies [examples/local](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/local) to a Debian 13 VM under KVM on amd64 instead, with 2 CPUs and 4 GB of memory. It checks that the second plan has no changes, makes an API token on the node and uses it through the forwarded port to read the version, see the node online and confirm it runs a `-pve` kernel, and fetches the web interface. Then it reboots the VM and runs the same checks and the plan again.
+Debian 13 only. This circuit installs a kernel and reboots into it, which the containers the other circuits test in can't do, so CI applies [examples/local](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/local) to a Debian 13 VM under KVM on amd64 instead, with 2 CPUs and 4 GB of memory. It applies the previous release first, v0.1.1, then this one over it, and checks that the second plan has no changes. It makes an API token on the node and uses it through the forwarded port to read the version, see the node online and confirm it runs a `-pve` kernel, and fetches the web interface. It creates a simple SDN zone and a VNet with a subnet, applies SDN, runs `ifreload -a` and checks that the VNet's bridge is up with the subnet's gateway address. Then it reboots the VM, checks the bridge came back, and runs the same checks and the plan again.
 
 It was also applied by hand to two DigitalOcean droplets with 2 CPUs and 4 GB of memory.
 
 On each fresh droplet a single apply installed Proxmox VE 9.2 (`pveversion` printed `pve-manager/9.2.24`), `uname -r` ended in `-pve`, `pveproxy` was active, `https://127.0.0.1:8006` answered 200 on the host (and, on the first droplet, from outside), and the node showed as online in `pvesh get /nodes`. The second plan had no changes. After a reboot the same checks passed and the plan still had no changes. One droplet used the defaults, the other `domain` and a `hostname` different from the key, where `hostname --fqdn` and `hostname --ip-address` gave the full name and the public address. On both, `apt-get update` ran without errors, Debian's kernel and `os-prober` were gone, and postfix listened on loopback only.
 
-[examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/lxc) was applied to the first node afterwards: it created the storage, downloaded the template and started a Debian 13 container, and its second plan had no changes.
+[examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/lxc) was applied to the first node afterwards: it created the storage, downloaded the template and started a Debian 13 container, and its second plan had no changes.
 
 `pve-enterprise`, and switching to it, weren't tried, since they need a subscription key.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-proxmox/blob/v0.1.1/LICENSE). Proxmox VE itself is AGPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-proxmox/blob/v0.1.2/LICENSE). Proxmox VE itself is AGPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-proxmox](https://github.com/conn3xorg/circuit-proxmox). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-proxmox/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/local), [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/lxc), [examples/single-node](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.1/examples/single-node).
+- Repository: [conn3xorg/circuit-proxmox](https://github.com/conn3xorg/circuit-proxmox). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-proxmox/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/local), [examples/lxc](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/lxc), [examples/single-node](https://github.com/conn3xorg/circuit-proxmox/tree/v0.1.2/examples/single-node).
 - Related circuits: [Tailscale](/circuits/tailscale), [Automatic updates](/circuits/auto-updates), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab).
