@@ -3,7 +3,7 @@ title: Ruby
 description: "Your distribution's Ruby, with optional gems at pinned versions."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-ruby at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-ruby at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/ruby/grade.svg)](https://conn3x.org/circuits/ruby/grade)
 
@@ -24,7 +24,7 @@ If you need one Ruby everywhere, this isn't the circuit for it. Only the gems ar
 
 ```hcl
 module "ruby" {
-  source = "github.com/conn3xorg/circuit-ruby?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-ruby?ref=v0.1.2"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +46,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.2/examples/local).
 
 ## What it does
 
@@ -89,7 +89,7 @@ Requires Conn3x v0.6.10 or later, and a package mirror each host can reach, plus
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. A script then required `rainbow`, confirmed it had loaded 3.1.1, and printed through it. CI runs the same check on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. A script then required `rainbow`, confirmed it had loaded 3.1.1, and printed through it. CI runs the same check on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same check passed, and after a reboot the plan had no changes and it still passed.
 
@@ -97,10 +97,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-ruby/blob/v0.1.1/LICENSE). Ruby is under its own Ruby License or the BSD 2-clause license. Gems carry their own licenses.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-ruby/blob/v0.1.2/LICENSE). Ruby is under its own Ruby License or the BSD 2-clause license. Gems carry their own licenses.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-ruby](https://github.com/conn3xorg/circuit-ruby). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-ruby/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-ruby](https://github.com/conn3xorg/circuit-ruby). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-ruby/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-ruby/tree/v0.1.2/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).

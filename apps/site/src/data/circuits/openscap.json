@@ -2,7 +2,7 @@
   "name": "openscap",
   "repo": "conn3xorg/circuit-openscap",
   "description": "OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "security",
     "compliance",

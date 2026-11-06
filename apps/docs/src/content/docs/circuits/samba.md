@@ -3,7 +3,7 @@ title: Samba
 description: "Samba file shares with per-user passwords kept out of state, SMB2 minimum, NetBIOS off and SELinux labels."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-samba at v0.3.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-samba at v0.3.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/samba/grade.svg)](https://conn3x.org/circuits/samba/grade)
 
@@ -21,7 +21,7 @@ variable "samba_passwords" {
 }
 
 module "samba" {
-  source = "github.com/conn3xorg/circuit-samba?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-samba?ref=v0.3.1"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -58,7 +58,7 @@ conn3x apply
 
 A second `conn3x plan` says `No changes.` On Windows, open `\\192.168.1.20\family` in File Explorer; on a Mac, Finder's Go > Connect to Server with `smb://192.168.1.20/family`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.3.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.3.1/examples/local).
 
 ### Passwords
 
@@ -148,16 +148,16 @@ Requires Conn3x v0.7.0 or later and systemd on each host, with a package mirror 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.3.0/examples/local) to each on amd64 and checks that the second plan has no changes. Then, with `smbclient` on the host, it lists the shares, puts a file on the private share as `alice` and gets it back, checks the file is owned by `alice`, and checks that a wrong password, a guest on the private share, a guest writing to the read-only guest share, and anything on port 139 are all refused. By hand, the same container runs also changed `alice`'s password: the new one worked, the old one was refused, and neither appeared in the state file.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.3.1/examples/local) to each on amd64 and checks that the second plan has no changes. Then, with `smbclient` on the host, it lists the shares, puts a file on the private share as `alice` and gets it back, checks the file is owned by `alice`, and checks that a wrong password, a guest on the private share, a guest writing to the read-only guest share, and anything on port 139 are all refused. By hand, the same container runs also changed `alice`'s password: the new one worked, the old one was refused, and neither appeared in the state file.
 
 The CI containers run with SELinux off. On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, the same checks passed, before and after a reboot, and the plan after the reboot had no changes. On Rocky, smbd ran confined as `smbd_t`, the uploaded file was labelled `samba_share_t`, and the audit log had no denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-samba/blob/v0.3.0/LICENSE). Samba itself is GPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-samba/blob/v0.3.1/LICENSE). Samba itself is GPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-samba](https://github.com/conn3xorg/circuit-samba). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-samba/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-samba/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.3.0/examples/local).
+- Repository: [conn3xorg/circuit-samba](https://github.com/conn3xorg/circuit-samba). This page covers [v0.3.1](https://github.com/conn3xorg/circuit-samba/tree/v0.3.1); the repository's [tags](https://github.com/conn3xorg/circuit-samba/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-samba/tree/v0.3.1/examples/local).
 - Related circuits: [Users](/circuits/users), [Firewall](/circuits/firewall), [NFS](/circuits/nfs), [restic](/circuits/restic).

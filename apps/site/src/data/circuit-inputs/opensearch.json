@@ -1,13 +1,13 @@
 {
   "name": "opensearch",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "opensearch_version",
       "type": "string",
       "default": "3.9.0",
-      "description": "OpenSearch 3.x release to install, such as \"3.9.0\". Raising it upgrades OpenSearch in place.",
+      "description": "OpenSearch 3.x release to install, such as \"3.9.0\". Raising it upgrades OpenSearch in place. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

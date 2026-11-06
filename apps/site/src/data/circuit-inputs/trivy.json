@@ -1,13 +1,13 @@
 {
   "name": "trivy",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "hostObjects": true,
   "inputs": [
     {
       "name": "trivy_version",
       "type": "string",
       "default": "0.76.1",
-      "description": "Trivy release to install from GitHub. Change checksums with it.",
+      "description": "Trivy release to install from GitHub. Change checksums with it. Raising it upgrades Trivy in place. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
@@ -19,7 +19,7 @@
         "amd64": "c7cbe3137fb8a48a17574bede3dd6beb16742d1e9772929940fc90082c39d9c0",
         "arm64": "e174dff2a6dba5e3ae41f8d0537a6324405bd08132497340304c6b20e0f16a1f"
       },
-      "description": "SHA-256 of the release tarball for each architecture, from the release's trivy_<version>_checksums.txt. Change these with trivy_version.",
+      "description": "SHA-256 of the release tarball for each architecture, from the release's trivy_<version>_checksums.txt. Change these with trivy_version. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

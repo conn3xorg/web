@@ -1,6 +1,6 @@
 {
   "name": "unbound",
-  "version": "v0.2.0",
+  "version": "v0.2.2",
   "hostObjects": true,
   "inputs": [
     {

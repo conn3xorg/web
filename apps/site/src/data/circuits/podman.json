@@ -2,7 +2,7 @@
   "name": "podman",
   "repo": "conn3xorg/circuit-podman",
   "description": "Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "podman",
     "containers",
