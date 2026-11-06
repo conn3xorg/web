@@ -2,7 +2,7 @@
   "name": "certbot",
   "repo": "conn3xorg/circuit-certbot",
   "description": "Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "certbot",
     "tls",

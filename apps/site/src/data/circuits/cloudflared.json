@@ -2,7 +2,7 @@
   "name": "cloudflared",
   "repo": "conn3xorg/circuit-cloudflared",
   "description": "Run a Cloudflare Tunnel from a pinned, checksummed cloudflared under systemd, with the token kept out of plan and state.",
-  "version": "v0.1.2",
+  "version": "v0.1.3",
   "tags": [
     "cloudflare",
     "tunnel",

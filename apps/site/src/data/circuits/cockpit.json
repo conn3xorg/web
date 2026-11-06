@@ -2,7 +2,7 @@
   "name": "cockpit",
   "repo": "conn3xorg/circuit-cockpit",
   "description": "Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off.",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "tags": [
     "cockpit",
     "web-console",

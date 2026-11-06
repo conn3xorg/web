@@ -3,7 +3,7 @@ title: Cinc Client
 description: "Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cinc at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-cinc at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/cinc/grade.svg)](https://conn3x.org/circuits/cinc/grade)
 
@@ -25,7 +25,7 @@ Cinc is not Chef, and neither Cinc nor this circuit is affiliated with Progress.
 
 ```hcl
 module "cinc" {
-  source = "github.com/conn3xorg/circuit-cinc?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-cinc?ref=v0.1.2"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -40,7 +40,7 @@ Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No chang
 
 The cookbooks have to be at `repo_path/cookbooks` before the converge, with roles at `repo_path/roles`. The circuit doesn't put them there, so a git clone, a package or an rsync all work. With nothing there yet, the apply fails at the converge step; leave `run_list` empty to install the client first.
 
-To get them there with Conn3x, write them in a circuit of your own and read a value from it in `converge_trigger`. That makes the converge wait for your files and run again when they change. [examples/local](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.1/examples/local) does this, and it's also the quickest way to try the circuit on a throwaway container.
+To get them there with Conn3x, write them in a circuit of your own and read a value from it in `converge_trigger`. That makes the converge wait for your files and run again when they change. [examples/local](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.2/examples/local) does this, and it's also the quickest way to try the circuit on a throwaway container.
 
 ```hcl
 converge_trigger = sha256(join("", [for f in conn3x_file.cookbook__files : f.content]))
@@ -118,7 +118,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, on x86_64 or aarch64. 
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.1/examples/local) to each on amd64 and checks the second plan has no changes. Then it checks the small cookbook wrote its file and the timer is on, overwrites the file, and converges twice: the first run reports `1/1 resources updated` and puts the file back, and the second reports `0/1`.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.2/examples/local) to each on amd64 and checks the second plan has no changes. Then it checks the small cookbook wrote its file and the timer is on, overwrites the file, and converges twice: the first run reports `1/1 resources updated` and puts the file back, and the second reports `0/1`. It restarts the host and runs the same checks, then upgrades: on a fresh host it installs 19.3.14, applies again with the default `cinc_version`, and expects a clean plan, the new version and the same checks passing.
 
 The same checks passed by hand in arm64 containers of all three. On a Fedora 45 container, the plan stopped with the unsupported-platform message.
 
@@ -128,10 +128,10 @@ On DigitalOcean, an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELin
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cinc/blob/v0.1.1/LICENSE). Cinc Client is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-cinc/blob/v0.1.2/LICENSE). Cinc Client is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-cinc](https://github.com/conn3xorg/circuit-cinc). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-cinc/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-cinc](https://github.com/conn3xorg/circuit-cinc). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-cinc/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-cinc/tree/v0.1.2/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).
