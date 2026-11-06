@@ -2,7 +2,7 @@
   "name": "rancher",
   "repo": "conn3xorg/circuit-rancher",
   "description": "Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state.",
-  "version": "v0.1.2",
+  "version": "v0.1.3",
   "tags": [
     "rancher",
     "kubernetes",

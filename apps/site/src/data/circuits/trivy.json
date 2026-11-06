@@ -2,7 +2,7 @@
   "name": "trivy",
   "repo": "conn3xorg/circuit-trivy",
   "description": "Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "trivy",
     "vulnerabilities",

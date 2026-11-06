@@ -1,6 +1,6 @@
 {
   "name": "rancher",
-  "version": "v0.1.2",
+  "version": "v0.1.3",
   "hostObjects": false,
   "inputs": [
     {
@@ -31,7 +31,7 @@
       "name": "rancher_version",
       "type": "string",
       "default": "2.15.3",
-      "description": "Rancher chart version from the stable repository, without a v. Change it with rancher_chart_sha256 and k3s_minors.",
+      "description": "Rancher chart version from the stable repository, without a v. Change it with rancher_chart_sha256 and k3s_minors. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
@@ -40,7 +40,7 @@
       "name": "rancher_chart_sha256",
       "type": "string",
       "default": "343888c66421a9f5666b562cdfeca751d63da994edbe7b1b36752f8ffcf5ecd4",
-      "description": "SHA-256 of the Rancher chart, rancher-VERSION.tgz.",
+      "description": "SHA-256 of the Rancher chart, rancher-VERSION.tgz. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

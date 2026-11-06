@@ -3,7 +3,7 @@ title: restic
 description: "Scheduled, encrypted backups with restic to SFTP, S3, rest-server or a local path, with retention and repository checks."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-restic at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-restic at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/restic/grade.svg)](https://conn3x.org/circuits/restic/grade)
 
@@ -23,7 +23,7 @@ variable "restic_password" {
 }
 
 module "backups" {
-  source = "github.com/conn3xorg/circuit-restic?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-restic?ref=v0.1.2"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -106,7 +106,7 @@ Set `restic_version` and `checksums` together. The release's `SHA256SUMS` lists 
 
 ```hcl
 module "backups" {
-  source = "github.com/conn3xorg/circuit-restic?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-restic?ref=v0.1.2"
 
   hosts          = { web1 = "203.0.113.10" }
   repository     = "sftp:backup@203.0.113.20:/srv/restic"
@@ -152,20 +152,20 @@ The new release unpacks beside the old one and `conn3x-restic` points at it. The
 
 ## Requirements
 
-Requires Conn3x v0.6.7 or later, systemd on each host, and outbound HTTPS to github.com.
+Requires Conn3x v0.7.1 or later, systemd on each host, and outbound HTTPS to github.com.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-restic/tree/v0.1.1/examples/local) was applied to each in a container on aarch64, with a password and a credential full of quotes, `$`, backticks and backslashes, and the second plan had no changes. Then the backup service ran, a file restored from the snapshot matched the original, two more runs left the retention policy forgetting one snapshot, `restic check` passed, and the credential read the same to `sh` and to systemd. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-restic/tree/v0.1.2/examples/local) was applied to each in a container on aarch64, with a password and a credential full of quotes, `$`, backticks and backslashes, and the second plan had no changes. Then the backup service ran, a file restored from the snapshot matched the original, two more runs left the retention policy forgetting one snapshot, `restic check` passed, and the credential read the same to `sh` and to systemd. CI runs the same checks on amd64.
 
 The same checks passed on an amd64 Ubuntu 24.04 droplet and Rocky Linux 10 droplet with SELinux enforcing, each backing up to the other over `sftp:`, with 1 vCPU and 1 GB of memory. After a reboot both timers were back and the plan had no changes. Changing the password stopped the apply at the init step, and changing `randomized_delay` reached the timer without starting a backup.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-restic/blob/v0.1.1/LICENSE). restic itself is BSD-2-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-restic/blob/v0.1.2/LICENSE). restic itself is BSD-2-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-restic](https://github.com/conn3xorg/circuit-restic). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-restic/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-restic/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-restic/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-restic](https://github.com/conn3xorg/circuit-restic). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-restic/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-restic/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-restic/tree/v0.1.2/examples/local).
 - Related circuits: [Samba](/circuits/samba), [NFS](/circuits/nfs).

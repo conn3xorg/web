@@ -3,7 +3,7 @@ title: Podman
 description: "Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/podman/grade.svg)](https://conn3x.org/circuits/podman/grade)
 
@@ -20,7 +20,7 @@ variable "grafana_password" {
 }
 
 module "podman" {
-  source = "github.com/conn3xorg/circuit-podman?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-podman?ref=v0.1.2"
 
   hosts                = { apps = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -58,7 +58,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2/examples/local).
 
 ## What it does
 
@@ -129,16 +129,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10 (Podman 5.8), Fedora 45 (Podman 6.1), Ubuntu 24.04 (Podman 4.9) and Debian 13 (Podman 5.4). CI applies [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.1/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the example container answers on its published port with the name from its env file.
+Rocky Linux 10 (Podman 5.8), Fedora 45 (Podman 6.1), Ubuntu 24.04 (Podman 4.9) and Debian 13 (Podman 5.4). CI applies [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the example container answers on its published port with the name from its env file.
 
 The CI containers run with SELinux off. On a Rocky Linux 10 droplet with SELinux enforcing, the example was applied by hand alongside an nginx container serving a host directory mounted with `:Z`. Both answered, the second plan had no changes, and the audit log had no denials. The same held on Fedora 44 and AlmaLinux 10 droplets with SELinux enforcing, and both containers came back on their own after a reboot. Without `:Z`, the same directory was unreadable from inside the container.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.1.1/LICENSE). Podman itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.1.2/LICENSE). Podman itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-podman/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).
