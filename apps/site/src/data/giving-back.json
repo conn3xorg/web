@@ -2,6 +2,20 @@
   "otherMinutes": 76,
   "items": [
     {
+      "date": "2026-11-06",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Found a reliable way to trigger a race the maintainers couldn't pin down, where pausing the logs page left a journalctl running, and sent a fix.",
+      "url": "https://github.com/cockpit-project/cockpit/pull/23896#issuecomment-6691557181",
+      "minutes": 120
+    },
+    {
+      "date": "2026-11-06",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Reworked the Ubuntu logo fix after review so Ubuntu 22.04 keeps its logo, and tested it on 22.04 and 24.04.",
+      "url": "https://github.com/cockpit-project/cockpit/pull/23900#discussion_r4493454229",
+      "minutes": 45
+    },
+    {
       "date": "2026-11-05",
       "repo": "tailscale/tailscale",
       "summary": "Checked that every other DNS manager call is safe in builds without DNS, after a fix for a crash on queries to 100.100.100.100.",
