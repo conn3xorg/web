@@ -122,7 +122,7 @@ Use [circuit-osquery](/circuits/osquery) on every host you want in Fleet. With a
 
 ```hcl
 module "osquery" {
-  source = "github.com/conn3xorg/circuit-osquery?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-osquery?ref=v0.2.1"
 
   hosts                = { web1 = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
