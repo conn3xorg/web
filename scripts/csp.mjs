@@ -64,16 +64,21 @@ function scan(dist, { styleAttrs = false } = {}) {
   return { scripts: [...scripts].sort(), styles: [...styles].sort(), errors };
 }
 
+// Cloudflare Web Analytics: the beacon script, and where it reports page
+// views. Both sites load it; it sets no cookies.
+const BEACON = "https://static.cloudflareinsights.com";
+const BEACON_REPORT = "https://cloudflareinsights.com";
+
 export function policy({ scripts, styles }, { wasm = false, styleAttrs = false, badges = false } = {}) {
   const src = (list) => ["'self'", ...list].join(" ");
   return [
     "default-src 'self'",
-    `script-src ${src(wasm ? ["'wasm-unsafe-eval'", ...scripts] : scripts)}`,
+    `script-src ${src(wasm ? ["'wasm-unsafe-eval'", ...scripts, BEACON] : [...scripts, BEACON])}`,
     `style-src ${src(styles)}`,
     ...(styleAttrs ? ["style-src-attr 'unsafe-inline'"] : []),
     `img-src 'self' data:${badges ? " https://conn3x.org" : ""}`,
     "font-src 'self'",
-    "connect-src 'self'",
+    `connect-src 'self' ${BEACON_REPORT}`,
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",
