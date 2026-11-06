@@ -24,6 +24,8 @@ const groups = categoryList
   .map((k) => [k, circuits.filter((c) => c.category === k)] as const)
   .filter(([, cs]) => cs.length);
 const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name === n));
+const officialCount = all.filter((c) => c.official).length;
+const offeredCount = circuits.length;
 ---
 <Base
   title="Circuit Builder: Conn3x"
@@ -56,7 +58,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
 
       <section aria-labelledby="s-circuits">
         <h2 id="s-circuits"><span>2</span> Circuits</h2>
-        <p class="sub">Two circuits that want the same port can't share a host, so picking one greys out the other and says why.</p>
+        <p class="sub">Two circuits that want the same port can't share a host, so picking one greys out the other and says why. {offeredCount} of the {officialCount} official circuits are here, and <a href="#not-yet">the list at the end of this step</a> names the {left.length} that aren't, with the reason for each.</p>
         {groups.map(([k, cs]) => (
           <fieldset class="group">
             <legend>{k}</legend>
@@ -69,8 +71,9 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
           </fieldset>
         ))}
         {left.length > 0 && (
-          <details class="later">
+          <details class="later" id="not-yet">
             <summary>Not in the builder yet ({left.length})</summary>
+            <p>Some circuits need more wiring than a form can do: a database of their own, a cluster to land on, or a whole machine. Others don't configure a Linux server at all. Each one below says which, and links to the page that shows how to set it up by hand.</p>
             <ul>
               {left.map(([n, why]) => (
                 <li><a href={`https://docs.conn3x.org/circuits/${n}`}>{n}</a>: {why}{blocked[n] && <> <a href={`/circuits/${n}/grade`}>See its grade.</a></>}</li>
@@ -78,6 +81,7 @@ const left = Object.entries(excluded).filter(([n]) => all.some((c) => c.name ===
             </ul>
           </details>
         )}
+        <p class="later">Missing something, or found two circuits that clash? <a href="https://github.com/conn3xorg/conn3x/discussions/categories/ideas">Tell us in Discussions</a>.</p>
       </section>
 
       <section aria-labelledby="s-hosts">
