@@ -8,6 +8,8 @@ import PageHero from "../components/PageHero.astro";
 import providers from "../data/providers.json";
 
 const search = "https://search.opentofu.org/providers";
+const tested = providers.filter((p) => p.tutorial);
+const others = providers.filter((p) => !p.tutorial);
 const example = `resource "digitalocean_droplet" "web" {
   name     = "web1"
   image    = "rockylinux-10-x64"
@@ -45,15 +47,35 @@ module "web" {
       <a class="btn" href={search}>Search every provider</a>
     </PageHero>
     <div class="wrap page">
-    <h2 class="sub">Where servers usually come from</h2>
+    <h2 class="sub">Tested end to end</h2>
+    <p class="intro">
+      We've run these four ourselves, on real servers: each has a tutorial that creates and
+      configures them in one plan, and we've applied <a href="/build">Builder</a> configs on all four.
+    </p>
     <ul class="grid">
-      {providers.map((p) => (
+      {tested.map((p) => (
+        <li>
+          <a href={`https://docs.conn3x.org/tutorials/${p.tutorial}`}>
+            <strong>{p.name}</strong>
+            <span class="src">{p.source}</span>
+            <span class="desc">{p.description}</span>
+            <span class="note">Read the {p.name} tutorial</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <h2 class="sub">Works the same way</h2>
+    <p class="intro">
+      Any other provider plugs in exactly as it does in OpenTofu. These are the ones people
+      reach for most next to a circuit. We haven't run each one end to end, so tell us how it goes.
+    </p>
+    <ul class="grid">
+      {others.map((p) => (
         <li>
           <a href={`https://search.opentofu.org/provider/${p.source}/latest`}>
             <strong>{p.name}</strong>
             <span class="src">{p.source}</span>
             <span class="desc">{p.description}</span>
-            {p.inDocs && <span class="note">Used in the Conn3x tutorials</span>}
           </a>
         </li>
       ))}
@@ -143,6 +165,11 @@ module "web" {
     font-size: 0.8125rem;
     font-weight: 700;
     color: var(--c-link);
+  }
+  .intro {
+    max-width: 46rem;
+    color: var(--c-text-muted);
+    margin: -0.5rem 0 1.25rem;
   }
   .how {
     max-width: 46rem;
