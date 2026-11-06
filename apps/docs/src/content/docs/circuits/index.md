@@ -99,7 +99,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 
 ### Network
 
-These configure a network device through its OpenTofu provider instead of a host over SSH: you point the provider at the device's API, and there are no `hosts` to pass. Each was tested on a virtual image of its device, named on its page, not on hardware.
+These configure a network device through its OpenTofu provider instead of a host over SSH: you point the provider at the device's API, and there are no `hosts` to pass. They're [experimental](/reference/maturity): each was tested on a virtual image of its device, named on its page, not on hardware.
 
 | Circuit | What it does | Version |
 | --- | --- | --- |

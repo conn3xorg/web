@@ -43,6 +43,7 @@ const sections = [
         id: "production",
         q: "Is Conn3x ready for production?",
         a: `<p>It's early, and it's honest about it. Conn3x configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu, and every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. Releases are signed and come with SBOMs.</p>
+<p>Windows is a step behind. It's in preview, and its modules are experimental, so keep it away from anything critical for now. <a href="${docs}/reference/maturity">Maturity labels</a> says what each of those words promises.</p>
 <p>Until 1.0, read the release notes before you upgrade. Start the way you'd start with any new tool: one server you don't mind touching, with your state backed up. If something doesn't behave, <a href="${repo}/issues">tell us</a>.</p>`,
       },
     ],
@@ -110,7 +111,7 @@ const sections = [
       {
         id: "platforms",
         q: "Which systems does it run on, and which can it configure?",
-        a: `<p>Conn3x runs on Linux and macOS, on amd64 and arm64. It configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu servers today. CentOS Linux reached end of life on 30 June 2024. Use Rocky Linux, the community rebuild most CentOS users moved to. Windows comes next, with tested Azure examples, then network devices. See the <a href="https://docs.conn3x.org/roadmap">roadmap</a>.</p>`,
+        a: `<p>Conn3x runs on Linux and macOS, on amd64 and arm64. It configures Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu servers today. CentOS Linux reached end of life on 30 June 2024. Use Rocky Linux, the community rebuild most CentOS users moved to. Windows Server 2022 and 2025 work too, in preview, with a tested Azure example. So do the first three network-device circuits, which are experimental. The <a href="https://docs.conn3x.org/roadmap">roadmap</a> says what comes next.</p>`,
       },
       {
         id: "existing-servers",
