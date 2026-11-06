@@ -97,6 +97,16 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [keepalived](/circuits/keepalived) | A floating IP address shared between hosts with keepalived, moving to a backup within a second when a host or a check fails. | v0.1.0 |
 | [NetBird](/circuits/netbird) | The NetBird client from NetBird's signed repo, joining your hosts to NetBird cloud or your own server. | v0.1.0 |
 
+### Network
+
+These configure a network device through its OpenTofu provider instead of a host over SSH: you point the provider at the device's API, and there are no `hosts` to pass. Each was tested on a virtual image of its device, named on its page, not on hardware.
+
+| Circuit | What it does | Version |
+| --- | --- | --- |
+| [RouterOS baseline](/circuits/routeros-baseline) | Gives a MikroTik RouterOS 7 router its name, NTP, DNS, services, users, VLANs and SNMPv3 over the REST API. | v0.1.0 |
+| [OPNsense VLANs](/circuits/opnsense-vlans) | Builds trusted, IoT and guest VLANs on OPNsense, with Kea DHCP, firewall rules and local names in Unbound. | v0.1.0 |
+| [Proxmox VE network](/circuits/proxmox-network) | Manages a Proxmox VE node's bridges, VLAN interfaces, SDN zones and VNets through the Proxmox API. | v0.1.0 |
+
 ### Security and compliance
 
 | Circuit | What it does | Version |

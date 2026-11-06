@@ -10498,6 +10498,134 @@
       }
     ]
   },
+  "opnsense-vlans": {
+    "name": "opnsense-vlans",
+    "repo": "conn3xorg/circuit-opnsense-vlans",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-06T03:45:52.718Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-opnsense-vlans/actions/runs/42157261537",
+    "grade": "A",
+    "score": 94,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-06 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "Configures no host: no conn3x_host, circuit or module block, only provider resources."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Upgrade to the pinned provider, apply, then plan again with no changes\" runs: git checkout -- ../../versions.tf"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A CI step upgrades it with a second apply."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
+      }
+    ]
+  },
   "oracle-free": {
     "name": "oracle-free",
     "repo": "conn3xorg/circuit-oracle-free",
@@ -12165,6 +12293,134 @@
       }
     ]
   },
+  "proxmox-network": {
+    "name": "proxmox-network",
+    "repo": "conn3xorg/circuit-proxmox-network",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-06T03:45:54.120Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-proxmox-network/actions/runs/42157281855",
+    "grade": "A",
+    "score": 94,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-06 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "Configures no host: no conn3x_host, circuit or module block, only provider resources."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Upgrade to the pinned provider, apply, then plan again with no changes\" runs: git checkout -- ../../versions.tf"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A CI step upgrades it with a second apply."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
+      }
+    ]
+  },
   "python": {
     "name": "python",
     "repo": "conn3xorg/circuit-python",
@@ -12802,6 +13058,134 @@
         "state": "pass",
         "points": 5,
         "detail": "v0.1.0 is 3 days old."
+      }
+    ]
+  },
+  "routeros-baseline": {
+    "name": "routeros-baseline",
+    "repo": "conn3xorg/circuit-routeros-baseline",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-06T03:45:51.315Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-routeros-baseline/actions/runs/42157242131",
+    "grade": "A",
+    "score": 95,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-06 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "Configures no host: no conn3x_host, circuit or module block, only provider resources."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Upgrade to the pinned provider, apply, then plan again with no changes\" runs: git checkout -- ../../versions.tf"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "CI fails if a secret shows up in state."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A CI step upgrades it with a second apply."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
       }
     ]
   },

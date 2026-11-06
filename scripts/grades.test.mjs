@@ -39,7 +39,7 @@ const evidence = (workflow, more = {}) => ({
   realHost: null,
   now: Date.parse("2026-11-01T00:00:00Z"),
   ...more,
-  files: new Map([[".github/workflows/ci.yml", workflow], ["main.circuit.hcl", 'step "x" {\n  service {}\n}\n'], ...(more.files ?? [])]),
+  files: new Map([[".github/workflows/ci.yml", workflow], ["main.circuit.hcl", 'circuit "x" {\n  step "x" {\n    service {}\n  }\n}\n'], ...(more.files ?? [])]),
 });
 const check = (r, id) => r.checks.find((c) => c.id === id);
 const fetching = "      - name: Fetch\n        run: sudo podman exec host curl -sSf localhost:80\n";
@@ -95,6 +95,15 @@ test("a circuit that never applies fails, and can't pass on points", () => {
 test("the matrix earns a quarter per distribution", () => {
   assert.equal(check(evaluate(evidence(ci(fetching))), "matrix").points, 10);
   assert.equal(check(evaluate(evidence(ci(fetching, "[ubuntu2404, debian13]"))), "matrix").points, 5);
+});
+
+test("the matrix doesn't apply to a circuit that configures no host", () => {
+  const device = (files) => evidence(ci(fetching, "[chr]"), { files: [["main.circuit.hcl", ""], ...files] });
+  assert.equal(check(evaluate(device([["main.tf", 'resource "routeros_ip_dns" "this" {}\n']])), "matrix").state, "na");
+  assert.equal(check(evaluate(device([["main.tf", 'data "conn3x_host" "facts" {}\n']])), "matrix").state, "partial");
+  assert.equal(check(evaluate(device([["main.tf", 'module "podman" {\n  source = "x"\n}\n']])), "matrix").state, "partial");
+  // A conn3x_host in the example is the lab, not the circuit.
+  assert.equal(check(evaluate(device([["examples/local/main.tf", 'data "conn3x_host" "lab" {}\n']])), "matrix").state, "na");
 });
 
 test("a Windows circuit's matrix is its two runners", () => {

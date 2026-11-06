@@ -1,0 +1,22 @@
+{
+  "name": "routeros-baseline",
+  "repo": "conn3xorg/circuit-routeros-baseline",
+  "description": "Gives a MikroTik RouterOS 7 router its name, NTP, DNS, services, users, VLANs and SNMPv3 over the REST API.",
+  "version": "v0.1.0",
+  "tags": [
+    "mikrotik",
+    "routeros",
+    "vlan",
+    "snmp",
+    "network"
+  ],
+  "tested": [],
+  "device": {
+    "tested": "MikroTik CHR 7.25.1",
+    "provider": "terraform-routeros/routeros",
+    "providerVersion": "1.99.1",
+    "maintainer": "vaerh and gfenn-newbury"
+  },
+  "category": "Network",
+  "official": true
+}
