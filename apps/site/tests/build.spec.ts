@@ -24,7 +24,7 @@ test("never offers excluded circuits", async ({ page }) => {
   for (const name of ["kubeadm", "proxmox", "microshift", "not-in-the-directory"]) {
     await expect(page.locator(`input[name=pick][value="${name}"]`)).toHaveCount(0);
   }
-  await expect(page.locator(".later")).toContainText("kubeadm has control planes and workers");
+  await expect(page.locator("#not-yet")).toContainText("kubeadm has control planes and workers");
 });
 
 test("waits for a person to accept the SQL Server licence", async ({ page }) => {

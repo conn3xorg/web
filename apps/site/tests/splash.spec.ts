@@ -3,7 +3,6 @@
 
 import { test, expect, type Page } from "@playwright/test";
 
-const REPO = "https://github.com/conn3xorg/conn3x";
 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
@@ -11,9 +10,8 @@ test.describe("without JavaScript", () => {
   test("renders the whole page", async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("h1")).toBeVisible();
-    const star = page.locator(`main a[href="${REPO}"]`).first();
-    await expect(star).toBeVisible();
-    await expect(star).toContainText("Star");
+    const cta = page.locator("main a", { hasText: "Try it locally" }).first();
+    await expect(cta).toBeVisible();
     await expect(page.locator("footer")).toBeVisible();
   });
 });
