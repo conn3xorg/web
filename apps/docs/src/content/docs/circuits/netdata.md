@@ -3,7 +3,7 @@ title: Netdata
 description: "Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-netdata at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-netdata at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/netdata/grade.svg)](https://conn3x.org/circuits/netdata/grade)
 
@@ -15,7 +15,7 @@ What it doesn't do is phone home. Out of the box, the circuit opts the Agent out
 
 ```hcl
 module "netdata" {
-  source = "github.com/conn3xorg/circuit-netdata?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-netdata?ref=v0.1.2"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -49,7 +49,7 @@ hosts = {
 }
 ```
 
-To try it on a pair of throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.1/examples/local). It sets up a parent and a child that streams to it.
+To try it on a pair of throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.2/examples/local). It sets up a parent and a child that streams to it.
 
 ### A parent and its children
 
@@ -63,7 +63,7 @@ variable "stream_api_key" {
 }
 
 module "netdata_parent" {
-  source = "github.com/conn3xorg/circuit-netdata?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-netdata?ref=v0.1.2"
 
   hosts                = { mon1 = "10.0.0.5" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -74,7 +74,7 @@ module "netdata_parent" {
 }
 
 module "netdata_children" {
-  source = "github.com/conn3xorg/circuit-netdata?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-netdata?ref=v0.1.2"
 
   hosts                = { web1 = "10.0.0.11", web2 = "10.0.0.12" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -142,7 +142,7 @@ Each lands in `/etc/netdata/go.d/NAME.conf`. They're kept in state as plain text
 
 On each host, in order:
 
-1. Adds Netdata's stable repository, `repository.netdata.cloud/repos/stable`, with Netdata's signing key from [files/netdata.asc](https://github.com/conn3xorg/circuit-netdata/blob/v0.1.1/files/netdata.asc). That key, `6E155DC153906B73765A74A99DD4A74CECFA8F4F`, expires on 14 March 2035. On Debian and Ubuntu it also pins every `netdata` package to `netdata_version` in `/etc/apt/preferences.d/netdata`, since each plugin package needs exactly its own netdata version.
+1. Adds Netdata's stable repository, `repository.netdata.cloud/repos/stable`, with Netdata's signing key from [files/netdata.asc](https://github.com/conn3xorg/circuit-netdata/blob/v0.1.2/files/netdata.asc). That key, `6E155DC153906B73765A74A99DD4A74CECFA8F4F`, expires on 14 March 2035. On Debian and Ubuntu it also pins every `netdata` package to `netdata_version` in `/etc/apt/preferences.d/netdata`, since each plugin package needs exactly its own netdata version.
 2. Creates `/etc/netdata` and writes the telemetry opt-out file and `netdata.conf` there, before the package. That way the Agent's first start already binds to `bind_to` and sends no telemetry. Both the deb and rpm packages keep a `netdata.conf` that's already there; the one they ship is left next to it as `netdata.conf.dpkg-dist` or `netdata.conf.rpmnew`, and is only comments.
 3. Installs `netdata` at `netdata_version`, which pulls in the dashboard and Netdata's default plugins. A higher version upgrades it in place.
 4. Writes `stream.conf` when streaming is on, `claim.conf` when `cloud_claim` is on, and one file in `go.d` per collector.
@@ -205,7 +205,7 @@ Fedora 45 isn't supported yet: on 29 October 2026, Netdata's stable repository h
 
 ## Tested on
 
-Rocky Linux 10, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.1/examples/local), a parent and a child container, to each on amd64. It checks that the second plan has no changes; that the child runs Netdata 2.12.2, answers `/api/v1/info` on `127.0.0.1:19999` and returns per-second `system.cpu` points from `/api/v1/data`; that the opt-out file is there and the Agent isn't claimed; that the parent can't reach the child's port; and that the child shows up in the parent's `/api/v2/nodes` with its own data.
+Rocky Linux 10, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.2/examples/local), a parent and a child container, to each on amd64. It checks that the second plan has no changes; that the child runs Netdata 2.12.2, answers `/api/v1/info` on `127.0.0.1:19999` and returns per-second `system.cpu` points from `/api/v1/data`; that the opt-out file is there and the Agent isn't claimed; that the parent can't reach the child's port; and that the child shows up in the parent's `/api/v2/nodes` with its own data.
 
 The same checks passed by hand in arm64 containers on the same three, and on Fedora 44. On Ubuntu 24.04, a child installed at 2.12.1 came up with every plugin on 2.12.1, and raising `netdata_version` to 2.12.2 upgraded them all in place. A claim with a made-up token and an unreachable `cloud_url` wrote `claim.conf` with mode `0640` and group `netdata`, kept the token out of state, and setting `cloud_claim = false` removed the file again; claiming against Netdata Cloud itself wasn't tried.
 
@@ -213,10 +213,10 @@ It was also applied to an Ubuntu 24.04 droplet as a parent, bound to its private
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-netdata/blob/v0.1.1/LICENSE). Netdata itself is GPL-3.0-or-later.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-netdata/blob/v0.1.2/LICENSE). Netdata itself is GPL-3.0-or-later.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-netdata](https://github.com/conn3xorg/circuit-netdata). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-netdata/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-netdata](https://github.com/conn3xorg/circuit-netdata). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-netdata/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-netdata/tree/v0.1.2/examples/local).
 - Related circuits: [nginx](/circuits/nginx), [Caddy](/circuits/caddy), [WireGuard](/circuits/wireguard), [Tailscale](/circuits/tailscale), [Prometheus](/circuits/prometheus), [node_exporter](/circuits/node-exporter), [Firewall](/circuits/firewall), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios), [Uptime Kuma](/circuits/uptimekuma).

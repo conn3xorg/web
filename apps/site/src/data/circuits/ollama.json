@@ -2,7 +2,7 @@
   "name": "ollama",
   "repo": "conn3xorg/circuit-ollama",
   "description": "Runs local LLMs with Ollama from the official release, with the models you name pulled and kept.",
-  "version": "v0.1.3",
+  "version": "v0.1.4",
   "tags": [
     "ollama",
     "llm",
