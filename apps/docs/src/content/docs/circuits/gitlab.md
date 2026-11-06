@@ -3,7 +3,7 @@ title: GitLab CE
 description: "Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-gitlab at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-gitlab at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/gitlab/grade.svg)](https://conn3x.org/circuits/gitlab/grade)
 
@@ -23,7 +23,7 @@ variable "gitlab_root_password" {
 }
 
 module "gitlab" {
-  source = "github.com/conn3xorg/circuit-gitlab?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-gitlab?ref=v0.1.3"
 
   hosts                = { git1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -54,7 +54,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.3/examples/local).
 
 ### The root password
 
@@ -106,7 +106,7 @@ On each host, in order:
 3. Writes `root_password` to `/etc/gitlab/conn3x-root-password`, and installs `tzdata` and `hostname`, which GitLab needs and minimal images leave out.
 4. Installs `gitlab-ce` at `gitlab_version`, then writes `/etc/gitlab/gitlab.rb`, mode `0600`: `external_url`, `letsencrypt['enable']`, the NGINX and trusted proxy settings when `reverse_proxy` is set, and `extra_config` at the end. The package goes first on purpose: a fresh install that already finds an `external_url` in `gitlab.rb` reconfigures on the spot, without the root password, and GitLab would make one up. A new version upgrades GitLab in place: the package runs `gitlab-ctl upgrade`, which migrates the database and restarts it.
 5. Runs `gitlab-ctl reconfigure` on the first apply and whenever `gitlab.rb` changed, and not otherwise.
-6. Waits, up to 10 minutes, for `/-/readiness` to answer on the host itself.
+6. Waits, up to 10 minutes, for `/-/readiness` to answer on the host itself, after a reconfigure or a new package version.
 
 After a reboot GitLab takes a minute or two to come back. A plan in that window shows the wait step again, and an apply just waits for GitLab; once it's up, the plan is clean.
 
@@ -162,7 +162,7 @@ When the keys in `files/` near their expiry in February 2028, GitLab will publis
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10, with GitLab CE 19.5.3. CI applies [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.2/examples/local) to each in a container on amd64 and checks that the second plan has no changes and that the password isn't in the state. Then it checks that `/-/readiness` says `ok`, that `root` can sign in through the web form with the password from the plan and use that session on `/api/v4/user`, and that a wrong password can't. On a fresh container it also installs GitLab 19.5.1, then applies the circuit's own pin over it, and checks the second plan is empty, 19.5.3 is running and the sign-in checks still pass. GitLab 19 no longer offers the OAuth password grant (`/oauth/token` answers `unsupported_grant_type`), so the sign-in form is the check.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10, with GitLab CE 19.5.3. CI applies [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.3/examples/local) to each in a container on amd64 and checks that the second plan has no changes and that the password isn't in the state. Then it checks that `/-/readiness` says `ok`, that `root` can sign in through the web form with the password from the plan and use that session on `/api/v4/user`, and that a wrong password can't. On a fresh container it also installs GitLab 19.5.1, then applies the circuit's own pin over it, and checks the second plan is empty, 19.5.3 is running and the sign-in checks still pass. GitLab 19 no longer offers the OAuth password grant (`/oauth/token` answers `unsupported_grant_type`), so the sign-in form is the check.
 
 Before tagging, the same checks passed by hand in arm64 containers of all three on Apple silicon. On Ubuntu 24.04 a change to `extra_config` ran reconfigure once and reached GitLab, and reverting it did the same, each followed by a clean plan; restarting the container gave a clean plan too.
 
@@ -172,10 +172,10 @@ Fedora 45 isn't tested, since GitLab has no packages for it.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-gitlab/blob/v0.1.2/LICENSE). GitLab Community Edition itself is MIT.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-gitlab/blob/v0.1.3/LICENSE). GitLab Community Edition itself is MIT.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-gitlab](https://github.com/conn3xorg/circuit-gitlab). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-gitlab/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-gitlab](https://github.com/conn3xorg/circuit-gitlab). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-gitlab/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-gitlab/tree/v0.1.3/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab).

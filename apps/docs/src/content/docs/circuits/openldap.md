@@ -3,7 +3,7 @@ title: OpenLDAP
 description: "OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openldap at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openldap at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/openldap/grade.svg)](https://conn3x.org/circuits/openldap/grade)
 
@@ -33,7 +33,7 @@ variable "ldap_root_password" {
 }
 
 module "openldap" {
-  source = "github.com/conn3xorg/circuit-openldap?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-openldap?ref=v0.2.1"
 
   hosts                = { ldap1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -53,7 +53,7 @@ When your services run on other hosts, set `ldap_address = "0.0.0.0"` and open t
 
 For hosts created in the same plan, pass host objects with the host key you generated and the distribution in `os`, such as `os = "ubuntu"`, as in [circuit-fail2ban](https://github.com/conn3xorg/circuit-fail2ban#usage). The circuit picks its packages and paths by distribution.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.1/examples/local).
 
 ### Entries from LDIF
 
@@ -97,7 +97,7 @@ Turning TLS off again needs slapd stopped for a moment, since it won't drop its 
 
 On each host, in order:
 
-1. On Rocky Linux and AlmaLinux, installs `epel-release`, which turns on EPEL: Red Hat dropped `openldap-servers` from RHEL 8 onwards, and EPEL 10 carries it again. On RHEL, turn EPEL on yourself first. On Debian and Ubuntu, preseeds debconf with `slapd/no_configuration`, so the package doesn't build a directory of its own on install.
+1. On Rocky Linux and AlmaLinux, installs `epel-release`, which turns on EPEL: Red Hat dropped `openldap-servers` from RHEL 8 onwards, and EPEL 9 and 10 carry it again. On RHEL, turn EPEL on yourself first. On Debian and Ubuntu, preseeds debconf with `slapd/no_configuration`, so the package doesn't build a directory of its own on install.
 2. Installs `slapd` and `ldap-utils`, or `openldap-servers` and `openldap-clients`.
 3. Writes a starting `cn=config` to `/etc/ldap/conn3x/bootstrap.ldif` (`/etc/openldap/conn3x` on Rocky Linux) and loads it once with `slapadd` into a fresh `slapd.d`: the core schema, a config database that root manages over `ldapi:///`, and an mdb database for `base_dn` in `/var/lib/ldap`, capped at 1 GiB. Whatever `slapd.d` the package left is replaced. If `/var/lib/ldap` already holds a database, the apply stops here rather than touch it.
 4. Writes the addresses to listen on, to `/etc/default/slapd` on Debian and Ubuntu or a drop-in for `slapd.service` on Rocky Linux, restarts slapd when they change, starts it now and at boot, and waits for `ldapi:///` to answer.
@@ -158,7 +158,7 @@ Fedora isn't supported for now. Its `openldap-servers`, 2.6.14 on Fedora 45 and 
 
 ## Tested on
 
-Rocky Linux 10, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.0/examples/local) to each on amd64 and checks that the second plan has no changes. Then `ldapsearch` binds as the root DN and finds the base entry, `ou=people`, and the person and group from the example's LDIF; an anonymous search and a wrong password are both refused; and `cn=config` holds a hash of the root password, never the password. The container restarts, and the same checks pass again. The same checks passed on arm64 containers of all three by hand. On Debian 13, a second apply with a new root password made the new one bind and the old one fail, and the plan after it had no changes.
+Rocky Linux 10 and 9, Ubuntu 24.04, and Debian 13 and 12. CI applies [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.1/examples/local) to each on amd64 and checks that the second plan has no changes. Then `ldapsearch` binds as the root DN and finds the base entry, `ou=people`, and the person and group from the example's LDIF; an anonymous search and a wrong password are both refused; and `cn=config` holds a hash of the root password, never the password. The container restarts, and the same checks pass again. Then, on a fresh host, v0.2.0 is applied and this version over it, the plan has no changes and the checks pass once more; Debian 12 skips that, since v0.2.0 couldn't start slapd there. The same checks passed on arm64 containers of Rocky Linux 10, Ubuntu 24.04 and Debian 13 by hand. On 6 November 2026, by hand on arm64, the apply, the clean plan and the searches passed on Rocky Linux 9 and Debian 12, and on Debian 12 they passed again after a restart. On Debian 13, a second apply with a new root password made the new one bind and the old one fail, and the plan after it had no changes.
 
 By hand, on Debian 13 in a container, a self-signed certificate turned on LDAPS on port 636 and StartTLS on 389, `ldapwhoami` bound over both, and the plan had no changes. Taking TLS away again removed the settings and the LDAPS listener, and the plan after that had no changes either.
 
@@ -166,10 +166,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openldap/blob/v0.2.0/LICENSE). OpenLDAP itself is under the OpenLDAP Public License.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openldap/blob/v0.2.1/LICENSE). OpenLDAP itself is under the OpenLDAP Public License.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-openldap](https://github.com/conn3xorg/circuit-openldap). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-openldap/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-openldap](https://github.com/conn3xorg/circuit-openldap). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-openldap/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-openldap/tree/v0.2.1/examples/local).
 - Related circuits: [certbot](/circuits/certbot), [LLDAP](/circuits/lldap), [Firewall](/circuits/firewall), [Users](/circuits/users), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
