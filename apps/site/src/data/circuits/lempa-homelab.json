@@ -2,7 +2,7 @@
   "name": "lempa-homelab",
   "repo": "conn3xorg/circuit-lempa-homelab",
   "description": "Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away.",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "tags": [
     "homelab",
     "stack",

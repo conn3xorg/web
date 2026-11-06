@@ -3,7 +3,7 @@ title: Lempa homelab
 description: "Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-lempa-homelab at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-lempa-homelab at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/lempa-homelab/grade.svg)](https://conn3x.org/circuits/lempa-homelab/grade)
 
@@ -25,7 +25,7 @@ variable "admin_password" {
 }
 
 module "homelab" {
-  source = "github.com/conn3xorg/circuit-lempa-homelab?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-lempa-homelab?ref=v0.1.2"
 
   hosts                = { lab = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -56,7 +56,7 @@ Want more? Turn a category on and apply again:
 
 ```hcl
 module "homelab" {
-  source = "github.com/conn3xorg/circuit-lempa-homelab?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-lempa-homelab?ref=v0.1.2"
 
   hosts                = { lab = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -70,7 +70,7 @@ module "homelab" {
 }
 ```
 
-To try the default stack on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.1/examples/local).
+To try the default stack on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.2/examples/local).
 
 ## The categories
 
@@ -259,7 +259,7 @@ Requires Conn3x v0.7.0 or later and systemd on the host, with outbound HTTPS to 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, in local containers from Conn3x's test images on arm64, with Conn3x v0.7.0. CI does the same on amd64. Each one first applies [examples/local](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.1/examples/local) as the stack stood a release back, from [`previous-release.hcl`](https://github.com/conn3xorg/circuit-lempa-homelab/blob/v0.1.1/examples/local/previous-release.hcl): circuit-podman v0.1.0, circuit-traefik v0.1.0 with Traefik 3.7.15, circuit-bind v0.1.2, circuit-prometheus v0.1.0 and circuit-grafana v0.1.2, with Homepage v2.6.0 and Uptime Kuma 2.5.8. The second plan is clean and [`check.sh`](https://github.com/conn3xorg/circuit-lempa-homelab/blob/v0.1.1/examples/local/check.sh) passes: BIND answers for each name with authority, refuses other zones and says NXDOMAIN for unknown names; Traefik redirects port 80 and gives an unknown name a 404; Homepage loads by its name, lists each app's tile and reports Grafana up; Uptime Kuma's dashboard and socket.io answer; Grafana answers, has Prometheus as its datasource, and queries it for `up`. Then the upgrade to the current pins, a clean plan and the same check. The admin password isn't in `terraform.tfstate` or under `.terraform`. The host container restarts, which boots systemd again, and the check passes and the plan is clean. Last, every other category is planned against the same host, with no secret in the plan output; Wazuh needs a second host, and GitLab isn't planned on Fedora.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, in local containers from Conn3x's test images on arm64, with Conn3x v0.7.0. CI does the same on amd64. Each one first applies [examples/local](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.2/examples/local) as the stack stood a release back, from [`previous-release.hcl`](https://github.com/conn3xorg/circuit-lempa-homelab/blob/v0.1.2/examples/local/previous-release.hcl): circuit-podman v0.1.0, circuit-traefik v0.1.0 with Traefik 3.7.15, circuit-bind v0.1.2, circuit-prometheus v0.1.0 and circuit-grafana v0.1.2, with Homepage v2.6.0 and Uptime Kuma 2.5.8. The second plan is clean and [`check.sh`](https://github.com/conn3xorg/circuit-lempa-homelab/blob/v0.1.2/examples/local/check.sh) passes: BIND answers for each name with authority, refuses other zones and says NXDOMAIN for unknown names; Traefik redirects port 80 and gives an unknown name a 404; Homepage loads by its name, lists each app's tile and reports Grafana up; Uptime Kuma's dashboard and socket.io answer; Grafana answers, has Prometheus as its datasource, and queries it for `up`. Then the upgrade to the current pins, a clean plan and the same check. The admin password isn't in `terraform.tfstate` or under `.terraform`. The host container restarts, which boots systemd again, and the check passes and the plan is clean. Last, every other category is planned against the same host, with no secret in the plan output; Wazuh needs a second host, and GitLab isn't planned on Fedora.
 
 By hand, on two DigitalOcean droplets on amd64. Ubuntu 24.04 with 2 vCPUs and 4 GB ran the default stack with `ai` and `databases`: on top of the same check, Open WebUI signed its admin in through Traefik and listed Ollama's `smollm2:135m`, Ollama answered a prompt, the `db_users` account wrote to its own database in MariaDB and in PostgreSQL, and InfluxDB read back a point written with the token and refused a query without one. About 1.7 GB was still available. Rocky Linux 10 with 1 vCPU and 2 GB, SELinux enforcing, ran the default stack, with about 750 MB still available. On both, the second plan was clean, none of the apps' ports answered from outside, BIND did, and no secret was in the state. After a reboot every service came back, the checks passed again and the plan was clean; Rocky's audit log had no SELinux denials. Right after that reboot, Open WebUI answered its health check but returned a 502 to the first sign-in; a few minutes later it signed in.
 
@@ -267,10 +267,10 @@ By hand, on two DigitalOcean droplets on amd64. Ubuntu 24.04 with 2 vCPUs and 4 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-lempa-homelab/blob/v0.1.1/LICENSE). Each app keeps its own licence; the member circuits' READMEs say which.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-lempa-homelab/blob/v0.1.2/LICENSE). Each app keeps its own licence; the member circuits' READMEs say which.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-lempa-homelab](https://github.com/conn3xorg/circuit-lempa-homelab). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-lempa-homelab/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-lempa-homelab](https://github.com/conn3xorg/circuit-lempa-homelab). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-lempa-homelab/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-lempa-homelab/tree/v0.1.2/examples/local).
 - Related circuits: [Podman](/circuits/podman), [Portainer CE](/circuits/portainer), [Dockge](/circuits/dockge), [Home Assistant](/circuits/homeassistant), [Traefik](/circuits/traefik), [BIND](/circuits/bind), [Uptime Kuma](/circuits/uptimekuma), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Ollama](/circuits/ollama), [Open WebUI](/circuits/openwebui), [Kestra](/circuits/kestra), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate), [GitLab CE](/circuits/gitlab), [GitLab Runner](/circuits/gitlab-runner), [Homepage](/circuits/homepage), [MariaDB](/circuits/mariadb), [PostgreSQL](/circuits/postgres), [InfluxDB 3 Core](/circuits/influxdb), [authentik](/circuits/authentik), [Suricata](/circuits/suricata), [Wazuh](/circuits/wazuh), [k3s](/circuits/k3s), [Pi-hole](/circuits/pihole), [Caddy](/circuits/caddy), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet).

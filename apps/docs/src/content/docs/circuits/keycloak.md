@@ -3,7 +3,7 @@ title: Keycloak
 description: "Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-keycloak at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-keycloak at v0.2.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/keycloak/grade.svg)](https://conn3x.org/circuits/keycloak/grade)
 
@@ -25,7 +25,7 @@ variable "keycloak_admin_password" {
 }
 
 module "keycloak" {
-  source = "github.com/conn3xorg/circuit-keycloak?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-keycloak?ref=v0.2.1"
 
   hosts                = { auth1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -60,7 +60,7 @@ module "postgres" {
 }
 
 module "keycloak" {
-  source     = "github.com/conn3xorg/circuit-keycloak?ref=v0.2.0"
+  source     = "github.com/conn3xorg/circuit-keycloak?ref=v0.2.1"
   depends_on = [module.postgres]
 
   hosts             = { auth1 = { address = "203.0.113.10", os = "ubuntu" } }
@@ -79,7 +79,7 @@ Switching from dev-file to PostgreSQL starts Keycloak on an empty database, with
 
 Keycloak is a Java service, and with no `heap_size` it takes 70% of the host's memory for its heap. On a 2 GB host it sat at about 500 MB resident with nothing to do. A 1 GB host runs it with `heap_size = "512m"`, but with about 30 MB of memory left available and no swap, so it's fine for a lab and not for real traffic. 2 GB or more is the comfortable start.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.1/examples/local).
 
 ## What it does
 
@@ -126,7 +126,7 @@ sha256sum keycloak-$v.tar.gz
 
 ```hcl
 module "keycloak" {
-  source = "github.com/conn3xorg/circuit-keycloak?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-keycloak?ref=v0.2.1"
 
   # ...
   keycloak_version = "26.8.1"
@@ -178,7 +178,7 @@ Requires Conn3x v0.6.7 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Keycloak 26.8.1 on OpenJDK 25. CI applies [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.0/examples/local) to each on amd64 and checks that the second plan has no changes. It then checks that `/health/ready` is `UP`, gets a token for the bootstrap admin from the master realm, checks that a wrong password is refused, creates a realm over the admin REST API and reads it back, restarts Keycloak, reads the realm again and plans again with no changes. The same checks passed on arm64 containers of all four by hand.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with Keycloak 26.8.1 on OpenJDK 25. CI applies [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.1/examples/local) to each on amd64 and checks that the second plan has no changes. It then checks that `/health/ready` is `UP`, gets a token for the bootstrap admin from the master realm, checks that a wrong password is refused, creates a realm over the admin REST API and reads it back, restarts Keycloak, reads the realm again and plans again with no changes. The same checks passed on arm64 containers of all four by hand.
 
 By hand, in containers: on Debian 13, an upgrade from 26.8.0 to 26.8.1 with `metrics_enabled` turned on in the same apply, which rebuilt Keycloak, kept the realm and served `/metrics`, and `heap_size = "512m"`, which reached the JVM; on Debian 13 with circuit-postgres on the same host and `postgres = {}`, a password holding `;` and `#`, which Keycloak used, with the password in neither the state nor the plan output; on Fedora 45, HTTPS from a certificate on the host with `hostname` set, where the issuer matched `hostname`, plain HTTP was off and the admin API answered over HTTPS; and on Rocky Linux 10, a changed `admin_password`, which applied cleanly without a restart.
 
@@ -186,10 +186,10 @@ On an Ubuntu 24.04 droplet with 1 vCPU and 1 GB of memory and `heap_size = "512m
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-keycloak/blob/v0.2.0/LICENSE). Keycloak itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-keycloak/blob/v0.2.1/LICENSE). Keycloak itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-keycloak](https://github.com/conn3xorg/circuit-keycloak). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-keycloak/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-keycloak](https://github.com/conn3xorg/circuit-keycloak). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-keycloak/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-keycloak/tree/v0.2.1/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [certbot](/circuits/certbot), [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).

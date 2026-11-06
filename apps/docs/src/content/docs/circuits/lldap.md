@@ -3,7 +3,7 @@ title: LLDAP
 description: "LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-lldap at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-lldap at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/lldap/grade.svg)](https://conn3x.org/circuits/lldap/grade)
 
@@ -21,7 +21,7 @@ variable "lldap_admin_password" {
 }
 
 module "lldap" {
-  source = "github.com/conn3xorg/circuit-lldap?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-lldap?ref=v0.1.2"
 
   hosts                = { auth1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -37,7 +37,7 @@ Your services bind as `uid=admin,ou=people,dc=example,dc=com`, the `admin_dn` ou
 
 The web interface speaks plain HTTP. Put it behind a TLS proxy on the same host, such as [circuit-caddy](/circuits/caddy) with a reverse proxy to `127.0.0.1:17170`. When your services run on other hosts, set `ldap_address = "0.0.0.0"` and open `ldap_port` to them only, or turn on LDAPS.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.2/examples/local).
 
 ### The admin password
 
@@ -124,7 +124,7 @@ gh release view v0.6.3 -R lldap/lldap --json assets -q '.assets[] | .name + " " 
 
 ```hcl
 module "lldap" {
-  source = "github.com/conn3xorg/circuit-lldap?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-lldap?ref=v0.1.2"
 
   # ...
   lldap_version = "0.6.3"
@@ -175,7 +175,7 @@ Requires Conn3x v0.6.7 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-CI applies [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.1/examples/local) on amd64 with Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. On each system, it checks that:
+CI applies [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.2/examples/local) on amd64 with Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. On each system, it checks that:
 
 - A second plan reports `No changes.`
 - `ldapsearch` can find the admin, a wrong password is refused, `/health` answers, and the config contains no secrets.
@@ -187,10 +187,10 @@ PostgreSQL and MySQL through `database_url` haven't been tried.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-lldap/blob/v0.1.1/LICENSE). LLDAP itself is GPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-lldap/blob/v0.1.2/LICENSE). LLDAP itself is GPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-lldap](https://github.com/conn3xorg/circuit-lldap). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-lldap/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-lldap](https://github.com/conn3xorg/circuit-lldap). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-lldap/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-lldap/tree/v0.1.2/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [Firewall](/circuits/firewall), [Users](/circuits/users), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
