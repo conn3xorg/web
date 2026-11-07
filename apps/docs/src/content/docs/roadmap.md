@@ -33,7 +33,7 @@ The work now is Windows at scale: many hosts in one apply rather than four, and 
 
 Switches, routers and firewalls, configured in the same plan as the hosts behind them.
 
-The first three are out, and they work through community OpenTofu providers rather than Conn3x's own connection: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network). They're [experimental](/reference/maturity): each was tested on a virtual image, not hardware, and its page names the image and the provider. Next is talking to devices over their own CLI, starting with Arista EOS.
+The first three are out, and they work through community OpenTofu providers rather than Conn3x's own connection: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network). They're [experimental](/reference/maturity): each was tested on a virtual image, not hardware, and its page names the image and the provider. Next is talking to devices over their own CLI, starting with Arista EOS. The first EOS modules, `eos_config`, `eos_hostname` and `eos_vlan`, arrive in the next release as experimental; [Network devices](/network-devices) explains how they work and what they need from the switch. One session per switch per apply comes after that, then more EOS modules, then Junos, VyOS and classic Cisco IOS.
 
 ## After that: Ansible roles and Galaxy
 

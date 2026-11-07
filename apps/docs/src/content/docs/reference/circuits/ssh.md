@@ -35,6 +35,7 @@ Conn3x uses SSH and nothing else. By default, it installs nothing on the hosts. 
 | `become` | bool | `false` | Run every command as root through `sudo`. |
 | `become_password_file` | string | None | Path to a file holding the sudo password, for hosts where sudo asks for one. Read only when `become` is `true`. |
 | `timeout` | string | `"3m"` | How long to keep retrying while a host doesn't answer, as a duration such as `"90s"` or `"5m"`. |
+| `confirm_after` | string | `"30s"` | Arista EOS steps only, arriving in the next release. How long to wait after committing a change before logging in again to confirm it, from `"5s"` to under `"4m"`. See [Network devices](/network-devices#why-it-waits-before-confirming). |
 | `jump_hosts` | list of strings | None | Hosts to connect through first, in order, like `ssh -J`. See [Jump hosts](#jump-hosts). |
 | `ssh_config_file` | string | None | An OpenSSH client config file to read settings from, such as `"~/.ssh/config"`. Conn3x reads no SSH config unless you set this. See [SSH config files](#ssh-config-files). |
 
@@ -81,7 +82,7 @@ Conn3x builds each host's connection settings from up to three places. The first
 
 When none of them sets a value, the default in the table above applies.
 
-`become`, `become_password_file`, `known_hosts_file`, `timeout` and `ssh_config_file` can't be set per host. They come from the `ssh` block for every host in the circuit, with `known_hosts_file` falling back to the config file's `UserKnownHostsFile`.
+`become`, `become_password_file`, `known_hosts_file`, `timeout`, `confirm_after` and `ssh_config_file` can't be set per host. They come from the `ssh` block for every host in the circuit, with `known_hosts_file` falling back to the config file's `UserKnownHostsFile`.
 
 ## SSH config files
 
