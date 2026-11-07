@@ -181,4 +181,4 @@ MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-teleport/blob/v0.1.0
 
 - Repository: [conn3xorg/circuit-teleport](https://github.com/conn3xorg/circuit-teleport). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-teleport/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0/examples/local).
-- Related circuits: [certbot](/circuits/certbot), [Users](/circuits/users), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt).
+- Related circuits: [certbot](/circuits/certbot), [Users](/circuits/users), [Active Directory](/circuits/active-directory), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt).

@@ -1,0 +1,16 @@
+{
+  "name": "active-directory",
+  "repo": "conn3xorg/circuit-active-directory",
+  "description": "Experimental. An Active Directory domain from roles: a new forest, more DCs, joined members, and OUs, users and groups.",
+  "version": "v0.1.1",
+  "tags": [
+    "active-directory",
+    "identity",
+    "windows"
+  ],
+  "tested": [
+    "windows2025"
+  ],
+  "category": "Identity and secrets",
+  "official": true
+}
