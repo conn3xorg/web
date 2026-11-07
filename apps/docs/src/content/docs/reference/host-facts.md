@@ -21,13 +21,50 @@ It takes the same `ssh` block as a circuit, with `host` set to the server's addr
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `os_family` | string | `"redhat"` or `"debian"`. |
-| `os_id` | string | The `ID` from os-release, such as `rocky` or `ubuntu`. |
-| `os_version` | string | The `VERSION_ID` from os-release, such as `10.0` or `24.04`. |
+| `os_family` | string | `"redhat"` or `"debian"`, or `"windows"` with `allow_windows`. |
+| `os_id` | string | The `ID` from os-release, such as `rocky` or `ubuntu`, or `"windows"`. |
+| `os_version` | string | The `VERSION_ID` from os-release, such as `10.0` or `24.04`. On Windows, the version, such as `10.0.26100`. |
 | `arch` | string | Machine architecture, such as `x86_64` or `aarch64`. |
 | `cpus` | number | Number of CPUs. |
 | `memory_mb` | number | Total memory in MiB. |
 | `ipv4` | string | Source address of the default IPv4 route, or empty. |
+| `windows` | object | Windows Server only: see below. Null on Linux. |
+
+## Windows Server
+
+Experimental. A Windows host is an error at plan unless the data source sets `allow_windows = true`:
+
+```hcl
+data "conn3x_host" "dc1" {
+  allow_windows = true
+  ssh {
+    host             = "203.0.113.20"
+    user             = "azadmin"
+    private_key_file = "~/.ssh/id_ed25519"
+  }
+}
+```
+
+Why the opt-in? Plenty of circuits written for Linux pick a package manager with "Debian, or else Red Hat". Hand one of those a Windows host's facts and it would plan cleanly and fail halfway through the apply. Refusing at plan is the kinder failure.
+
+Facts come over the same SSH login the Windows modules use, through one read-only PowerShell script, and only when the Linux script fails first, so a Linux host sees no extra round trip. Windows client editions are refused: Conn3x manages Windows Server.
+
+On Windows, `arch` is `x86_64` or `aarch64`, as on Linux, and `ipv4` is the default route's source address. `windows` holds the rest:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `release` | string | `"2025"`, `"2022"` or `"2019"`, from the build number. Empty for a build Conn3x doesn't know. |
+| `build` | string | The OS build, such as `26100`. In releases after v0.8.0. |
+| `update_revision` | number | The update build revision, such as `2314` in `26100.2314`. It goes up with each cumulative update, so it shows which hosts are behind. In releases after v0.8.0. |
+| `edition` | string | Such as `ServerDatacenter` or `ServerStandard`. |
+| `installation_type` | string | `Server` with the desktop, or `Server Core`. |
+| `hostname` | string | The computer's DNS host name. |
+| `domain` | string | The Active Directory domain it belongs to, or its workgroup, such as `WORKGROUP`. |
+| `domain_role` | number | `2` standalone server, `3` member server, `4` backup domain controller, `5` primary domain controller (the PDC emulator). |
+| `powershell` | string | The Windows PowerShell version, such as `5.1.26100.2314`. |
+| `elevated` | bool | Whether the login has an administrator's token. The Windows modules need it. |
+
+A host that doesn't exist yet has no facts at plan, on Windows as on Linux, so the rules in [Hosts that don't exist yet](#hosts-that-dont-exist-yet) apply here too.
 
 ## Facts for every host in a circuit
 
