@@ -30,6 +30,8 @@ Experimental is about each module inside it. They're new, and the arguments of a
 | Linux hosts: Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu | Stable | Every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. |
 | The Linux modules, the CLI, `conn3x drift` and `conn3x convert ansible` | Stable | Tested on every change. The converter marks what it can't prove instead of guessing. |
 | Official circuits for Linux | Stable | Each is tested on the distributions its page lists. |
+| `lifecycle` on steps | Preview | New in v0.8.0. It uses OpenTofu's own lifecycle rules, so they behave as you'd expect, but how they fit steps may still change before 1.0. |
+| `import` on steps, to [adopt servers you already run](/guides/adopt-servers) | Preview | New in v0.8.0, on `file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group` on Linux. Try it on a server you can rebuild before your oldest one. |
 | Windows Server 2022 and 2025 | Preview | Standalone servers work, and so does a small domain: a new forest, servers joined to it, more domain controllers, and the OUs, groups and users inside it. A whole lab from one config, then Windows at scale, are the work now. |
 | The `windows_*` modules, and circuits built on them | Experimental | New, and their arguments may change between releases. |
 | Network-device circuits: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans), [Proxmox VE network](/circuits/proxmox-network) | Experimental | Each was tested on a virtual image of its device, not hardware, through a community OpenTofu provider. |
