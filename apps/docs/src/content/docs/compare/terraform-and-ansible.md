@@ -137,7 +137,7 @@ resource "local_file" "inventory" {
   filename = "${path.module}/inventory.ini"
   content  = <<-EOT
     [web]
-    web1 ansible_host=${aws_instance.web.public_ip} ansible_user=ubuntu ansible_ssh_common_args="-o UserKnownHostsFile=known_hosts"
+    web1 ansible_host=${aws_instance.web.public_ip} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/id_ed25519 ansible_ssh_common_args="-o UserKnownHostsFile=known_hosts"
   EOT
 }
 
@@ -152,7 +152,12 @@ Then the playbook, `site.yml`:
 ```yaml
 - hosts: web
   become: true
+  gather_facts: false
   tasks:
+    - name: Wait for the server to boot
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+
     - name: Install nginx
       ansible.builtin.apt:
         name: nginx
@@ -191,7 +196,7 @@ tofu apply
 ansible-playbook -i inventory.ini site.yml
 ```
 
-If you run the playbook straight after the apply, the instance may still be booting, so it's common to add an `ansible.builtin.wait_for_connection` task at the top, or to retry. A dynamic inventory, such as the `amazon.aws.aws_ec2` plugin, can replace the generated `inventory.ini` once you have more than a handful of servers.
+The first task is there because the playbook starts the moment the apply ends, and the instance won't be answering SSH yet. We found that out the honest way: without it, our first run stopped at `Connection refused`. Naming the key in the inventory came from a real run too, since `ssh` otherwise uses whatever your `~/.ssh/config` picks. A dynamic inventory, such as the `amazon.aws.aws_ec2` plugin, can replace the generated `inventory.ini` once you have more than a handful of servers.
 
 ### With Conn3x
 
@@ -257,24 +262,104 @@ conn3x apply
 
 The steps read like the tasks, and that's on purpose: a play maps onto a circuit, a task onto a step, a handler onto a handler. What's gone is the seam. `hosts` refers to the instance directly, the pinned `host_key` replaces the `known_hosts` file, and `timeout = "5m"` keeps Conn3x retrying while the instance boots. The `package` step doesn't need `update_cache`, because Conn3x refreshes the package lists itself when a package isn't found.
 
-On AWS, one plan lists the key pair, the security group and its rules, the host key, the instance, the three steps and the handler, and each step's `host` reads `(known after apply)` until the instance exists. The [AWS tutorial](/tutorials/aws#plan) shows that output from a real run.
+## Both, run for real
 
-## What the plan looks like
+We applied both versions in `us-west-2` on 7 November 2026, each on a fresh instance, destroying everything in between. That was Conn3x v0.7.1, OpenTofu v1.12.6 and ansible-core 2.21.3, with `hashicorp/aws` v6. The only change to the configurations above was a `default_tags` block on the `aws` provider, which tags everything for the sweeper on our test account. Output is trimmed where it says so.
 
-We didn't run the AWS version for this page, because a plan needs AWS credentials. To show you real output, we ran the same circuit against a throwaway Rocky Linux 10 container with systemd, built from the `Containerfile` in [circuit-nginx's local example](https://github.com/conn3xorg/circuit-nginx/tree/v0.2.1/examples/local), with Conn3x v0.7.1. Only `hosts` and the `ssh` block differ: the container listens on `127.0.0.1:2299`, as `root`.
+### Terraform or OpenTofu, then Ansible
 
-The first plan, trimmed to the headers and the summary:
+`tofu apply` created the server and wrote the hand-off files. Trimmed to the completion lines:
 
 ```text
+tls_private_key.host: Creation complete after 0s [id=907f699907402a1bbe2f90d0a4a740c12262ad53]
+aws_key_pair.me: Creation complete after 1s [id=web1]
+aws_security_group.web: Creation complete after 2s [id=sg-0d1978a1777984928]
+aws_vpc_security_group_egress_rule.all: Creation complete after 1s [id=sgr-0baef3bc786bb3be9]
+aws_vpc_security_group_ingress_rule.app: Creation complete after 1s [id=sgr-0820d0ba24187922d]
+aws_vpc_security_group_ingress_rule.ssh: Creation complete after 1s [id=sgr-0a86028ece8efa9b0]
+aws_instance.web: Creation complete after 13s [id=i-0b612405af7f52e58]
+local_file.inventory: Creation complete after 0s [id=58e769bb4c1d712d93d51cff5a7038dc6c3f04b7]
+local_file.known_hosts: Creation complete after 0s [id=3db230d3aa5ebf4d7de2cee63660dce45d62c56e]
+
+Apply complete! Resources: 9 added, 0 changed, 0 destroyed.
+```
+
+Then `ansible-playbook -i inventory.ini site.yml`, with blank lines and an interpreter warning trimmed:
+
+```text
+PLAY [web] *********************************************************************
+TASK [Wait for the server to boot] *********************************************
+ok: [web1]
+TASK [Install nginx] ***********************************************************
+changed: [web1]
+TASK [Write the site config] ***************************************************
+changed: [web1]
+TASK [Start nginx] *************************************************************
+ok: [web1]
+RUNNING HANDLER [Reload nginx] *************************************************
+changed: [web1]
+PLAY RECAP *********************************************************************
+web1                       : ok=5    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+
+The two runs took 54 seconds together, and `curl` on port 8080 answered `Hello from web1`. A second `tofu plan` found no differences, and a second playbook run reported `changed=0`. It works, and it's two previews, two runs and two files passed between them.
+
+### Conn3x
+
+`conn3x plan` put the cloud and the server in one list. The headers and the summary:
+
+```text
+  # aws_instance.web will be created
+  # aws_key_pair.me will be created
+  # aws_security_group.web will be created
+  # aws_vpc_security_group_egress_rule.all will be created
+  # aws_vpc_security_group_ingress_rule.app will be created
+  # aws_vpc_security_group_ingress_rule.ssh will be created
   # conn3x_file.web__site["web1"] will be created
   # conn3x_package.web__nginx["web1"] will be created
   # conn3x_service.web__running["web1"] will be created
   # conn3x_service_action.web__reload["web1"] will be created
+  # tls_private_key.host will be created
 
-Plan: 4 to add, 0 to change, 0 to destroy.
+Plan: 11 to add, 0 to change, 0 to destroy.
 ```
 
-After `conn3x apply`, `curl` on the port printed `Hello from web1`, and a second plan said `No changes.` Then we logged in to the container and added `access_log off;` to the config by hand. The next `conn3x plan`:
+The instance doesn't exist yet, so every step's connection is waiting on it. Here's the `ssh` block from the `site` step:
+
+```text
+      + ssh {
+          + become           = true
+          + host             = (known after apply)
+          + host_key         = (known after apply)
+          + private_key_file = "~/.ssh/id_ed25519"
+          + timeout          = "5m"
+          + user             = "ubuntu"
+        }
+```
+
+`conn3x apply`, trimmed to the completion lines:
+
+```text
+tls_private_key.host: Creation complete after 0s [id=c899bdb5a3b16c0c4c9cb86a0281ff2f95c38fda]
+aws_key_pair.me: Creation complete after 1s [id=web1]
+aws_security_group.web: Creation complete after 2s [id=sg-0c442b6bc81ddf3ff]
+aws_vpc_security_group_ingress_rule.app: Creation complete after 1s [id=sgr-01be1d989f129dab6]
+aws_vpc_security_group_egress_rule.all: Creation complete after 1s [id=sgr-05f7eeeda5f04ecf3]
+aws_vpc_security_group_ingress_rule.ssh: Creation complete after 1s [id=sgr-02b5c22e1405c0ce6]
+aws_instance.web: Creation complete after 13s [id=i-035aca9359aabae78]
+conn3x_package.web__nginx["web1"]: Creation complete after 32s [id=35.86.128.103:package:nginx]
+conn3x_file.web__site["web1"]: Creation complete after 0s [id=35.86.128.103:/etc/nginx/conf.d/app.conf]
+conn3x_service.web__running["web1"]: Creation complete after 0s [id=35.86.128.103:service:nginx.service]
+conn3x_service_action.web__reload["web1"]: Creation complete after 0s [id=35.86.128.103:service-action:nginx.service]
+
+Apply complete! Resources: 11 added, 0 changed, 0 destroyed.
+```
+
+That took 51 seconds and worked on the first try. The package step is the first to connect, so its 32 seconds cover waiting for SSH as well as installing nginx. `curl http://35.86.128.103:8080/` answered `Hello from web1`, and a second plan said `No changes.` (The address is gone now; AWS will hand it to someone else.)
+
+### A hand edit
+
+Then we logged in to the instance and added `access_log off;` to the config by hand. The next `conn3x plan`:
 
 ```text
   # conn3x_file.web__site["web1"] will be updated in-place
@@ -289,8 +374,8 @@ After `conn3x apply`, `curl` on the port printed `Hello from web1`, and a second
             }
         EOT
       ~ content_wo = (write-only attribute)
-        id         = "127.0.0.1:2299:/etc/nginx/conf.d/app.conf"
-      ~ revision   = "21a606f2e5a80ed4" -> (known after apply)
+        id         = "35.86.128.103:/etc/nginx/conf.d/app.conf"
+      ~ revision   = "831568a96f7ef583" -> (known after apply)
       ~ sha256     = "87e78eda4bda792140b41a833a7557c84224d0a23ce8831272001228d0b52562" -> "3eb5b493ef0a22f537bc4d4f6fa9151b97161ff194ca2565997fb5bca1adfaa4"
       ~ validate   = (write-only attribute)
         # (3 unchanged attributes hidden)
@@ -300,11 +385,11 @@ After `conn3x apply`, `curl` on the port printed `Hello from web1`, and a second
 
   # conn3x_service_action.web__reload["web1"] must be replaced
 -/+ resource "conn3x_service_action" "web__reload" {
-        id       = "127.0.0.1:2299:service-action:nginx.service"
+        id       = "35.86.128.103:service-action:nginx.service"
         name     = "nginx"
-      ~ revision = "a510ec61e93b0049" -> (known after apply)
+      ~ revision = "12c74e451fb34ca5" -> (known after apply)
       ~ triggers = [
-          - "21a606f2e5a80ed4",
+          - "831568a96f7ef583",
           + (known after apply),
         ]
         # (1 unchanged attribute hidden)
@@ -315,7 +400,7 @@ After `conn3x apply`, `curl` on the port printed `Hello from web1`, and a second
 Plan: 1 to add, 1 to change, 1 to destroy.
 ```
 
-Two things in there are worth a second look. The diff is line by line, read from the server, not from a cache. And the reload shows up in the plan too, as the handler being replaced, so you can see that putting the file back will reload nginx before you agree to it. In the AWS version, the same plan would also list any change to the instance or the security group.
+Two things in there are worth a second look. The diff is line by line, read from the server, not from a cache. And the reload shows up in the plan too, as the handler being replaced, so you can see that putting the file back will reload nginx before you agree to it. Had someone also changed the security group, it would have been in the same plan.
 
 `conn3x drift` answered the narrower question, what's moved since the last apply, and exited with code `2`:
 
@@ -326,7 +411,13 @@ Hosts
   ~ conn3x_file.web__site["web1"]  changed
 
 Run conn3x plan to see what Conn3x would change to put them back.
+
+Changed, but your config wouldn't change them back
+  aws_security_group.web
+  aws_key_pair.me
 ```
+
+The last two lines aren't drift. When the AWS provider reads these resources back, it fills in attributes that the configuration doesn't set, such as the security group's inline `egress` list, which mirrors the separate egress rule. Nothing would change them back, so `drift` lists them apart and doesn't count them. `conn3x destroy` then removed all 11 resources.
 
 ## Where Terraform and Ansible are the better choice
 
