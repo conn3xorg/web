@@ -52,7 +52,7 @@ export default defineConfig({
           label: "Tutorials",
           items: [
             { slug: "tutorials", label: "Overview" },
-            ...["try-locally", "first-server", "digitalocean", "google-cloud", "azure", "aws", "bastion", "secrets", "drift-in-ci", "migrate-ansible", "bigquery"].map((page) => `tutorials/${page}`),
+            ...["try-locally", "first-server", "digitalocean", "google-cloud", "azure", "aws", "bastion", "secrets", "drift-in-ci", "migrate-ansible", "bigquery", "private-ai-box"].map((page) => `tutorials/${page}`),
           ],
         },
         {
