@@ -57,7 +57,7 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/paths-as-root", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/paths-as-root", "guides/share-a-circuit", "guides/test-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         {
           label: "Compare",
