@@ -13,8 +13,8 @@ Every plan shows the exact change headed for each host, line by line, before any
 
 - **New here?** [Install Conn3x](/install), then work through [Get started](/get-started). It takes about fifteen minutes and needs one Linux server you can reach over SSH.
 - **Want to learn by doing?** The [tutorials](/tutorials) start with a container on your own machine and build up to cloud servers, bastions and CI.
-- **Coming from Ansible?** [Convert a playbook](/guides/migrate-from-ansible) and see how much carries over.
-- **Already using Terraform or OpenTofu?** Your configuration works as it is. [Add circuits to it](/guides/migrate-from-terraform).
+- **Coming from Ansible?** [Convert a playbook](/guides/migrate-from-ansible) and see how much carries over, or read how the two [compare](/compare/ansible) first.
+- **Already using Terraform or OpenTofu?** Your configuration works as it is. [Add circuits to it](/guides/migrate-from-terraform), or see [the same server built both ways](/compare/terraform-and-ansible).
 - **Want nginx, PostgreSQL or WireGuard without writing it yourself?** Start from one of the [official circuits](/circuits).
 - **Looking something up?** The [circuit language](/reference/circuits) and every [module](/modules/file) are in the reference.
 

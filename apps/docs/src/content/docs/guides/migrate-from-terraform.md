@@ -29,3 +29,5 @@ circuit "app" {
 ```
 
 The next plan shows the instances and the packages for them together. See [Create and configure a server in one plan](/guides/provision-and-configure) for a complete example.
+
+Weighing this against Terraform or OpenTofu with Ansible? [Conn3x vs Terraform and Ansible](/compare/terraform-and-ansible) builds the same server both ways.

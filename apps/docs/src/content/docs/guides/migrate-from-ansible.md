@@ -93,3 +93,5 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
 
 The command exits 3 while anything is left, so you can keep running it in CI until the count reaches zero.
+
+Still deciding? [Conn3x vs Ansible](/compare/ansible) runs the same playbook both ways, and says where Ansible is the better choice.
