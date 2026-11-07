@@ -1,10 +1,10 @@
 ---
 title: Network devices
-description: "How Conn3x configures switches over their own CLI: Arista EOS first, experimental, arriving in the next release."
+description: "How Conn3x configures switches over their own CLI: Arista EOS first, experimental since v0.9.0."
 ---
 
-:::note[Arriving in the next release]
-Everything on this page is on `main` and arrives in the next release. The current release doesn't have the `eos_*` modules yet.
+:::note
+Everything on this page is in Conn3x since v0.9.0, and it's experimental. Earlier releases don't know the `eos_*` modules, so a circuit that uses one fails `conn3x validate`.
 :::
 
 A switch is a host like any other in a circuit. You list it in `hosts`, reach it through the circuit's `ssh` block, and the step's module decides how Conn3x talks to it. A `package` step runs shell commands. An `eos_*` step types into the switch's own CLI. There's no shell, no `sudo` and no agent on the switch, and nothing to install there.

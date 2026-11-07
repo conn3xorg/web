@@ -117,7 +117,7 @@ Your servers already look the way the playbook left them. To take them over with
 
 ## Convert a role
 
-Coming in the next release: `-role`. Point it at a role's directory, and `-out` at a new one, and you get a circuit laid out like the ones in [the catalogue](/circuits), ready to call as a module.
+Since v0.9.0 there's `-role`. Point it at a role's directory, and `-out` at a new one, and you get a circuit laid out like the ones in [the catalogue](/circuits), ready to call as a module.
 
 ```sh
 conn3x convert ansible -role roles/app -out circuit-app
