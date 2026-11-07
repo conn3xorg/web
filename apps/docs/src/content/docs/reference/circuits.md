@@ -3,9 +3,9 @@ title: Circuit language
 description: What a circuit is, which files circuits go in, and how Conn3x turns each step into a resource with one instance per host.
 ---
 
-Conn3x configuration is OpenTofu configuration with one more block type, `circuit`. A circuit configures a group of Linux hosts over SSH: it names the hosts, says how to log in to them, and lists the steps to apply to each one, in order.
+Conn3x configuration is OpenTofu configuration with one more block type, `circuit`. A circuit configures a group of hosts over SSH, Linux or, [in preview](/reference/maturity), Windows Server: it names the hosts, says how to log in to them, and lists the steps to apply to each one, in order.
 
-This section documents the circuit language in Conn3x v0.6.3. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
+This section documents the circuit language in Conn3x v0.7.1. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
 
 ```hcl
 circuit "web" {
@@ -139,7 +139,7 @@ Because steps are resources, everything that works with resources works with the
 `conn3x validate` and `conn3x plan` warn about two things in a circuit:
 
 - A handler that no step notifies. It never runs, and Conn3x creates no resource for it.
-- A file that one step writes whole, with `file` or `template`, while another step in the same circuit edits it with `line` or `block`. Each apply would undo the other. Put the edit in the file's content instead. Conn3x can only compare paths written as literal strings.
+- A file that one step writes whole, with `file` or `template`, while another step in the same circuit edits part of it with `line`, `block`, `ini`, `replace` or `limit`. Each apply would undo the other. Put the edit in the file's content instead. Conn3x can only compare paths written as literal strings.
 
 ## In this section
 
