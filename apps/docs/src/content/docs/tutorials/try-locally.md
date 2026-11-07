@@ -9,17 +9,17 @@ In this tutorial you'll configure a Rocky Linux 10 container running on your own
 
 ## Prerequisites
 
-- Conn3x v0.6.3 [installed](/install).
+- Conn3x v0.7.1 [installed](/install).
 - [Podman](https://podman.io/docs/installation) or [Docker](https://docs.docker.com/get-docker/), running.
 - `git`, `ssh` and `ssh-keyscan`, which come with macOS and most Linux distributions.
 - Port 2222 free on `127.0.0.1`.
 
 ## Get the example
 
-The example lives in the Conn3x repository. Clone the v0.6.3 release and change into the example's directory:
+The example lives in the Conn3x repository. Clone the v0.7.1 release and change into the example's directory:
 
 ```sh
-git clone --depth 1 --branch v0.6.3 https://github.com/conn3xorg/conn3x
+git clone --depth 1 --branch v0.7.1 https://github.com/conn3xorg/conn3x
 cd conn3x/examples/try-it-locally
 ```
 
@@ -110,6 +110,7 @@ The plan lists each step as a resource, one instance per host. Here is the `motd
       + path       = "/etc/motd"
       + revision   = (known after apply)
       + sha256     = "06b6c9ebb3b33eb4f680ad4137d2e87d7e45b1cb116381b90b085d6ec0beb65d"
+      + validate   = (write-only attribute)
 
       + ssh {
           + host             = "127.0.0.1"
@@ -196,6 +197,7 @@ conn3x plan
         id         = "127.0.0.1:2222:/etc/motd"
       ~ revision   = "2fe4bc255d3ad40a" -> (known after apply)
       ~ sha256     = "68f01b289aedcf28e96fce1f9444365e83b9bfc7e1bf32df20f1f15966835316" -> "06b6c9ebb3b33eb4f680ad4137d2e87d7e45b1cb116381b90b085d6ec0beb65d"
+      ~ validate   = (write-only attribute)
         # (3 unchanged attributes hidden)
 
         # (1 unchanged block hidden)

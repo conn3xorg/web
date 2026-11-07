@@ -9,7 +9,7 @@ In this tutorial you'll convert a short Ansible playbook into a circuit. The con
 
 ## Prerequisites
 
-- Conn3x v0.6.3 [installed](/install). You don't need Ansible.
+- Conn3x v0.7.1 [installed](/install). You don't need Ansible.
 - To apply the result: a Rocky Linux, RHEL, AlmaLinux or Fedora server with firewalld running, and a user with passwordless `sudo`, as in [Configure your first real server](/tutorials/first-server). You can convert and validate without one.
 
 ## The playbook
@@ -83,9 +83,8 @@ conn3x convert ansible -i hosts.ini -out web.circuit.hcl site.yml
 ```
 
 ```text
-Converted 4 tasks. 2 things need you; each is marked TODO(convert):
+Converted 5 tasks. 1 thing needs you; each is marked TODO(convert):
   line 35, Open the status port: uses when, which the converter can't translate yet
-  line 42, Show the port: uses the debug module, which has no Conn3x equivalent yet
 ```
 
 The command exits with code `3` while anything is marked TODO, and `0` once everything converts. The line numbers point into `site.yml`.
@@ -152,10 +151,7 @@ circuit "web" {
   #       state: enabled
   #     when: ansible_os_family == "RedHat"
 
-  # TODO(convert): Task "Show the port" (site.yml line 42) uses the debug module, which has no Conn3x equivalent yet.
-  #   - name: Show the port
-  #     ansible.builtin.debug:
-  #       msg: "Status page on port {{ status_port }}"
+  # Task "Show the port" (site.yml line 42): debug only prints, so it changes nothing on hosts and is left out. It printed a templated message; check whether anything still needs those values.
 
   handler "reload_nginx" {
     service {
@@ -186,11 +182,11 @@ conn3x validate
 Success! The configuration is valid.
 ```
 
-## Finish the TODOs
+## Finish the TODO
 
-Each TODO says why the converter stopped. Decide what the task should mean in Conn3x, then replace the comment.
+The TODO says why the converter stopped. Decide what the task should mean in Conn3x, then replace the comment.
 
-**Open the status port.** The `when` runs the task only on Red Hat family hosts. A Conn3x step runs on every host in the circuit, so the condition becomes a choice of which hosts the circuit covers. Every host in this inventory runs Rocky Linux, so the condition always holds, and the task becomes a plain [`firewalld`](/modules/firewalld) step. `permanent: true` and `state: enabled` need no counterpart: the `firewalld` module opens the port now and after reboots. Replace the first TODO with:
+**Open the status port.** The `when` runs the task only on Red Hat family hosts. A Conn3x step runs on every host in the circuit, so the condition becomes a choice of which hosts the circuit covers. Every host in this inventory runs Rocky Linux, so the condition always holds, and the task becomes a plain [`firewalld`](/modules/firewalld) step. `permanent: true` and `state: enabled` need no counterpart: the `firewalld` module opens the port now and after reboots. Replace the TODO with:
 
 ```hcl
   step "open_the_status_port" {
@@ -202,7 +198,7 @@ Each TODO says why the converter stopped. Decide what the task should mean in Co
 
 If you had Debian hosts in the same group, you'd move them to a second circuit that uses [`ufw`](/modules/ufw) instead.
 
-**Show the port.** A `debug` task prints a message during a run. Circuits configure hosts, and printing isn't a change to a host, so delete the second TODO. If you want the port in the output, add an [output value](https://opentofu.org/docs/language/values/outputs/).
+**Show the port.** No TODO here: the converter dropped it and said why. A `debug` task only prints, and printing changes nothing on a host. Its message isn't copied either, because a debug message can hold a secret. Want the port in the output? Add an [output value](https://opentofu.org/docs/language/values/outputs/). The comment is only a note, so keep it or delete it.
 
 The end of the circuit now reads:
 
@@ -219,6 +215,8 @@ The end of the circuit now reads:
       port = "8080/tcp"
     }
   }
+
+  # Task "Show the port" (site.yml line 42): debug only prints, so it changes nothing on hosts and is left out. It printed a templated message; check whether anything still needs those values.
 
   handler "reload_nginx" {
     service {
