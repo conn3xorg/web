@@ -63,7 +63,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [node_exporter](/circuits/node-exporter) | Runs Prometheus node_exporter at a pinned, checksummed version as its own system user. | v0.1.4 |
 | [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.1.2 |
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.0 |
-| [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.3 |
+| [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.4 |
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.2 |
 | [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.2.1 |
 | [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.1.5 |
@@ -82,7 +82,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Rancher](/circuits/rancher) | Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state. | v0.1.3 |
 | [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.2 |
 | [Nomad](/circuits/nomad) | A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state. | v0.1.2 |
-| [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.3 |
+| [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.4 |
 | [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.2 |
 | [Flux](/circuits/flux) | Flux CD on a k3s cluster at a pinned version, synced from a Git repository you name, with credentials kept out of state. | v0.1.2 |
 | [Dockge](/circuits/dockge) | Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine. | v0.1.0 |

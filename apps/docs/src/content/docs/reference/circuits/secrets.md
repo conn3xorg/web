@@ -37,6 +37,14 @@ circuit "db" {
 | --- | --- | --- |
 | [`file`](/modules/file) | `content_wo` | Use instead of `content`. The content goes to the host but not into the plan or state. |
 | [`template`](/modules/template) | `write_only = true` | The rendered template goes to the host as `content_wo`. Use it when `vars` hold secrets. |
+| [`windows_file`](/modules/windows_file) | `content_wo` | The same as `file`, for Windows hosts. |
+| [`windows_powershell`](/modules/windows_powershell) | `args_wo` | Arguments for the script that stay out of the plan and state. |
+| [`windows_registry_value`](/modules/windows_registry_value) | `data_wo` | Use instead of `data` for a secret value. |
+| [`windows_user`](/modules/windows_user) | `password_wo` | The account's password. |
+| [`windows_scheduled_task`](/modules/windows_scheduled_task) | `password_wo` | The password of the account the task runs as. |
+| [`windows_ad_forest`](/modules/windows_ad_forest) | `safe_mode_password_wo` | The Directory Services Restore Mode password. |
+
+The `windows_*` modules are [experimental](/reference/maturity), so their arguments may change between releases.
 
 `write_only` takes a literal `true` or `false`, not an expression, because Conn3x needs it before it evaluates anything.
 

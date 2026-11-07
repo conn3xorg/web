@@ -70,6 +70,7 @@ The other OpenTofu commands are there too and behave as OpenTofu documents them:
 
 | Variable | Description |
 | --- | --- |
+| `CONN3X_AGENT` | Whether hosts run commands through the Conn3x agent instead of one SSH session per command: `on`, `off` or `require`, which fails an apply rather than fall back to plain SSH. Defaults to `off`. A connection's own `agent` argument overrides it. The agent is [experimental](/reference/maturity). |
 | `CONN3X_HMAC_KEY` | The key for the HMACs that state keeps instead of write-only file content. It must be at least 32 bytes; `openssl rand -hex 32` makes one. Without it, Conn3x uses `~/.config/conn3x/hmac.key`, and creates that file the first time it writes a write-only secret. Every machine that runs against the same state needs the same key. See [Secrets in files](/concepts#secrets-in-files). |
 | `CONN3X_SSH_MAX_SESSIONS` | The most SSH sessions Conn3x opens at once on one connection to a host. Defaults to `8`, below OpenSSH's default `MaxSessions` of 10. Commands beyond it wait for a free session. If a server allows fewer, Conn3x finds that out on its own and opens fewer, so you only need this to go higher on a server that allows more. Accepts 1 to 1000. |
 | `XDG_CONFIG_HOME` | When set, the key file is `$XDG_CONFIG_HOME/conn3x/hmac.key` instead. |
