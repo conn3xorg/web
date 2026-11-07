@@ -1384,6 +1384,8 @@ module "homelab" {
 
 That `?ref=v0.1.0` is the pin. Never move a tag once someone uses it: fix things in `v0.1.1`, and say in the release notes what changed on the host. Your circuit pins its own members the same way, `circuit-uptimekuma?ref=v0.1.0`, and those pin their images by digest, so every layer is something somebody tested.
 
+Want to check yours against ours? We published this exact circuit as [conn3xorg/circuit-mini-homelab](https://github.com/conn3xorg/circuit-mini-homelab), with a CI workflow that applies `examples/local` on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, plans again, fetches both apps, restarts the host and checks them once more. Its [directory page](/circuits/mini-homelab) shows the grade that earns.
+
 To list it on [conn3x.org/circuits](https://conn3x.org/circuits), fill in the [Share a circuit](https://github.com/conn3xorg/web/issues/new?template=share-a-circuit.yml) form, or open a pull request with one JSON file. [Share a circuit](/guides/share-a-circuit#list-it) has both, and [Circuit grades](/reference/circuit-grades) shows how it'll be graded; most of the points come from running `examples/local` in CI.
 
 ## Next steps
