@@ -147,7 +147,7 @@ What stays the same with `"per_host"`:
 
 - On one host, steps still run one at a time, in the order written. A step with `for_each` finishes all of that host's items before the host's next step starts.
 - A dependency you write yourself keeps its whole-resource meaning. A step that reads `conn3x_command.web__token["web1"].stdout`, or has `depends_on = [conn3x_file.db__conf]`, still waits for that step on every host it names.
-- The `-parallelism` limit still caps how many operations run at once.
+- The `-parallelism` limit still caps how many operations run at once. When slots are scarce, a free one can go to a slow step on a host that hasn't started yet instead of the next step of a host that has, so `per_host` gains little. In a 12-host test, 11 hosts finished while the slowest was still busy at the default of 10, and none did at `-parallelism=4`. Set `-parallelism` close to the number of hosts to get the most from it.
 - Plans, state and resource addresses don't change, so you can switch strategy at any time. Plan, refresh and removal still go step by step across every host; only apply runs per host.
 
 Use lockstep when a step on one host needs an earlier step finished on every other host and no reference says so, such as a cluster join that expects every node to be installed first. Better still, make that dependency explicit with `depends_on`, and the circuit can run per host.
