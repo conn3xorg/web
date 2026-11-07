@@ -8066,6 +8066,134 @@
       }
     ]
   },
+  "mini-homelab": {
+    "name": "mini-homelab",
+    "repo": "conn3xorg/circuit-mini-homelab",
+    "tag": "v0.1.0",
+    "checkedAt": "2026-11-07T08:52:24.054Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-mini-homelab/actions/runs/42356974993",
+    "grade": "B",
+    "score": 89,
+    "passing": true,
+    "gateFailed": [],
+    "checks": [
+      {
+        "id": "ci-green",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "Run of 2026-11-07 passed."
+      },
+      {
+        "id": "matrix",
+        "max": 10,
+        "state": "pass",
+        "points": 10,
+        "detail": "4 in the matrix: debian13, fedora45, rocky10, ubuntu2404."
+      },
+      {
+        "id": "second-plan",
+        "max": 15,
+        "gate": true,
+        "state": "pass",
+        "points": 15,
+        "detail": "CI fails if a plan after apply shows changes."
+      },
+      {
+        "id": "behaviour",
+        "max": 20,
+        "gate": true,
+        "state": "pass",
+        "points": 20,
+        "detail": "Step \"Use both apps\" runs: title=${TITLE:-My homelab}"
+      },
+      {
+        "id": "secrets-in-state",
+        "max": 10,
+        "state": "na",
+        "points": 0,
+        "detail": "No sensitive or ephemeral inputs."
+      },
+      {
+        "id": "restart",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Runs no service."
+      },
+      {
+        "id": "upgrade",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No CI step upgrades an existing install."
+      },
+      {
+        "id": "real-host",
+        "max": 5,
+        "state": "fail",
+        "points": 0,
+        "detail": "No real-host workflow has passed. A README saying so doesn't count."
+      },
+      {
+        "id": "downloads",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Downloads nothing through a download step."
+      },
+      {
+        "id": "images-by-digest",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pulls no images."
+      },
+      {
+        "id": "repo-keys",
+        "max": 5,
+        "state": "na",
+        "points": 0,
+        "detail": "Pins no signing keys."
+      },
+      {
+        "id": "listen-address",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found no default or literal that listens on every address."
+      },
+      {
+        "id": "privileged-shell",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "Found none of the listed patterns."
+      },
+      {
+        "id": "signed-tags",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "GitHub verified the signature on v0.1.0."
+      },
+      {
+        "id": "branch-protection",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "A ruleset requires pull requests and passing checks."
+      },
+      {
+        "id": "fresh",
+        "max": 5,
+        "state": "pass",
+        "points": 5,
+        "detail": "v0.1.0 is 0 days old."
+      }
+    ]
+  },
   "monitoring": {
     "name": "monitoring",
     "repo": "conn3xorg/circuit-monitoring",

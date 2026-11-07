@@ -1,0 +1,19 @@
+{
+  "name": "mini-homelab",
+  "repo": "conn3xorg/circuit-mini-homelab",
+  "description": "Homepage and Uptime Kuma on one server, on loopback behind an SSH tunnel: the small circuit the private AI box tutorial builds.",
+  "version": "v0.1.1",
+  "tags": [
+    "homelab",
+    "dashboard",
+    "monitoring"
+  ],
+  "tested": [
+    "rocky10",
+    "fedora45",
+    "ubuntu2404",
+    "debian13"
+  ],
+  "category": "Platforms",
+  "official": true
+}
