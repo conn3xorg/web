@@ -360,11 +360,54 @@ These modules can import: `directory`, `file`, `group`, `link`, `package`, `serv
 
 A few details:
 
-- Each step lowers to an OpenTofu [`import` block](https://opentofu.org/docs/language/import/), so `import` works in the root configuration only, as in OpenTofu.
+- Each step lowers to an OpenTofu [`import` block](https://opentofu.org/docs/language/import/), so `import` works in the root configuration only, as in OpenTofu. For a circuit you call as a module, see [a step inside a module](#a-step-inside-a-module).
 - The import ID is JSON with the step's arguments and ssh settings, and the plan prints it once in an `imported from` line. It names your key and known_hosts files by path; it never holds a key, and never a file's content.
 - A write-only file (`content_wo`, or a template with `write_only = true`) is imported as an HMAC of what's on the host. The content stays out of state.
 - A `service` step that sets `state` or `enabled` takes both from the host, so a stopped unit plans `state = "stopped" -> "started"`.
 - To adopt exactly what's there and change nothing on the first apply, add `lifecycle { ignore_changes = all }`, then remove it.
+
+### A step inside a module
+
+:::note
+`provider::conn3x::import_id` is new after v0.8.0; earlier releases don't have it.
+:::
+
+A step's own `import` can't reach into a module, so to adopt what an official circuit, or any circuit you call through a `module` block, manages on a server you already run, write the `import` block in your root configuration and build its ID with `provider::conn3x::import_id`:
+
+```hcl
+terraform {
+  required_providers {
+    conn3x = { source = "terraform.io/builtin/conn3x" }
+  }
+}
+
+import {
+  for_each = local.hosts
+  to       = module.site.conn3x_file.site__motd[each.key]
+  id = provider::conn3x::import_id(each.key, merge(local.ssh, { host = each.value }), {
+    path = "/etc/motd"
+    mode = "0644"
+  })
+}
+```
+
+| Argument | What to pass |
+| --- | --- |
+| `key` | The host's key in the circuit's `hosts`, such as `web1`. |
+| `ssh` | The circuit's `ssh` settings as an object, with the host's address as `host`. |
+| `args` | The step's module arguments as the circuit sets them. `content`, `content_wo` and `validate` are left out of the ID; `content_wo` marks the file write-only. |
+
+`to` is the step's address in the module: `module.<name>.<resource type>.<circuit>__<step>[<host>]`, the same address `conn3x state list` shows once it's in state. The function returns the same ID a step's `import = true` would write, so the plan, the missing-object error and the write-only handling are all as above.
+
+OpenTofu looks up every provider function's provider in `required_providers`, so the module that calls `import_id` lists `conn3x`, even though it's built in. Without it, the plan fails with "Provider "conn3x" does not exist within the required_providers of this module".
+
+The ID is JSON, which `import_id` writes so you don't have to:
+
+```json
+{"args":{"mode":"0644","path":"/etc/motd"},"key":"web1","ssh":{"host":"203.0.113.10","user":"root"},"v":1}
+```
+
+`v` is the format's version, and `write_only` is `true` for a write-only file. Nulls are left out of `ssh` and `args`.
 
 [Adopt servers you already run](/guides/adopt-servers) walks through a whole server.
 
