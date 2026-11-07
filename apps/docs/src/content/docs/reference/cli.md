@@ -3,7 +3,7 @@ title: CLI overview
 description: How to run conn3x commands, the global options, the environment variables Conn3x reads, and its exit codes.
 ---
 
-The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.8.0.
+The `conn3x` binary has every command OpenTofu 1.13.2 has, and three of its own: [`drift`](/reference/cli/drift), [`convert ansible`](/reference/cli/convert-ansible) and [`generate step`](/reference/cli/generate-step). This section documents Conn3x v0.8.0.
 
 ## Usage
 
@@ -43,6 +43,7 @@ These are the commands most people use. Each has its own page.
 | [`destroy`](/reference/cli/destroy) | Remove everything the configuration manages. |
 | [`drift`](/reference/cli/drift) | Report what changed outside Conn3x since the last apply. Conn3x only. |
 | [`convert ansible`](/reference/cli/convert-ansible) | Turn an Ansible playbook into circuits. Conn3x only. |
+| [`generate step`](/reference/cli/generate-step) | Print a step for something a host already has. Conn3x only. |
 | [`show`](/reference/cli/show) | Show the state or a saved plan. |
 | [`state`](/reference/cli/state) | List, inspect, move and remove items in state. |
 | [`output`](/reference/cli/output) | Print output values. |
