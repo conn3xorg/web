@@ -4,7 +4,7 @@ description: Print a step for something a host already has, ready to adopt with 
 ---
 
 :::note
-`generate step` is new after v0.8.0; earlier releases don't have it.
+`generate step` is in Conn3x since v0.9.0. Earlier releases don't have it.
 :::
 
 `conn3x generate step` reads one object on a host and prints a step for it, with `import = true` at the top. Paste the step into a circuit and plan: the plan imports it with nothing to change. It doesn't need a circuit or a working directory, and it changes nothing on the host.

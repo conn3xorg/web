@@ -5,7 +5,7 @@ description: What a circuit is, which files circuits go in, and how Conn3x turns
 
 Conn3x configuration is OpenTofu configuration with one more block type, `circuit`. A circuit configures a group of hosts over SSH, Linux or, [in preview](/reference/maturity), Windows Server: it names the hosts, says how to log in to them, and lists the steps to apply to each one, in order.
 
-This section documents the circuit language in Conn3x v0.8.0. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
+This section documents the circuit language in Conn3x v0.9.0. Everything else in a configuration, such as variables, resources, modules, outputs and state, works as the [OpenTofu language documentation](https://opentofu.org/docs/language/) describes.
 
 ```hcl
 circuit "web" {
@@ -82,7 +82,7 @@ A circuit block takes one label, the circuit's name, and these arguments and blo
 | Name | Required | Description |
 | --- | --- | --- |
 | `hosts` | Yes | The hosts to configure. A map of host names to addresses or host objects, or a set of addresses. See [Hosts](/reference/circuits/hosts). |
-| `strategy` | No | `"lockstep"`, the default: each step waits for the step before it on every host. `"per_host"`: each host runs its own chain of steps. Arrives in the next release. See [Per host](/reference/circuits/steps#per-host). |
+| `strategy` | No | `"lockstep"`, the default: each step waits for the step before it on every host. `"per_host"`: each host runs its own chain of steps. Since v0.9.0. See [Per host](/reference/circuits/steps#per-host). |
 | `ssh` | Yes | Exactly one block. How to log in to every host. See [The ssh block](/reference/circuits/ssh). |
 | `step` | No | Any number of blocks. Each holds one module and runs on every host, in the order written. See [Steps](/reference/circuits/steps). |
 | `handler` | No | Any number of blocks. Each restarts or reloads a service on the hosts where a step that notifies it changed something. See [Handlers](/reference/circuits/handlers). |
