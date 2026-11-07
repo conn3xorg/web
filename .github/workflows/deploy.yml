@@ -8,9 +8,6 @@ on:
   # 14:15 UTC is 7:15 a.m. MST, 8:15 a.m. MDT.
   schedule:
     - cron: "15 14 * * *"
-    # Product Hunt launch, 00:01 PT on 6 Nov: shows the launch bar in
-    # SiteHeader.astro. Delete after launch.
-    - cron: "5 8 6 11 *"
 
 permissions:
   contents: read
