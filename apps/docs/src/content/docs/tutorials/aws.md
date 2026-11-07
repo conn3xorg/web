@@ -13,7 +13,7 @@ It creates two real instances. In `us-west-2`, each `t3.micro` costs $0.0104 an 
 
 ## Prerequisites
 
-- Conn3x v0.7.3 [installed](/install).
+- Conn3x v0.8.0 [installed](/install).
 - An AWS account and the [`aws` CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). You need to be able to create instances and security groups, and to read images and VPCs. We ran this with the `PowerUserAccess` policy.
 - A default VPC in `us-west-2`. If you've deleted it, `aws ec2 create-default-vpc --region us-west-2` brings it back.
 - An SSH key at `~/.ssh/id_ed25519`, with its public half at `~/.ssh/id_ed25519.pub`. Conn3x logs in with it.

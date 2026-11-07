@@ -33,6 +33,17 @@ const SHIPPED = [
       /what's next is what lives inside the domain/i,
     ],
   },
+  {
+    feature: "import and lifecycle on host steps (v0.8.0)",
+    stale: [
+      /`(?:import|lifecycle)` (?:on|in) a step is new on `main`/i,
+      /host steps (?:can't|cannot|can not) be imported/i,
+      /(?:can't|cannot|can not) `?import`? (?:the files and packages|what) a server already has/i,
+      /(?:a )?steps? (?:can't|cannot|can not) take a `?lifecycle`? block/i,
+      /no `?prevent_destroy`? and no precondition/i,
+      /no `?lifecycle`? (?:block )?on (?:host )?steps/i,
+    ],
+  },
 ];
 
 function files(dir) {
@@ -88,4 +99,14 @@ test("the check catches the old OU, group and user lines", () => {
 test("the check leaves a circuit that doesn't join a domain alone", () => {
   const ok = "It doesn't join an Active Directory domain or act as a domain controller.";
   assert.ok(!SHIPPED.some(({ stale }) => stale.some((re) => re.test(ok))));
+});
+
+test("the check catches the old import and lifecycle lines", () => {
+  const old = [
+    "`import` on a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with \"Unsupported argument in step\".",
+    "`lifecycle` in a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with \"Unsupported block in step\".",
+    "- Host steps can't be imported with `conn3x import` or `import` blocks.",
+    "Host steps don't yet: you can't `import` the files and packages a server already has, and a step can't take a `lifecycle` block, so there's no `prevent_destroy` and no precondition.",
+  ];
+  for (const line of old) assert.ok(SHIPPED.some(({ stale }) => stale.some((re) => re.test(line))), line);
 });

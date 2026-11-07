@@ -27,6 +27,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Language | YAML, with Jinja for templates and expressions | HCL, with `templatefile` syntax for templates |
 | Before a run | `--check --diff`, as far as each module supports check mode | `conn3x plan`, every time, and a saved plan with `-out` |
 | State | None, by design | A state file, which OpenTofu can encrypt |
+| Taking over a running server | Run the playbook against it; with no state, there's nothing to adopt | `import = true` on a step adopts what's there, and the first plan shows only the differences |
 | Spotting hand edits | Rerun with `--check --diff` and read the recap. It exits `0` when it finds changes | `conn3x drift`, which exits `2` |
 | Removing something | Delete the task and the host keeps it, unrecorded. Write a `state: absent` task to remove it | Delete the step and the plan shows it; `on_remove` decides what the host keeps |
 | Cloud resources | Cloud collections such as `amazon.aws`, `azure.azcollection` and `google.cloud` | Any OpenTofu provider, in the same plan as the servers |
@@ -35,7 +36,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | Three experimental circuits, through community OpenTofu providers |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
-| Maturity | In production use for more than a decade | Before 1.0, at v0.7.3 |
+| Maturity | In production use for more than a decade | Before 1.0, at v0.8.0 |
 
 ## The same playbook, both ways
 
@@ -91,7 +92,7 @@ You don't have to rewrite anything to see what this looks like as a circuit:
 conn3x convert ansible -i hosts.ini -out web.circuit.hcl site.yml
 ```
 
-This is the converter's real answer, from Conn3x v0.7.3:
+This is the converter's real answer, from Conn3x v0.8.0:
 
 ```text
 Converted 2 tasks. 1 thing needs you; each is marked TODO(convert):
@@ -231,7 +232,7 @@ There are plenty of jobs where Ansible is the right tool, and we'd rather say so
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
 - A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x has none of that; you run it from CI.
 - Team familiarity. Ansible is widely known, widely taught and well documented. A team that's fluent in it gives up real speed by switching.
-- Maturity. Conn3x is at v0.7.3. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
+- Maturity. Conn3x is at v0.8.0. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
 You don't have to choose for every server at once. Converting one playbook and running Conn3x for that group, while Ansible keeps the rest, is a fair way to find out.
 
@@ -255,6 +256,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 - Network devices are limited to three experimental circuits, with no device CLI connection.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command, no web UI and no built-in credential store.
+- Adopting a running server works for eight Linux modules: `file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group`. The rest, and Windows hosts, can't import yet.
 
 The [roadmap](/roadmap) has the order we're building things in.
 
