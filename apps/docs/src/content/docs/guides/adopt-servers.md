@@ -162,3 +162,5 @@ A file whose content is a secret goes in `content_wo`, or a [template](/modules/
 Each of these modules defaults to `on_remove = "forget"`, so removing an adopted step later leaves the object on the host. See [Removal](/reference/circuits/removal).
 
 `import` works in your root configuration. A [shared circuit](/guides/share-a-circuit) called as a module can't adopt for you yet.
+
+Adopt hosts that already exist, not ones the same apply creates. Conn3x builds the import from the step's arguments and its `ssh` settings when it plans, so every one of them has to be known then. If a step points at a server that this plan is still going to create, its address is only known after apply, and the plan stops with an error about an import ID that isn't known yet. Adopt first, against servers that are already running, and add new servers in a later apply.
