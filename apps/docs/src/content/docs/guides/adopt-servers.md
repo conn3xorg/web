@@ -4,7 +4,7 @@ description: "Bring a server that was set up by hand, or by another tool, under 
 ---
 
 :::note
-`import` on a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with "Unsupported argument in step".
+Steps take `import` since v0.8.0. Earlier releases reject it with "Unsupported argument in step".
 :::
 
 You've got a box that's been running for two years. nginx is on it, there's a `deploy` user, and someone wrote a motd once. You'd like Conn3x to manage it from now on, but you don't want the first apply to treat a working server like an empty one.

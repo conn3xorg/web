@@ -116,7 +116,7 @@ const sections = [
       {
         id: "existing-servers",
         q: "Can it configure servers it didn't create?",
-        a: `<p>Yes. A circuit's <code>hosts</code> can be plain addresses, such as <code>{ web1 = "203.0.113.10" }</code>, so you can point Conn3x at servers you already run. <a href="${docs}/tutorials/first-server">Configure your first real server</a> starts that way.</p>`,
+        a: `<p>Yes. A circuit's <code>hosts</code> can be plain addresses, such as <code>{ web1 = "203.0.113.10" }</code>, so you can point Conn3x at servers you already run. <a href="${docs}/tutorials/first-server">Configure your first real server</a> starts that way. If a server already has what your circuit describes, put <code>import = true</code> on those steps and the first plan adopts it instead of setting it up again. <a href="${docs}/guides/adopt-servers">Adopt servers you already run</a> shows how.</p>`,
       },
       {
         id: "secrets",

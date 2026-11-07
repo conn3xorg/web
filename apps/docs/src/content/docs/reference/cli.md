@@ -3,7 +3,7 @@ title: CLI overview
 description: How to run conn3x commands, the global options, the environment variables Conn3x reads, and its exit codes.
 ---
 
-The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.7.3.
+The `conn3x` binary has every command OpenTofu 1.13.2 has, and two of its own: [`drift`](/reference/cli/drift) and [`convert ansible`](/reference/cli/convert-ansible). This section documents Conn3x v0.8.0.
 
 ## Usage
 
@@ -60,7 +60,7 @@ The other OpenTofu commands are there too and behave as OpenTofu documents them:
 - `init` warns when state isn't encrypted. See [init](/reference/cli/init).
 - `plan`, `apply`, `destroy`, `refresh` and `drift` connect to your hosts over SSH to read host steps. See [plan](/reference/cli/plan).
 - `fmt` formats `.circuit.hcl` files too. See [fmt](/reference/cli/fmt).
-- Host steps can't be imported with `conn3x import` or `import` blocks.
+- To adopt what a host already has, put `import` on the step. See [Adopt servers you already run](/guides/adopt-servers). `conn3x import` and hand-written `import` blocks need an import ID for a host step, and that format isn't documented yet.
 - `version` prints the Conn3x version and the OpenTofu release it's built on. With `-json`, it adds `conn3x_version` and `agent` to OpenTofu's fields. See [version](/reference/cli/version).
 - In `-json` output, the version message that starts the stream names the Conn3x release, and carries a `conn3x` field beside the `tofu` one.
 
