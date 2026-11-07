@@ -115,4 +115,122 @@ The command exits 3 while anything is left, so you can keep running it in CI unt
 
 Your servers already look the way the playbook left them. To take them over without Conn3x setting everything up again, add `import = true` to the steps: see [Adopt servers you already run](/guides/adopt-servers).
 
+## Convert a role
+
+Coming in the next release: `-role`. Point it at a role's directory, and `-out` at a new one, and you get a circuit laid out like the ones in [the catalogue](/circuits), ready to call as a module.
+
+```sh
+conn3x convert ansible -role roles/app -out circuit-app
+```
+
+```text
+Converted all 7 tasks.
+```
+
+Here's the role going in, and what comes out:
+
+```text
+roles/app/                  circuit-app/
+  defaults/main.yml           main.circuit.hcl
+  vars/main.yml               variables.tf
+  tasks/main.yml              outputs.tf
+  tasks/install.yml           README.md
+  handlers/main.yml           files/app.service
+  templates/app.conf.j2       templates/app.conf.tftpl
+  files/app.service
+  meta/main.yml
+```
+
+- `tasks/main.yml` becomes the steps, with any `import_tasks` read in where it sits. `handlers/main.yml` becomes the handlers.
+- Each default in `defaults/main.yml` becomes a variable with that default, so you set it where you call the circuit, as a play would.
+- `vars/main.yml` is filled in where it's used. In Ansible a role's vars beat anything the play sets, so the circuit doesn't let a caller change them either.
+- A template that only prints variables with `{{ name }}` becomes a `.tftpl` file and a [template](/modules/template) step. The files your tasks copy come along into `files/`.
+- `variables.tf` starts with the `hosts` and `ssh_` variables every circuit in the catalogue takes, so you call this one the same way.
+
+This default and task:
+
+```yaml
+# defaults/main.yml
+app_user: app
+
+# tasks/main.yml
+- name: App config
+  ansible.builtin.template:
+    src: app.conf.j2
+    dest: "{{ app_dir }}/app.conf"
+    owner: "{{ app_user }}"
+    mode: "0640"
+  notify: Restart app
+```
+
+come out as:
+
+```hcl
+variable "app_user" {
+  type        = string
+  default     = "app"
+  description = "From the role's defaults/main.yml."
+}
+
+step "app_config" {
+  template {
+    source      = "${path.module}/templates/app.conf.tftpl"
+    destination = "/opt/app/app.conf"
+    vars = {
+      app_dir      = "/opt/app"
+      app_greeting = var.app_greeting
+      app_port     = var.app_port
+      app_user     = var.app_user
+    }
+    mode  = "0640"
+    owner = var.app_user
+  }
+  notify = [handler.restart_app]
+}
+```
+
+`app_dir` came from `vars/main.yml`, so it's written in. The template's `{{ app_port }}` is now `${app_port}`, and a `${` that was already in it is escaped, so it still prints as written.
+
+Then call it like any other circuit:
+
+```hcl
+module "app" {
+  source = "./circuit-app"
+
+  hosts = {
+    web1 = "203.0.113.10"
+  }
+
+  ssh_private_key_file = "~/.ssh/id_ed25519"
+  app_greeting         = "Hello from Conn3x"
+}
+```
+
+### Roles from Ansible Galaxy
+
+The converter never downloads anything. Install the role with `ansible-galaxy`, which already handles versions, private servers and collection signatures, then convert the copy on your disk:
+
+```sh
+ansible-galaxy role install <namespace>.<role> -p roles
+conn3x convert ansible -role roles/<namespace>.<role> -out circuit-<role>
+```
+
+The circuit takes the name after the dot. For a role inside a collection, point `-role` at `ansible_collections/<namespace>/<collection>/roles/<role>` wherever `ansible-galaxy collection install` put it.
+
+`-out` has to be a new or empty directory, so converting again never writes over a circuit you've started editing.
+
+### What a role leaves for you
+
+Everything a playbook leaves, plus:
+
+- **A default where its value needs checking first,** such as a path or a mode. In a playbook the converter can check the value it sees; in a role, whoever calls the circuit can set anything. So a default stays a variable only where Conn3x uses it exactly as Ansible does: content, a `line` or `block`, a package, service, user or group name, an `owner` or `group`.
+- **Defaults that are true or false, lists, maps or Jinja.** Jinja prints `true` as `True`, and HCL prints it as `true`, so the two would disagree. These stay out of `variables.tf`, with a comment saying why.
+- **`include_tasks`,** which Ansible reads only when the play gets there. If it names one file and has no `loop` or `when`, change it to `import_tasks` and convert again. An `import_tasks` with its own `when` or `vars` stays too, since those apply to every task it brings in.
+- **`include_role`, `import_role` and dependencies in `meta/main.yml`.** Convert each role on its own and call the circuits side by side, with `depends_on`.
+- **`become` on a task.** In a circuit the `ssh` block decides that for every step: log in as root, or set `ssh_become`.
+- **Templates with `{% %}`, `{# #}` or filters.** Rewrite those in `templatefile` syntax.
+- **`argument_specs`.** Its checks don't carry over to variable types yet.
+
+The exit codes are the same: 3 while anything is left.
+
 Still deciding? [Conn3x vs Ansible](/compare/ansible) runs the same playbook both ways, and says where Ansible is the better choice.
