@@ -135,4 +135,4 @@ It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet
 
 - Repository: [conn3xorg/circuit-users](https://github.com/conn3xorg/circuit-users). This page covers [v0.1.4](https://github.com/conn3xorg/circuit-users/tree/v0.1.4); the repository's [tags](https://github.com/conn3xorg/circuit-users/tags) list every release.
 - Examples: [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.4/examples/local).
-- Related circuits: [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
+- Related circuits: [Active Directory](/circuits/active-directory), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
