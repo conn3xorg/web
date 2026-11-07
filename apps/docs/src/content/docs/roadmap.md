@@ -1,6 +1,6 @@
 ---
 title: Roadmap
-description: What Conn3x does today, what we're building now and what comes after. Windows Server in preview today and the rest of Active Directory now, then more circuits, then network devices. No dates.
+description: "What Conn3x does today, what we're building now and what comes after: Windows at scale, network devices over their own CLI, Ansible roles and Galaxy, ad-hoc commands, then a web UI. No dates."
 ---
 
 Conn3x closes the gap between creating infrastructure and configuring it: one plan, one state and one apply for the cloud and the servers in it. Today it does that for Linux, and for Windows Server in preview.
@@ -22,17 +22,29 @@ This page says what's planned and in what order. None of it has a date, and noth
 
 You can build a small domain now. [windows_ad_forest](/modules/windows_ad_forest) makes a new forest, [windows_dns_client](/modules/windows_dns_client) points a server's DNS at it, and since v0.7.2 [windows_domain_membership](/modules/windows_domain_membership) joins a server to the domain and [windows_ad_domain_controller](/modules/windows_ad_domain_controller) promotes a member to another domain controller. The [azure-domain](https://github.com/conn3xorg/conn3x/tree/main/examples/azure-domain) example builds a forest on one Windows Server 2025 VM and joins a second to it, from one config, and we've promoted that second one to a domain controller on Azure too. Every one of these modules is experimental. Promoting a domain controller straight from a workgroup server, child domains and the `ou` argument on a join haven't been tested yet.
 
-What's next is what lives inside the domain: organizational units, groups and users. Then the test we're aiming at, a whole Active Directory lab, with domain controllers, member servers and the objects in them, built and configured from one config.
+What's next is what lives inside the domain: organizational units, groups and users. Then the test we're aiming at, a whole Active Directory lab, with domain controllers, member servers and the objects in them, built and configured from one config. After the lab, the work is Windows at scale: many hosts in one apply, and the modules moving from experimental to preview.
 
-## Next: another round of circuits
+## Next: network devices over their own CLI
 
-New circuits pause while Windows gets built. Requests still count: the last batch came from lists people sent us, so keep them coming and they'll go into this round.
+Switches, routers and firewalls, configured in the same plan as the hosts behind them.
 
-## After that: network devices
+The first three are out, and they work through community OpenTofu providers rather than Conn3x's own connection: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network). They're [experimental](/reference/maturity): each was tested on a virtual image, not hardware, and its page names the image and the provider. Next is talking to devices over their own CLI, starting with Arista EOS.
 
-Switches, routers and firewalls, configured over their own management interfaces, in the same plan as the hosts behind them.
+## After that: Ansible roles and Galaxy
 
-The first three are out, and they work through community OpenTofu providers rather than Conn3x's own connection: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network). They're [experimental](/reference/maturity): each was tested on a virtual image, not hardware, and its page names the image and the provider. Talking to devices over their own CLI is planned next.
+`conn3x convert ansible` handles tasks and plays today, not roles. This is where that changes: convert a role, or one you pull from Ansible Galaxy, into a circuit, with the same rule as now. What the converter can prove, it rewrites. Everything else it marks with the reason.
+
+## Then: ad-hoc commands
+
+Sometimes you just want to run one thing on every web server and see what comes back, without writing a circuit first. A `conn3x` command for that, over the same SSH connections and host keys a plan uses.
+
+## Then: a web UI
+
+A self-hosted, open-source web app for teams: run plans and applies from a browser, see each run's output and history, approve a plan before it applies, schedule drift checks, and keep credentials and access per project. Think [Semaphore UI](https://github.com/semaphoreui/semaphore) or AWX, built for one plan that covers the cloud and the servers in it.
+
+## Alongside: more circuits
+
+New circuit rounds wait while the work above gets built, unless people ask. Requests still count: the last batch came from lists people sent us, so keep them coming.
 
 ## Later
 
@@ -44,4 +56,4 @@ The Circuit Builder as an app: desktop apps for Windows and macOS, and phone app
 
 ## Help shape it
 
-Open work is in [GitHub issues](https://github.com/conn3xorg/conn3x/issues), and every circuit repository has [good first issues](https://github.com/search?q=org%3Aconn3xorg+label%3A%22good+first+issue%22+state%3Aopen&type=issues) if you'd like somewhere to start. The order on this page moves when people tell us what they need. If Windows, network devices or a circuit you're missing matter to you, say so in [Discussions](https://github.com/conn3xorg/conn3x/discussions). See [Get involved](/contribute) for other ways to help.
+Open work is in [GitHub issues](https://github.com/conn3xorg/conn3x/issues), and every circuit repository has [good first issues](https://github.com/search?q=org%3Aconn3xorg+label%3A%22good+first+issue%22+state%3Aopen&type=issues) if you'd like somewhere to start. The order on this page moves when people tell us what they need. If Windows, network devices, roles, the web UI or a circuit you're missing matter to you, say so in [Discussions](https://github.com/conn3xorg/conn3x/discussions). See [Get involved](/contribute) for other ways to help.
