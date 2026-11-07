@@ -265,7 +265,7 @@ A handler notified by a step with `for_each` runs on a host when any of that hos
 ## import
 
 :::note
-`import` on a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with "Unsupported argument in step".
+Steps take `import` since v0.8.0. Earlier releases reject it with "Unsupported argument in step".
 :::
 
 `import` adopts what's already on a host into state, so Conn3x manages it from then on without creating it first:
@@ -320,7 +320,7 @@ A few details:
 ## lifecycle
 
 :::note
-`lifecycle` in a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with "Unsupported block in step".
+Steps take a `lifecycle` block since v0.8.0. Earlier releases reject it with "Unsupported block in step".
 :::
 
 A step's `lifecycle` block works like [OpenTofu's](https://opentofu.org/docs/language/meta-arguments/lifecycle/), with the same arguments, checks and messages, because Conn3x hands it to OpenTofu's own decoder. It sits beside the module block:

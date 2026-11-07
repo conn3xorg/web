@@ -27,6 +27,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Language | YAML, with Jinja for templates and expressions | HCL, with `templatefile` syntax for templates |
 | Before a run | `--check --diff`, as far as each module supports check mode | `conn3x plan`, every time, and a saved plan with `-out` |
 | State | None, by design | A state file, which OpenTofu can encrypt |
+| Taking over a running server | Run the playbook against it; with no state, there's nothing to adopt | `import = true` on a step adopts what's there, and the first plan shows only the differences |
 | Spotting hand edits | Rerun with `--check --diff` and read the recap. It exits `0` when it finds changes | `conn3x drift`, which exits `2` |
 | Removing something | Delete the task and the host keeps it, unrecorded. Write a `state: absent` task to remove it | Delete the step and the plan shows it; `on_remove` decides what the host keeps |
 | Cloud resources | Cloud collections such as `amazon.aws`, `azure.azcollection` and `google.cloud` | Any OpenTofu provider, in the same plan as the servers |
@@ -255,6 +256,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 - Network devices are limited to three experimental circuits, with no device CLI connection.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command, no web UI and no built-in credential store.
+- Adopting a running server works for eight Linux modules: `file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group`. The rest, and Windows hosts, can't import yet.
 
 The [roadmap](/roadmap) has the order we're building things in.
 

@@ -29,6 +29,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | Getting addresses to the config tool | An output, a generated inventory, or a dynamic inventory plugin | A reference, such as `aws_instance.web.public_ip` |
 | Preview before changes | `tofu plan`, then `ansible-playbook --check --diff`, separately | One `conn3x plan` for the cloud and the servers |
 | State | Terraform state for the cloud; Ansible keeps none by design | One state for both |
+| Taking over what's already running | `import` blocks for the cloud; Ansible keeps no state, so a playbook just runs against the server | `import` and `lifecycle` on cloud resources and on host steps alike |
 | Spotting hand edits | `tofu plan` for the cloud, `--check --diff` for the servers | `conn3x drift`, which exits `2` when either has moved |
 | Ad-hoc commands | `ansible all -a "uptime"` | None. Conn3x only runs what a circuit describes |
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
@@ -439,6 +440,7 @@ None of that has to be all or nothing. Because Conn3x runs your existing configu
 - Network devices are limited to the three experimental circuits, and there's no device CLI connection.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command and no web UI. There are no inventory plugins either: `hosts` is an expression, so you build it from resources or data sources instead.
+- Adopting a running server works for eight Linux modules: `file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group`. The other modules, Windows hosts and a shared circuit called as a module can't import yet, and nothing writes the step for you the way `-generate-config-out` writes a resource.
 - Jinja templates don't carry over. You rewrite them in `templatefile` syntax for a [template](/modules/template) step.
 - Ansible roles, `include_tasks` and `import_tasks` aren't converted by `conn3x convert ansible`. It marks them `TODO(convert)` and you add their tasks as steps.
 
