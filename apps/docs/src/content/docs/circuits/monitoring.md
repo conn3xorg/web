@@ -3,7 +3,7 @@ title: Monitoring stack
 description: "Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-monitoring at v0.2.3. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-monitoring at v0.2.4. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/monitoring/grade.svg)](https://conn3x.org/circuits/monitoring/grade)
 
@@ -31,7 +31,7 @@ module "node_exporter" {
 }
 
 module "monitoring" {
-  source = "github.com/conn3xorg/circuit-monitoring?ref=v0.2.3"
+  source = "github.com/conn3xorg/circuit-monitoring?ref=v0.2.4"
 
   hosts                  = { monitor = "192.168.1.10" }
   grafana_admin_password = var.grafana_admin_password
@@ -56,7 +56,7 @@ Pass the password at run time, with `-var grafana_admin_password=...` or `TF_VAR
 
 Then run `conn3x init` and `conn3x apply`, and sign in to Grafana as `admin`. A second `conn3x plan` says `No changes.` For host metrics, import the [Node Exporter Full](https://grafana.com/grafana/dashboards/1860) dashboard, ID 1860.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.3/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.4/examples/local).
 
 ## What it does
 
@@ -96,10 +96,12 @@ The circuit doesn't open firewall ports. Grafana stays on loopback unless you se
 | `prometheus_port` | number | `9090` | Host port Prometheus is published on. |
 | `grafana_listen` | string | `"127.0.0.1"` | Address Grafana's port 3000 is published on. |
 | `cadvisor` | bool | `true` | Run cAdvisor too. |
-| `prometheus_digest`, `grafana_digest`, `cadvisor_digest` | string | The digests of the default tags | Digest of each image. Set it whenever you change that image's version. |
 | `prometheus_version` | string | `"v3.15.0"` | Tag of the `prom/prometheus` image. |
 | `grafana_version` | string | `"13.2.4"` | Tag of the `grafana/grafana` image. |
 | `cadvisor_version` | string | `"v0.60.6"` | Tag of the `ghcr.io/google/cadvisor` image. |
+| `prometheus_digest` | string | `"sha256:efd719c9..."` | Digest of the image for `prometheus_version`. Change it with the version. |
+| `grafana_digest` | string | `"sha256:dbbc38ea..."` | Digest of the image for `grafana_version`. Change it with the version. |
+| `cadvisor_digest` | string | `"sha256:b8e7d109..."` | Digest of the image for `cadvisor_version`. Change it with the version. |
 | `ssh_user` | string | `"root"` | User to log in as. |
 | `ssh_port` | number | `22` | SSH port. |
 | `ssh_private_key_file` | string | `null` | Path to a private key. When null, Conn3x uses the SSH agent. |
@@ -118,16 +120,16 @@ Requires Conn3x v0.6.4 or later, and Docker Engine with the Compose plugin v2.23
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.3/examples/local), which installs Docker and node_exporter too, to each on amd64, checks that the second plan has no changes, and checks that all three services are running. It then logs in to Grafana with the configured password, reads node_exporter's `up` through Grafana's Prometheus data source, checks the password isn't in state, and does the same after restarting Docker.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.4/examples/local), which installs Docker and node_exporter too, to each on amd64, checks that the second plan has no changes, and checks that all three services are running. It then logs in to Grafana with the configured password, reads node_exporter's `up` through Grafana's Prometheus data source, checks the password isn't in state, and does the same after restarting Docker.
 
 It was also applied by hand, with circuit-docker, circuit-node-exporter, circuit-firewall and three other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. That run found two problems, both fixed: Cockpit held port 9090 on Rocky Linux, hence `prometheus_port`, and a changed compose file only came up on the second apply. On both hosts Prometheus reported its own target, cAdvisor and node_exporter on the Docker bridge as up, Grafana answered on port 3000, moving Prometheus to another port took effect in a single apply, and after a reboot the stack came back with no plan changes and no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-monitoring/blob/v0.2.3/LICENSE). Prometheus, Grafana and cAdvisor carry their own licenses: Apache-2.0, AGPL-3.0 and Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-monitoring/blob/v0.2.4/LICENSE). Prometheus, Grafana and cAdvisor carry their own licenses: Apache-2.0, AGPL-3.0 and Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-monitoring](https://github.com/conn3xorg/circuit-monitoring). This page covers [v0.2.3](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.3); the repository's [tags](https://github.com/conn3xorg/circuit-monitoring/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.3/examples/local).
+- Repository: [conn3xorg/circuit-monitoring](https://github.com/conn3xorg/circuit-monitoring). This page covers [v0.2.4](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.4); the repository's [tags](https://github.com/conn3xorg/circuit-monitoring/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-monitoring/tree/v0.2.4/examples/local).
 - Related circuits: [Docker](/circuits/docker), [node_exporter](/circuits/node-exporter), [Prometheus](/circuits/prometheus), [Grafana](/circuits/grafana), [Netdata](/circuits/netdata), [OpenTelemetry Collector](/circuits/otelcol), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios), [Uptime Kuma](/circuits/uptimekuma).
