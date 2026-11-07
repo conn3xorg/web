@@ -145,7 +145,7 @@ Because steps are resources, everything that works with resources works with the
 
 - [Hosts](/reference/circuits/hosts): the `hosts` argument, host objects and instance keys.
 - [The ssh block](/reference/circuits/ssh): every connection setting, jump hosts, host keys and sudo.
-- [Steps](/reference/circuits/steps): ordering, dependencies and `for_each`.
+- [Steps](/reference/circuits/steps): ordering, dependencies, `for_each` and `lifecycle`.
 - [Handlers](/reference/circuits/handlers): `notify`, when handlers run, and the `revision` attribute.
 - [Removal](/reference/circuits/removal): what `on_remove` does for each module.
 - [Secrets](/reference/circuits/secrets): write-only content and ephemeral variables.

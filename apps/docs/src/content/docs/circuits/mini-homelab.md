@@ -3,7 +3,7 @@ title: Mini homelab
 description: "Homepage and Uptime Kuma on one server, on loopback behind an SSH tunnel: the small circuit the private AI box tutorial builds."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mini-homelab at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-mini-homelab at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/mini-homelab/grade.svg)](https://conn3x.org/circuits/mini-homelab/grade)
 
@@ -17,7 +17,7 @@ It's a cut-down version of [circuit-lempa-homelab](/circuits/lempa-homelab), whi
 
 ```hcl
 module "homelab" {
-  source = "github.com/conn3xorg/circuit-mini-homelab?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-mini-homelab?ref=v0.1.1"
 
   hosts                = { lab = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -38,7 +38,7 @@ Go to `http://localhost:3001` first. Uptime Kuma has no account until someone op
 
 Log in to the server and `/etc/motd` tells you the same thing, in case you forget which port was which.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.1/examples/local).
 
 ## What it does
 
@@ -82,7 +82,7 @@ Requires Conn3x v0.7.0 or later and systemd on the host, which needs to reach it
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, in CI on amd64, in containers from Conn3x's test images, with the latest Conn3x release. Each run applies [examples/local](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.0/examples/local), and the second plan is clean. Then [`check.sh`](https://github.com/conn3xorg/circuit-mini-homelab/blob/v0.1.0/examples/local/check.sh) fetches both apps from the host, the way your tunnel would: Homepage's page with its title, both groups and their tiles from its API, and its own check on Uptime Kuma coming back 200; Uptime Kuma's dashboard and its socket.io; and the lines in `/etc/motd`. The host container restarts, which boots systemd again, and the check passes and the plan is clean.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, in CI on amd64, in containers from Conn3x's test images, with the latest Conn3x release. Each run applies [examples/local](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.1/examples/local), and the second plan is clean. Then [`check.sh`](https://github.com/conn3xorg/circuit-mini-homelab/blob/v0.1.1/examples/local/check.sh) fetches both apps from the host, the way your tunnel would: Homepage's page with its title, both groups and their tiles from its API, and its own check on Uptime Kuma coming back 200; Uptime Kuma's dashboard and its socket.io; and the lines in `/etc/motd`. The host container restarts, which boots systemd again, and the check passes and the plan is clean.
 
 By hand, Rocky Linux 10 on arm64, in the same container on a Mac under rootful Podman, with Conn3x v0.7.2: 22 resources, the same check before and after a restart, and a clean plan each time.
 
@@ -90,10 +90,10 @@ This is the first release, so there's no upgrade to test yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mini-homelab/blob/v0.1.0/LICENSE). Homepage is GPL-3.0 and Uptime Kuma is MIT; the member circuits' READMEs say more.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-mini-homelab/blob/v0.1.1/LICENSE). Homepage is GPL-3.0 and Uptime Kuma is MIT; the member circuits' READMEs say more.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-mini-homelab](https://github.com/conn3xorg/circuit-mini-homelab). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-mini-homelab/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-mini-homelab](https://github.com/conn3xorg/circuit-mini-homelab). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-mini-homelab/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-mini-homelab/tree/v0.1.1/examples/local).
 - Related circuits: [Lempa homelab](/circuits/lempa-homelab), [Uptime Kuma](/circuits/uptimekuma), [Homepage](/circuits/homepage), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra).
