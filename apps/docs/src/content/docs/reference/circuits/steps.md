@@ -65,7 +65,7 @@ Each has its own page under [Modules](/modules/file), with its arguments and the
 
 ## Order
 
-Steps run in the order they are written. Each step depends on the whole step before it, so a step starts on a host only after the step before it has finished on every host.
+Steps run in the order they are written. By default each step depends on the whole step before it, so a step starts on a host only after the step before it has finished on every host. A circuit can [chain its steps per host](#per-host) instead.
 
 Within one step, Conn3x works on several hosts at once, up to the `-parallelism` limit of `plan` and `apply`, which defaults to 10.
 
@@ -100,6 +100,57 @@ circuit "web" {
 ```
 
 There is no order between circuits. Two circuits in the same configuration run independently unless one refers to the other or uses `depends_on`.
+
+### Per host
+
+:::note
+`strategy` arrives in the next release. The current release rejects it with "Unsupported argument".
+:::
+
+In lockstep, the slowest host sets the pace. If `web5` takes three minutes over a package that `web1` installs in thirty seconds, `web1` waits out the difference at that step, and again at the next slow one. Set `strategy = "per_host"` on the circuit and each host runs its own chain: `web1` moves on to its next step as soon as its own previous step is done.
+
+```hcl
+circuit "web" {
+  hosts    = local.web_servers
+  strategy = "per_host"
+
+  ssh {
+    user   = "deploy"
+    become = true
+  }
+
+  step "nginx" {
+    package {
+      name = "nginx"
+    }
+  }
+
+  # Starts on each host once nginx is installed on that host.
+  step "running" {
+    service {
+      name    = "nginx"
+      state   = "started"
+      enabled = true
+    }
+  }
+}
+```
+
+| `strategy` | A step starts on a host when | A step fails on one host |
+| --- | --- | --- |
+| `"lockstep"` (default) | the step before it has finished on every host | no host starts the next step |
+| `"per_host"` | the step before it has finished on that host | that host's later steps and handlers don't run; the other hosts carry on to the end |
+
+Either way, an apply with a failed step exits with an error, and the next apply picks up where each host stopped. `strategy` must be a literal string.
+
+What stays the same with `"per_host"`:
+
+- On one host, steps still run one at a time, in the order written. A step with `for_each` finishes all of that host's items before the host's next step starts.
+- A dependency you write yourself keeps its whole-resource meaning. A step that reads `conn3x_command.web__token["web1"].stdout`, or has `depends_on = [conn3x_file.db__conf]`, still waits for that step on every host it names.
+- The `-parallelism` limit still caps how many operations run at once.
+- Plans, state and resource addresses don't change, so you can switch strategy at any time. Plan, refresh and removal still go step by step across every host; only apply runs per host.
+
+Use lockstep when a step on one host needs an earlier step finished on every other host and no reference says so, such as a cluster join that expects every node to be installed first. Better still, make that dependency explicit with `depends_on`, and the circuit can run per host.
 
 ## Dependencies
 

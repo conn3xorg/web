@@ -111,7 +111,7 @@ circuit "web" {
 A handler runs on a host when, during this apply, a step that notifies it changed something on that host:
 
 - It runs only on the hosts that changed. If a notifying step changed `web1` but not `web2`, the handler runs on `web1` only.
-- It runs after every step in the circuit has finished on every host, not straight after the step that notified it.
+- It runs after every step in the circuit has finished on every host, not straight after the step that notified it. In a circuit with [`strategy = "per_host"`](/reference/circuits/steps#per-host), it runs on a host once every step has finished on that host, so a slow host doesn't hold up the restarts on the others. That setting arrives in the next release.
 - It runs at most once on each host in an apply, however many of its steps changed.
 - Putting back a change someone made by hand counts. If someone edits a file and the apply writes it back, the handler runs, even though the file now matches the previous apply.
 - For a step with `for_each`, it runs on a host when any of that host's items changed.
@@ -119,6 +119,8 @@ A handler runs on a host when, during this apply, a step that notifies it change
 A handler also runs on a host the first time Conn3x applies it there: when the circuit is first applied, when a host is added to `hosts`, and when a handler that nothing notified before gets its first `notify`. Changing which steps notify a handler runs it on the next apply too.
 
 A plan shows a handler that will run as a `conn3x_service_action` instance to be replaced. Changing only a handler's `name` or `action` updates the recorded settings and doesn't run it.
+
+If a step fails on a host, the handler doesn't run on that host in this apply, so a service isn't restarted onto a half-applied change. In lockstep it doesn't run on any host, because it waits for the last step on every host. With `"per_host"`, it still runs on the hosts that finished.
 
 Handlers in the same circuit have no order among themselves. A handler doesn't run when you remove it, and removing a handler changes nothing on the host. Refresh doesn't read anything for a handler, so a handler never shows drift.
 
@@ -145,7 +147,7 @@ Serial handlers on the same unit wait for each other across every circuit in the
 
 A handler `NAME` in circuit `CIRCUIT` becomes the resource `conn3x_service_action.CIRCUIT__NAME`, with one instance per host. Each instance:
 
-- depends on the circuit's last step, so it runs after every step;
+- depends on the circuit's last step, so it runs after every step (with `strategy = "per_host"`, only on the same host);
 - has a `triggers` argument holding the `revision` of each notifying step's instance on the same host.
 
 When a notifying step changes something on a host, its `revision` changes, so the handler's `triggers` on that host change and Conn3x replaces that instance. Creating the instance is what runs the action.
