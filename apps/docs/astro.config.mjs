@@ -11,6 +11,7 @@ const modules = readdirSync(new URL("./src/content/docs/modules/", import.meta.u
   .map((f) => `modules/${f.slice(0, -3)}`)
   .sort();
 const isWindows = (slug) => slug.startsWith("modules/windows_");
+const isEOS = (slug) => slug.startsWith("modules/eos_");
 
 export default defineConfig({
   site: "https://docs.conn3x.org",
@@ -47,7 +48,7 @@ export default defineConfig({
         { tag: "script", content: 'if(/(^|\\.)conn3x\\.org$/.test(location.hostname)){const s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.dataset.cfBeacon=\'{"token":"a6d1b39fdbab4414a50520fcbe318d8a"}\';document.head.append(s)}' },
       ],
       sidebar: [
-        { label: "Start here", items: ["install", "get-started", "concepts"] },
+        { label: "Start here", items: ["install", "get-started", "concepts", { slug: "network-devices", badge: { text: "Next release", variant: "note" } }] },
         {
           label: "Tutorials",
           items: [
@@ -77,6 +78,7 @@ export default defineConfig({
             { slug: "reference/circuits", label: "Overview" },
             ...["hosts", "ssh", "steps", "handlers", "removal", "secrets", "addresses", "expressions"].map((page) => `reference/circuits/${page}`),
             "reference/host-facts",
+            "reference/eos-device",
           ],
         },
         {
@@ -93,12 +95,18 @@ export default defineConfig({
           label: "Modules",
           collapsed: true,
           items: [
-            ...modules.filter((m) => !isWindows(m)),
+            ...modules.filter((m) => !isWindows(m) && !isEOS(m)),
             {
               label: "Windows (preview)",
               collapsed: true,
               badge: { text: "Experimental", variant: "caution" },
               items: modules.filter(isWindows),
+            },
+            {
+              label: "Arista EOS (next release)",
+              collapsed: true,
+              badge: { text: "Experimental", variant: "caution" },
+              items: modules.filter(isEOS),
             },
           ],
         },
