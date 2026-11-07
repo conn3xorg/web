@@ -3,7 +3,7 @@ title: Expressions and functions
 description: The expressions and functions circuits inherit from OpenTofu, and the names that only exist inside a circuit.
 ---
 
-Circuits use OpenTofu's expression language and built-in functions, unchanged. Conn3x v0.6.3 is built on OpenTofu 1.13.2, so OpenTofu's [expressions](https://opentofu.org/docs/language/expressions/) and [functions](https://opentofu.org/docs/language/functions/) documentation applies to every argument in a circuit.
+Circuits use OpenTofu's expression language and built-in functions, unchanged. Conn3x v0.7.1 is built on OpenTofu 1.13.2, so OpenTofu's [expressions](https://opentofu.org/docs/language/expressions/) and [functions](https://opentofu.org/docs/language/functions/) documentation applies to every argument in a circuit.
 
 ## What circuits inherit
 
@@ -94,7 +94,9 @@ Both run on the machine that runs `conn3x`, not on the host.
 
 ## Ephemeral values
 
-An [ephemeral variable](https://opentofu.org/docs/language/values/variables/) can only be used in a write-only argument: a `file` step's `content_wo`, or a `template` step with `write_only = true`. See [Secrets](/reference/circuits/secrets).
+An [ephemeral variable](https://opentofu.org/docs/language/values/variables/) can only be used in a write-only argument. On Linux that's a `file` step's `content_wo`, or a `template` step with `write_only = true`. See [Secrets](/reference/circuits/secrets).
+
+The Windows modules have their own, all experimental: `content_wo` in [`windows_file`](/modules/windows_file), `args_wo` in [`windows_powershell`](/modules/windows_powershell), `data_wo` in [`windows_registry_value`](/modules/windows_registry_value), `password_wo` in [`windows_user`](/modules/windows_user) and [`windows_scheduled_task`](/modules/windows_scheduled_task), and `safe_mode_password_wo` in [`windows_ad_forest`](/modules/windows_ad_forest).
 
 ## Host facts
 
