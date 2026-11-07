@@ -157,9 +157,9 @@ A file whose content is a secret goes in `content_wo`, or a [template](/modules/
 
 ## What can be adopted
 
-`file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group`, on Linux. Other modules reject `import` for now. Steps that edit part of a file (`line`, `block`, `ini`, `replace`) don't need it: they already work with whatever is there.
+`file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group`, on Linux. The next release adds `authorized_key`, `cron`, `timer`, `sysctl`, `mount` and `repository`. Other modules reject `import` for now. Steps that edit part of a file (`line`, `block`, `ini`, `replace`) don't need it: they already work with whatever is there.
 
-Each of these modules defaults to `on_remove = "forget"`, so removing an adopted step later leaves the object on the host. See [Removal](/reference/circuits/removal).
+Most of these modules default to `on_remove = "forget"`, so removing an adopted step later leaves the object on the host. Three don't: `authorized_key`, `cron` and `timer` default to `"delete"`, adopted or not. Removing one of those steps deletes the key, the cron file or the timer, even though Conn3x didn't create it. If you'd rather keep them, set `on_remove = "forget"` on the step before you adopt. See [Removal](/reference/circuits/removal).
 
 `import` works in your root configuration. A [shared circuit](/guides/share-a-circuit) called as a module can't adopt for you yet.
 
