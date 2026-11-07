@@ -96,7 +96,7 @@ Both run on the machine that runs `conn3x`, not on the host.
 
 An [ephemeral variable](https://opentofu.org/docs/language/values/variables/) can only be used in a write-only argument. On Linux that's a `file` step's `content_wo`, or a `template` step with `write_only = true`. See [Secrets](/reference/circuits/secrets).
 
-The Windows modules have their own, all experimental: `content_wo` in [`windows_file`](/modules/windows_file), `args_wo` in [`windows_powershell`](/modules/windows_powershell), `data_wo` in [`windows_registry_value`](/modules/windows_registry_value), `password_wo` in [`windows_user`](/modules/windows_user), [`windows_scheduled_task`](/modules/windows_scheduled_task) and [`windows_domain_membership`](/modules/windows_domain_membership), and `safe_mode_password_wo` in [`windows_ad_forest`](/modules/windows_ad_forest) and [`windows_ad_domain_controller`](/modules/windows_ad_domain_controller), which takes a `password_wo` too.
+The Windows modules have their own, all experimental: `content_wo` in [`windows_file`](/modules/windows_file), `args_wo` in [`windows_powershell`](/modules/windows_powershell), `data_wo` in [`windows_registry_value`](/modules/windows_registry_value), `password_wo` in [`windows_user`](/modules/windows_user), [`windows_scheduled_task`](/modules/windows_scheduled_task), [`windows_domain_membership`](/modules/windows_domain_membership) and [`windows_ad_user`](/modules/windows_ad_user), and `safe_mode_password_wo` in [`windows_ad_forest`](/modules/windows_ad_forest) and [`windows_ad_domain_controller`](/modules/windows_ad_domain_controller), which takes a `password_wo` too.
 
 ## Host facts
 

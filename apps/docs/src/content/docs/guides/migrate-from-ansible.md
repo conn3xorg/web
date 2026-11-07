@@ -67,7 +67,22 @@ Since v0.7.2 the rest of the domain comes across as well. `microsoft.ad.membersh
 
 Some tasks still stay for review, each with the reason. Leaving a domain or demoting a controller won't convert, because Conn3x never does either. Neither will an offline join blob, a rename while joining, `domain_server`, a read-only domain controller, a promotion without DNS, or `site_name`, `install_media_path` and `replication_source_dc`. A task without `domain_admin_user` stays too, since both modules join or promote with a named account.
 
+New in v0.7.3, so do the things you keep in a domain. `microsoft.ad.ou` becomes a [windows_ad_ou](/modules/windows_ad_ou) step, `microsoft.ad.group` and `win_domain_group` a [windows_ad_group](/modules/windows_ad_group) step, and `microsoft.ad.user` and `win_domain_user` a [windows_ad_user](/modules/windows_ad_user) step. Again the `microsoft.ad` names need their full prefix. A group's `members.add` list comes across as members that are only added, and `members.set` as the whole list, with `authoritative = true`. A user's password is never copied: a `TODO(convert)` asks you to set `password_wo` from an ephemeral variable.
+
+These stay for review, with the reason:
+
+- `state: absent`. Removing a step forgets the object, and deletes it only with `on_remove = "delete"`, so there's no step that means "delete this".
+- `domain_server`, `domain_username`, `domain_password` or `domain_credentials`. Conn3x runs these steps on a domain controller, as its own login.
+- `identity`, used to rename or move an object, and a `sam_account_name` that isn't the same as `name`, since Conn3x uses one name for both.
+- `members.remove`, and a member named any way but its sAMAccountName: a distinguished name, `DOMAIN\name`, a UPN or a SID.
+- A user's `groups`. Put the user in each group's `members` instead.
+- `state: query` on a user, which only looks.
+
 You won't get a step for `debug`, since all it does is print. The task is dropped, and a comment in its place says so. What it printed isn't copied, because a debug message can hold a secret. A `debug` with a `when` or a `register` stays as a TODO, and its contents stay out of that comment too.
+
+Since v0.7.3, `ping` goes the same way. Conn3x connects to every host before it does anything, so a task that only checks the connection has nothing left to do. Two kinds stay for review: `data: crash`, which fails the task on purpose to stop the play, and `data` from a template, which could turn out to be `crash`.
+
+`setup`, `service_facts` and `package_facts` are dropped too, since they only gather facts. If a later task in the play, or one of its handlers, reads those facts, the note says so, and that task stays for review. A step can't read Ansible's facts, so check what the task did with them. [Host facts](/reference/host-facts) are the Conn3x way to read a host's OS at plan time.
 
 A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each):
 

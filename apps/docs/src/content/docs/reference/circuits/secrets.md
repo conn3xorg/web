@@ -45,6 +45,7 @@ circuit "db" {
 | [`windows_ad_forest`](/modules/windows_ad_forest) | `safe_mode_password_wo` | The Directory Services Restore Mode password. |
 | [`windows_domain_membership`](/modules/windows_domain_membership) | `password_wo` | The password of the account that joins the host to the domain. |
 | [`windows_ad_domain_controller`](/modules/windows_ad_domain_controller) | `password_wo`, `safe_mode_password_wo` | The password of the account that promotes the host, and its Directory Services Restore Mode password. |
+| [`windows_ad_user`](/modules/windows_ad_user) | `password_wo` | The user's password. A change plans as one `password_hmac` change. |
 
 The `windows_*` modules are [experimental](/reference/maturity), so their arguments may change between releases.
 
