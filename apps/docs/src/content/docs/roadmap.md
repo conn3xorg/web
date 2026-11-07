@@ -1,6 +1,6 @@
 ---
 title: Roadmap
-description: What Conn3x does today, what we're building now and what comes after: Windows at scale, network devices over their own CLI, Ansible roles and Galaxy, ad-hoc commands, then a web UI. No dates.
+description: "What Conn3x does today, what we're building now and what comes after: Windows at scale, network devices over their own CLI, Ansible roles and Galaxy, ad-hoc commands, then a web UI. No dates."
 ---
 
 Conn3x closes the gap between creating infrastructure and configuring it: one plan, one state and one apply for the cloud and the servers in it. Today it does that for Linux, and for Windows Server in preview.
