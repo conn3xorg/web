@@ -60,6 +60,13 @@ export default defineConfig({
           items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/paths-as-root", "guides/share-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
         },
         {
+          label: "Compare",
+          items: [
+            { slug: "compare/terraform-and-ansible", label: "Terraform and Ansible" },
+            { slug: "compare/ansible", label: "Ansible" },
+          ],
+        },
+        {
           label: "Circuits",
           collapsed: true,
           items: [{ slug: "circuits", label: "Overview" }, { slug: "reference/circuit-grades", label: "How grades work" }, { autogenerate: { directory: "circuits" } }],
