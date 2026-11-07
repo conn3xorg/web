@@ -31,6 +31,7 @@
     "istio": "Istio installs onto a k3s cluster, so it needs that cluster first. Its README shows how.",
     "kubeadm": "kubeadm has control planes and workers, two kinds of host. Its README shows how to set them up.",
     "lempa-homelab": "Lempa homelab is a whole stack of 23 circuits behind one set of switches, so it takes the whole server. Its README shows how to set it up.",
+    "mini-homelab": "Mini homelab runs Homepage and Uptime Kuma on one server, the same two the builder offers on their own. Pick those for a group of hosts, or follow its README for the one-server version.",
     "microshift": "MicroShift turns the whole box into an OpenShift node, with its router on 80 and 443. Give it a host of its own and follow its README.",
     "opnsense-vlans": "OPNsense VLANs configures a firewall through its OpenTofu provider, not a server over SSH, so it doesn't fit a group of hosts. Its page shows how to set it up.",
     "proxmox": "Proxmox turns a Debian host into a hypervisor. Give it a machine of its own and follow its README.",
