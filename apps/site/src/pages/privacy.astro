@@ -10,8 +10,8 @@ const repo = "https://github.com/conn3xorg/conn3x";
   label="Privacy"
   path="/privacy"
   description="What conn3x.org, docs.conn3x.org and the Conn3x tool collect about you: almost nothing, and here's exactly what."
-  lead="The short version: no accounts, no cookies, no analytics, and nothing in the tool that phones home."
-  updated="27 October 2026"
+  lead="The short version: no accounts, no cookies, and nothing in the tool that phones home. The websites count visits, without knowing who you are."
+  updated="6 November 2026"
 >
   <div class="callout">
     <p>
@@ -23,9 +23,9 @@ const repo = "https://github.com/conn3xorg/conn3x";
   <h2 id="websites">The websites</h2>
   <p>
     conn3x.org and docs.conn3x.org are static pages. There are no accounts to sign up for,
-    no forms, no comments, no cookies, and no analytics or tracking scripts, ours or anyone
-    else's. Fonts, images, videos and scripts all come from our own domains; the sites'
-    security policy doesn't allow any other source to load.
+    no forms, no comments and no cookies. Fonts, images, videos and scripts come from our
+    own domains, with one exception: Cloudflare's visit counter, described below. The
+    sites' security policy doesn't allow any other source to load.
   </p>
 
   <h3>What the host sees</h3>
@@ -33,9 +33,23 @@ const repo = "https://github.com/conn3xorg/conn3x";
     Both sites are served by <a href="https://www.cloudflare.com/">Cloudflare</a>. Like any
     web server, Cloudflare receives the details your browser sends with each request, such
     as your IP address, the page asked for and your browser's user agent, and uses them to
-    deliver the page and protect the sites from abuse. We don't add any tracking on top, and
-    we don't use those details to identify you. Cloudflare's handling is described in its{" "}
+    deliver the page and protect the sites from abuse. We don't use those details to identify
+    you. Cloudflare's handling is described in its{" "}
     <a href="https://www.cloudflare.com/privacypolicy/">privacy policy</a>.
+  </p>
+
+  <h3 id="counting-visits">Counting visits</h3>
+  <p>
+    Since 6 November 2026 both sites run
+    <a href="https://www.cloudflare.com/web-analytics/">Cloudflare Web Analytics</a>, so we
+    can tell which pages help people and which ones lose them. For each page view it sends
+    Cloudflare the page you're on, the page that linked you there, your browser and device
+    type, your country, and how long the page took to load. It sets no cookies, keeps
+    nothing in your browser's storage, and doesn't fingerprint you. We only ever see totals,
+    such as how many people read the install page this week, never a list of visitors.
+  </p>
+  <p>
+    The command-line tool counts nothing. That won't change.
   </p>
 
   <h3>What your browser keeps</h3>
