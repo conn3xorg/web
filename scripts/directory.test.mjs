@@ -12,6 +12,14 @@ const dir = new URL("../apps/site/src/data/circuits/", import.meta.url);
 const distros = new Set(["rocky10", "fedora45", "ubuntu2404", "debian13", "windows2022", "windows2025"]);
 const categories = new Set(JSON.parse(readFileSync(new URL("../apps/site/src/data/categories.json", import.meta.url), "utf8")));
 
+// The docs index lists every official circuit under its category heading.
+const index = readFileSync(new URL("../apps/docs/src/content/docs/circuits/index.md", import.meta.url), "utf8");
+const indexed = new Map();
+for (const section of index.split(/^### /m).slice(1)) {
+  const cat = section.slice(0, section.indexOf("\n"));
+  for (const [, name, version] of section.matchAll(/^\| \[[^\]]+\]\(\/circuits\/([a-z0-9-]+)\) \|.*\| (v[\d.]+) \|$/gm)) indexed.set(name, { cat, version });
+}
+
 for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
   test(`circuit ${file}`, () => {
     const c = JSON.parse(readFileSync(new URL(file, dir), "utf8"));
@@ -35,6 +43,11 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
     assert.equal(typeof c.official, "boolean");
     if (c.official) assert.ok(c.repo.startsWith("conn3xorg/"), "only conn3xorg circuits are official");
     if (c.official) assert.ok(existsSync(new URL(`../apps/docs/src/content/docs/circuits/${c.name}.md`, import.meta.url)), "official circuits have a docs page");
+    if (c.official) {
+      assert.ok(indexed.has(c.name), "official circuits are on the docs circuits index");
+      assert.equal(indexed.get(c.name).cat, c.category, "the index lists it under its category");
+      assert.equal(indexed.get(c.name).version, c.version, "the index shows the directory's version");
+    }
   });
 }
 
