@@ -3,7 +3,7 @@ title: Users
 description: "Creates users, groups and their SSH keys from one map, with optional passwordless sudo."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-users at v0.1.3. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-users at v0.1.4. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/users/grade.svg)](https://conn3x.org/circuits/users/grade)
 
@@ -13,7 +13,7 @@ A [Conn3x](https://conn3x.org) circuit that manages local accounts from one map:
 
 ```hcl
 module "team" {
-  source = "github.com/conn3xorg/circuit-users?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-users?ref=v0.1.4"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -42,7 +42,7 @@ module "team" {
 }
 ```
 
-Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.3/examples/local).
+Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No changes.` To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.4/examples/local).
 
 ### Hosts with pinned host keys
 
@@ -50,7 +50,7 @@ A value in `hosts` can also be a host object, as in a circuit's own [`hosts`](/r
 
 ```hcl
 module "team" {
-  source = "github.com/conn3xorg/circuit-users?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-users?ref=v0.1.4"
 
   hosts = {
     for name, d in digitalocean_droplet.web : name => {
@@ -74,7 +74,7 @@ On every host in `hosts`, in this order:
 1. Creates every group that a user lists in `groups`. Groups that already exist, such as `wheel` or `sudo`, are left as they are.
 2. Creates each user, or brings an existing one in line with the attributes you set.
 3. Adds each key in `keys` to the user's `~/.ssh/authorized_keys`. Other keys in the file stay.
-4. For each user with `sudo = true`, installs sudo and writes `/etc/sudoers.d/NAME`, mode `0440`, with the line `NAME ALL=(ALL) NOPASSWD: ALL`.
+4. For each user with `sudo = true`, installs sudo and writes `/etc/sudoers.d/NAME`, mode `0440`, with the line `NAME ALL=(ALL) NOPASSWD: ALL`. `visudo -cf` checks each file before it lands, and one that fails stops the apply with nothing written, since a file sudo can't parse breaks sudo for everyone on the host.
 
 Removing things from the map:
 
@@ -83,7 +83,7 @@ Removing things from the map:
 - **A user** is no longer managed, but the account stays on the host. Delete it by hand, or with a `user` step with `on_remove = "delete"`.
 - **A group** that no user lists any more stays on the host.
 
-Conn3x has no way yet to check a file with `visudo` before writing it. The sudoers line is built only from the user's name, and the `users` variable rejects names that aren't valid login names, so the file can't hold a syntax error.
+The sudoers line is built only from the user's name, and the `users` variable rejects names that aren't valid login names, so the file shouldn't be able to hold a syntax error. The `visudo` check makes sure it can't.
 
 ## Inputs
 
@@ -118,21 +118,21 @@ None.
 
 ## Requirements
 
-- Conn3x v0.6.4 or later.
+- Conn3x v0.7.0 or later, for `file`'s `validate`.
 - Hosts running Rocky Linux, RHEL, AlmaLinux, Fedora, Debian or Ubuntu, with systemd.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.3/examples/local) to each on amd64, checks that the second plan has no changes, logs in as a user with the key and uses sudo, and checks a user with no key and no sudo can do neither.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.4/examples/local) to each on amd64, checks that the second plan has no changes, logs in as a user with the key and uses sudo, and checks a user with no key and no sudo can do neither.
 
 It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, `alice` was in `developers` and listed by `sudo -l`, and `bob` got `/bin/sh` as the login shell. After a reboot the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-[MPL-2.0](https://github.com/conn3xorg/circuit-users/blob/v0.1.3/LICENSE)
+[MPL-2.0](https://github.com/conn3xorg/circuit-users/blob/v0.1.4/LICENSE)
 
 ## Source
 
-- Repository: [conn3xorg/circuit-users](https://github.com/conn3xorg/circuit-users). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-users/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-users/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.3/examples/local).
-- Related circuits: [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
+- Repository: [conn3xorg/circuit-users](https://github.com/conn3xorg/circuit-users). This page covers [v0.1.4](https://github.com/conn3xorg/circuit-users/tree/v0.1.4); the repository's [tags](https://github.com/conn3xorg/circuit-users/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-users/tree/v0.1.4/examples/local).
+- Related circuits: [Active Directory](/circuits/active-directory), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
