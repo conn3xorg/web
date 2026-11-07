@@ -1,6 +1,6 @@
 ---
 title: Tutorials
-description: Hands-on tutorials that take you from a local test host to cloud servers, bastions, secrets, drift checks in CI and a converted Ansible playbook.
+description: Hands-on tutorials that take you from a local test host to cloud servers, bastions, secrets, drift checks in CI, a converted Ansible playbook and a private AI box.
 ---
 
 These tutorials walk you through Conn3x one task at a time. Each page lists what you need, how long it takes, and how to clean up afterwards. They're written for Conn3x v0.7.2.
@@ -20,5 +20,6 @@ Work through them in order if you're new. Each one builds on the ones before it,
 | 9 | [Catch drift in CI](/tutorials/drift-in-ci) | 15 minutes | A GitHub repository and a remote state backend |
 | 10 | [Migrate an Ansible playbook](/tutorials/migrate-ansible) | 15 minutes | A playbook, or the one on the page |
 | 11 | [Manage BigQuery and catch changes](/tutorials/bigquery) | 10 minutes | A Google Cloud project. Costs effectively nothing. |
+| 12 | [Build a private AI box, step by step](/tutorials/private-ai-box) | 50 minutes | An AWS account and Podman. Costs a few cents. |
 
 [Get started](/get-started) is a shorter version of tutorials 1 and 2 in one page. The [guides](/guides/provision-and-configure) explain single tasks without the walkthrough, and the [circuit language](/reference/circuits) and [CLI](/reference/cli) reference pages hold every argument and option.
