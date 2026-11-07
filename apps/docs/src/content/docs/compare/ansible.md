@@ -35,7 +35,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | Three experimental circuits, through community OpenTofu providers |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
-| Maturity | In production use for more than a decade | Before 1.0, at v0.7.3 |
+| Maturity | In production use for more than a decade | Before 1.0, at v0.8.0 |
 
 ## The same playbook, both ways
 
@@ -91,7 +91,7 @@ You don't have to rewrite anything to see what this looks like as a circuit:
 conn3x convert ansible -i hosts.ini -out web.circuit.hcl site.yml
 ```
 
-This is the converter's real answer, from Conn3x v0.7.3:
+This is the converter's real answer, from Conn3x v0.8.0:
 
 ```text
 Converted 2 tasks. 1 thing needs you; each is marked TODO(convert):
@@ -231,7 +231,7 @@ There are plenty of jobs where Ansible is the right tool, and we'd rather say so
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
 - A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x has none of that; you run it from CI.
 - Team familiarity. Ansible is widely known, widely taught and well documented. A team that's fluent in it gives up real speed by switching.
-- Maturity. Conn3x is at v0.7.3. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
+- Maturity. Conn3x is at v0.8.0. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
 You don't have to choose for every server at once. Converting one playbook and running Conn3x for that group, while Ansible keeps the rest, is a fair way to find out.
 
