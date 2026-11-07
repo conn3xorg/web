@@ -30,7 +30,7 @@ Experimental is about each module inside it. They're new, and the arguments of a
 | Linux hosts: Rocky Linux, RHEL, AlmaLinux, Fedora, Debian and Ubuntu | Stable | Every change is tested on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. |
 | The Linux modules, the CLI, `conn3x drift` and `conn3x convert ansible` | Stable | Tested on every change. The converter marks what it can't prove instead of guessing. |
 | Official circuits for Linux | Stable | Each is tested on the distributions its page lists. |
-| Windows Server 2022 and 2025 | Preview | Standalone servers work, and so does a new Active Directory forest. More domain controllers and domain join are the work now. |
+| Windows Server 2022 and 2025 | Preview | Standalone servers work, and so does a small domain: a new forest, servers joined to it and more domain controllers. OUs, groups and users are the work now. |
 | The `windows_*` modules, and circuits built on them | Experimental | New, and their arguments may change between releases. |
 | Network-device circuits: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans), [Proxmox VE network](/circuits/proxmox-network) | Experimental | Each was tested on a virtual image of its device, not hardware, through a community OpenTofu provider. |
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |

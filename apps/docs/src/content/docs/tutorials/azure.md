@@ -13,7 +13,7 @@ It creates two real VMs. Each `Standard_B2s_v2` VM costs $0.0832 an hour in `wes
 
 ## Prerequisites
 
-- Conn3x v0.7.1 [installed](/install).
+- Conn3x v0.7.2 [installed](/install).
 - An Azure subscription and the [`az` CLI](https://learn.microsoft.com/cli/azure/install-azure-cli). You need to be able to create resource groups, networks and VMs: `Contributor` on the subscription is enough.
 - An SSH key at `~/.ssh/id_ed25519`, with its public half at `~/.ssh/id_ed25519.pub`. Conn3x logs in with it.
 - Room for four vCPUs in `westus2`. A new subscription's policies can limit sizes and locations. If yours rejects these, change `size` and `location` in `main.tf`.
