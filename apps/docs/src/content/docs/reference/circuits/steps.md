@@ -104,7 +104,7 @@ There is no order between circuits. Two circuits in the same configuration run i
 ### Per host
 
 :::note
-`strategy` arrives in the next release. The current release rejects it with "Unsupported argument".
+Circuits take `strategy` since v0.9.0. Earlier releases reject it with "Unsupported argument".
 :::
 
 In lockstep, the slowest host sets the pace. If `web5` takes three minutes over a package that `web1` installs in thirty seconds, `web1` waits out the difference at that step, and again at the next slow one. Set `strategy = "per_host"` on the circuit and each host runs its own chain: `web1` moves on to its next step as soon as its own previous step is done.
@@ -356,7 +356,7 @@ there's nothing to adopt. Remove box from the step's import, or set import to
 the hosts that already have it; Conn3x then creates it on the rest.
 ```
 
-These modules can import: `directory`, `file`, `group`, `link`, `package`, `service`, `template` and `user`. Any other module rejects `import`.
+These modules can import: `authorized_key`, `cron`, `directory`, `file`, `firewalld`, `group`, `hostname`, `link`, `locale`, `mount`, `package`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw` and `user`. All but the first eight arrived in v0.9.0. Any other module rejects `import`.
 
 A few details:
 
@@ -369,7 +369,7 @@ A few details:
 ### A step inside a module
 
 :::note
-`provider::conn3x::import_id` is new after v0.8.0; earlier releases don't have it.
+`provider::conn3x::import_id` is in Conn3x since v0.9.0. Earlier releases don't have it.
 :::
 
 A step's own `import` can't reach into a module, so to adopt what an official circuit, or any circuit you call through a `module` block, manages on a server you already run, write the `import` block in your root configuration and build its ID with `provider::conn3x::import_id`:

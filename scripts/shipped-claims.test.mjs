@@ -44,6 +44,21 @@ const SHIPPED = [
       /no `?lifecycle`? (?:block )?on (?:host )?steps/i,
     ],
   },
+  {
+    feature: "per_host, EOS, generate step, import_id, wider import and convert -role (v0.9.0)",
+    stale: [
+      /`strategy` arrives in the next release/i,
+      /eos_\*` modules are on `main`/i,
+      /`conn3x_eos_device` is on `main`/i,
+      /Arista EOS (?:modules|steps)?[^.\n]*arriving in the next release/i,
+      /Arista EOS \(next release\)/i,
+      /(?:`generate step`|`provider::conn3x::import_id`) is new after v0\.8\.0/i,
+      /In releases after v0\.8\.0/i,
+      /The next release adds `authorized_key`/i,
+      /Coming in the next release: `-role`/i,
+      /handles tasks and plays today, not roles/i,
+    ],
+  },
 ];
 
 function files(dir) {
@@ -107,6 +122,22 @@ test("the check catches the old import and lifecycle lines", () => {
     "`lifecycle` in a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with \"Unsupported block in step\".",
     "- Host steps can't be imported with `conn3x import` or `import` blocks.",
     "Host steps don't yet: you can't `import` the files and packages a server already has, and a step can't take a `lifecycle` block, so there's no `prevent_destroy` and no precondition.",
+  ];
+  for (const line of old) assert.ok(SHIPPED.some(({ stale }) => stale.some((re) => re.test(line))), line);
+});
+
+test("the check catches the old v0.9.0 lines", () => {
+  const old = [
+    '`strategy` arrives in the next release. The current release rejects it with "Unsupported argument".',
+    "The `eos_*` modules are on `main` and arrive in the next release.",
+    "`conn3x_eos_device` is on `main` and arrives in the next release.",
+    "[Arista EOS modules](/network-devices) (`eos_config`, `eos_hostname`, `eos_vlan`), arriving in the next release",
+    "`generate step` is new after v0.8.0; earlier releases don't have it.",
+    "`provider::conn3x::import_id` is new after v0.8.0; earlier releases don't have it.",
+    "The OS build, such as `26100`. In releases after v0.8.0.",
+    "The next release adds `authorized_key`, `cron`, `timer`, `sysctl`, `mount`, `repository`, `hostname`, `timezone` and `locale`.",
+    "Coming in the next release: `-role`.",
+    "`conn3x convert ansible` handles tasks and plays today, not roles.",
   ];
   for (const line of old) assert.ok(SHIPPED.some(({ stale }) => stale.some((re) => re.test(line))), line);
 });
