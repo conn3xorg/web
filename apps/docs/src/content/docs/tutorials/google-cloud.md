@@ -13,7 +13,7 @@ It creates two real instances, each with a disk and a public address. Each `e2-s
 
 ## Prerequisites
 
-- Conn3x v0.6.12 [installed](/install).
+- Conn3x v0.7.1 [installed](/install).
 - A Google Cloud project with billing on, and the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install). You need to be able to create instances, networks and firewall rules in the project: `roles/compute.admin` is enough.
 - An SSH key at `~/.ssh/id_ed25519`, with its public half at `~/.ssh/id_ed25519.pub`. Conn3x logs in with it.
 
