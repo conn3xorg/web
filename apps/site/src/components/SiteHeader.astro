@@ -25,19 +25,8 @@ const links = [
 const [latest] = (await getCollection("blog", (p) => isPublished(p)))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-// Launch day on Product Hunt takes the bar from 00:00 PT on 6 Nov until the
-// next morning's 07:00 UTC rebuild. shortcut: a dated one-off, delete it and
-// the 6 Nov cron in deploy.yml after launch.
-const now = Date.now();
-const productHunt = now >= Date.parse("2026-11-06T08:00:00Z") && now < Date.parse("2026-11-07T07:00:00Z");
 ---
-{productHunt ? (
-  <a class="announce" href="https://www.producthunt.com/products/conn3x">
-    <span class="dot" aria-hidden="true"></span>
-    <span class="t">We're on Product Hunt today. Tell us what you think</span>
-    <span class="go" aria-hidden="true">→</span>
-  </a>
-) : latest && (
+{latest && (
   <a class="announce" href={`/blog/${latest.id}`}>
     <span class="dot" aria-hidden="true"></span>
     <span class="t">{latest.data.title}</span>
