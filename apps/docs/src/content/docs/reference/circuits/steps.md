@@ -1,6 +1,6 @@
 ---
 title: Steps
-description: "The step block, the order steps run in, implicit and explicit dependencies, depends_on, for_each with item.key and item.value, instance keys for repeated steps, and lifecycle: prevent_destroy, ignore_changes, create_before_destroy, replace_triggered_by and conditions."
+description: "The step block, the order steps run in, implicit and explicit dependencies, depends_on, for_each with item.key and item.value, instance keys for repeated steps, import for adopting what a host already has, and lifecycle: prevent_destroy, ignore_changes, create_before_destroy, replace_triggered_by and conditions."
 ---
 
 A step applies one module, such as a package, a file or a service, to every host in the circuit.
@@ -31,6 +31,7 @@ step "NAME" {
   for_each   = EXPRESSION        # optional
   depends_on = [ADDRESS, ...]    # optional
   notify     = [handler.NAME, ...] # optional
+  import     = true | [HOST, ...] # optional
 
   MODULE {
     ARGUMENT = EXPRESSION
@@ -51,6 +52,7 @@ A step block takes one label, the step's name, and contains:
 | `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host. See [for_each](#for_each). |
 | `depends_on` | No | A list of resources the step waits for, in addition to the step before it. See [depends_on](#depends_on). |
 | `notify` | No | A list of handlers in the same circuit to run when this step changes something on a host. See [Handlers](/reference/circuits/handlers). |
+| `import` | No | `true`, or a list of host names, to adopt the object already on those hosts instead of creating it. See [import](#import). |
 | `lifecycle` | No | One block that protects the step from removal, ignores changes made elsewhere, or checks conditions. See [lifecycle](#lifecycle). |
 
 A step accepts nothing else. The resource meta-arguments `count`, `provider`, `provisioner` and `connection` aren't available in a step.
@@ -260,10 +262,65 @@ Remove an item from `for_each`, and the next plan destroys that item's instances
 
 A handler notified by a step with `for_each` runs on a host when any of that host's items changed.
 
+## import
+
+:::note
+`import` on a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with "Unsupported argument in step".
+:::
+
+`import` adopts what's already on a host into state, so Conn3x manages it from then on without creating it first:
+
+```hcl
+step "nginx" {
+  import = true            # every host in the circuit
+  package {
+    name = "nginx"
+  }
+}
+
+step "motd" {
+  import = ["web1"]        # only web1; other hosts get a new file
+  file {
+    path    = "/etc/motd"
+    content = "Managed by Conn3x\n"
+  }
+}
+```
+
+| Value | What it does |
+| --- | --- |
+| `true` | Adopts the step on every host. |
+| A list of host names | Adopts it on those hosts only. In a step with `for_each`, a host name covers every item on that host, and an instance key such as `"web1/tree"` picks one. A name that isn't in `hosts` is an error. |
+| `false` | The same as leaving `import` out. |
+
+The first plan reads each host. Where the host already matches the step, the plan says `will be imported`. Where it doesn't, it says `will be updated in-place` and shows the diff, which apply then makes. Once a step is in state, its import does nothing, so it's safe to leave in.
+
+An import says the object exists. When a listed host doesn't have it, the plan fails rather than creating it:
+
+```text
+Error: Nothing to import on box
+
+The step imports file /etc/app.conf on box, but box doesn't have it, so
+there's nothing to adopt. Remove box from the step's import, or set import to
+the hosts that already have it; Conn3x then creates it on the rest.
+```
+
+These modules can import: `directory`, `file`, `group`, `link`, `package`, `service`, `template` and `user`. Any other module rejects `import`.
+
+A few details:
+
+- Each step lowers to an OpenTofu [`import` block](https://opentofu.org/docs/language/import/), so `import` works in the root configuration only, as in OpenTofu.
+- The import ID is JSON with the step's arguments and ssh settings, and the plan prints it once in an `imported from` line. It names your key and known_hosts files by path; it never holds a key, and never a file's content.
+- A write-only file (`content_wo`, or a template with `write_only = true`) is imported as an HMAC of what's on the host. The content stays out of state.
+- A `service` step that sets `state` or `enabled` takes both from the host, so a stopped unit plans `state = "stopped" -> "started"`.
+- To adopt exactly what's there and change nothing on the first apply, add `lifecycle { ignore_changes = all }`, then remove it.
+
+[Adopt servers you already run](/guides/adopt-servers) walks through a whole server.
+
 ## lifecycle
 
 :::note
-`lifecycle` in a step is new on `main` and comes in the next release. v0.7.2 and earlier reject it with "Unsupported block in step".
+`lifecycle` in a step is new on `main` and comes in the next release. v0.7.3 and earlier reject it with "Unsupported block in step".
 :::
 
 A step's `lifecycle` block works like [OpenTofu's](https://opentofu.org/docs/language/meta-arguments/lifecycle/), with the same arguments, checks and messages, because Conn3x hands it to OpenTofu's own decoder. It sits beside the module block:
