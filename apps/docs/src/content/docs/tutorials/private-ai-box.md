@@ -9,7 +9,7 @@ In this tutorial you build the other option, on AWS, with one `conn3x apply`. An
 
 That's part 1. In part 2 you write a circuit of your own, a small homelab with Homepage and Uptime Kuma, test it on a container on your laptop, and publish it so anyone can pin it.
 
-This is the long version of the blog post [A private AI box in one apply](https://conn3x.org/blog/private-ai-box). Every command and every line of output on this page comes from a real run on 7 November 2026, trimmed where it's long and labelled where it's trimmed.
+This is the long version of the blog post [A private AI box in one apply](https://conn3x.org/blog/private-ai-box). Rather watch first? The [eight-minute video](https://youtu.be/_6QoECh4AjM) covers the same run, and this page has every step it skims. Every command and every line of output on this page comes from a real run on 7 November 2026, trimmed where it's long and labelled where it's trimmed.
 
 **Time:** about 30 minutes for part 1, and 20 for part 2.
 
