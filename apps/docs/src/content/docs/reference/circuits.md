@@ -54,7 +54,8 @@ circuit "web" {
 
 ```text
 circuit "NAME" {
-  hosts = EXPRESSION
+  hosts    = EXPRESSION
+  strategy = "lockstep" | "per_host" # optional
 
   ssh {
     ARGUMENT = EXPRESSION
@@ -81,6 +82,7 @@ A circuit block takes one label, the circuit's name, and these arguments and blo
 | Name | Required | Description |
 | --- | --- | --- |
 | `hosts` | Yes | The hosts to configure. A map of host names to addresses or host objects, or a set of addresses. See [Hosts](/reference/circuits/hosts). |
+| `strategy` | No | `"lockstep"`, the default: each step waits for the step before it on every host. `"per_host"`: each host runs its own chain of steps. Arrives in the next release. See [Per host](/reference/circuits/steps#per-host). |
 | `ssh` | Yes | Exactly one block. How to log in to every host. See [The ssh block](/reference/circuits/ssh). |
 | `step` | No | Any number of blocks. Each holds one module and runs on every host, in the order written. See [Steps](/reference/circuits/steps). |
 | `handler` | No | Any number of blocks. Each restarts or reloads a service on the hosts where a step that notifies it changed something. See [Handlers](/reference/circuits/handlers). |
