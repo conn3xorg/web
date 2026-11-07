@@ -25,9 +25,15 @@ test("the released checks show a result, and none shows as held", async ({ page 
   }
 });
 
+// Grades are read live at build time, so which circuit (if any) fails changes.
 test("a circuit that fails a must-pass check says so and isn't a pass", async ({ page }) => {
-  await page.goto("/circuits/proxmox/grade");
-  await expect(page.locator("h1")).toContainText("proxmox: F");
+  await page.goto("/circuits");
+  const failing = page.locator('a[href$="/grade"]', { hasText: /^Grade F$/ }).first();
+  test.skip((await failing.count()) === 0, "no circuit fails a must-pass check in this build");
+  const href = (await failing.getAttribute("href"))!;
+  const name = href.split("/")[2];
+  await page.goto(href);
+  await expect(page.locator("h1")).toContainText(`${name}: F`);
   await expect(page.locator(".page-hero")).toContainText("That's not a pass");
 });
 
