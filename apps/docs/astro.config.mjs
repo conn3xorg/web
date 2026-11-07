@@ -48,7 +48,7 @@ export default defineConfig({
         { tag: "script", content: 'if(/(^|\\.)conn3x\\.org$/.test(location.hostname)){const s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.dataset.cfBeacon=\'{"token":"a6d1b39fdbab4414a50520fcbe318d8a"}\';document.head.append(s)}' },
       ],
       sidebar: [
-        { label: "Start here", items: ["install", "get-started", "concepts", { slug: "network-devices", badge: { text: "Next release", variant: "note" } }] },
+        { label: "Start here", items: ["install", "get-started", "concepts", { slug: "network-devices", badge: { text: "Experimental", variant: "caution" } }] },
         {
           label: "Tutorials",
           items: [
@@ -103,7 +103,7 @@ export default defineConfig({
               items: modules.filter(isWindows),
             },
             {
-              label: "Arista EOS (next release)",
+              label: "Arista EOS",
               collapsed: true,
               badge: { text: "Experimental", variant: "caution" },
               items: modules.filter(isEOS),

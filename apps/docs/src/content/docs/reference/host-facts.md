@@ -54,8 +54,8 @@ On Windows, `arch` is `x86_64` or `aarch64`, as on Linux, and `ipv4` is the defa
 | Name | Type | Description |
 | --- | --- | --- |
 | `release` | string | `"2025"`, `"2022"` or `"2019"`, from the build number. Empty for a build Conn3x doesn't know. |
-| `build` | string | The OS build, such as `26100`. In releases after v0.8.0. |
-| `update_revision` | number | The update build revision, such as `2314` in `26100.2314`. It goes up with each cumulative update, so it shows which hosts are behind. In releases after v0.8.0. |
+| `build` | string | The OS build, such as `26100`. Since v0.9.0. |
+| `update_revision` | number | The update build revision, such as `2314` in `26100.2314`. It goes up with each cumulative update, so it shows which hosts are behind. Since v0.9.0. |
 | `edition` | string | Such as `ServerDatacenter` or `ServerStandard`. |
 | `installation_type` | string | `Server` with the desktop, or `Server Core`. |
 | `hostname` | string | The computer's DNS host name. |

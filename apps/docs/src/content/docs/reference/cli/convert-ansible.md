@@ -1,6 +1,6 @@
 ---
 title: conn3x convert ansible
-description: Convert an Ansible playbook into circuits.
+description: Convert an Ansible playbook into circuits, or a role into a circuit directory.
 ---
 
 `conn3x convert ansible` reads an Ansible playbook and writes the equivalent circuits. Tasks it can show mean the same thing become steps. Every other task stays in the output as commented-out YAML under a `TODO(convert)` line that says why, for you to finish by hand.
@@ -11,9 +11,12 @@ This command is Conn3x only. For what it converts and how to finish the rest, se
 
 ```sh
 conn3x convert ansible [options] PLAYBOOK
+conn3x convert ansible -role ROLE -out DIR
 ```
 
-`PLAYBOOK` is required. Options can come before or after it.
+`PLAYBOOK` is required, unless you give `-role`. Options can come before or after it.
+
+With `-role`, it converts one role's directory into a new circuit directory, which `-out` names. Nothing is downloaded: a role from Ansible Galaxy works once you've installed it with `ansible-galaxy`. `-role` is in Conn3x since v0.9.0. [Convert a role](/guides/migrate-from-ansible#convert-a-role) shows what goes in and what comes out.
 
 The circuits go to standard output, or to the file you name with `-out`. A summary goes to standard error, so redirecting standard output captures only the circuits.
 
@@ -23,7 +26,8 @@ The circuits go to standard output, or to the file you name with `-out`. A summa
 | --- | --- |
 | `-i=FILE` | An INI or YAML inventory. Each circuit's `hosts`, and the `ssh` block's `user` and `port`, come from it. |
 | `-inventory=FILE` | The same as `-i`. |
-| `-out=FILE` | Write the circuits to `FILE` instead of standard output. An existing file is overwritten. |
+| `-out=FILE` | Write the circuits to `FILE` instead of standard output. An existing file is overwritten. With `-role`, the new directory to write the circuit to. |
+| `-role=DIR` | Convert the Ansible role in `DIR` into a circuit directory. Needs `-out`. |
 
 Without `-i`, the output declares variables for you to set instead: a `<group>_hosts` map for each group, and `ssh_user`. It always declares `ssh_private_key_file`.
 

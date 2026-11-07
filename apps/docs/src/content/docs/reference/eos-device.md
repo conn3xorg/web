@@ -1,10 +1,10 @@
 ---
 title: EOS device facts
-description: "Read an Arista EOS switch's model, version and serial at plan time, with the conn3x_eos_device data source. Experimental, arriving in the next release."
+description: "Read an Arista EOS switch's model, version and serial at plan time, with the conn3x_eos_device data source. Experimental, since v0.9.0."
 ---
 
-:::note[Arriving in the next release]
-`conn3x_eos_device` is on `main` and arrives in the next release.
+:::note
+`conn3x_eos_device` is in Conn3x since v0.9.0. Earlier releases don't have it.
 :::
 
 Experimental. `conn3x_eos_device` reads facts about an Arista EOS switch over SSH when you plan, from `show version` and `show hostname`, so a circuit can refuse a switch it wasn't written for.
