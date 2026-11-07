@@ -89,7 +89,7 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 | [`windows_scheduled_task`](/modules/windows_scheduled_task) | `"delete"` | Deletes the task. |
 | [`windows_user`](/modules/windows_user) | `"forget"` | Deletes the account and leaves its profile folder. |
 
-For `firewalld` and `ufw` rules, `on_remove` also applies when a change replaces the rule: with the default, the old port is closed before the new rule is added. The same goes for `windows_firewall_rule`, `windows_scheduled_task`, `windows_iis_site` and `windows_iis_app_pool`: with `"delete"`, a change that replaces the step deletes the old one.
+For `firewalld` and `ufw` rules, `on_remove` also applies when a change replaces the rule: with the default, the old port is closed before the new rule is added. The same goes for `windows_firewall_rule`, `windows_scheduled_task`, `windows_iis_site` and `windows_iis_app_pool`: with `"delete"`, a change that replaces the step deletes the old one. To add the new rule before the old one goes, set [`create_before_destroy`](/reference/circuits/steps#create_before_destroy) in the step's `lifecycle` block.
 
 ### Modules without on_remove
 
