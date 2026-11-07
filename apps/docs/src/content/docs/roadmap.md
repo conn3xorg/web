@@ -1,9 +1,11 @@
 ---
 title: Roadmap
-description: "What Conn3x does today, what we're building now and what comes after: Windows at scale, network devices over their own CLI, Ansible roles and Galaxy, ad-hoc commands, then a web UI. No dates."
+description: "What Conn3x does today, what we're building now and what comes after: Windows at scale, network devices over their own CLI, Ansible roles and Galaxy, ad-hoc commands, a web UI, then the rest of what Terraform, OpenTofu, Ansible, Chef and Puppet do. No dates."
 ---
 
 Conn3x closes the gap between creating infrastructure and configuring it: one plan, one state and one apply for the cloud and the servers in it. Today it does that for Linux, and for Windows Server in preview.
+
+Where it's going is further than that. Anything you'd do with Terraform, OpenTofu, Ansible, Chef or Puppet, you should be able to do with Conn3x, and this page is the route there.
 
 This page says what's planned and in what order. None of it has a date, and nothing here works until a release says it does. The words stable, preview, experimental and planned mean the same here as everywhere else in the docs; [Maturity labels](/reference/maturity) says what each one promises. The [release notes](https://github.com/conn3xorg/conn3x/releases) are the record of what has shipped.
 
@@ -41,6 +43,19 @@ Sometimes you just want to run one thing on every web server and see what comes 
 ## Then: a web UI
 
 A self-hosted, open-source web app for teams: run plans and applies from a browser, see each run's output and history, approve a plan before it applies, schedule drift checks, and keep credentials and access per project. Think [Semaphore UI](https://github.com/semaphoreui/semaphore) or AWX, built for one plan that covers the cloud and the servers in it.
+
+## Toward full IaCC
+
+Infrastructure as code and configuration: the five steps above are the start of it. These are the rest, in the order we expect to build them. A few slot in between those steps, and each one says where.
+
+- **The rest of OpenTofu, on host steps.** Your cloud resources already get everything OpenTofu does. Host steps don't yet: you can't `import` the files and packages a server already has, and a step can't take a `lifecycle` block, so there's no `prevent_destroy` and no precondition. It's small work, and it goes alongside Windows and network devices, because taking over servers you already run starts with import.
+- **Inventory and host data.** Bring your Ansible inventory across with its `group_vars` and `host_vars`, and look a value up by host, group, environment or a common default, the way Hiera or Chef attributes do. This lands right after roles, since real roles lean on all of it, and before ad-hoc commands, so "every web server" can mean a group rather than a list you typed.
+- **Rolling updates and orchestration.** Patch twenty servers five at a time, and stop if two fail. Run a step once, or on a machine other than the one it configures. Name a set of steps as a task, then chain tasks into a plan, the job Bolt does for Puppet. It builds on ad-hoc commands and comes before the web UI, which runs these as jobs.
+- **Servers that keep themselves right.** Puppet and Chef put a server back every half hour without anyone asking. Conn3x tells you about drift today; here it fixes it on a schedule from the web UI, and keeps every run's report and every host's facts somewhere you can search. A pull mode, where the host asks for its own config, comes after, with its own design.
+- **Encrypted secrets you can commit.** Ephemeral variables and write-only files already keep secrets out of state. This adds encrypted variable files, like Ansible Vault or Chef's encrypted data bags, sharing the web UI's way of holding credentials.
+- **Compliance, tests and policy.** Checks that only report, the way InSpec does, so an auditor gets an answer and nobody's server changes. A test command that starts containers for a circuit, like Test Kitchen or Molecule. And policy that reads a plan, host steps included, before anything applies.
+- **Your own modules, and your Chef and Puppet code.** A way to write a module without changing Conn3x itself. Converters for Chef cookbooks and Puppet modules that behave like `conn3x convert ansible`: rewrite what they can prove, mark the rest with the reason. And a registry for circuits, with versions and search.
+- **Runs that start on an event.** An alert fires or a webhook arrives, and the right job runs, as Event-Driven Ansible does.
 
 ## Alongside: more circuits
 
