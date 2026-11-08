@@ -4,7 +4,7 @@ description: "How Conn3x configures switches over their own CLI: Arista EOS firs
 ---
 
 :::note
-Everything on this page is in Conn3x since v0.9.0, and it's experimental. Earlier releases don't know the `eos_*` modules, so a circuit that uses one fails `conn3x validate`.
+Everything on this page is in Conn3x since v0.9.0, apart from the one section marked as arriving in the next release, and all of it is experimental. Earlier releases don't know the `eos_*` modules, so a circuit that uses one fails `conn3x validate`.
 :::
 
 A switch is a host like any other in a circuit. You list it in `hosts`, reach it through the circuit's `ssh` block, and the step's module decides how Conn3x talks to it. A `package` step runs shell commands. An `eos_*` step types into the switch's own CLI. There's no shell, no `sudo` and no agent on the switch, and nothing to install there.
@@ -88,7 +88,7 @@ If the change cut Conn3x off, the new login fails, the confirm never arrives, an
 
 A change doesn't take effect the instant it's committed. On cEOS-lab, turning off SSH stopped new logins 3 to 6 seconds after the commit. A confirm sent straight away gets in before that, so Conn3x would keep the very change that's about to lock it out. The wait is there so the change has bitten by the time Conn3x tests the login.
 
-The wait has a cost. Today each step is its own session, so it's paid once per step that changes: about 30 seconds each, or five minutes for a switch with ten changed steps.
+The wait has a cost. In v0.9.0 each step is its own session, so it's paid once per step that changes: about 30 seconds each, or five minutes for a switch with ten changed steps. The next release pays it once per switch; see below.
 
 Thirty seconds is a measured guess, not a guarantee. ACLs, VRF moves, AAA changes and real switch hardware can take longer to settle. Raise the wait in the circuit's `ssh` block when your changes need it:
 
@@ -101,9 +101,29 @@ ssh {
 
 It takes at least `"5s"` and anything under `"4m"`, so the confirm always lands before the five-minute revert.
 
+## One commit per switch, arriving in the next release
+
+Ten changed steps shouldn't mean ten waits. From the next release, they don't. The steps for a switch share one config session per apply:
+
+1. Each `eos_*` step adds its lines to the switch's session. Nothing is live yet. A step with nothing to change doesn't open one.
+2. Once every step for that switch is in, one commit with the revert timer makes the lot live together.
+3. One `confirm_after` wait, one confirm over a new login, one save.
+
+On cEOS-lab, a ten-step circuit with `confirm_after = "10s"` applied in 13.5 seconds. One session per step took 97.
+
+The plan shows one extra line per switch, `conn3x_eos_commit.<circuit>__commit`, and it only changes when one of the circuit's `eos_*` steps does. It's never drift: a hand edit shows up on the step that owns the line. With `strategy = "per_host"`, each switch commits as soon as its own steps are in, without waiting for the others.
+
+Sharing a session changes a few things:
+
+- **A failed step drops the whole session.** The steps before it on that switch were only staged, so nothing on the switch changes. The next apply makes them again.
+- **A rollback takes the whole batch.** If one step's change locks Conn3x out, the confirm never comes, and the switch rolls back every step of that apply, not just the bad one. Fix the bad step and apply again.
+- **A hand edit mid-apply stops the commit.** EOS commits a session by swapping running-config for the session's copy, which would quietly undo an edit made since the session started. If running-config changed while the apply was adding lines, Conn3x aborts the session instead. Nothing changes; apply again.
+- **A leftover session gets cleaned up.** An apply that's killed before its commit leaves a pending `conn3x-` session, which was never live. The next apply aborts it before it opens its own. One killed during the wait leaves a commit on its revert timer, and the next apply won't change that switch until it has rolled back.
+- **Target the commit, not a step.** `-target` on a single `eos_*` step leaves the commit out, so its lines are dropped when the run ends. Target `conn3x_eos_commit.<circuit>__commit` instead; it brings the circuit's steps with it.
+- **Removals still commit one at a time.** A step you delete from the circuit commits its removal in its own session, after the circuit's commit. Destroying a whole circuit pays the wait once per removed VLAN or line.
+
 ## What's coming
 
-- **One session per switch per apply.** Every `eos_*` step for a switch goes into one session, with one commit, one wait and one confirm, so the wait is paid once rather than per step.
 - More EOS modules: interfaces, with a check that refuses changes to the management interface at plan; local users; and lines kept out of state for secrets.
 - Junos, VyOS and classic Cisco IOS after that. See the [roadmap](/roadmap).
 
