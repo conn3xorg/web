@@ -320,3 +320,17 @@ test("the rubric page matches the rubric, and says what a grade isn't", () => {
   assert.match(doc, /not a security guarantee/);
   assert.match(doc, new RegExp(`C \\| ${PASS_MARK} to`));
 });
+
+// The same cases conn3x lint is tested with, copied from conn3xorg/conn3x's
+// internal/conn3x/lint/testdata/grader-cases.json (at 775c137). Change the two
+// together: lint and the grader must agree on what a circuit's code fails.
+test("the grader agrees with conn3x lint on the shared cases", () => {
+  const cases = JSON.parse(read("scripts/testdata/lint-grader-cases.json"));
+  assert.ok(cases.length > 20, "the shared cases are there");
+  for (const c of cases) {
+    const file = c.ext === ".sh" ? "setup.sh" : c.ext === ".tf" ? "variables.tf" : "main.circuit.hcl";
+    const state = check(evaluate(evidence(ci(fetching), { files: [[file, `${c.text}\n`]] }), { held: new Set() }), c.check).state;
+    if (c.hit) assert.equal(state, "fail", `${c.rule} should fail: ${c.text}`);
+    else assert.notEqual(state, "fail", `${c.rule} should not fail: ${c.text}`);
+  }
+});
