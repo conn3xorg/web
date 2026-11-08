@@ -29,6 +29,7 @@ circuit "web" {
 ```text
 step "NAME" {
   for_each   = EXPRESSION        # optional
+  when       = EXPRESSION        # optional
   depends_on = [ADDRESS, ...]    # optional
   notify     = [handler.NAME, ...] # optional
   import     = true | [HOST, ...] # optional
@@ -50,6 +51,7 @@ A step block takes one label, the step's name, and contains:
 | --- | --- | --- |
 | Module block | Yes | Exactly one module block, such as `package`, `file` or `service`. The [module reference](/modules/file) lists every module and its arguments. |
 | `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host. See [for_each](#for_each). |
+| `when` | No | A condition, true or false for each host, that picks the hosts the step runs on. See [when](#when). |
 | `depends_on` | No | A list of resources the step waits for, in addition to the step before it. See [depends_on](#depends_on). |
 | `notify` | No | A list of handlers in the same circuit to run when this step changes something on a host. See [Handlers](/reference/circuits/handlers). |
 | `import` | No | `true`, or a list of host names, to adopt the object already on those hosts instead of creating it. See [import](#import). |
@@ -312,6 +314,65 @@ conn3x_package.web__tools["web2/tree"]
 Remove an item from `for_each`, and the next plan destroys that item's instances on every host and leaves the other items alone. What happens on the host depends on the module's [`on_remove`](/reference/circuits/removal).
 
 A handler notified by a step with `for_each` runs on a host when any of that host's items changed.
+
+## when
+
+:::note
+`when` is new after v0.9.0; earlier releases reject it with "Unsupported argument in step".
+:::
+
+`when` runs a step only on the hosts where a condition is true, as Ansible's `when` does:
+
+```hcl
+data "conn3x_host" "facts" {
+  for_each = local.hosts
+  ssh {
+    host = each.value
+  }
+}
+
+circuit "web" {
+  hosts = local.hosts
+
+  step "apt_cache" {
+    when = data.conn3x_host.facts[each.key].os_family == "debian"
+    command {
+      command = "apt-get update"
+    }
+  }
+}
+```
+
+`each.key` and `each.value` are the host, as in the module's arguments. In a step with [`for_each`](#for_each), `when` is evaluated for each host and item, and can read `item.key` and `item.value` too:
+
+```hcl
+step "tools" {
+  for_each = ["git", "jq", "podman"]
+  when     = item.value != "podman" || local.family[each.key] == "redhat"
+  package {
+    name = item.value
+  }
+}
+```
+
+A few rules:
+
+- **It has to be known when planning,** because it decides which instances of the step exist. A fact from [`conn3x_host`](/reference/host-facts) is known for a host that already exists, but not for one the same plan creates. For those, give the host's entry the value `when` needs and read that first, as in `try(each.value.os, data.conn3x_host.facts[each.key].os_id)`. An unknown `when` fails the plan with a message saying so.
+- **It must be `true` or `false`.** Anything else is an error that names the host.
+- **On `import`:** `import = true` adopts the object only on the hosts `when` keeps. Listing a host that `when` leaves out is an error.
+- **Under [`strategy = "per_host"`](#per-host),** a step that `when` skips on a host doesn't break that host's chain: the next step waits for the last step that does run there.
+- **Handlers:** a host the step skipped has nothing to notify from it. Handlers don't take `when`. See [Handlers](/reference/circuits/handlers#when-handlers-run).
+
+### When it turns false
+
+`when` doesn't skip a step the way Ansible's does. It decides whether the step has an instance on a host. So when `when` goes from true to false on a host that already has the step, the next plan **removes** that instance, as removing the host from `hosts` would:
+
+```text
+# conn3x_file.web__apt_conf["web2"] will be destroyed
+# (because key ["web2"] is not in for_each map)
+```
+
+What happens on the host is the module's [`on_remove`](/reference/circuits/removal). With the default, `forget`, Conn3x stops managing the object and leaves it there. With `on_remove = "delete"`, it deletes it. So a file a step wrote stays put after `when` turns false, unless that step sets `on_remove = "delete"`. Turn `when` back to true and the next apply manages it again.
 
 ## import
 
