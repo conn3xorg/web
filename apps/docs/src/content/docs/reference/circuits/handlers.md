@@ -112,6 +112,7 @@ A handler runs on a host when, during this apply, a step that notifies it change
 
 - It runs only on the hosts that changed. If a notifying step changed `web1` but not `web2`, the handler runs on `web1` only.
 - A step whose [`when`](/reference/circuits/steps#when) is false on a host doesn't run there, so it never notifies there. Handlers take no `when` of their own.
+- A step with [`run_once`](/reference/circuits/steps#run_once) notifies only the host it ran on, as in Ansible. To restart every host after it, use a step that runs everywhere.
 - It runs after every step in the circuit has finished on every host, not straight after the step that notified it. In a circuit with [`strategy = "per_host"`](/reference/circuits/steps#per-host), it runs on a host once every step has finished on that host, so a slow host doesn't hold up the restarts on the others. That setting is in Conn3x since v0.9.0.
 - It runs at most once on each host in an apply, however many of its steps changed.
 - Putting back a change someone made by hand counts. If someone edits a file and the apply writes it back, the handler runs, even though the file now matches the previous apply.
