@@ -54,7 +54,7 @@ A step block takes one label, the step's name, and contains:
 | Module block | Yes | Exactly one module block, such as `package`, `file` or `service`. The [module reference](/modules/file) lists every module and its arguments. |
 | `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host. See [for_each](#for_each). |
 | `when` | No | A condition, true or false for each host, that picks the hosts the step runs on. See [when](#when). |
-| `run_once` | No | `true` runs the step on one host only. See [run_once](#run_once). |
+| `run_once` | No | `true` to run the step on one host only, such as for a database migration. See [run_once](#run_once). |
 | `on` | No | With `run_once`, the host to run on. See [run_once](#run_once). |
 | `depends_on` | No | A list of resources the step waits for, in addition to the step before it. See [depends_on](#depends_on). |
 | `notify` | No | A list of handlers in the same circuit to run when this step changes something on a host. See [Handlers](/reference/circuits/handlers). |
@@ -384,28 +384,45 @@ What happens on the host is the module's [`on_remove`](/reference/circuits/remov
 `run_once` and `on` are in Conn3x since v0.10.0. Earlier releases reject them with "Unsupported argument in step".
 :::
 
-`run_once = true` runs a step on one host, as Ansible's `run_once` does. Use it for work that belongs to the cluster rather than to each machine, such as a database migration:
+`run_once = true` runs a step on one host only, as Ansible's `run_once` does. It's for things that happen once per circuit, not once per host: a database migration, a cluster bootstrap, a cache flush.
+
+```hcl
+step "code" {
+  ...
+}
+
+step "migrate" {
+  run_once = true
+  on       = "db1"
+  command {
+    command = "app migrate"
+  }
+}
+
+step "restart" {
+  ...
+}
+```
+
+- **Which host:** the one `on` names, or else the first host key in sort order. HCL maps don't keep the order they're written in, so "first" means sorted: in `{ web2 = ..., db1 = ..., web1 = ... }` it's `db1`. `on` names one of the circuit's `hosts` keys and has to be known when planning. A name that isn't in `hosts` is an error, and so is `on` without `run_once = true`. Set `on` for anything that shouldn't move.
+- **The plan shows one instance:** `conn3x_command.app__migrate["db1"]`. In a step with [`for_each`](#for_each), it's that host's items.
+- **It waits for every host, even under [`strategy = "per_host"`](#per-host).** The steps before it finish on every host before it starts, and the steps after it start on any host only once it has finished. So `migrate` above never runs while a host is still on the old code, and `restart` never runs before the migration. Under `per_host` that makes a `run_once` step the one point where hosts wait for each other.
+- **Changing the host is a removal:** if `on` changes, or the first host changes because one was added or removed, the old instance is removed, with its [`on_remove`](/reference/circuits/removal), and the new host gets the step.
+- **What doesn't go with it:** `run_once` with [`when`](#when) is an error for now, since it isn't settled whether `when` should pick the host or decide whether the one host runs it. So is `import` naming a host other than the one it runs on, since the step has nothing to adopt there.
+
+### Handlers
+
+A handler notified by a `run_once` step runs only on the host where the step ran, as in Ansible. That's a trap in the most common use, "migrate once, then restart everywhere":
 
 ```hcl
 step "migrate" {
   run_once = true
-  on       = "db1"           # optional
-  command {
-    command = "/opt/app/bin/migrate"
-    creates = "/var/lib/app/migrated-v42"
-  }
+  notify   = [handler.restart]   # restarts db1 only
+  ...
 }
 ```
 
-Without `on`, the step runs on the first host key in sort order. `on` names one of the circuit's `hosts` keys, and has to be known when planning. A name that isn't in `hosts` is an error, and so is `on` without `run_once = true`.
-
-A few details:
-
-- **With `for_each`,** the step keeps every item, on the one host.
-- **It's a sync point,** under [`strategy = "per_host"`](#per-host) too, as in Ansible. The step waits for the steps before it on every host, and the steps after it wait for it on every host.
-- **Not with `when`, for now.** A step takes one or the other. It isn't settled whether `when` should pick the host or decide whether the one host runs it.
-- **On `import`:** naming a host other than the one the step runs on is an error, since the step has nothing to adopt there.
-- **Changing the host** moves the step: the next plan removes the instance on the old host and adds one on the new one, and what's left on the old host follows the module's [`on_remove`](/reference/circuits/removal).
+To restart every host, give the restart its own step after the `run_once` one, or notify the handler from a step that runs on every host.
 
 ## import
 
