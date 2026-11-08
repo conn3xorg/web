@@ -49,7 +49,7 @@ You need:
 - A default VPC in `us-west-2`. If you've deleted it, `aws ec2 create-default-vpc --region us-west-2` brings it back.
 - An SSH key pair.
 - `curl` and `jq`, and `nc` for one check. macOS has all three apart from `jq`, which is `brew install jq`.
-- Conn3x v0.9.0.
+- Conn3x v0.10.0.
 
 The next three sections set up the last three.
 
@@ -58,7 +58,7 @@ The next three sections set up the last three.
 On a Mac with Homebrew, `brew install conn3xorg/tap/conn3x` does it. To install from the release and check you've got what the release workflow built, download the archive, the checksums and their signature. Set `OS` to `linux` or `darwin`, and `ARCH` to `amd64` or `arm64`:
 
 ```sh
-VERSION=0.9.0 OS=darwin ARCH=arm64
+VERSION=0.10.0 OS=darwin ARCH=arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/checksums.txt"
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/checksums.txt.sigstore.json"
@@ -84,7 +84,7 @@ shasum -a 256 --check --ignore-missing checksums.txt
 ```
 
 ```text
-conn3x_0.9.0_darwin_arm64.tar.gz: OK
+conn3x_0.10.0_darwin_arm64.tar.gz: OK
 ```
 
 Unpack it, put it on your `PATH`, and ask it its version:
@@ -96,7 +96,7 @@ conn3x version
 ```
 
 ```text
-Conn3x v0.9.0 (built on OpenTofu v1.13.2)
+Conn3x v0.10.0 (built on OpenTofu v1.13.2)
 on darwin_arm64
 agent: linux/amd64 6117b07a45e6, linux/arm64 4352d611dfe9
 ```
@@ -912,7 +912,7 @@ It's a cut-down version of [circuit-lempa-homelab](/circuits/lempa-homelab), whi
 
 You test it on a Rocky Linux 10 container on your laptop, so part 2 needs no cloud. You need:
 
-- Conn3x v0.9.0, from part 1.
+- Conn3x v0.10.0, from part 1.
 - [Podman](https://podman.io/docs/installation). Homepage and Uptime Kuma run under Podman inside the test container, so the container is privileged, which works best with rootful Podman. On a Mac, use the Podman machine's root connection: `export CONTAINER_CONNECTION=podman-machine-default-root`. On Linux, `export PODMAN="sudo podman"`.
 - A GitHub account, for publishing.
 

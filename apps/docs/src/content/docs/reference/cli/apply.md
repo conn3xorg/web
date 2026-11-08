@@ -54,6 +54,7 @@ Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 | `-compact-warnings` | Show warnings as summaries only, when there are no errors. |
 | `-concise` | Leave out progress messages. |
 | `-show-sensitive` | Show sensitive values. |
+| `-report=FILE` | Write a JSON report of the run to `FILE`. See [-report](#-report). Not with `-json`. |
 
 Without a plan file, `apply` also takes the planning options from [plan](/reference/cli/plan#options): `-var`, `-var-file`, `-target`, `-exclude`, `-replace`, `-refresh=false`, `-refresh-only` and `-destroy`. With a plan file, those were fixed when the plan was made.
 
@@ -87,6 +88,56 @@ Accept what changed outside Conn3x into state, without changing any host:
 ```sh
 conn3x apply -refresh-only
 ```
+
+## -report
+
+`-report=run.json` writes a report of the run when apply finishes, whether it succeeded or not: each host's steps, what happened to each, how long it took, and any error as the terminal printed it. It's for CI, dashboards and tickets, which want the result without parsing a log. New in v0.10.0, and [experimental](/reference/maturity).
+
+```sh
+conn3x apply -auto-approve -report=run.json
+```
+
+```json
+{
+  "format_version": "1",
+  "conn3x_version": "v0.10.0",
+  "command": "apply",
+  "started": "2026-11-08T18:00:05.00494Z",
+  "finished": "2026-11-08T18:00:20.102056Z",
+  "success": true,
+  "hosts": {
+    "box": {
+      "steps": [
+        {
+          "step": "try.tools",
+          "address": "conn3x_package.try__tools[\"box\"]",
+          "module": "package",
+          "action": "create",
+          "changed": true,
+          "status": "ok",
+          "seconds": 15
+        }
+      ]
+    }
+  },
+  "cloud": [],
+  "drift": [],
+  "errors": []
+}
+```
+
+That's the [try-it-locally](/tutorials/try-locally) circuit's first apply, cut to its first step.
+
+- **Hosts** are keyed by their name in the circuit's `hosts`, with steps in the order they were planned. A step in a `for_each` loop has an `item`.
+- **`status`** is `ok`, `failed` or `skipped`. A skipped step has a `reason`, such as `an earlier step failed on this host`.
+- **`cloud`** lists every resource that isn't a host step, such as a server.
+- **No values.** A report holds addresses, actions, timings and errors, and never an attribute's value, since reports get copied to other systems. An error is kept as printed, so a command that printed a secret in its error would carry it, and the file is written readable by its owner only.
+
+The format is the JSON Schema at [docs.conn3x.org/schemas/report-1.json](https://docs.conn3x.org/schemas/report-1.json). Within format version `1`, fields are only added, never changed or removed.
+
+`-report` doesn't go with `-json`: that stream on standard output already has everything. To keep the human output and the JSON lines both, use `-json-into`.
+
+[`conn3x drift`](/reference/cli/drift#-report) takes `-report` too.
 
 ## Exit codes
 
