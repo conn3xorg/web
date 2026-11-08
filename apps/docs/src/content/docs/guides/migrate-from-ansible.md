@@ -10,9 +10,8 @@ conn3x convert ansible -i inventory.ini -out site.tf site.yml
 ```
 
 ```text
-Converted 9 tasks. 2 things need you; each is marked TODO(convert):
-  line 64, Users from a list: uses loop, which the converter can't translate yet
-  line 69, Say hello: uses the debug module, which has no Conn3x equivalent yet
+Converted 11 tasks. 1 thing needs you; each is marked TODO(convert):
+  line 72, Check the disk: uses the stat module, which has no Conn3x equivalent yet
 ```
 
 Write the output next to the playbook: when a task copies a file from `files/`, the circuit reads it from the same place.
