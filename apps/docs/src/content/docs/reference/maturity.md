@@ -31,6 +31,7 @@ Experimental is about each module inside it. They're new, and the arguments of a
 | The Linux modules, the CLI, `conn3x drift` and `conn3x convert ansible` | Stable | Tested on every change. The converter marks what it can't prove instead of guessing. |
 | Official circuits for Linux | Stable | Each is tested on the distributions its page lists. |
 | `lifecycle` on steps | Preview | New in v0.8.0. It uses OpenTofu's own lifecycle rules, so they behave as you'd expect, but how they fit steps may still change before 1.0. |
+| [`when`](/reference/circuits/steps#when) on steps, to run a step on only some hosts | Preview | New after v0.9.0. It filters the step's `for_each`, so it uses OpenTofu's own rules, but how it reads may still change before 1.0. |
 | `import` on steps, to [adopt servers you already run](/guides/adopt-servers) | Preview | New in v0.8.0. Since v0.9.0 it works on 21 Linux modules, [listed here](/reference/circuits/steps#import), and through `provider::conn3x::import_id` on steps inside a module. Try it on a server you can rebuild before your oldest one. |
 | Windows Server 2022 and 2025 | Preview | Standalone servers work, and so does a small domain: a new forest, servers joined to it, more domain controllers, and the OUs, groups and users inside it. A whole lab from one config, then Windows at scale, are the work now. |
 | The `windows_*` modules, and circuits built on them | Experimental | New, and their arguments may change between releases. |
