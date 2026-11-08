@@ -3,7 +3,7 @@ title: CLI overview
 description: How to run conn3x commands, the global options, the environment variables Conn3x reads, and its exit codes.
 ---
 
-The `conn3x` binary has every command OpenTofu 1.13.2 has, and three of its own: [`drift`](/reference/cli/drift), [`convert ansible`](/reference/cli/convert-ansible) and [`generate step`](/reference/cli/generate-step). This section documents Conn3x v0.8.0.
+The `conn3x` binary has every command OpenTofu 1.13.2 has, and five of its own: [`drift`](/reference/cli/drift), [`convert ansible`](/reference/cli/convert-ansible), [`generate step`](/reference/cli/generate-step), [`lint`](/reference/cli/lint) and [`mcp`](/reference/cli/mcp). This section documents Conn3x v0.10.0.
 
 ## Usage
 
@@ -44,6 +44,8 @@ These are the commands most people use. Each has its own page.
 | [`drift`](/reference/cli/drift) | Report what changed outside Conn3x since the last apply. Conn3x only. |
 | [`convert ansible`](/reference/cli/convert-ansible) | Turn an Ansible playbook into circuits. Conn3x only. |
 | [`generate step`](/reference/cli/generate-step) | Print a step for something a host already has. Conn3x only. |
+| [`lint`](/reference/cli/lint) | Check a circuit's own code for what the circuit grader marks down. Conn3x only. |
+| [`mcp`](/reference/cli/mcp) | A read-only Model Context Protocol server for assistants. Conn3x only. |
 | [`show`](/reference/cli/show) | Show the state or a saved plan. |
 | [`state`](/reference/cli/state) | List, inspect, move and remove items in state. |
 | [`output`](/reference/cli/output) | Print output values. |

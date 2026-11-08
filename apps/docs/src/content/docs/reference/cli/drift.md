@@ -72,8 +72,40 @@ Errors are printed after the drift list, each starting with `Error:`. A host tha
 | `-parallelism=N` | How many resources are read at once. Defaults to `10`. |
 | `-lock=false` | Don't lock state while reading it. |
 | `-lock-timeout=DURATION` | How long to retry a state lock. |
+| `-report=FILE` | Write a JSON report of what drifted to `FILE`. See [-report](#-report). |
 
 `-json` is an error. For the same reads as JSON lines, run `conn3x plan -refresh-only -json`, which is what `drift` runs underneath. `-destroy` is an error too, because a refresh-only plan can't also destroy.
+
+## -report
+
+`-report=drift.json` writes what drift found as JSON, in the same [format](/reference/cli/apply#-report) as `apply -report`, with `command` set to `drift` and each changed object under `drift`. New in v0.10.0, and [experimental](/reference/maturity).
+
+```sh
+conn3x drift -report=drift.json
+```
+
+```json
+{
+  "format_version": "1",
+  "conn3x_version": "v0.10.0",
+  "command": "drift",
+  "started": "2026-11-08T18:00:24.602379Z",
+  "finished": "2026-11-08T18:00:24.82682Z",
+  "success": true,
+  "hosts": {},
+  "cloud": [],
+  "drift": [
+    {
+      "address": "conn3x_file.try__motd[\"box\"]",
+      "host": "box",
+      "kind": "changed"
+    }
+  ],
+  "errors": []
+}
+```
+
+`kind` is `changed` or `gone`, as in the terminal output. `success` is `false` only for exit code 1: drift found is still a successful run.
 
 ## Examples
 

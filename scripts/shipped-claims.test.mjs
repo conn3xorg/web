@@ -59,6 +59,23 @@ const SHIPPED = [
       /handles tasks and plays today, not roles/i,
     ],
   },
+  {
+    feature: "conn3x.exe, Windows import, windows_update, one EOS commit per switch, eos_interface, eos_user, when, run_once, lint, mcp and -report (v0.10.0)",
+    stale: [
+      /One commit per switch, arriving in the next release/i,
+      /The next release pays it once per switch/i,
+      /Removals still commit one at a time/i,
+      /More EOS modules: interfaces/i,
+      /`when` is new after v0\.9\.0/i,
+      /New after v0\.9\.0/i,
+      /What's left is import on Windows/i,
+      /Run a step once, or on a machine/i,
+      /Twenty-three `windows_\*` modules/i,
+      /runs on Linux and macOS, on amd64 and arm64\.\s/i,
+      /itself runs on Linux and macOS\./i,
+      /and three of its own: \[`drift`\]/i,
+    ],
+  },
 ];
 
 function files(dir) {
@@ -138,6 +155,24 @@ test("the check catches the old v0.9.0 lines", () => {
     "The next release adds `authorized_key`, `cron`, `timer`, `sysctl`, `mount`, `repository`, `hostname`, `timezone` and `locale`.",
     "Coming in the next release: `-role`.",
     "`conn3x convert ansible` handles tasks and plays today, not roles.",
+  ];
+  for (const line of old) assert.ok(SHIPPED.some(({ stale }) => stale.some((re) => re.test(line))), line);
+});
+
+test("the check catches the old v0.10.0 lines", () => {
+  const old = [
+    "## One commit per switch, arriving in the next release",
+    "In v0.9.0 each step is its own session, so it's paid once per step that changes. The next release pays it once per switch; see below.",
+    "- **Removals still commit one at a time.** A step you delete from the circuit commits its removal in its own session.",
+    "- More EOS modules: interfaces, with a check that refuses changes to the management interface at plan; local users.",
+    "`when` is new after v0.9.0; earlier releases reject it with \"Unsupported argument in step\".",
+    "| Preview | New after v0.9.0. It filters the step's `for_each`. |",
+    "What's left is import on Windows, once its preview settles.",
+    "Run a step once, or on a machine other than the one it configures.",
+    "Twenty-three `windows_*` modules cover PowerShell scripts, reboots and waits.",
+    "Conn3x runs on Linux and macOS, on amd64 and arm64. It configures Rocky Linux.",
+    "Conn3x itself runs on Linux and macOS. It configures hosts running Rocky Linux.",
+    "The `conn3x` binary has every command OpenTofu 1.13.2 has, and three of its own: [`drift`](/reference/cli/drift).",
   ];
   for (const line of old) assert.ok(SHIPPED.some(({ stale }) => stale.some((re) => re.test(line))), line);
 });
