@@ -50,7 +50,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [SQL Server](/circuits/mssql) | SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state. | v0.2.1 |
 | [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.1.4 |
 | [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.2.0 |
-| [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.2.1 |
+| [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.2.2 |
 | [SQLite](/circuits/sqlite) | The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode. | v0.1.4 |
 | [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.2.1 |
 | [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.0 |
@@ -60,7 +60,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [node_exporter](/circuits/node-exporter) | Runs Prometheus node_exporter at a pinned, checksummed version as its own system user. | v0.1.4 |
+| [node_exporter](/circuits/node-exporter) | Runs Prometheus node_exporter at a pinned, checksummed version as its own system user. | v0.1.5 |
 | [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.1.2 |
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.0 |
 | [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.4 |
@@ -77,13 +77,13 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Docker](/circuits/docker) | Installs Docker Engine from Docker's repository and runs your Compose stacks from files in your configuration. | v0.2.1 |
 | [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.1.2 |
 | [k3s](/circuits/k3s) | A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support. | v0.1.8 |
-| [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.2.3 |
+| [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.2.4 |
 | [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.2.0 |
-| [Rancher](/circuits/rancher) | Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state. | v0.1.3 |
+| [Rancher](/circuits/rancher) | Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state. | v0.1.4 |
 | [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.2 |
 | [Nomad](/circuits/nomad) | A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state. | v0.1.2 |
-| [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.4 |
-| [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.2 |
+| [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.5 |
+| [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.3 |
 | [Flux](/circuits/flux) | Flux CD on a k3s cluster at a pinned version, synced from a Git repository you name, with credentials kept out of state. | v0.1.2 |
 | [Dockge](/circuits/dockge) | Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine. | v0.1.0 |
 | [Portainer CE](/circuits/portainer) | Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it. | v0.1.0 |
@@ -93,7 +93,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Pi-hole](/circuits/pihole) | Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists. | v0.1.5 |
-| [AdGuard Home](/circuits/adguardhome) | AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard. | v0.2.2 |
+| [AdGuard Home](/circuits/adguardhome) | AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard. | v0.2.3 |
 | [Unbound](/circuits/unbound) | A validating, caching DNS resolver with Unbound: DNSSEC on, optional DNS over TLS upstreams and local records for your network. | v0.2.2 |
 | [BIND](/circuits/bind) | BIND 9 serving your zones, written as HCL, with serials that go up when records change and TSIG-signed secondaries. | v0.2.2 |
 
@@ -101,9 +101,9 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [WireGuard](/circuits/wireguard) | Joins hosts into a WireGuard network, full mesh or hub and spoke, with each private key made on its host and never leaving it. | v0.2.1 |
+| [WireGuard](/circuits/wireguard) | Joins hosts into a WireGuard network, full mesh or hub and spoke, with each private key made on its host and never leaving it. | v0.2.2 |
 | [Tailscale](/circuits/tailscale) | Installs Tailscale from Tailscale's repository and joins your hosts to your tailnet, with subnet routes, exit nodes and Tailscale SSH. | v0.2.1 |
-| [keepalived](/circuits/keepalived) | A floating IP address shared between hosts with keepalived, moving to a backup within a second when a host or a check fails. | v0.1.2 |
+| [keepalived](/circuits/keepalived) | A floating IP address shared between hosts with keepalived, moving to a backup within a second when a host or a check fails. | v0.1.3 |
 | [Cloudflare Tunnel](/circuits/cloudflared) | Run a Cloudflare Tunnel from a pinned, checksummed cloudflared under systemd, with the token kept out of plan and state. | v0.1.3 |
 | [NetBird](/circuits/netbird) | The NetBird client from NetBird's signed repo, joining your hosts to NetBird cloud or your own server. | v0.1.0 |
 
@@ -126,7 +126,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Firewall](/circuits/firewall) | A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on. | v0.3.0 |
 | [fail2ban](/circuits/fail2ban) | Bans addresses that keep failing SSH logins, through nftables, with room for jails of your own. | v0.3.1 |
 | [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.3.0 |
-| [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.2 |
+| [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.3 |
 | [auditd](/circuits/auditd) | Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability | v0.2.1 |
 | [Trivy](/circuits/trivy) | Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host. | v0.1.2 |
 | [CISO Assistant](/circuits/ciso-assistant) | Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL. | v0.1.1 |
@@ -228,6 +228,6 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Suricata](/circuits/suricata) | Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json | v0.2.1 |
 | [Zeek](/circuits/zeek) | Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change. | v0.1.4 |
 | [osquery](/circuits/osquery) | osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment. | v0.2.1 |
-| [Velociraptor](/circuits/velociraptor) | Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state. | v0.1.2 |
+| [Velociraptor](/circuits/velociraptor) | Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state. | v0.1.3 |
 | [Wazuh](/circuits/wazuh) | Wazuh manager, indexer and dashboard on one host, agents on the rest: vulnerability detection, file integrity and alerts. | v0.2.0 |
 | [Falco](/circuits/falco) | Falco from its official repository on the modern eBPF probe, with your own rules validated before they load. | v0.1.0 |

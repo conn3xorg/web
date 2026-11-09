@@ -3,7 +3,7 @@ title: OpenSCAP
 description: "OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openscap at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openscap at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/openscap/grade.svg)](https://conn3x.org/circuits/openscap/grade)
 
@@ -17,7 +17,7 @@ A scan tells you how a host measures up against the rules in the content. It isn
 
 ```hcl
 module "openscap" {
-  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.3"
 
   hosts                = { web = "203.0.113.10", db = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -59,7 +59,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.3/examples/local).
 
 ## Profiles
 
@@ -86,7 +86,7 @@ Conn3x logs in over SSH, usually as root, so leave out the rules that would stop
 
 ```hcl
 module "openscap" {
-  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-openscap?ref=v0.1.3"
 
   hosts                = { web = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -210,7 +210,7 @@ Requires Conn3x v0.6.5 or later and systemd on each host. Ubuntu, Debian and Fed
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.2/examples/local) was applied to each in a container, and CI does the same on amd64: it checks that the second plan has no changes, runs a scan through `conn3x-scap.service`, and checks it wrote the ARF results and the HTML report, that some rules passed, and that the rule in `skip_rules` came back `notselected`.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.3/examples/local) was applied to each in a container, and CI does the same on amd64: it checks that the second plan has no changes, runs a scan through `conn3x-scap.service`, and checks it wrote the ARF results and the HTML report, that some rules passed, and that the rule in `skip_rules` came back `notselected`.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet, with SELinux enforcing on Rocky Linux, the circuit was applied with `run_now`, then with `remediate` and the `skip_rules` in [Remediation](#remediation), as shown there. Both hosts were rebooted, still took SSH logins, and the next plan had no changes. Ubuntu 24.04 ships `oscap` 1.3.9, which read the 0.1.82 content without trouble.
 
@@ -218,10 +218,10 @@ The other profiles in the table were each run once by hand: `cis_level2_server` 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openscap/blob/v0.1.2/LICENSE). OpenSCAP is LGPL-2.1, and the SCAP Security Guide is BSD-3-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openscap/blob/v0.1.3/LICENSE). OpenSCAP is LGPL-2.1, and the SCAP Security Guide is BSD-3-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-openscap](https://github.com/conn3xorg/circuit-openscap). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-openscap/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-openscap](https://github.com/conn3xorg/circuit-openscap). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-openscap/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-openscap/tree/v0.1.3/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto), [TruffleHog](/circuits/trufflehog).

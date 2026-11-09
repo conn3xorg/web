@@ -3,7 +3,7 @@ title: Velociraptor
 description: "Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-velociraptor at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-velociraptor at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/velociraptor/grade.svg)](https://conn3x.org/circuits/velociraptor/grade)
 
@@ -29,7 +29,7 @@ variable "velociraptor_client_nonce" {
 }
 
 module "velociraptor" {
-  source = "github.com/conn3xorg/circuit-velociraptor?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-velociraptor?ref=v0.1.3"
 
   server               = { dfir = "203.0.113.10" }
   clients              = { web1 = "203.0.113.21", web2 = "203.0.113.22", db1 = "203.0.113.30" }
@@ -46,7 +46,7 @@ Clients reach the server on `https://SERVER_ADDRESS:8000/` unless you set `serve
 
 A new client shows up in the GUI a minute or two after its first apply, once the server has finished asking it about itself.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.3/examples/local).
 
 ### The GUI
 
@@ -165,16 +165,16 @@ Requires Conn3x v0.6.9 or later and systemd on each host, on x86_64 or aarch64, 
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.2/examples/local), a server and a client on one host, to each on amd64, and checks that the second plan has no changes, that the admin signs in to the GUI's API and a wrong password is refused, and that the client enrolls and appears in the server's `clients()` under the host's name. It then changes the admin password with a second apply, checks the new one works and the old one doesn't, and checks state holds neither the password, the nonce nor any private key. A second job runs the server on Ubuntu 24.04 and a client on Rocky Linux 10 in two containers, and checks the client enrolls across the network.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.3/examples/local), a server and a client on one host, to each on amd64, and checks that the second plan has no changes, that the admin signs in to the GUI's API and a wrong password is refused, and that the client enrolls and appears in the server's `clients()` under the host's name. It then changes the admin password with a second apply, checks the new one works and the old one doesn't, and checks state holds neither the password, the nonce nor any private key. A second job runs the server on Ubuntu 24.04 and a client on Rocky Linux 10 in two containers, and checks the client enrolls across the network.
 
 By hand, on DigitalOcean droplets: a Rocky Linux 10 server with SELinux enforcing, which also ran a client, and an Ubuntu 24.04 client. Both clients enrolled, the GUI took the admin's password, and on the Rocky Linux droplet both services ran as `unconfined_service_t` with no denials in the audit log. After rebooting both droplets, the plan had no changes and both clients were back in the server's list.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-velociraptor/blob/v0.1.2/LICENSE). Velociraptor itself is AGPL-3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-velociraptor/blob/v0.1.3/LICENSE). Velociraptor itself is AGPL-3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-velociraptor](https://github.com/conn3xorg/circuit-velociraptor). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-velociraptor/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-velociraptor](https://github.com/conn3xorg/circuit-velociraptor). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-velociraptor/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-velociraptor/tree/v0.1.3/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Suricata](/circuits/suricata), [Zeek](/circuits/zeek), [osquery](/circuits/osquery), [Wazuh](/circuits/wazuh), [Falco](/circuits/falco).
