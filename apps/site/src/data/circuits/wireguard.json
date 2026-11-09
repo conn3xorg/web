@@ -2,7 +2,7 @@
   "name": "wireguard",
   "repo": "conn3xorg/circuit-wireguard",
   "description": "Joins hosts into a WireGuard network, full mesh or hub and spoke, with each private key made on its host and never leaving it.",
-  "version": "v0.2.1",
+  "version": "v0.2.2",
   "tags": [
     "wireguard",
     "vpn",
