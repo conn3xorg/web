@@ -1,6 +1,6 @@
 {
   "name": "adguardhome",
-  "version": "v0.2.2",
+  "version": "v0.2.3",
   "hostObjects": true,
   "inputs": [
     {
