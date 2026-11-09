@@ -4,6 +4,13 @@
     {
       "date": "2026-11-09",
       "repo": "github/advisory-database",
+      "summary": "Fiber's HSTS advisory named a Go module path that doesn't exist at v3, so scanners checking fiber/v3 missed it. We proved the right path from the module proxy, showed v2 isn't affected, and proposed the fix.",
+      "url": "https://github.com/github/advisory-database/pull/11036",
+      "minutes": 25
+    },
+    {
+      "date": "2026-11-09",
+      "repo": "github/advisory-database",
       "summary": "Caddy's advisory for the CVE-2026-30852 fix bypass listed no patched version. We traced the fix to 2.11.3 and sent a correction with the fix PR, so scanners can stop flagging upgraded servers.",
       "url": "https://github.com/github/advisory-database/pull/11018",
       "minutes": 20
