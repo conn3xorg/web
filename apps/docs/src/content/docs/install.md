@@ -44,7 +44,11 @@ In PowerShell:
 ```powershell
 $Version = "0.10.0"
 $Arch = "amd64"   # or arm64
-Invoke-WebRequest "https://github.com/conn3xorg/conn3x/releases/download/v$Version/conn3x_${Version}_windows_$Arch.zip" -OutFile conn3x.zip
+$Base = "https://github.com/conn3xorg/conn3x/releases/download/v$Version"
+Invoke-WebRequest "$Base/conn3x_${Version}_windows_$Arch.zip" -OutFile conn3x.zip
+Invoke-WebRequest "$Base/checksums.txt" -OutFile checksums.txt
+$Want = (Select-String checksums.txt -Pattern "conn3x_${Version}_windows_$Arch.zip").Line.Split(" ")[0]
+if ((Get-FileHash conn3x.zip).Hash -ne $Want) { throw "conn3x.zip doesn't match checksums.txt" }
 Expand-Archive conn3x.zip -DestinationPath "$env:LOCALAPPDATA\conn3x"
 & "$env:LOCALAPPDATA\conn3x\conn3x.exe" version
 ```
@@ -59,6 +63,8 @@ ssh-add $env:USERPROFILE\.ssh\id_ed25519
 ```
 
 If the agent isn't running and a step names no `private_key_file`, Conn3x stops at once and says so. An `SSH_AUTH_SOCK` that points at another agent, such as Git Bash's, is used instead.
+
+Conn3x checks every host's key against `%USERPROFILE%\.ssh\known_hosts`. The `ssh-keyscan` that ships with Windows Server can't read the key of a host with a newer OpenSSH, such as Ubuntu 24.04: it prints `unsupported KEX method` and no key. Check the host's fingerprint another way, then connect once with `ssh -o StrictHostKeyChecking=accept-new user@host exit`, which adds the key for you. Or set `host_key` on the host in the circuit.
 
 ## Container image
 
