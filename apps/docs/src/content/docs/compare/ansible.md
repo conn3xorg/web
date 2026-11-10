@@ -253,10 +253,10 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 ## What Conn3x can't do yet
 
 - Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
-- Network devices are limited to three experimental circuits, with no device CLI connection.
+- Network devices means Arista EOS for now: five experimental modules, `eos_config`, `eos_hostname`, `eos_interface`, `eos_user` and `eos_vlan`, over the switch's own CLI. Other vendors are planned.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command, no web UI and no built-in credential store.
-- Adopting a running server works for eight Linux modules: `file`, `template`, `directory`, `link`, `package`, `service`, `user` and `group`. The rest, and Windows hosts, can't import yet.
+- Adopting a running server works for 25 Linux modules, the database steps among them, and eight Windows ones; [Adopt servers](/guides/adopt-servers) lists them. Active Directory, IIS, ACLs and Windows firewall rules can't import yet.
 
 The [roadmap](/roadmap) has the order we're building things in.
 
