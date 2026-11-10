@@ -1,6 +1,27 @@
 {
-  "otherMinutes": 131,
+  "otherMinutes": 146,
   "items": [
+    {
+      "date": "2026-11-10",
+      "repo": "tailscale/tailscale",
+      "summary": "A fix lifting the WebSocket message limit for browser DERP clients said every peer was an authenticated server, which isn't true on the relay side. We traced the reads end to end and showed it's still safe there, because the DERP and Noise frame limits do the bounding.",
+      "url": "https://github.com/tailscale/tailscale/pull/22293#pullrequestreview-5841281406",
+      "minutes": 35
+    },
+    {
+      "date": "2026-11-10",
+      "repo": "prometheus/prometheus",
+      "summary": "Checked a fix for dead Marathon links in the config docs, and found two more links to the same retired site in the Marathon discovery code, with archived copies to point them at.",
+      "url": "https://github.com/prometheus/prometheus/pull/20405#pullrequestreview-5841299686",
+      "minutes": 15
+    },
+    {
+      "date": "2026-11-10",
+      "repo": "prometheus/prometheus",
+      "summary": "Confirmed against the live docs site that a fix for broken query-docs anchors points at headings that really exist.",
+      "url": "https://github.com/prometheus/prometheus/pull/20399#pullrequestreview-5841299908",
+      "minutes": 10
+    },
     {
       "date": "2026-11-09",
       "repo": "github/advisory-database",
