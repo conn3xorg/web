@@ -1,6 +1,27 @@
 {
-  "otherMinutes": 146,
+  "otherMinutes": 151,
   "items": [
+    {
+      "date": "2026-11-10",
+      "repo": "prometheus/alertmanager",
+      "summary": "A fix let Alertmanager reload its own redacted config when a Slack receiver posts updates. We reproduced the bug on main, then found the same break in the global Slack settings, which the fix didn't cover yet.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5736#pullrequestreview-5844182183",
+      "minutes": 35
+    },
+    {
+      "date": "2026-11-10",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Cockpit's bridge was running out of file descriptors because it never closed its pipes to finished processes. We traced every path that closes a process to show the fix can't close a pipe the event loop is still reading, or close the same one twice.",
+      "url": "https://github.com/cockpit-project/cockpit/pull/23917#pullrequestreview-5844211399",
+      "minutes": 25
+    },
+    {
+      "date": "2026-11-10",
+      "repo": "jenkins-infra/jenkins.io",
+      "summary": "Checked a sitemap fix against the whole site and found no page it would drop yet, so we asked which page prompted it.",
+      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9575#pullrequestreview-5844140678",
+      "minutes": 20
+    },
     {
       "date": "2026-11-10",
       "repo": "tailscale/tailscale",
