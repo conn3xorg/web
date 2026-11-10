@@ -17,10 +17,10 @@ Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up n
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.10.0` with the version you want.
+Pick the archive for your system. Replace `0.11.0` with the version you want.
 
 ```sh
-VERSION=0.10.0
+VERSION=0.11.0
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
@@ -42,7 +42,7 @@ Since v0.10.0, each release has a zip for Windows on amd64 and arm64, holding `c
 In PowerShell:
 
 ```powershell
-$Version = "0.10.0"
+$Version = "0.11.0"
 $Arch = "amd64"   # or arm64
 $Base = "https://github.com/conn3xorg/conn3x/releases/download/v$Version"
 Invoke-WebRequest "$Base/conn3x_${Version}_windows_$Arch.zip" -OutFile conn3x.zip
@@ -71,7 +71,7 @@ Conn3x checks every host's key against `%USERPROFILE%\.ssh\known_hosts`. The `ss
 Every release is also published as a container image, tagged with its version and with `latest`:
 
 ```sh
-docker run --rm ghcr.io/conn3xorg/conn3x:v0.10.0 version
+docker run --rm ghcr.io/conn3xorg/conn3x:v0.11.0 version
 ```
 
 The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root user. Podman takes the same command.

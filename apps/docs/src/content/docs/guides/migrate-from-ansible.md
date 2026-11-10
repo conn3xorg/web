@@ -16,6 +16,15 @@ Converted 11 tasks. 1 thing needs you; each is marked TODO(convert):
 
 Write the output next to the playbook: when a task copies a file from `files/`, the circuit reads it from the same place.
 
+Some steps convert cleanly and still need you once, such as the `#Ansible:` job a converted `cron` task leaves behind in the crontab. Since v0.11.0 those get their own heading in the summary, and a `TODO(convert)` line in the file. They don't change the exit code, because they're written on every run:
+
+```text
+Converted 11 tasks. 1 thing needs you; each is marked TODO(convert):
+  line 72, Check the disk: uses the stat module, which has no Conn3x equivalent yet
+1 converted step has a note to act on once, also marked TODO(convert):
+  line 52, Nightly cleanup: Delete the "#Ansible: clean tmp" job Ansible left in the user's crontab, or it runs twice.
+```
+
 ## What you get
 
 - One circuit per play, with `become` carried over.
@@ -108,6 +117,7 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when. That includes every `win_reboot`: a [windows_reboot](/modules/windows_reboot) step reboots once, then again when its `triggers` change, or with `only_if_pending`.
 - **`get_url` without a sha256 checksum.** Conn3x only downloads what it can verify.
 - **A `file` link that sets `owner`, `group` or `mode`.** A Conn3x [link](/modules/link) step doesn't manage those, so the converter won't quietly drop them.
+- **Database tasks from `community.postgresql` and `community.mysql`.** Since v0.11.0 Conn3x has [postgresql_database](/modules/postgresql_database), [postgresql_role](/modules/postgresql_role), [mysql_database](/modules/mysql_database) and [mysql_user](/modules/mysql_user) steps, and the converter doesn't map these modules to them yet. Write those steps by hand from the task.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
 
 The command exits 3 while anything is left, so you can keep running it in CI until the count reaches zero.
@@ -205,6 +215,44 @@ module "app" {
 }
 ```
 
+### Roles a play runs
+
+Most playbooks are a list of roles. Since v0.11.0, converting one with `-out` converts the roles too. Each role the play runs, from its `roles:` list or from an `include_role` or `import_role` in its tasks, is read from `roles/` beside the playbook and written to a circuit directory beside the output file. The output calls each one as a `module`, in the order Ansible runs it:
+
+```sh
+conn3x convert ansible -i inventory.ini -out site.tf site.yml
+```
+
+```hcl
+circuit "web" {            # pre_tasks
+  ...
+}
+
+module "web" {
+  source = "./circuit-web"
+
+  hosts                = var.web_hosts
+  ssh_user             = var.ssh_user
+  ssh_private_key_file = var.ssh_private_key_file
+  ssh_become           = true
+
+  web_port = 8080          # the play's vars beat the role's defaults
+
+  depends_on = [conn3x_package.web__install_curl]
+}
+
+circuit "web_2" {          # tasks, after the role
+  ...
+}
+```
+
+- **Order.** Ansible runs `pre_tasks`, then `roles`, then `tasks`, then `post_tasks`. The play splits around each role call, and each part waits for the one before it with `depends_on`.
+- **Vars.** The play's `vars` and the call's own `vars` become module inputs wherever the role's circuit has a variable for them, and the call's value wins, as in Ansible. A var with nowhere to go gets a `TODO(convert)`.
+- **`become`** on the call sets `ssh_become`.
+- **Dependencies.** A role's `meta/main.yml` dependencies convert the same way and run before it, with the vars `meta/` gives them. As in Ansible, a role that already ran with the same vars doesn't run again, while `include_role` always runs. A dependency that can't convert, or a cycle, stays for review.
+- **`when` on the OS family,** such as `when: ansible_os_family == 'Debian'`, filters the hosts the module gets, using `os_family` from a `conn3x_host` data source.
+- **Reuse and re-runs.** A role called twice converts once and gets two module blocks. A `circuit-<role>/` directory that already has files is kept as it is, and the summary says so, so converting again never writes over your edits.
+
 ### Roles from Ansible Galaxy
 
 The converter never downloads anything. Install the role with `ansible-galaxy`, which already handles versions, private servers and collection signatures, then convert the copy on your disk:
@@ -225,7 +273,7 @@ Everything a playbook leaves, plus:
 - **A default where its value needs checking first,** such as a path or a mode. In a playbook the converter can check the value it sees; in a role, whoever calls the circuit can set anything. So a default stays a variable only where Conn3x uses it exactly as Ansible does: content, a `line` or `block`, a package, service, user or group name, an `owner` or `group`.
 - **Defaults that are true or false, lists, maps or Jinja.** Jinja prints `true` as `True`, and HCL prints it as `true`, so the two would disagree. These stay out of `variables.tf`, with a comment saying why.
 - **`include_tasks`,** which Ansible reads only when the play gets there. If it names one file and has no `loop` or `when`, change it to `import_tasks` and convert again. An `import_tasks` with its own `when` or `vars` stays too, since those apply to every task it brings in.
-- **`include_role`, `import_role` and dependencies in `meta/main.yml`.** Convert each role on its own and call the circuits side by side, with `depends_on`.
+- **`include_role`, `import_role` and dependencies in `meta/main.yml`.** `-role` writes one directory, so they have nowhere to go. Convert a playbook that runs the role with `-out` instead, such as `- hosts: all` with `roles: [app]`, and they come along, as [Roles a play runs](#roles-a-play-runs) describes.
 - **`become` on a task.** In a circuit the `ssh` block decides that for every step: log in as root, or set `ssh_become`.
 - **Templates with `{% %}`, `{# #}` or filters.** Rewrite those in `templatefile` syntax.
 - **`argument_specs`.** Its checks don't carry over to variable types yet.
