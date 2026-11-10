@@ -28,10 +28,14 @@ With `-out`, each role a play runs, from its `roles:` list or an `include_role` 
 | --- | --- |
 | `-i=FILE` | An INI or YAML inventory. Each circuit's `hosts`, and the `ssh` block's `user` and `port`, come from it. |
 | `-inventory=FILE` | The same as `-i`. |
-| `-out=FILE` | Write the circuits to `FILE` instead of standard output. An existing file is overwritten. Since v0.11.0, the roles the playbook runs are written beside it, each as a circuit directory, and a directory that already has files is kept as it is. With `-role`, the new directory to write the circuit to. |
+| `-out=FILE` | Write the circuits to `FILE` instead of standard output. An existing file is overwritten, and since v0.12.0 a link at that path is replaced, not written through. Since v0.11.0, the roles the playbook runs are written beside it, each as a circuit directory, and a directory that already has files is kept as it is. With `-role`, the new directory to write the circuit to. |
 | `-role=DIR` | Convert the Ansible role in `DIR` into a circuit directory. Needs `-out`. |
 
 Without `-i`, the output declares variables for you to set instead: a `<group>_hosts` map for each group, and `ssh_user`. It always declares `ssh_private_key_file`.
+
+Since v0.12.0 the converter refuses a file with a NUL byte, whether it's a playbook, a role file or an inventory. It also stops with an error, instead of hanging, on imports that multiply without end and on an inventory group that contains itself.
+
+The summary shows control characters in playbook text as escapes, and the tasks it echoes leave out arguments named like secrets, such as `password`, `token`, `passphrase`, `api_key` and `private_key`.
 
 Write the output next to the playbook. A converted `copy` task reads its source from the same relative path the playbook used.
 

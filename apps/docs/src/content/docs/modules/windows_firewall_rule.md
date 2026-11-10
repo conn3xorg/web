@@ -48,7 +48,7 @@ step "sql_from_app_subnet" {
 | `name` | string | Yes | The rule's name, which is its ID: letters, digits, spaces and . _ ( ) -. |
 | `on_remove` | string | No | "delete" (default) deletes the rule when the step is removed or replaced, "forget" leaves it. |
 | `profiles` | list of string | No | Network profiles the rule applies in: "domain", "private", "public". Unset means all. |
-| `protocol` | string | No | "tcp", "udp", "icmpv4", "icmpv6" or "any" (default). |
+| `protocol` | string | No | "tcp", "udp", "icmpv4", "icmpv6" or "any" (default). An inbound allow rule with no local_ports and no remote_addresses must set it, so a rule that lets everything in is never made by leaving settings out. |
 | `remote_addresses` | list of string | No | Addresses the traffic comes from or goes to: IP addresses, subnets such as 10.0.0.0/8, ranges such as 10.0.0.1-10.0.0.9, or LocalSubnet. Unset means any. |
 
 ## Read-only attributes
@@ -65,6 +65,8 @@ A step lowers to the `conn3x_windows_firewall_rule` resource, one instance per h
 ## How it works
 
 Every setting you leave out takes its default, so a rule changed by hand shows as drift. Two are left as they are when unset: `description`, and `display_name`, so naming a rule Windows made doesn't rename it. Subnets are compared the way Windows stores them: `10.0.0.0/8` and `10.0.0.0/255.0.0.0` are the same.
+
+An inbound allow rule has to say what it lets in. With only a `name`, Windows would make a rule that allows every protocol and port from any address, so Conn3x refuses that at plan. Set `protocol` and `local_ports`, or `remote_addresses`; to allow everything on purpose, write `protocol = "any"`.
 
 `name` is the rule's ID, not the name shown in Windows' tools, which is `display_name`. Rules made by Windows or another tool have their own IDs, such as `OpenSSH-Server-In-TCP`; naming one here lets Conn3x manage it.
 

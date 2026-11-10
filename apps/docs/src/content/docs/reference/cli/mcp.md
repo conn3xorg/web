@@ -28,7 +28,7 @@ You don't run it by hand. Add it to your assistant's MCP servers as the command 
 }
 ```
 
-The server runs in the directory the client starts it in, so `validate`, `lint` and `summarise_plan` read paths relative to that. It speaks MCP revisions `2025-06-18`, `2025-03-26` and `2024-11-05`.
+The server runs in the directory the client starts it in. `validate`, `lint` and `summarise_plan` read paths relative to that directory, and since v0.12.0 they refuse a path that leads out of it, links included. To check a circuit somewhere else, start the server there. It speaks MCP revisions `2025-06-18`, `2025-03-26` and `2024-11-05`.
 
 ## Tools
 
@@ -43,8 +43,28 @@ The server runs in the directory the client starts it in, so `validate`, `lint` 
 
 `dir` defaults to the current directory. For `summarise_plan`, it defaults to the plan file's directory.
 
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-allow-plugins` | Let `validate` and `summarise_plan` run in a directory that has provider plugins installed. New in v0.12.0. |
+
+`validate` and `summarise_plan` run `conn3x` in the directory, and that starts every provider plugin installed there. A plugin is a program, so a directory you didn't write could run code on your machine. Without `-allow-plugins`, both tools refuse such a directory:
+
+```text
+<dir> has provider plugins installed (<where>), and this would start them. Start conn3x mcp with -allow-plugins if you trust the plugins in the directories it serves
+```
+
+Pass the option only when you trust what's installed under the directory you start the server in:
+
+```json
+"args": ["mcp", "-allow-plugins"]
+```
+
 ## What stays out
 
 `summarise_plan` leaves out every attribute value, so a secret in the plan doesn't reach the assistant. It reads the plan file and nothing else.
+
+`validate` doesn't connect to a host, but it does evaluate the configuration. Functions such as `file()` run, and an error message can quote what they read. Keep that in mind before you start the server in a directory with circuits you haven't read.
 
 `search_circuits` is the only tool that uses the network, and only to fetch the public circuit catalogue.

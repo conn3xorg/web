@@ -13,7 +13,7 @@ This command is Conn3x only, and new in v0.10.0. It's [experimental](/reference/
 conn3x lint [-json] [DIR ...]
 ```
 
-With no directory, `lint` checks the current one. It reads the `.hcl`, `.tf` and `.sh` files in each directory, and leaves out `examples/` and `test/`.
+With no directory, `lint` checks the current one. It reads the `.hcl`, `.tf` and `.sh` files in each directory, and leaves out `examples/` and `test/`. Since v0.12.0 it does read a directory under those two when the circuit's own code calls it as a module.
 
 ## Rules
 
@@ -24,9 +24,12 @@ With no directory, `lint` checks the current one. It reads the `.hcl`, `.tf` and
 | `C3X003` | `listen-all` | error | A default or literal that listens on every address, such as `0.0.0.0`. |
 | `C3X004` | `privileged-shell` | error | Shell that's wrong wherever it runs as root, such as `curl \| sh`. |
 | `C3X101` | `command-guard` | warning | A `command` step with no `creates`, `removes`, `unless` or `triggers`. |
+| `C3X102` | `module-connection` | warning | A module you call that names its own hosts, or sets a host, key or password file in an `ssh` block, instead of taking them from you. New in v0.12.0. |
 | `C3X900` | `ignore` | error | An ignore with no reason, or one that matches nothing. |
 
 `C3X001` to `C3X004` are the grader's checks of a circuit's own code, with the same patterns, so a circuit that lints clean passes them. `lint` agrees with the grader on every official circuit.
+
+`C3X102` is about trust. A module that brings its own connection settings connects with them when you plan, so read it before you run it. A module whose hosts are a `local` that only filters the hosts you passed in doesn't get the warning.
 
 ## Output
 

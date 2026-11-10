@@ -43,6 +43,17 @@ step "migrate" {
   }
 }
 ```
+Give a command a secret on standard input, not on its command line, passed in at run time:
+
+```hcl
+step "registry_login" {
+  command {
+    command  = "podman login --username ci --password-stdin registry.example.com"
+    stdin_wo = "use an ephemeral variable here"
+    creates  = "/root/.config/containers/auth.json"
+  }
+}
+```
 
 ## Arguments
 
@@ -51,8 +62,9 @@ step "migrate" {
 | `command` | string | Yes | Shell command, run with /bin/sh. |
 | `creates` | string | No | Skip the command while this path exists. |
 | `removes` | string | No | Skip the command while this path is missing. |
+| `stdin_wo` | string | No | Text the command reads on standard input, kept out of state: state records only stdin_hmac, and the text is blanked from output and errors. Use it for secrets, which a command line would show in the host's process list. |
 | `triggers` | dynamic | No | Any value; the command runs again whenever it changes. |
-| `unless` | string | No | Skip the command while this check command succeeds. |
+| `unless` | string | No | Skip the command while this check command succeeds. It never gets stdin_wo, which a plan doesn't have. |
 
 ## Read-only attributes
 
@@ -63,6 +75,7 @@ Conn3x sets these; reference them as `conn3x_command.<circuit>__<step>["<host>"]
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 | `satisfied` | bool | Whether the guards hold on the host. |
 | `stderr` | string | Error output of the last run, truncated to 4 KiB. |
+| `stdin_hmac` | string | HMAC-SHA256 of stdin_wo, keyed by CONN3X_HMAC_KEY or ~/.config/conn3x/hmac.key. Null without stdin_wo. |
 | `stdout` | string | Output of the last run, truncated to 4 KiB. |
 
 A step lowers to the `conn3x_command` resource, one instance per host, and connects with its circuit's `ssh` block.
@@ -77,11 +90,13 @@ A step lowers to the `conn3x_command` resource, one instance per host, and conne
 
 **Without guards.** A command with no guard runs when the step is created, and again only when `command` or `triggers` changes.
 
-**Changes.** Changing `command`, `creates`, `removes`, `unless` or `triggers` runs the command again, subject to its guards.
+**Secrets.** A command line is visible to every user on the host for as long as the command runs, in `ps` and in `/proc`. So a secret doesn't belong in `command`. Put it in `stdin_wo` and have the command read it from standard input, which most tools can do: `--password-stdin`, `--from-file=-`, a trailing `-`, or `read -r token` in a shell script. `stdin_wo` is write-only: state records only `stdin_hmac`, a keyed hash that tells Conn3x when the value changed. If the command prints the value back, Conn3x blanks it from `stdout`, `stderr` and the error. `unless` never gets it, since a plan doesn't have write-only values, and `unless` is itself a command line, so keep secrets out of it too.
+
+**Changes.** Changing `command`, `stdin_wo`, `creates`, `removes`, `unless` or `triggers` runs the command again, subject to its guards.
 
 **Output.** `stdout` and `stderr` keep the output of the last run, up to 4 KiB each. Both are sensitive, so the plan doesn't print them.
 
-Sensitive hides them from the plan, not from state: the state file keeps both in plain text, so anyone who can read your state can read them. Don't print a secret from a command step. If a command has to produce one, such as a join token, have it write the secret to a file on the host with mode `0600`, and read it there.
+Sensitive hides them from the plan, not from state: the state file keeps both in plain text, so anyone who can read your state can read them. When a command fails, the last ten lines it printed are also in the error, which goes to the terminal, to `-json` output and to a `-report` file. Don't print a secret from a command step. If a command has to produce one, such as a join token, have it write the secret to a file on the host with mode `0600`, and read it there.
 
 ## Removal
 
@@ -91,4 +106,6 @@ Deleting a `command` step changes nothing on the host. To undo what a command di
 
 `conn3x convert ansible` turns `command` and `shell` tasks into `command` steps, carrying over `creates` and `removes`. `chdir` becomes `cd <dir> && ` in front of the command, and `executable` is dropped. Conn3x tests `creates` and `removes` as plain paths, so one with a glob such as `*` stays a TODO, as does a free-form command with `chdir=` or `creates=` written inline. A task with neither `creates` nor `removes` stays a TODO, since Ansible runs it on every play: add a guard or `triggers` so Conn3x knows when it's done.
 
-A play that sets `become_user`, or `remote_user` without `become`, sends these tasks to review with the reason, because a command does what its user can do. A circuit runs as root under `become` and otherwise as its login user.
+Ansible's `command` module runs a program with plain arguments, and a `command` step runs its text through `/bin/sh`. So a `command` task with `;`, `|`, `$`, `*`, `>`, a backslash or other characters a shell reads stays a TODO: `echo one ; echo two` prints one line in Ansible and would run two commands in a step. A `shell` task already means the shell, and converts as it is.
+
+A play that sets `become_user`, or `remote_user` without `become`, or that has `ansible.cfg`, `group_vars`, `host_vars` or a `vars_files` file beside it setting who its tasks run as, sends these tasks to review with the reason, because a command does what its user can do. A circuit runs as root under `become` and otherwise as its login user.
