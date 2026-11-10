@@ -75,6 +75,15 @@ const SHIPPED = [
       /itself runs on Linux and macOS\./i,
       /and three of its own: \[`drift`\]/i,
     ],
+  },  {
+    feature: "child domains, members from other domains, PostgreSQL and MySQL steps, confirm_after, whole roles and role dependencies in convert (v0.11.0)",
+    stale: [
+      /child domains haven't been tested/i,
+      /a group can't list members from another domain/i,
+      /converting a role's dependencies along with it/i,
+      /Twenty-four `windows_\*` modules/i,
+      /since v0\.10\.0 seven Windows modules too/i,
+    ],
   },
 ];
 

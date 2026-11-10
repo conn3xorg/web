@@ -436,7 +436,7 @@ None of that has to be all or nothing. Because Conn3x runs your existing configu
 
 ## What Conn3x can't do yet
 
-- Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Child domains aren't tested, and a group can't list members from another domain.
+- Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
 - Network devices are limited to the three experimental circuits, and there's no device CLI connection.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command and no web UI. There are no inventory plugins either: `hosts` is an expression, so you build it from resources or data sources instead.

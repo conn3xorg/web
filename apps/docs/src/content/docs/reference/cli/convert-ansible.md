@@ -18,7 +18,9 @@ conn3x convert ansible -role ROLE -out DIR
 
 With `-role`, it converts one role's directory into a new circuit directory, which `-out` names. Nothing is downloaded: a role from Ansible Galaxy works once you've installed it with `ansible-galaxy`. `-role` is in Conn3x since v0.9.0. [Convert a role](/guides/migrate-from-ansible#convert-a-role) shows what goes in and what comes out.
 
-The circuits go to standard output, or to the file you name with `-out`. A summary goes to standard error, so redirecting standard output captures only the circuits.
+The circuits go to standard output, or to the file you name with `-out`. A summary goes to standard error, so redirecting standard output captures only the circuits. Since v0.11.0 the summary lists notes on converted steps, such as a crontab line to delete once, under a heading of their own. They don't change the exit code.
+
+With `-out`, each role a play runs, from its `roles:` list or an `include_role` or `import_role` in its tasks, converts from `roles/` beside the playbook into a circuit directory beside the output file, along with the dependencies in its `meta/main.yml`. The output calls each as a `module`, in the order Ansible runs them. This is new in v0.11.0. [Roles a play runs](/guides/migrate-from-ansible#roles-a-play-runs) shows the output.
 
 ## Options
 
@@ -26,7 +28,7 @@ The circuits go to standard output, or to the file you name with `-out`. A summa
 | --- | --- |
 | `-i=FILE` | An INI or YAML inventory. Each circuit's `hosts`, and the `ssh` block's `user` and `port`, come from it. |
 | `-inventory=FILE` | The same as `-i`. |
-| `-out=FILE` | Write the circuits to `FILE` instead of standard output. An existing file is overwritten. With `-role`, the new directory to write the circuit to. |
+| `-out=FILE` | Write the circuits to `FILE` instead of standard output. An existing file is overwritten. Since v0.11.0, the roles the playbook runs are written beside it, each as a circuit directory, and a directory that already has files is kept as it is. With `-role`, the new directory to write the circuit to. |
 | `-role=DIR` | Convert the Ansible role in `DIR` into a circuit directory. Needs `-out`. |
 
 Without `-i`, the output declares variables for you to set instead: a `<group>_hosts` map for each group, and `ssh_user`. It always declares `ssh_private_key_file`.

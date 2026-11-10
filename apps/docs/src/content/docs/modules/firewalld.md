@@ -43,10 +43,22 @@ step "ports" {
 }
 ```
 
+Guard the rule that lets SSH in, so removing it later can't lock Conn3x out for good:
+
+```hcl
+step "ssh" {
+  firewalld {
+    service       = "ssh"
+    confirm_after = "60s"
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `confirm_after` | string | No | For a rule change that could lock Conn3x out, such as removing the rule that lets SSH in, or a ufw deny on its port: before the change, the host schedules its own undo after this long, such as "60s"; after it, Conn3x logs in again over a new connection and cancels it. If that login doesn't come, the host takes the change back by itself, even if Conn3x has gone away. Needs systemd. |
 | `on_remove` | string | No | "delete" (default) closes the port again when the rule is removed or replaced, "forget" leaves it open. |
 | `port` | string | One of | Port and protocol, such as 8080/tcp or 60000-61000/udp. Set this or service. |
 | `service` | string | One of | firewalld service name, such as http. Set this or port. |
@@ -68,6 +80,8 @@ A step lowers to the `conn3x_firewalld` resource, one instance per host, and con
 **Reading.** On every plan, Conn3x asks `firewall-cmd` whether the zone allows the service or port, once for the running firewall and once with `--permanent`. `in_sync` is true only when both allow it. firewalld must be running: if it isn't, the step fails and asks you to install and start it in an earlier step.
 
 **Applying.** Conn3x runs `firewall-cmd --add-service` or `--add-port`, then the same with `--permanent`, so the rule takes effect now and survives a reload or a reboot. Without `zone`, both go to firewalld's default zone.
+
+**Confirming.** Removing the rule that lets SSH in can lock Conn3x out. With `confirm_after`, the host schedules the commands that take the change back with `systemd-run`, due that long after, before Conn3x makes it. The undo is a timer in the host's own systemd, so it runs even if Conn3x goes away mid-apply. Conn3x then logs in again over a new connection with the circuit's whole `ssh` block, jump hosts and host key check included, and cancels the undo once that works. If the change fails, Conn3x takes it back at once. If the new login doesn't come in time, the host takes the change back by itself, and Conn3x fails the step saying whether the host answers again. The guard covers removing the step too, using the `confirm_after` the step had, and it only takes back what changed. `confirm_after` is between `10s` and `1h` and needs systemd on the host.
 
 **Rules.** Set exactly one of `service` and `port`. A port takes a protocol, `tcp`, `udp`, `sctp` or `dccp`, and may be a range such as `60000-61000/udp`.
 

@@ -73,6 +73,12 @@ A step lowers to the `conn3x_windows_domain_membership` resource, one instance p
 
 **Reads change nothing.** A refresh reads whether the computer is in a domain, and which, from `Win32_ComputerSystem`. A host that joined but hasn't rebooted yet already reads as joined. A domain controller of the same domain counts as joined, so promoting a member later with [`windows_ad_domain_controller`](windows_ad_domain_controller.md) doesn't make this step plan again.
 
+**The OU.** `ou` is the distinguished name of the OU the computer's account goes in, such as `OU=Servers,OU=Lab,DC=lab,DC=example,DC=com`. Unset, it goes in `CN=Computers`. Make the OU first, with a [`windows_ad_ou`](windows_ad_ou.md) step: a missing one fails the join before anything changes on the host, with an error naming the OU. Joining into an OU doesn't need rights on it as long as the domain's defaults stand: any domain user may add up to 10 computers anywhere, through the "Add workstations to domain" right and `ms-DS-MachineAccountQuota`. Where the quota is 0, an account without rights on the OU fails with AD's "You have exceeded the maximum number of computer accounts you are allowed to create in this domain".
+
+**Joining again.** If the host leaves the domain behind Conn3x's back, the next plan joins it again, and a `windows_reboot` step after it with `only_if_pending` plans a check: the join leaves a reboot pending that the refresh couldn't see yet, so apply looks for it and reboots in the same run.
+
+**Tested.** On Azure, Windows Server 2022 Datacenter (Desktop Experience, build 20348.5773) joined a Windows Server 2025 domain into an OU, and the second plan was clean.
+
 **Settings used once.** `ou` and `username` apply only when the host joins. Changing `domain` plans a new join, which fails: Conn3x won't take the host out of the domain it's in.
 
 **Logging in afterwards.** Nothing changes for the SSH login. On a member server, the bare name, such as `azadmin`, is still the local account, and so is `win2\azadmin`. A domain account can log in too, once it's in the server's Administrators group and has the key.

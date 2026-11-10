@@ -62,6 +62,19 @@ step "sudoers" {
 }
 ```
 
+Change sshd's settings under a guard, so a mistake that locks Conn3x out puts itself back:
+
+```hcl
+step "sshd" {
+  file {
+    path          = "/etc/ssh/sshd_config.d/99-hardening.conf"
+    content       = "PasswordAuthentication no\n"
+    reload        = "systemctl reload sshd"
+    confirm_after = "60s"
+  }
+}
+```
+
 Make sure a file is gone, and stays gone:
 
 ```hcl
@@ -77,6 +90,7 @@ step "old_config" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `confirm_after` | string | No | For a change that could lock Conn3x out, such as sshd_config: before writing, the host keeps a copy and schedules its own revert after this long, such as "60s"; after writing and running reload, Conn3x logs in again over a new connection and cancels it. If that login doesn't come, the host puts the old file back by itself, even if Conn3x has gone away. Needs systemd. |
 | `content` | string | One of | Exact content of the file. Set this or content_wo, unless state is "absent". |
 | `content_wo` | string | One of | Exact content of the file, kept out of state: state records only content_hmac. Use it for secrets. Set this or content, unless state is "absent". |
 | `group` | string | No | Owning group. Left as is when unset. |
@@ -84,6 +98,7 @@ step "old_config" {
 | `on_remove` | string | No | What happens on the host when this resource is removed: "forget" (default) leaves the file, "delete" removes it. |
 | `owner` | string | No | Owning user. Left as is when unset. |
 | `path` | string | Yes | Absolute path of the file on the host. |
+| `reload` | string | No | With confirm_after: a command that makes the new file take effect, such as "systemctl reload sshd", run after writing and again after a revert. A reload that fails reverts at once. |
 | `state` | string | No | "present" (default) or "absent", which removes the file and keeps it gone. |
 | `validate` | string | No | A command that checks new content before it replaces the file, such as "visudo -cf %s". %s stands for the temporary file. Runs only when the content changes, and is kept out of state. |
 
@@ -109,6 +124,8 @@ The login user has to be able to read the file. If it can't, the plan stops with
 **Writing.** If the parent directory doesn't exist, Conn3x creates it first. Conn3x writes the content to a temporary file in the same directory, sets its mode and ownership, flushes it to disk, and renames it over the old file. The directory is flushed afterwards too, so a power cut leaves the old file or the new one, never an empty one. On SELinux hosts the file is relabelled for its path with `restorecon`.
 
 **Validating.** With `validate`, Conn3x runs the command on the temporary file once it has its final mode and owner, with `%s` replaced by the temporary file's path. The path is already quoted, so write `%s` bare, not `'%s'`. If the command exits 0, the file is moved into place. If it doesn't, the original file is left untouched, the temporary file is removed, and apply fails with the command's output. With `content_wo` the output is hidden, since the command may print the secret it was checking. `validate` runs only when the content is changing, not when only the mode or ownership is. It's write-only, so adding it to an existing step doesn't show a change in the plan.
+
+**Confirming.** For a change that could lock Conn3x out, such as sshd's settings, set `confirm_after`. Before writing, the host copies the old file, or notes that there was none, into `/var/lib/conn3x/revert`, which only root can read. It then schedules its own revert with `systemd-run`, due that long after. The revert is a timer in the host's own systemd, so it runs even if Conn3x goes away mid-apply: if your laptop dies or the network drops, the host still puts itself back. Conn3x writes the file, runs `reload`, and logs in again over a new connection with the circuit's whole `ssh` block, jump hosts and host key check included. Once that login works, it cancels the revert and removes the copy. If the write or the reload fails, Conn3x reverts at once. If the new login doesn't come in time, the host puts the old file back and runs `reload` again by itself. Conn3x waits for that, checks whether the host answers again, and fails the step saying which happened. The guard is armed whenever the file changes: its content, mode or ownership, since a mode sshd's `StrictModes` refuses locks you out as surely as bad content. A link at `path` is put back as the link it was, since writing replaces the link rather than what it points to. `confirm_after` is between `10s` and `1h`, needs systemd on the host, and can't be set with `state = "absent"`. `reload` goes with it. A handler the step notifies runs after the confirm. A `template` step takes both arguments too.
 
 **Ownership.** `owner` and `group` are only checked and set when you give them. Leave them out and Conn3x keeps whatever the file has.
 
