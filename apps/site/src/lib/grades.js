@@ -239,7 +239,16 @@ const fail = (detail) => ({ state: "fail", fraction: 0, detail });
 const na = (detail) => ({ state: "na", detail });
 const date = (ms) => new Date(ms).toISOString().slice(0, 10);
 
-const code = (ev, ...exts) => [...ev.files].filter(([p]) => exts.some((x) => p.endsWith(x)) && !p.startsWith("examples/") && !p.startsWith("test/")).map(([, t]) => t.split("\n").filter((l) => !/^\s*(#|\/\/)/.test(l)).join("\n")).join("\n");
+// conn3x lint's inline ignore, with a reason, covers its own line and the one below.
+const IGNORE = /(?:#|\/\/)\s*conn3x-lint:ignore\s+(C3X\d{3})\s+\S/;
+const ignored = (id) => (l) => (IGNORE.exec(l ?? "") ?? [])[1] === id;
+// A rule ID such as "C3X003" among the extensions drops the lines its ignores cover.
+const code = (ev, ...args) => {
+  const id = args.find((a) => a.startsWith("C3X"));
+  const exts = args.filter((a) => !a.startsWith("C3X"));
+  return [...ev.files].filter(([p]) => exts.some((x) => p.endsWith(x)) && !p.startsWith("examples/") && !p.startsWith("test/"))
+    .map(([, t]) => t.split("\n").filter((l, i, all) => !(id && (ignored(id)(l) || ignored(id)(all[i - 1])))).filter((l) => !/^\s*(#|\/\/)/.test(l)).join("\n")).join("\n");
+};
 
 // Code without its prose: an example address in an error message isn't a listener.
 const logic = (ev, ...exts) => code(ev, ...exts).split("\n").filter((l) => !/^\s*(description|error_message)\s*=/.test(l)).join("\n");
@@ -389,7 +398,7 @@ export const RUBRIC = [
     title: "Container images pinned by digest",
     test: (ev) => {
       // An output naming the version isn't a pull.
-      const hcl = logic(ev, ".hcl", ".tf").split("\n").filter((l) => !/^\s*value\s*=/.test(l)).join("\n");
+      const hcl = logic(ev, ".hcl", ".tf", "C3X002").split("\n").filter((l) => !/^\s*value\s*=/.test(l)).join("\n");
       const images = hcl.match(/"(?:docker\.io|ghcr\.io|quay\.io|registry\.[\w.-]+|mcr\.microsoft\.com)\/[^"\s]+"/g) ?? [];
       const loose = images.filter((i) => !i.includes("@") && /:[^/]+"$/.test(i));
       if (!images.length) return na("Pulls no images.");
@@ -418,7 +427,7 @@ export const RUBRIC = [
     title: "Default listen address",
     test: (ev) => {
       // A lookup or comparison handles the address when a caller picks it; it doesn't listen on it.
-      const lines = logic(ev, ".hcl", ".tf").split("\n").filter((l) => !/\b(lookup|contains|setintersection|replace|coalesce)\(|[!=]=\s*"/.test(l));
+      const lines = logic(ev, ".hcl", ".tf", "C3X003").split("\n").filter((l) => !/\b(lookup|contains|setintersection|replace|coalesce)\(|[!=]=\s*"/.test(l));
       const hit = lines.find((l) => /\bdefault\s*=\s*\[?\s*"(::|\[::\]|\*)(:\d+)?"|0\.0\.0\.0(?![/\d])|--[\w.-]*(listen|bind|addr)[\w-]*=:/.test(l));
       return hit ? fail(`Listens on every address by default: ${hit.trim().slice(0, 80)}`) : pass("Found no default or literal that listens on every address.");
     },
@@ -427,7 +436,7 @@ export const RUBRIC = [
     id: "privileged-shell", group: "Supply chain", points: 5,
     title: "Privileged shell patterns",
     test: (ev) => {
-      const text = logic(ev, ".hcl", ".tf", ".sh");
+      const text = logic(ev, ".hcl", ".tf", ".sh", "C3X004");
       const found = PRIVILEGED.filter(([re]) => re.test(text)).map(([, what]) => what);
       if (INSECURE_CREDENTIAL.test(text)) {
         found.push(`sends a credential with the certificate check off, ${PORT_CHECK.test(text) ? "after checking who holds the port, which narrows the risk without closing it" : "without checking who holds the port"}`);

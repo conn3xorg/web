@@ -30,6 +30,8 @@ circuit "web" {
 step "NAME" {
   for_each   = EXPRESSION        # optional
   when       = EXPRESSION        # optional
+  run_once   = true | false      # optional
+  on         = HOST              # optional, with run_once
   depends_on = [ADDRESS, ...]    # optional
   notify     = [handler.NAME, ...] # optional
   import     = true | [HOST, ...] # optional
@@ -52,6 +54,8 @@ A step block takes one label, the step's name, and contains:
 | Module block | Yes | Exactly one module block, such as `package`, `file` or `service`. The [module reference](/modules/file) lists every module and its arguments. |
 | `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host. See [for_each](#for_each). |
 | `when` | No | A condition, true or false for each host, that picks the hosts the step runs on. See [when](#when). |
+| `run_once` | No | `true` to run the step on one host only, such as for a database migration. See [run_once](#run_once). |
+| `on` | No | With `run_once`, the host to run on. See [run_once](#run_once). |
 | `depends_on` | No | A list of resources the step waits for, in addition to the step before it. See [depends_on](#depends_on). |
 | `notify` | No | A list of handlers in the same circuit to run when this step changes something on a host. See [Handlers](/reference/circuits/handlers). |
 | `import` | No | `true`, or a list of host names, to adopt the object already on those hosts instead of creating it. See [import](#import). |
@@ -318,7 +322,7 @@ A handler notified by a step with `for_each` runs on a host when any of that hos
 ## when
 
 :::note
-`when` is new after v0.9.0; earlier releases reject it with "Unsupported argument in step".
+`when` is in Conn3x since v0.10.0. Earlier releases reject it with "Unsupported argument in step".
 :::
 
 `when` runs a step only on the hosts where a condition is true, as Ansible's `when` does:
@@ -374,6 +378,52 @@ A few rules:
 
 What happens on the host is the module's [`on_remove`](/reference/circuits/removal). With the default, `forget`, Conn3x stops managing the object and leaves it there. With `on_remove = "delete"`, it deletes it. So a file a step wrote stays put after `when` turns false, unless that step sets `on_remove = "delete"`. Turn `when` back to true and the next apply manages it again.
 
+## run_once
+
+:::note
+`run_once` and `on` are in Conn3x since v0.10.0. Earlier releases reject them with "Unsupported argument in step".
+:::
+
+`run_once = true` runs a step on one host only, as Ansible's `run_once` does. It's for things that happen once per circuit, not once per host: a database migration, a cluster bootstrap, a cache flush.
+
+```hcl
+step "code" {
+  ...
+}
+
+step "migrate" {
+  run_once = true
+  on       = "db1"
+  command {
+    command = "app migrate"
+  }
+}
+
+step "restart" {
+  ...
+}
+```
+
+- **Which host:** the one `on` names, or else the first host key in sort order. HCL maps don't keep the order they're written in, so "first" means sorted: in `{ web2 = ..., db1 = ..., web1 = ... }` it's `db1`. `on` names one of the circuit's `hosts` keys and has to be known when planning. A name that isn't in `hosts` is an error, and so is `on` without `run_once = true`. Set `on` for anything that shouldn't move.
+- **The plan shows one instance:** `conn3x_command.app__migrate["db1"]`. In a step with [`for_each`](#for_each), it's that host's items.
+- **It waits for every host, even under [`strategy = "per_host"`](#per-host).** The steps before it finish on every host before it starts, and the steps after it start on any host only once it has finished. So `migrate` above never runs while a host is still on the old code, and `restart` never runs before the migration. Under `per_host` that makes a `run_once` step the one point where hosts wait for each other.
+- **Changing the host is a removal:** if `on` changes, or the first host changes because one was added or removed, the old instance is removed, with its [`on_remove`](/reference/circuits/removal), and the new host gets the step.
+- **What doesn't go with it:** `run_once` with [`when`](#when) is an error for now, since it isn't settled whether `when` should pick the host or decide whether the one host runs it. So is `import` naming a host other than the one it runs on, since the step has nothing to adopt there.
+
+### Handlers
+
+A handler notified by a `run_once` step runs only on the host where the step ran, as in Ansible. That's a trap in the most common use, "migrate once, then restart everywhere":
+
+```hcl
+step "migrate" {
+  run_once = true
+  notify   = [handler.restart]   # restarts db1 only
+  ...
+}
+```
+
+To restart every host, give the restart its own step after the `run_once` one, or notify the handler from a step that runs on every host.
+
 ## import
 
 :::note
@@ -417,13 +467,17 @@ there's nothing to adopt. Remove box from the step's import, or set import to
 the hosts that already have it; Conn3x then creates it on the rest.
 ```
 
-These modules can import: `authorized_key`, `cron`, `directory`, `file`, `firewalld`, `group`, `hostname`, `link`, `locale`, `mount`, `package`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw` and `user`. All but the first eight arrived in v0.9.0. Any other module rejects `import`.
+These modules can import: `authorized_key`, `cron`, `directory`, `file`, `firewalld`, `group`, `hostname`, `link`, `locale`, `mount`, `package`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw` and `user`. All but the first eight arrived in v0.9.0.
+
+Since v0.10.0, so can seven Windows modules: `windows_directory`, `windows_feature`, `windows_file`, `windows_group`, `windows_registry_value`, `windows_service` and `windows_user`. Any other module rejects `import`.
 
 A few details:
 
 - Each step lowers to an OpenTofu [`import` block](https://opentofu.org/docs/language/import/), so `import` works in the root configuration only, as in OpenTofu. For a circuit you call as a module, see [a step inside a module](#a-step-inside-a-module).
 - The import ID is JSON with the step's arguments and ssh settings, and the plan prints it once in an `imported from` line. It names your key and known_hosts files by path; it never holds a key, and never a file's content.
 - A write-only file (`content_wo`, or a template with `write_only = true`) is imported as an HMAC of what's on the host. The content stays out of state.
+- Arguments ending in `_wo`, such as a `windows_user` step's `password_wo`, never go into an import ID.
+- Windows reads compare hashes, not content. A `windows_file` import is the exception: it reads the file's text once, so the first plan can compare it with the step and show a diff.
 - A `service` step that sets `state` or `enabled` takes both from the host, so a stopped unit plans `state = "stopped" -> "started"`.
 - To adopt exactly what's there and change nothing on the first apply, add `lifecycle { ignore_changes = all }`, then remove it.
 

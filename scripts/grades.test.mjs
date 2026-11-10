@@ -334,3 +334,10 @@ test("the grader agrees with conn3x lint on the shared cases", () => {
     else assert.notEqual(state, "fail", `${c.rule} should not fail: ${c.text}`);
   }
 });
+
+test("an ignore with no reason doesn't lift a grade", () => {
+  // conn3x lint drops the finding but reports the bare ignore as C3X900; the
+  // grader has no C3X900, so it keeps the finding instead.
+  const ev = evidence(ci(fetching), { files: [["variables.tf", '  # conn3x-lint:ignore C3X003\n  default = "0.0.0.0"\n']] });
+  assert.equal(check(evaluate(ev, { held: new Set() }), "listen-address").state, "fail");
+});

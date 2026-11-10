@@ -88,12 +88,19 @@ jobs:
       - run: node scripts/builder-combos.mjs "$RUNNER_TEMP/builds"
       - name: Validate every build
         working-directory: ${{ runner.temp }}/builds
+        # Every build needs the same few providers. One cache means each is
+        # fetched once, not once a build, so a release host having a bad
+        # minute fails one download instead of dozens; a failed init gets
+        # one more try for the same reason.
+        env:
+          TF_PLUGIN_CACHE_DIR: ${{ runner.temp }}/plugin-cache
         run: |
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
           conn3x fmt -check -recursive .
           failed=""
           for d in */; do
             echo "::group::${d%/}"
-            (cd "$d" && conn3x init -backend=false -no-color > /dev/null && conn3x validate -no-color) || failed="$failed ${d%/}"
+            (cd "$d" && { conn3x init -backend=false -no-color > /dev/null || { sleep 20; conn3x init -backend=false -no-color > /dev/null; }; } && conn3x validate -no-color) || failed="$failed ${d%/}"
             echo "::endgroup::"
           done
           if [ -n "$failed" ]; then

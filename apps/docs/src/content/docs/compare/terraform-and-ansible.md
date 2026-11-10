@@ -35,7 +35,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Ansible collections for many vendors' gear | Three experimental circuits, through community OpenTofu providers |
 | Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [127 official circuits](/circuits) |
-| Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.9.0 |
+| Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.10.0 |
 
 ## The same job, both ways
 
@@ -430,13 +430,13 @@ We'd rather you pick the right tool than ours. Stay with the pair, or keep part 
 - You configure network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their own CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their CLI is only planned.
 - You manage Windows at scale. Ansible's Windows support has been in use for years. Windows in Conn3x is a preview, and every `windows_*` module is experimental, so their arguments may change between releases.
 - You need a UI, RBAC and scheduling built in. AWX and Red Hat Ansible Automation Platform give you job templates, credentials, access control and a web UI. HCP Terraform and other platforms do the same for Terraform runs. Conn3x is a CLI: CI or cron runs it.
-- You can't take on a pre-1.0 tool. Conn3x is at v0.9.0. Stable parts are tested on every change, but "stable" before 1.0 means tested, not frozen, and a release can change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
+- You can't take on a pre-1.0 tool. Conn3x is at v0.10.0. Stable parts are tested on every change, but "stable" before 1.0 means tested, not frozen, and a release can change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
 None of that has to be all or nothing. Because Conn3x runs your existing configuration unchanged, you can move one group of servers into a circuit and keep running Ansible for the rest.
 
 ## What Conn3x can't do yet
 
-- Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Child domains aren't tested, and a group can't list members from another domain.
+- Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
 - Network devices are limited to the three experimental circuits, and there's no device CLI connection.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command and no web UI. There are no inventory plugins either: `hosts` is an expression, so you build it from resources or data sources instead.

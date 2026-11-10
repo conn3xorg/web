@@ -32,11 +32,11 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Removing something | Delete the task and the host keeps it, unrecorded. Write a `state: absent` task to remove it | Delete the step and the plan shows it; `on_remove` decides what the host keeps |
 | Cloud resources | Cloud collections such as `amazon.aws`, `azure.azcollection` and `google.cloud` | Any OpenTofu provider, in the same plan as the servers |
 | Ad-hoc commands | `ansible all -a "uptime"` | None |
-| Modules | A very large ecosystem of collections on Ansible Galaxy | 34 Linux modules, 23 experimental Windows modules, and [127 official circuits](/circuits) |
+| Modules | A very large ecosystem of collections on Ansible Galaxy | 38 Linux modules, 25 experimental Windows modules, and [127 official circuits](/circuits) |
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | Three experimental circuits, through community OpenTofu providers |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
-| Maturity | In production use for more than a decade | Before 1.0, at v0.9.0 |
+| Maturity | In production use for more than a decade | Before 1.0, at v0.10.0 |
 
 ## The same playbook, both ways
 
@@ -92,7 +92,7 @@ You don't have to rewrite anything to see what this looks like as a circuit:
 conn3x convert ansible -i hosts.ini -out web.circuit.hcl site.yml
 ```
 
-This is the converter's real answer, from Conn3x v0.9.0:
+This is the converter's real answer, from Conn3x v0.10.0:
 
 ```text
 Converted 2 tasks. 1 thing needs you; each is marked TODO(convert):
@@ -228,11 +228,11 @@ There are plenty of jobs where Ansible is the right tool, and we'd rather say so
 - Ad-hoc work. `ansible all -m ping`, or a one-off command across a group during an incident, is quick and useful. Conn3x has no ad-hoc mode: it only runs what a circuit describes.
 - Network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their own CLI is only planned.
 - Windows at scale. Ansible's Windows support has years of production use behind it. Windows in Conn3x is a preview, and every `windows_*` module is experimental. It can build a forest, join servers, add a domain controller and keep the OUs, groups and users in the domain, but a whole lab from one config hasn't been tested yet.
-- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 34 Linux modules and 127 circuits, which cover a lot of ground and are still a much smaller set.
+- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 38 Linux modules and 127 circuits, which cover a lot of ground and are still a much smaller set.
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
 - A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x has none of that; you run it from CI.
 - Team familiarity. Ansible is widely known, widely taught and well documented. A team that's fluent in it gives up real speed by switching.
-- Maturity. Conn3x is at v0.9.0. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
+- Maturity. Conn3x is at v0.10.0. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
 You don't have to choose for every server at once. Converting one playbook and running Conn3x for that group, while Ansible keeps the rest, is a fair way to find out.
 
@@ -240,7 +240,7 @@ You don't have to choose for every server at once. Converting one playbook and r
 
 The converter is [stable](/reference/maturity), and it marks what it can't prove instead of guessing. These come across as `TODO(convert)` comments for you to finish:
 
-- Roles, `include_tasks` and `import_tasks`. Add each role's tasks as steps.
+- Most `include_tasks`, and roles it can't find in `roles/` beside the playbook. Roles it finds convert into circuits of their own, called as modules.
 - Jinja templates and filters. Rewrite them in `templatefile` syntax for a [template](/modules/template) step.
 - Magic variables such as `inventory_hostname`, and anything that isn't one of the play's `vars`.
 - Control flow: `when`, `register`, `with_*`, `until`, `ignore_errors`, and any `loop` other than a plain list.
@@ -252,7 +252,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 
 ## What Conn3x can't do yet
 
-- Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Child domains aren't tested, and a group can't list members from another domain.
+- Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
 - Network devices are limited to three experimental circuits, with no device CLI connection.
 - macOS hosts are planned, not shipped.
 - There's no ad-hoc command, no web UI and no built-in credential store.
