@@ -131,7 +131,7 @@ That's the [try-it-locally](/tutorials/try-locally) circuit's first apply, cut t
 - **Hosts** are keyed by their name in the circuit's `hosts`, with steps in the order they were planned. A step in a `for_each` loop has an `item`.
 - **`status`** is `ok`, `failed` or `skipped`. A skipped step has a `reason`, such as `an earlier step failed on this host`.
 - **`cloud`** lists every resource that isn't a host step, such as a server.
-- **No values.** A report holds addresses, actions, timings and errors, and never an attribute's value, since reports get copied to other systems. An error is kept as printed, so a command that printed a secret in its error would carry it, and the file is written readable by its owner only.
+- **No values.** A report holds addresses, actions, timings and errors, and never an attribute's value, since reports get copied to other systems. An error is kept as printed, so a command that printed a secret in its error would carry it, and the file is written readable by its owner only. Since v0.12.0 that holds for a report that was already there with a wider mode, and a link at the path is replaced, not followed.
 
 The format is the JSON Schema at [docs.conn3x.org/schemas/report-1.json](https://docs.conn3x.org/schemas/report-1.json). Within format version `1`, fields are only added, never changed or removed.
 

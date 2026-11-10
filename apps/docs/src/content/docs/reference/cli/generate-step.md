@@ -46,7 +46,7 @@ EOT
 | `-known-hosts-file` | known_hosts file to check the host against. Defaults to `~/.ssh/known_hosts`. |
 | `-become` | Read as root through sudo, as `become` in a circuit's `ssh` block. Most of what you'd adopt, such as `/etc/nginx`, units and users, needs it unless you log in as root. |
 | `-name` | The step's name. Defaults to one made from the object: `etc_motd` for `path=/etc/motd`, `nginx` for `name=nginx`, or the module's name for `hostname`, `timezone` and `locale`. |
-| `-write-only` | For a file: print `content_wo` with a placeholder, and keep the content on the host. |
+| `-write-only` | For a file: print `content_wo` with a placeholder, and keep the content out of the output. |
 
 The host is checked against known_hosts the same way [plan](/reference/cli/plan#plan-reads-your-hosts) checks it. There's no option to skip the check.
 
@@ -66,11 +66,13 @@ It covers the modules a step can import. For those whose reads only say whether 
 
 A file's content is printed as a heredoc, with `${` and `%{` escaped as `$${` and `%%{` so it stays literal. Content without a final newline, or with a line that would end the heredoc, is printed as a quoted string instead.
 
+Since v0.12.0, so is content with a control character: anything that isn't printable, a newline or a tab comes out as a `\u` escape inside a quoted string. A terminal hides escape sequences and leaves them out of what you copy, so this keeps the step you paste the same as the step you saw.
+
 The step gets `content_wo = "REPLACE ME"`, and a comment saying why, when:
 
 - the content isn't UTF-8 text,
 - it's over 64 KiB, or
-- you passed `-write-only`. Then the content is never read into the output, so a secret stays on the host.
+- you passed `-write-only`. The file is still read to your machine, as every file step's read does, but its content is never printed or stored.
 
 Replace the placeholder with the real content, or a reference to it, before you plan.
 

@@ -43,8 +43,9 @@ step "breakglass" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `name` | string | Yes | The user name. |
+| `nopassword` | bool | No | true lets the account log in with no password at all (nopassword), wherever the switch takes password logins. false makes sure it can't: an account that has nopassword gets a secret no password matches. Unset leaves an existing account as it is. Can't be true with password_wo. |
 | `on_remove` | string | No | "delete" (default) removes the account when the step goes, as with every step that grants access; "forget" leaves it. |
-| `password_wo` | string | No | Write-only: the password, sent to the switch and never kept in state. The switch stores it as a salted hash, so Conn3x can only tell that a password is set; a new value plans a change through password_hmac. Unset leaves the account's password alone, and a new account gets none (nopassword), for SSH keys only. |
+| `password_wo` | string | No | Write-only: the password, never kept in state. Conn3x hashes it here and sends the switch the salted hash it would store anyway, so the password itself never reaches the CLI; a new value plans a change through password_hmac. Unset leaves the account's password alone, and a new account gets a secret no password matches (secret *), for SSH keys only. |
 | `privilege` | number | No | 0 to 15. Conn3x's own login needs 15. |
 | `role` | string | No | A role, such as network-admin or network-operator. |
 | `ssh_key` | string | No | One public key line, such as "ssh-ed25519 AAAA... alice@laptop". "" removes the account's key. |
@@ -56,16 +57,20 @@ Conn3x sets these; reference them as `conn3x_eos_user.<circuit>__<step>["<host>"
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether the account matched at the last refresh. |
-| `password_hmac` | string | An HMAC of password_wo, keyed outside state, so a new password plans a change. |
+| `password_hmac` | string | An HMAC of the salted hash the switch should hold for password_wo, keyed outside state. A new password plans a change, and a refresh finds an account whose secret is another one out of sync. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_eos_user` resource, one instance per host, and connects with its circuit's `ssh` block.
 
 ## How it works
 
-EOS stores a password as a salted hash, so Conn3x can only tell that an account has one, never which. It keeps an HMAC of `password_wo` in `password_hmac`, keyed outside state, and a new password plans a change through it. Changing the role or privilege keeps the password as it is on the switch. Leave `password_wo` unset to leave the password alone; a new account then gets none (`nopassword`), for key-only logins. A password can't hold spaces, since the EOS CLI would read the rest as more of the command.
+EOS stores a password as a salted hash. Conn3x works that hash out on your machine and sends the switch `secret sha512 <hash>`, so the password itself never reaches the switch's CLI or a config session. State keeps neither: `password_hmac` is an HMAC of the hash, keyed outside state. A new password plans a change through it, and every refresh compares the hash on the switch with it, so an account that holds another password shows as out of sync and the next apply sets yours. That covers an account that was on the switch before the step, a password changed by hand, and an apply that stopped before its commit. Changing the role or privilege keeps the password as it is on the switch. Leave `password_wo` unset to leave the password alone.
 
-Passwords and their hashes are masked in every log line and error Conn3x writes, the session diff included. OpenTofu itself logs its command line, so pass a password through a variable file or `TF_VAR_`, not `-var`.
+A new account without `password_wo` gets `secret *`, a secret no password matches, so it logs in with its SSH key only. EOS's own `nopassword` lets an account in with an empty password wherever the switch takes password logins, the console included, so Conn3x writes it only when you ask with `nopassword = true`. Set `nopassword = false` to close an account that has it. Conn3x up to v0.11.0 made key-only accounts with `nopassword`; a refresh warns about each one until you choose.
+
+Refreshing needs the HMAC key that made `password_hmac`. On a machine without it, a refresh can only tell that the account has a secret, not which.
+
+Hashes are masked in every log line and error Conn3x writes. The log lists the lines Conn3x added to the session, never the switch's own diff of it, which would show the config around them. OpenTofu itself logs its command line, so pass a password through a variable file or `TF_VAR_`, not `-var`.
 
 Conn3x won't lower the privilege or change the role of the account it logs in as, and won't delete it.
 

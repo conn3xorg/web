@@ -7,7 +7,7 @@ You changed a step, and you'd like to know what it does to every host before any
 
 Most of a circuit can be tested without a server at all. A plan already says which package goes on which host and what every file will contain, so asserting on the plan catches a wrong template, a `for_each` that drops a host or a variable that doesn't reach a step. When you need to know the host really ends up that way, a run can apply to a container.
 
-This guide uses Conn3x v0.11.0.
+This guide uses Conn3x v0.12.0.
 
 ## Where tests go
 
@@ -275,6 +275,27 @@ ssh 127.0.0.1:2222: dial tcp 127.0.0.1:2222: connect: connection refused
 (still not reachable after 3m0s)
 ```
 
+### Check that a second plan is empty
+
+The check that matters most before you [share a circuit](/guides/share-a-circuit) is that a plan after the apply says `No changes.` Since v0.12.0, a run does that check for you when you set `idempotent = true`:
+
+```hcl
+run "configure_the_box" {
+  idempotent = true
+}
+```
+
+After the apply, the run plans again. If that plan would change anything, the run fails and names each resource and what would happen to it:
+
+```text
+Error: Not idempotent
+
+The plan after the apply isn't empty:
+  - conn3x_command.try__migrate["box"] would be updated in-place
+```
+
+`idempotent` needs a run that applies, so it's an error with `command = plan`. It also can't be combined with `replace` in `plan_options`.
+
 ### What the clean-up leaves on the host
 
 When the file finishes, `conn3x test` destroys what it applied, and destroying a step does what its [`on_remove`](/reference/circuits/removal) says. Most modules default to `"forget"`, so after the run above `tree`, the `deploy` user and `/etc/motd` are all still on the container. Conn3x only dropped them from the test's state.
@@ -283,7 +304,6 @@ That's what you want on a throwaway container: `./down.sh` removes the lot, and 
 
 ## What conn3x test doesn't cover
 
-- **A second plan.** The check that matters most before you [share a circuit](/guides/share-a-circuit) is that a second `conn3x plan` after an apply says `No changes.` A run can't assert that, so keep `conn3x plan -detailed-exitcode` for it.
 - **Values from earlier runs in assertions.** A later run can use an earlier run's outputs as `run.<name>.<output>` in its `variables` block, but not in an `assert` condition, and it can't see the earlier run's steps at all. Add an `output` to the circuit for anything you want to carry from one run to the next.
 - **Made-up attributes under a mock.** The mock invents values for attributes the host would report, such as `revision`, `installed_version` and `uid`. Assert on what the circuit sets, and on host-reported attributes only in runs against a real host.
 - **Services on the tutorial container.** It runs `sshd` without systemd, so `service` steps and handlers fail there with `System has not been booted with systemd as init system`. Test those plan-only, or on a host that boots systemd.

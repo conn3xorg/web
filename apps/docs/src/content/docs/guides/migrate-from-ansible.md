@@ -55,6 +55,8 @@ New in v0.6.11, `known_hosts` becomes a [known_hosts](/modules/known_hosts#from-
 
 New in v0.6.12, `ansible.builtin.pip` with a `virtualenv` becomes a [pip](/modules/pip#from-ansible) step, one for each name. Without a `virtualenv` it stays for review, since a `pip` step doesn't install system-wide. So does `requirements`: that file is on the host, where the converter can't see what it pins, so give each package a step with its version.
 
+Since v0.12.0, database tasks convert too. `community.postgresql.postgresql_db` and `postgresql_user` become [postgresql_database](/modules/postgresql_database) and [postgresql_role](/modules/postgresql_role) steps, and `become_user: postgres` on the task is allowed. `community.mysql.mysql_db` and `mysql_user` become [mysql_database](/modules/mysql_database) and [mysql_user](/modules/mysql_user) steps, with the database-level parts of `priv` as `grants`. A password is never copied: a `TODO(convert)` asks you to set `password_wo`. Drops, dumps and imports, `login_*` options, table and global privileges, and `append_privs` stay for review.
+
 New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/file#from-ansible) step, minus any quotes around `%s`. Ansible runs `validate` without a shell, and Conn3x runs it through `sh`, so one with a pipe, a redirect, `$`, a glob or a second line stays for review.
 
 ### Windows
@@ -73,9 +75,13 @@ New in v0.7.1, a playbook that builds a domain controller comes across too. `mic
 
 Since v0.7.2 the rest of the domain comes across as well. `microsoft.ad.membership` and `win_domain_membership` become a [windows_domain_membership](/modules/windows_domain_membership) step, and `microsoft.ad.domain_controller` and `win_domain_controller` a [windows_ad_domain_controller](/modules/windows_ad_domain_controller) step. The `microsoft.ad` names need their full collection prefix, like `microsoft.ad.domain`. `domain_admin_user` becomes `username`, and no password is ever copied: a `TODO(convert)` asks you to set `password_wo`, and on a domain controller `safe_mode_password_wo` too, from ephemeral variables. `reboot: true` adds a [windows_reboot](/modules/windows_reboot) step, and after a promotion the same wait on port 9389. A join's `domain_ou_path` becomes `ou`.
 
+Since v0.12.0, `microsoft.ad.domain_child` becomes a [windows_ad_domain](/modules/windows_ad_domain) step, with the same reboot and wait when it sets `reboot: true`. `domain_admin_user` has to name its domain by its DNS name, such as `admin@lab.example.com`, as the step needs. A new tree, `domain_mode` and `site_name` stay for review, and no password is copied.
+
 Some tasks still stay for review, each with the reason. Leaving a domain or demoting a controller won't convert, because Conn3x never does either. Neither will an offline join blob, a rename while joining, `domain_server`, a read-only domain controller, a promotion without DNS, or `site_name`, `install_media_path` and `replication_source_dc`. A task without `domain_admin_user` stays too, since both modules join or promote with a named account.
 
 New in v0.7.3, so do the things you keep in a domain. `microsoft.ad.ou` becomes a [windows_ad_ou](/modules/windows_ad_ou) step, `microsoft.ad.group` and `win_domain_group` a [windows_ad_group](/modules/windows_ad_group) step, and `microsoft.ad.user` and `win_domain_user` a [windows_ad_user](/modules/windows_ad_user) step. Again the `microsoft.ad` names need their full prefix. A group's `members.add` list comes across as members that are only added, and `members.set` as the whole list, with `authoritative = true`. A user's password is never copied: a `TODO(convert)` asks you to set `password_wo` from an ephemeral variable.
+
+Since v0.12.0, `win_updates` becomes a [windows_update](/modules/windows_update) step. Categories match the way Ansible matches them, accept and reject lists made only of KB numbers carry over, and `reboot: true` adds a [windows_reboot](/modules/windows_reboot) step that waits Ansible's 1200 seconds. One difference matters: Ansible kept installing and rebooting until nothing was left, and Conn3x installs one round on each apply.
 
 These stay for review, with the reason:
 
@@ -117,8 +123,13 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when. That includes every `win_reboot`: a [windows_reboot](/modules/windows_reboot) step reboots once, then again when its `triggers` change, or with `only_if_pending`.
 - **`get_url` without a sha256 checksum.** Conn3x only downloads what it can verify.
 - **A `file` link that sets `owner`, `group` or `mode`.** A Conn3x [link](/modules/link) step doesn't manage those, so the converter won't quietly drop them.
-- **Database tasks from `community.postgresql` and `community.mysql`.** Since v0.11.0 Conn3x has [postgresql_database](/modules/postgresql_database), [postgresql_role](/modules/postgresql_role), [mysql_database](/modules/mysql_database) and [mysql_user](/modules/mysql_user) steps, and the converter doesn't map these modules to them yet. Write those steps by hand from the task.
+- **A `command` task with shell characters,** such as `;`, `|`, `$`, `*` or `>`. Ansible runs `command` without a shell and a [command](/modules/command) step runs through one, so since v0.12.0 the converter doesn't guess which you meant.
+- **Anything tagged `never`.** Ansible runs it only when you ask for one of its tags, and a step would run on every apply. That covers a task, a handler, an import, a role call or a whole play.
+- **A value encrypted with Ansible Vault.** The converter can't read it and won't write the ciphertext into a circuit, so a task that uses one stays. Pass the secret in through an [ephemeral variable](/reference/circuits/secrets) instead.
+- **A `src` outside the playbook's or role's directory,** or one that's a link. The converter reads only the files that came with the playbook.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
+
+Since v0.12.0 the converter also tells you what it couldn't carry over from the play itself. Keywords such as `check_mode`, `connection`, `module_defaults`, `environment`, `run_once`, `vars_prompt` and `vars_files` are listed at the top of the circuit. And a `copy` or `template` task without `mode` gets a note, because the step sets `0644` where Ansible left an existing file's mode alone.
 
 The command exits 3 while anything is left, so you can keep running it in CI until the count reaches zero.
 
@@ -251,6 +262,8 @@ circuit "web_2" {          # tasks, after the role
 - **`become`** on the call sets `ssh_become`.
 - **Dependencies.** A role's `meta/main.yml` dependencies convert the same way and run before it, with the vars `meta/` gives them. As in Ansible, a role that already ran with the same vars doesn't run again, while `include_role` always runs. A dependency that can't convert, or a cycle, stays for review.
 - **`when` on the OS family,** such as `when: ansible_os_family == 'Debian'`, filters the hosts the module gets, using `os_family` from a `conn3x_host` data source.
+- **Part of a role.** Since v0.12.0, `include_role` and `import_role` take `tasks_from`, `vars_from`, `defaults_from` and `handlers_from`. The role converts again from those files into its own circuit directory, such as `circuit-web-install` for `tasks_from: install`.
+- **A role in a loop.** Also since v0.12.0, `include_role` with `loop` over a plain list becomes one module per item, each waiting for the one before, as Ansible runs them in order. The role converts into `circuit-<role>-each`, where the loop variable is a required input.
 - **Reuse and re-runs.** A role called twice converts once and gets two module blocks. A `circuit-<role>/` directory that already has files is kept as it is, and the summary says so, so converting again never writes over your edits.
 
 ### Roles from Ansible Galaxy
