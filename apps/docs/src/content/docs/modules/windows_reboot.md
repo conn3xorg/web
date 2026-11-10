@@ -38,6 +38,7 @@ step "restart_if_needed" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `earlier_revisions` | dynamic | No | Set by the circuit, so leave it unset: the revisions of the steps before this one. With only_if_pending, a plan that changes any of them checks for a pending reboot at apply time, so a reboot an earlier step leaves pending comes in the same apply. |
 | `only_if_pending` | bool | No | Reboot only when Windows reports a reboot is pending, and plan one whenever a refresh finds that, so a reboot a failed run missed still happens. |
 | `timeout` | string | No | How long to wait for the host to come back. Defaults to "10m". |
 | `triggers` | map of string | No | Reboot again whenever any of these values change. |
