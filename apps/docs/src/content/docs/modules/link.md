@@ -70,7 +70,7 @@ A step lowers to the `conn3x_link` resource, one instance per host, and connects
 
 **Absent.** With `state = "absent"`, every plan checks only whether a link exists at the path. If one does, the plan shows the step out of sync and apply removes it. If not, the plan shows no change, and a link that comes back later is removed again by the next apply. Conn3x removes the link itself, never the file or directory it points to, and removes a link whose target is missing too. `target` can't be set alongside it. A regular file, a directory or anything else that isn't a link at the path is an error, and is left in place.
 
-**Applying.** Conn3x creates the new link under a temporary name in the same directory and renames it over the old one, so the path always points somewhere while the link changes. If the rename isn't possible, it falls back to `ln -sfn`.
+**Applying.** Conn3x creates the new link in a temporary directory beside the path and renames it over the old one, so the path always points somewhere while the link changes. If the rename isn't possible, it falls back to `ln -sfn`.
 
 ## Removal
 

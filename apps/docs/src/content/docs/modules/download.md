@@ -50,10 +50,11 @@ step "node_exporter" {
 | `dest` | string | Yes | Absolute path to save it to. |
 | `group` | string | No | Group. |
 | `mode` | string | No | Octal permissions. Defaults to "0644". |
+| `netrc_file` | string | No | Absolute path of a netrc file on the host with the login for the URL's server. Needs curl on the host. |
 | `on_remove` | string | No | "forget" (default) leaves the file, "delete" removes it. |
 | `owner` | string | No | Owner. |
 | `sha256` | string | Yes | Expected SHA-256, in lowercase hex. |
-| `url` | string | Yes | http or https URL. |
+| `url` | string | Yes | http or https URL, without a user name or password. |
 
 ## Read-only attributes
 
@@ -71,6 +72,8 @@ A step lowers to the `conn3x_download` resource, one instance per host, and conn
 **Reading.** Every plan computes the SHA-256 of the file at `dest` with `sha256sum`. The step is in sync when the file is there and its checksum matches `sha256`. A missing file, or one with a different checksum, plans a new download. Changing `url`, `sha256`, `mode`, `owner` or `group` also plans one.
 
 **Downloading.** Conn3x creates the parent directories of `dest`, then downloads to a temporary file beside it with `curl`, or with `wget` when `curl` isn't installed. If the checksum doesn't match, the apply fails and the temporary file is removed, so `dest` is never a partial or unverified file. Otherwise Conn3x sets the mode and ownership, flushes the file to disk, and renames it over `dest`. On SELinux hosts the file is relabelled for its path with `restorecon`.
+
+**Logging in.** `url` can't hold a user name or password: it's in the plan, the state, the errors and the host's process list. For a server that needs a login, put a netrc file on the host with a [`file`](/modules/file) step, using `content_wo` and mode `"0600"`, and name it in `netrc_file`. That needs `curl` on the host. Changing `netrc_file` alone doesn't plan a new download.
 
 **Mode.** The default mode is `"0644"`. `owner` and `group` are set only when you give them.
 

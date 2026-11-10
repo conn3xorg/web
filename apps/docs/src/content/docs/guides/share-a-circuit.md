@@ -158,7 +158,7 @@ This narrows the window rather than closing it: the service could die between th
 
 ## Test it on a container
 
-Before you tag a version, apply your circuit to a fresh host and run `conn3x plan` again. The second plan has to say `No changes.` If it doesn't, a step is reporting a change it didn't make, or making one it didn't plan.
+Before you tag a version, apply your circuit to a fresh host and run `conn3x plan` again. The second plan has to say `No changes.` If it doesn't, a step is reporting a change it didn't make, or making one it didn't plan. Since v0.12.0 a test can make that check for you: set [`idempotent = true`](/guides/test-a-circuit#check-that-a-second-plan-is-empty) on a run that applies.
 
 The [try-it-locally example](https://github.com/conn3xorg/conn3x/tree/main/examples/try-it-locally) starts a Rocky Linux 10 container with SSH that you can point an `examples/local` configuration at. The official circuits do the same in CI on Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, with `conn3x plan -detailed-exitcode` failing the job when the second plan isn't empty. Copy their workflow if you like.
 

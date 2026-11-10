@@ -85,6 +85,17 @@ const SHIPPED = [
       /since v0\.10\.0 seven Windows modules too/i,
     ],
   },
+  {
+    feature: "database tasks and win_updates in convert, idempotent test runs, the stricter path guard, mcp limits (v0.12.0)",
+    stale: [
+      /the converter doesn't map these modules to them yet/i,
+      /A run can't assert that/i,
+      /so a secret stays on the host/i,
+      /writable by a system group with no people in it is still trusted/i,
+      /This guide uses Conn3x v0\.11\.0/i,
+      /Replace `0\.11\.0` with the version/i,
+    ],
+  },
 ];
 
 function files(dir) {
