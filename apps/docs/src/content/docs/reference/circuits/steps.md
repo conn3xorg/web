@@ -524,6 +524,29 @@ The ID is JSON, which `import_id` writes so you don't have to:
 
 `v` is the format's version, and `write_only` is `true` for a write-only file. Nulls are left out of `ssh` and `args`.
 
+`conn3x import` takes the same ID on the command line. To adopt the `/etc/motd` a host already has into a `file` step that doesn't set `import`:
+
+```sh
+conn3x import 'conn3x_file.site__motd["web1"]' \
+  '{"v":1,"key":"web1","ssh":{"host":"203.0.113.10","port":22,"user":"root"},"args":{"path":"/etc/motd","mode":"0644"}}'
+```
+
+`port` is a number, and `args` are the step's own arguments, as for `import_id`. Pass every argument the step sets. The ones that name what's imported are:
+
+| Module | Names it |
+| --- | --- |
+| `file`, `directory`, `link`, `mount`, `windows_file`, `windows_directory` | `path` |
+| `package`, `service`, `user`, `group`, `cron`, `timer`, `sysctl`, `repository`, `postgresql_database`, `postgresql_role`, `mysql_database`, `windows_service`, `windows_feature`, `windows_user`, `windows_group` | `name` |
+| `authorized_key` | `user` and `key` |
+| `mysql_user` | `name` and `host` |
+| `windows_registry_value` | `key` and `name` |
+| `windows_package` | `product_code` |
+| `firewalld` | `zone`, `service` and `port` |
+| `ufw` | `action`, `port` and `from` |
+| `selinux_boolean` | `name` |
+| `selinux_fcontext` | `target` |
+| `hostname`, `timezone`, `locale` | nothing: a host always has one |
+
 [Adopt servers you already run](/guides/adopt-servers) walks through a whole server.
 
 ## lifecycle
