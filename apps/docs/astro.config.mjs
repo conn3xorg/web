@@ -78,6 +78,7 @@ export default defineConfig({
             { slug: "reference/circuits", label: "Overview" },
             ...["hosts", "ssh", "steps", "handlers", "removal", "secrets", "addresses", "expressions"].map((page) => `reference/circuits/${page}`),
             "reference/host-facts",
+            "reference/host-packages-and-services",
             "reference/eos-device",
           ],
         },
