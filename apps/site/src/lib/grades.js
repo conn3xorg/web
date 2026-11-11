@@ -78,6 +78,47 @@ export function parseWorkflow(text) {
 
 const APPLY = /\bconn3x\s+apply\b/;
 const CLEAN_PLAN = /\bconn3x\s+plan\b[^|;&\n]*-detailed-exitcode\b(?!.*\|\|\s*true)/;
+const CONN3X_TEST = /\bconn3x\s+test\b(?!.*\|\|\s*true)/;
+
+// The bodies of the run blocks in a test file, braces matched outside
+// strings.
+function runBlocks(text) {
+  const out = [];
+  for (const m of text.matchAll(/(^|\n)\s*run\s+"[^"\n]*"\s*\{/g)) {
+    let depth = 0, quoted = false;
+    for (let i = m.index + m[0].length - 1; i < text.length; i++) {
+      const c = text[i];
+      if (quoted) {
+        if (c === "\\") i++;
+        else if (c === '"') quoted = false;
+      } else if (c === '"') quoted = true;
+      else if (c === "{") depth++;
+      else if (c === "}" && --depth === 0) {
+        out.push(text.slice(m.index + m[0].length, i));
+        break;
+      }
+    }
+  }
+  return out;
+}
+
+// What the circuit's test files do: whether a run applies (apply is the
+// default command), and whether one that applies sets idempotent = true,
+// which plans again and fails on any change.
+function testRuns(files) {
+  let applies = false, idempotent = false;
+  for (const [path, text] of files) {
+    if (!/\.(tftest|tofutest)\.hcl$/.test(path)) continue;
+    for (const body of runBlocks(text)) {
+      if (/^\s*command\s*=\s*plan\b/m.test(body)) continue;
+      applies = true;
+      idempotent ||= /^\s*idempotent\s*=\s*true\b/m.test(body);
+    }
+  }
+  return { applies, idempotent };
+}
+
+const runsTest = (j) => j.steps.some((s) => s.lines.some((l) => CONN3X_TEST.test(l)));
 
 // Every line a job runs after its first apply, with the scripts it calls
 // pasted in. Steps that only run on failure or to clean up don't count.
@@ -331,7 +372,9 @@ export const RUBRIC = [
         const at = s.lines.findIndex((l) => APPLY.test(l));
         return at >= 0 && s.lines.slice(at).some((l) => CLEAN_PLAN.test(l));
       }));
-      return hit ? pass("CI fails if a plan after apply shows changes.") : fail("CI doesn't run plan -detailed-exitcode after an apply.");
+      if (hit) return pass("CI fails if a plan after apply shows changes.");
+      if (ev.tests.idempotent && ev.applyJobs.some(runsTest)) return pass("CI runs conn3x test, and a run that applies sets idempotent = true.");
+      return fail("CI doesn't run plan -detailed-exitcode after an apply, or conn3x test with idempotent = true.");
     },
   },
   {
@@ -484,8 +527,10 @@ export function gradeOf(checks) {
 /** Grades one circuit from what was read. `held` says which results to leave out. */
 export function evaluate(ev, { held = HELD, extra = [] } = {}) {
   const jobs = parseWorkflow(ev.files.get(".github/workflows/ci.yml") ?? "");
-  const applyJobs = jobs.filter((j) => j.steps.some((s) => s.lines.some((l) => APPLY.test(l))));
-  const full = { ...ev, applyJobs, after: (j) => afterApply(j, ev.files) };
+  const tests = testRuns(ev.files);
+  // A job that runs conn3x test applies when one of the test runs does.
+  const applyJobs = jobs.filter((j) => j.steps.some((s) => s.lines.some((l) => APPLY.test(l))) || (tests.applies && runsTest(j)));
+  const full = { ...ev, applyJobs, tests, after: (j) => afterApply(j, ev.files) };
   const checks = [...RUBRIC, ...extra].map((r) => {
     const base = { id: r.id, max: r.points, ...(r.gate && { gate: true }) };
     if (held.has(r.id)) return { ...base, state: "held", points: 0 };
