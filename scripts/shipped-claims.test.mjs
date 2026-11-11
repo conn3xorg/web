@@ -96,6 +96,16 @@ const SHIPPED = [
       /Replace `0\.11\.0` with the version/i,
     ],
   },
+  {
+    feature: "one circuit per EOS session, role calls in imported files (v0.13.0)",
+    stale: [
+      /session belongs to the switch, not the circuit/i,
+      /first circuit to finish commits what both have added/i,
+      /role call in an imported (?:task )?file (?:is|stays) left for review/i,
+      /This guide uses Conn3x v0\.12\.0/i,
+      /Replace `0\.12\.0` with the version/i,
+    ],
+  },
 ];
 
 function files(dir) {
