@@ -85,6 +85,21 @@ test("the second plan has to be able to fail", () => {
   assert.equal(check(evaluate(evidence(ci(""))), "second-plan").state, "pass");
 });
 
+test("conn3x test with idempotent = true counts as the second plan", () => {
+  const wf = "jobs:\n  e2e:\n    strategy:\n      matrix:\n        os: [ubuntu2404]\n    steps:\n      - run: conn3x test\n";
+  const runs = (body) => evidence(wf, { files: [["tests/web.tftest.hcl", body]] });
+  const idem = 'run "apply" {\n  idempotent = true\n  assert {\n    condition     = output.x == "{a}"\n    error_message = "}"\n  }\n}\n';
+  assert.equal(check(evaluate(runs(idem)), "second-plan").state, "pass");
+  // A plan-only run can't take idempotent, and a run without it checks nothing.
+  assert.equal(check(evaluate(runs('run "p" {\n  command    = plan\n  idempotent = true\n}\n')), "second-plan").state, "fail");
+  assert.equal(check(evaluate(runs('run "a" {\n  command = apply\n}\n')), "second-plan").state, "fail");
+  // A test step whose failure is ignored proves nothing.
+  const soft = evidence(wf.replace("conn3x test", "conn3x test || true"), { files: [["tests/web.tftest.hcl", idem]] });
+  assert.equal(check(evaluate(soft), "second-plan").state, "fail");
+  // The applying test job counts toward the matrix too.
+  assert.notEqual(check(evaluate(runs(idem)), "matrix").state, "fail");
+});
+
 test("a circuit that never applies fails, and can't pass on points", () => {
   const r = evaluate(evidence("jobs:\n  validate:\n    steps:\n      - run: conn3x validate\n"));
   assert.equal(check(r, "matrix").state, "fail");
