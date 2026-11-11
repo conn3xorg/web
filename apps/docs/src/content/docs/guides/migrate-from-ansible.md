@@ -228,7 +228,7 @@ module "app" {
 
 ### Roles a play runs
 
-Most playbooks are a list of roles. Since v0.11.0, converting one with `-out` converts the roles too. Each role the play runs, from its `roles:` list or from an `include_role` or `import_role` in its tasks, is read from `roles/` beside the playbook and written to a circuit directory beside the output file. The output calls each one as a `module`, in the order Ansible runs it:
+Most playbooks are a list of roles. Since v0.11.0, converting one with `-out` converts the roles too. Each role the play runs, from its `roles:` list or from an `include_role` or `import_role` in its tasks (since v0.13.0, also one in a file the play pulls in with `import_tasks`), is read from `roles/` beside the playbook and written to a circuit directory beside the output file. The output calls each one as a `module`, in the order Ansible runs it:
 
 ```sh
 conn3x convert ansible -i inventory.ini -out site.tf site.yml
