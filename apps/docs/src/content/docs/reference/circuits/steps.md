@@ -620,6 +620,16 @@ the plan calls for it to be destroyed.
 
 `on_remove = "forget"` doesn't make this unnecessary. Forget keeps the file on the host, but the step still leaves state, and the next apply no longer manages it. `prevent_destroy` stops that from happening by accident.
 
+It can come from a variable, so the same circuit can protect production and let a test environment go:
+
+```hcl
+lifecycle {
+  prevent_destroy = var.protect
+}
+```
+
+With `protect = true` a destroy stops as above and the host keeps the file; with `protect = false` it goes ahead.
+
 ### ignore_changes
 
 `ignore_changes` names the module's own arguments, such as `content`, `mode` or `shell`, as listed on each [module page](/modules/file). The `ssh` block can be ignored as a whole. With `ignore_changes = [content]` above, someone edits the file on the host and the plan leaves it alone:

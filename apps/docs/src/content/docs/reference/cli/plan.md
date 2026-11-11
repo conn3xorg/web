@@ -20,7 +20,7 @@ Before it compares, `plan` refreshes state: it reads every resource again, the w
 - A step that isn't in state yet is planned as a create without connecting. Conn3x connects when you apply it.
 - A refresh connects with the `ssh` settings recorded in state, from the last apply.
 - If what a step manages is gone from the host, such as a deleted file, the plan creates it again.
-- [`conn3x_host`](/reference/host-facts) data sources connect during every plan to read facts.
+- [`conn3x_host`](/reference/host-facts), [`conn3x_packages` and `conn3x_services`](/reference/host-packages-and-services) data sources connect during every plan to read the host.
 - A host that doesn't answer during a refresh is retried for 10 seconds, or the `ssh` block's `timeout` if that's shorter. Its steps then keep what the last apply recorded, and the plan warns `Host not reachable during refresh`, naming the address and any jump hosts. That's how a plan gets past sshd moving to the port your configuration now names. A host that's really down plans as unchanged, so read the warning, and apply will fail to connect to it.
 - A host that answers with the wrong host key, or turns down the login, fails the plan. So does a host name that DNS says doesn't exist.
 - `conn3x_host` data sources and applies retry a host that doesn't answer for the `ssh` block's `timeout`, 3 minutes by default, then fail.
