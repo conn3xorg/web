@@ -1,40 +1,40 @@
 {
-  "otherMinutes": 211,
+  "otherMinutes": 165,
   "items": [
     {
       "date": "2026-11-11",
       "repo": "prometheus/prometheus",
       "summary": "promtool's OpenMetrics dump printed staleness markers as NaN and dropped floats that came after a native histogram. We ran the new test against the old loop to show both, and pointed out what dropping the markers means for a backfilled series.",
       "url": "https://github.com/prometheus/prometheus/pull/20393#pullrequestreview-5854789963",
-      "minutes": 25
+      "minutes": 2
     },
     {
       "date": "2026-11-11",
       "repo": "tailscale/tailscale",
       "summary": "A failed logout used to forget the node key, so it couldn't be retried. We confirmed the fix and its test, and spelled out that a failed logout now leaves the node fully logged in rather than half logged out.",
       "url": "https://github.com/tailscale/tailscale/pull/22249#pullrequestreview-5854776950",
-      "minutes": 30
+      "minutes": 2
     },
     {
       "date": "2026-11-11",
       "repo": "data-privacy-stack/presidio",
       "summary": "Deanonymizing with no operator for one of the entities crashed with a 500. We ran the fix's test against the old code and asked whether refusing the request, rather than leaving that entity alone, is what the maintainers want.",
       "url": "https://github.com/data-privacy-stack/presidio/pull/2464#pullrequestreview-5854764394",
-      "minutes": 25
+      "minutes": 2
     },
     {
       "date": "2026-11-11",
       "repo": "prometheus/prometheus",
       "summary": "OVHcloud discovery dropped any VPS with a keyboard layout set. We checked the fix against OVH's API schema and ran the test both ways.",
       "url": "https://github.com/prometheus/prometheus/pull/20394#pullrequestreview-5854752077",
-      "minutes": 20
+      "minutes": 2
     },
     {
       "date": "2026-11-11",
       "repo": "github/advisory-database",
       "summary": "The cosign advisory named a module path that doesn't exist at v2 or v3, so scanners missed it. We named /v3 and /v2, checked against the module proxy and the Go vulnerability database, and added the fix commit.",
       "url": "https://github.com/github/advisory-database/pull/11082",
-      "minutes": 30
+      "minutes": 3
     },
     {
       "date": "2026-11-10",
