@@ -17,10 +17,10 @@ Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up n
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.13.0` with the version you want.
+Pick the archive for your system. Replace `0.14.0` with the version you want.
 
 ```sh
-VERSION=0.13.0
+VERSION=0.14.0
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
@@ -35,6 +35,27 @@ On macOS, the binary isn't notarised by Apple yet. If macOS refuses to open it, 
 xattr -d com.apple.quarantine /usr/local/bin/conn3x
 ```
 
+## Debian, Ubuntu, Rocky Linux and Fedora
+
+Since v0.14.0, each release has a `.deb` and an `.rpm` for amd64 and arm64. They put `conn3x` in `/usr/bin` and need nothing else, so `apt remove conn3x` or `dnf remove conn3x` takes it away cleanly. There's no package repository yet, so download the one you want and check it against `checksums.txt`:
+
+```sh
+VERSION=0.14.0
+BASE="https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}"
+
+# Debian and Ubuntu (arm64: conn3x_${VERSION}_arm64.deb)
+curl -fsSLO "$BASE/conn3x_${VERSION}_amd64.deb" -O "$BASE/checksums.txt"
+sha256sum --ignore-missing -c checksums.txt
+sudo apt install "./conn3x_${VERSION}_amd64.deb"
+
+# Rocky Linux, RHEL, AlmaLinux and Fedora (arm64: conn3x-${VERSION}-1.aarch64.rpm)
+curl -fsSLO "$BASE/conn3x-${VERSION}-1.x86_64.rpm" -O "$BASE/checksums.txt"
+sha256sum --ignore-missing -c checksums.txt
+sudo dnf install "./conn3x-${VERSION}-1.x86_64.rpm"
+```
+
+The packages aren't signed with a key yet, so `checksums.txt` is what vouches for them. It's signed by the release workflow, and each package has its own build provenance, which `gh attestation verify conn3x_${VERSION}_amd64.deb -R conn3xorg/conn3x` checks.
+
 ## Windows
 
 Since v0.10.0, each release has a zip for Windows on amd64 and arm64, holding `conn3x.exe`. Running Conn3x on Windows is [experimental](/reference/maturity). It has run a plan and apply from Windows Server 2025, against Ubuntu and against itself.
@@ -42,7 +63,7 @@ Since v0.10.0, each release has a zip for Windows on amd64 and arm64, holding `c
 In PowerShell:
 
 ```powershell
-$Version = "0.13.0"
+$Version = "0.14.0"
 $Arch = "amd64"   # or arm64
 $Base = "https://github.com/conn3xorg/conn3x/releases/download/v$Version"
 Invoke-WebRequest "$Base/conn3x_${Version}_windows_$Arch.zip" -OutFile conn3x.zip
@@ -71,7 +92,7 @@ Conn3x checks every host's key against `%USERPROFILE%\.ssh\known_hosts`. The `ss
 Every release is also published as a container image, tagged with its version and with `latest`:
 
 ```sh
-docker run --rm ghcr.io/conn3xorg/conn3x:v0.13.0 version
+docker run --rm ghcr.io/conn3xorg/conn3x:v0.14.0 version
 ```
 
 The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root user. Podman takes the same command.
@@ -79,7 +100,7 @@ The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root
 Since v0.12.0 the release workflow signs the image with cosign, and the signature sits in the registry beside it. To check it:
 
 ```sh
-cosign verify ghcr.io/conn3xorg/conn3x:v0.13.0 \
+cosign verify ghcr.io/conn3xorg/conn3x:v0.14.0 \
   --certificate-identity 'https://github.com/conn3xorg/conn3x/.github/workflows/release.yml@refs/heads/main' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
