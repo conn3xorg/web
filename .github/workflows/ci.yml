@@ -55,7 +55,10 @@ jobs:
       - name: Browser tests
         working-directory: apps/site
         run: |
-          pnpm exec playwright install --with-deps chromium
+          # --with-deps installs Chromium's libraries with apt. When the
+          # runner can't reach Ubuntu's mirrors, the image's own libraries
+          # are enough, and a missing one still fails the tests below.
+          pnpm exec playwright install --with-deps chromium || pnpm exec playwright install chromium
           pnpm exec playwright test
 
   # Every config the Circuit Builder can write for the CI builds, made by the
