@@ -193,7 +193,12 @@ With `become = true`, every command Conn3x runs on the host runs as root through
 The first time Conn3x uses a host in a run, it asks whether sudo needs a password, by running `sudo -n true`:
 
 - If sudo needs no password, Conn3x runs commands with `sudo -n`.
-- If sudo needs a password, Conn3x reads it from `become_password_file`, checks it once with `sudo -v`, then passes it to `sudo -S` on standard input for each command. A trailing newline in the file is ignored. Without `become_password_file`, Conn3x stops with an error that says sudo needs a password.
+- If sudo needs a password, Conn3x reads it from `become_password_file` and runs each command with `sudo -k -S`. It writes the password to standard input only after sudo has printed its prompt, and the command's own input only after the command has started, so the password can't end up as input to the command. A wrong password stops the step at the prompt. A trailing newline in the file is ignored. Without `become_password_file`, Conn3x stops with an error that says sudo needs a password.
+
+Two things follow that you may notice on the host:
+
+- **Conn3x leaves no cached sudo credentials.** `-k` makes sudo ask every time and remember nothing, so a run never gives the login user's other sessions a passwordless sudo, even on a host that shares sudo's timestamp between sessions (`timestamp_type=global`).
+- **sudo's log has one line per command, unless the host agent is on.** Over the shell, every command Conn3x runs is its own `sudo`, so the host's sudo log shows each one. With the [host agent](/reference/maturity) started under `become`, sudo starts the agent once and logs that; what the agent then does as root isn't in sudo's log. If your audit trail relies on sudo's log, leave the agent off for those hosts, or record commands another way, such as auditd.
 
 The password goes from the file to the host and is never written to configuration, plans or state. The file's path is stored in state as part of the `ssh` block.
 
