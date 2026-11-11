@@ -29,6 +29,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | State | None, by design | A state file, which OpenTofu can encrypt |
 | Taking over a running server | Run the playbook against it; with no state, there's nothing to adopt | `import = true` on a step adopts what's there, and the first plan shows only the differences |
 | Spotting hand edits | Rerun with `--check --diff` and read the recap. It exits `0` when it finds changes | `conn3x drift`, which exits `2` |
+| A run that fails part way | Rerun the playbook, and every task runs again on every host. A retry file, or relaunching on failed hosts in AWX, narrows it to the hosts that failed | The next apply does only what's left: a step that finished on a host isn't run there again. See [When a step fails](/reference/cli/apply#when-a-step-fails) |
 | Removing something | Delete the task and the host keeps it, unrecorded. Write a `state: absent` task to remove it | Delete the step and the plan shows it; `on_remove` decides what the host keeps |
 | Cloud resources | Cloud collections such as `amazon.aws`, `azure.azcollection` and `google.cloud` | Any OpenTofu provider, in the same plan as the servers |
 | Ad-hoc commands | `ansible all -a "uptime"` | None |
