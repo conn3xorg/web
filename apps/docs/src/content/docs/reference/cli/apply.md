@@ -19,7 +19,7 @@ Host steps are applied over SSH, alongside cloud resources, in one run:
 - A [handler](/reference/circuits/handlers) runs after the steps that notify it, and only on the hosts where one of them changed something.
 - The first time Conn3x writes [write-only content](/concepts#secrets-in-files) without `CONN3X_HMAC_KEY` set, it creates `~/.config/conn3x/hmac.key`.
 
-If a step fails on one host, `apply` reports the error and exits 1. State keeps everything that finished, so the next plan picks up where it stopped.
+If a step fails on one host, `apply` reports the error and exits 1. State keeps everything that finished, so the next plan picks up where it stopped. [When a step fails](#when-a-step-fails) shows it with five hosts.
 
 Planning works as described on the [plan](/reference/cli/plan) page, including reading the hosts first.
 
@@ -39,6 +39,106 @@ Do you want to perform these actions?
 ...
 Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 ```
+
+## When a step fails
+
+An apply that fails part of the way through doesn't have to start again. State records each step on each host as it finishes, so the next apply does only what's left.
+
+Here are five hosts and three steps, where the middle step fails on `web3`:
+
+```hcl
+circuit "web" {
+  hosts = {
+    web1 = "203.0.113.11"
+    web2 = "203.0.113.12"
+    web3 = "203.0.113.13"
+    web4 = "203.0.113.14"
+    web5 = "203.0.113.15"
+  }
+
+  ssh {
+    user   = "deploy"
+    become = true
+  }
+
+  step "app_dir" {
+    directory {
+      path = "/srv/app"
+    }
+  }
+
+  step "migrate" {
+    command {
+      command = "/srv/app/bin/migrate && touch /srv/app/migrated"
+      creates = "/srv/app/migrated"
+    }
+  }
+
+  step "config" {
+    file {
+      path    = "/srv/app/app.conf"
+      content = "ready = true\n"
+    }
+  }
+}
+```
+
+**The first apply** creates the directory on all five hosts and runs the migration on four. On `web3` it fails, and the apply exits 1:
+
+```text
+$ conn3x apply
+...
+Plan: 15 to add, 0 to change, 0 to destroy.
+...
+conn3x_command.web__migrate["web1"]: Creation complete after 0s [id=…]
+conn3x_command.web__migrate["web4"]: Creation complete after 0s [id=…]
+conn3x_command.web__migrate["web2"]: Creation complete after 0s [id=…]
+conn3x_command.web__migrate["web5"]: Creation complete after 0s [id=…]
+
+Error: command failed with exit status 1:
+database not reachable
+
+  with conn3x_command.web__migrate["web3"],
+  on main.circuit.hcl line 23, in circuit "web":
+```
+
+**The next plan,** once `web3` can reach its database, reads every step that finished, on every host, and finds nothing to do for them. On `web1`, `web2`, `web4` and `web5`, the directory and the migration are refreshed and left out of the plan: the migration doesn't run there again. What's left is the migration on `web3` and the step after it:
+
+```text
+$ conn3x plan
+conn3x_directory.web__app_dir["web1"]: Refreshing state... [id=…]
+...
+conn3x_command.web__migrate["web1"]: Refreshing state... [id=…]
+conn3x_command.web__migrate["web2"]: Refreshing state... [id=…]
+conn3x_command.web__migrate["web4"]: Refreshing state... [id=…]
+conn3x_command.web__migrate["web5"]: Refreshing state... [id=…]
+...
+  # conn3x_command.web__migrate["web3"] will be created
+  # conn3x_file.web__config["web1"] will be created
+  # conn3x_file.web__config["web2"] will be created
+  # conn3x_file.web__config["web3"] will be created
+  # conn3x_file.web__config["web4"] will be created
+  # conn3x_file.web__config["web5"] will be created
+
+Plan: 6 to add, 0 to change, 0 to destroy.
+```
+
+The `config` step is there for every host because the circuit runs in lockstep, the default: no host starts a step until the one before it has finished on every host, so the failure on `web3` held all five back. An apply finishes the six, and the plan after it shows `No changes.`
+
+**With `strategy = "per_host"`,** each host runs its own chain of steps, so the other four carried on to the end in the first apply. The next plan has only `web3`'s two steps:
+
+```text
+$ conn3x plan
+...
+  # conn3x_command.web__migrate["web3"] will be created
+  # conn3x_file.web__config["web3"] will be created
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+```
+
+In both cases, a step that finished on a host isn't run there again. What `strategy` changes is how far each host got before the failure. See [`strategy`](/reference/circuits/steps#per-host).
+
+Conn3x doesn't print a line for each host it has nothing to do on. To see where an apply did something, and where it didn't, use [`-report`](#-report): after the `per_host` run above, the report of the second apply lists `web3` and no other host.
 
 ## Options
 
