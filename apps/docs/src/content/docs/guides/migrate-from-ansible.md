@@ -57,6 +57,12 @@ New in v0.6.12, `ansible.builtin.pip` with a `virtualenv` becomes a [pip](/modul
 
 Since v0.12.0, database tasks convert too. `community.postgresql.postgresql_db` and `postgresql_user` become [postgresql_database](/modules/postgresql_database) and [postgresql_role](/modules/postgresql_role) steps, and `become_user: postgres` on the task is allowed. `community.mysql.mysql_db` and `mysql_user` become [mysql_database](/modules/mysql_database) and [mysql_user](/modules/mysql_user) steps, with the database-level parts of `priv` as `grants`. A password is never copied: a `TODO(convert)` asks you to set `password_wo`. Drops, dumps and imports, `login_*` options, table and global privileges, and `append_privs` stay for review.
 
+Since v0.14.0, a `postgresql_user` task with `db` and a database-level `priv` such as `CONNECT/TEMP` gives its role `database_grants`. A note goes with it, because in Conn3x that list is the role's whole set of grants on the database, where Ansible only added to them. `postgresql_privs`, `priv` on single tables and `grant_option` still stay for review.
+
+Also new in v0.14.0: an `authorized_key` task with `exclusive: true` becomes an [authorized_key](/modules/authorized_key) step with `exclusive = true`, so the user's keys are exactly the ones it lists. A `file` task with `recurse: yes` becomes a [directory](/modules/directory) step with `recurse = true` when its `mode` is symbolic, such as `u=rwX,g=rX,o=`, or when it sets only `owner` and `group`. A numeric `mode` with `recurse` stays for review, because the directories need the execute bit and a numeric mode would give it to every file under them too.
+
+A `cron` task still becomes a [cron](/modules/cron) step, which keeps the job in `/etc/cron.d`. If you'd rather the jobs stay in the user's own crontab, the one `crontab -e` edits, move them into one [crontab](/modules/crontab) step for that user, new in v0.14.0. It owns the whole file, so list every job the user should keep.
+
 New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/file#from-ansible) step, minus any quotes around `%s`. Ansible runs `validate` without a shell, and Conn3x runs it through `sh`, so one with a pipe, a redirect, `$`, a glob or a second line stays for review.
 
 ### Windows

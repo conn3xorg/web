@@ -106,6 +106,15 @@ const SHIPPED = [
       /Replace `0\.12\.0` with the version/i,
     ],
   },
+  {
+    feature: "crontab, package_sources, .deb and .rpm packages, PostgreSQL grants (v0.14.0)",
+    stale: [
+      /\b38 Linux modules/i,
+      /no \.deb or \.rpm/i,
+      /This guide uses Conn3x v0\.13\.0/i,
+      /Replace `0\.13\.0` with the version/i,
+    ],
+  },
 ];
 
 function files(dir) {
