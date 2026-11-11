@@ -86,6 +86,19 @@ cosign verify ghcr.io/conn3xorg/conn3x:v0.12.0 \
 
 Images from before v0.12.0 aren't signed.
 
+## Stable channel
+
+If you'd rather not take a release the day it's cut, follow the stable channel. Each Monday it moves to the newest release that has been out for seven days. A release that fixes a security advisory is promoted by hand, without the wait, and stable never points at a release older than one.
+
+```sh
+brew install conn3xorg/tap/conn3x@stable
+docker run --rm ghcr.io/conn3xorg/conn3x:stable version
+```
+
+Nothing is rebuilt for it. The cask downloads the same signed archive as the release, and the `stable` image tag is the release's image by digest, so the `cosign verify` command above passes with `:stable` in place of the version.
+
+The `conn3x@stable` cask and the `conn3x` cask can't be installed together. To switch, `brew uninstall conn3x` first.
+
 ## Check the download
 
 Each release ships a `checksums.txt`, signed with [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) by the release workflow, and an SBOM for every archive.
