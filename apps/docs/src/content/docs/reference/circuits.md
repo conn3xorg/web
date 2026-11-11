@@ -154,5 +154,6 @@ Because steps are resources, everything that works with resources works with the
 - [Resource addresses](/reference/circuits/addresses): targeting steps and hosts, and using the state commands.
 - [Expressions and functions](/reference/circuits/expressions): what circuits inherit from OpenTofu.
 - [Host facts](/reference/host-facts): reading a host's operating system and hardware at plan time.
+- [Installed packages and services](/reference/host-packages-and-services): reading what a host has installed and running, at plan time.
 
 To check a circuit with `conn3x test`, see the [Test a circuit](/guides/test-a-circuit) guide.
