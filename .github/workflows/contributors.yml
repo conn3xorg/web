@@ -13,6 +13,9 @@ concurrency:
 
 jobs:
   update:
+    # Forks have no deploy credentials or issue bot; their copies of this
+    # workflow would fail on every push and schedule.
+    if: github.repository == 'conn3xorg/web'
     runs-on: ubuntu-24.04
     permissions:
       contents: read
