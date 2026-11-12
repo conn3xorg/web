@@ -149,8 +149,8 @@ Some of what you set on a play, a task or the `ansible-playbook` command line ha
 | --- | --- |
 | `delegate_to: lb` on a task | [`on = "lb"`](/reference/circuits/steps#on) on the step. Each host keeps its own step, and it runs over `lb`'s connection. The converter writes it for you when `delegate_to` names a host; `localhost` and templated names stay for review, since steps can't run on the controller yet. |
 | `ansible-playbook --limit 'web*'` | [`conn3x plan -limit='web*'`](/reference/cli/plan#-limit), or the same on `apply` and `refresh`. The pattern syntax is Ansible's, without groups. |
-| `serial: 2` or `serial: "20%"` on a play | [`batch_size = 2`](/reference/cli/apply#batches) or `"20%"` on a circuit with `strategy = "per_host"`. The converter doesn't carry `serial` over, so add these yourself. |
-| `max_fail_percentage` | [`max_failures`](/reference/cli/apply#batches), a number of hosts. There's no percentage of failures: pick the count you'd accept. |
+| `serial: 2` or `serial: "20%"` on a play | [`batch_size = 2`](/reference/cli/apply#batches) or `"20%"` on a circuit with `strategy = "per_host"`. The converter writes both. A list or templated `serial` goes to review. |
+| `max_fail_percentage` | [`max_failures`](/reference/cli/apply#batches), a number of hosts. There's no percentage of failures: pick the count you'd accept. The converter leaves a TODO comment where a play set it. |
 
 ## Convert a role
 
