@@ -177,7 +177,9 @@ For each group or host, Conn3x reads a file called `web`, `web.yml`, `web.yaml` 
 
 The group takes in its child groups' hosts, and `"all"` takes in every host. An unknown group is an error that lists the groups the file has. A relative path is relative to where you run Conn3x, which is why the example starts with `path.module`.
 
-Not read yet: host ranges such as `web[01:20]`, `group_vars/` beside the playbook rather than the inventory, and dynamic inventory scripts or plugins.
+Host ranges expand as in Ansible: `web[01:20]` is `web01` to `web20`, `db-[a:f]` is `db-a` to `db-f`, and `[1:9:2]` counts in twos.
+
+Not read yet: `group_vars/` beside the playbook rather than the inventory, and dynamic inventory scripts or plugins.
 
 ## Host object fields
 
