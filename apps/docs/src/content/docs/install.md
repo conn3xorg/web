@@ -87,6 +87,19 @@ If the agent isn't running and a step names no `private_key_file`, Conn3x stops 
 
 Conn3x checks every host's key against `%USERPROFILE%\.ssh\known_hosts`. The `ssh-keyscan` that ships with Windows Server can't read the key of a host with a newer OpenSSH, such as Ubuntu 24.04: it prints `unsupported KEX method` and no key. Check the host's fingerprint another way, then connect once with `ssh -o StrictHostKeyChecking=accept-new user@host exit`, which adds the key for you. Or set `host_key` on the host in the circuit.
 
+## GitHub Actions
+
+In a workflow, [setup-conn3x](https://github.com/conn3xorg/setup-conn3x) does the download for you. It picks the archive for the runner, checks it against `checksums.txt` and puts `conn3x` on `PATH`, on Linux, macOS and Windows runners:
+
+```yaml
+- uses: conn3xorg/setup-conn3x@v1
+  with:
+    version: 0.14.0
+- run: conn3x init && conn3x plan
+```
+
+Leave out `version` and you get the latest release, which means a new one can change your CI on a day you didn't pick.
+
 ## Container image
 
 Every release is also published as a container image, tagged with its version and with `latest`:
