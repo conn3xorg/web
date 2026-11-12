@@ -153,6 +153,7 @@ Because steps are resources, everything that works with resources works with the
 - [The ssh block](/reference/circuits/ssh): every connection setting, jump hosts, host keys and sudo.
 - [Steps](/reference/circuits/steps): ordering, dependencies, `for_each` and `lifecycle`.
 - [Handlers](/reference/circuits/handlers): `notify`, when handlers run, and the `revision` attribute.
+- [Rescues](/reference/circuits/rescues): `watches`, and what runs on a host where a step failed.
 - [Removal](/reference/circuits/removal): what `on_remove` does for each module.
 - [Secrets](/reference/circuits/secrets): write-only content and ephemeral variables.
 - [Resource addresses](/reference/circuits/addresses): targeting steps and hosts, and using the state commands.
