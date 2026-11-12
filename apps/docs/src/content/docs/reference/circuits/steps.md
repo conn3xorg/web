@@ -31,7 +31,7 @@ step "NAME" {
   for_each   = EXPRESSION        # optional
   when       = EXPRESSION        # optional
   run_once   = true | false      # optional
-  on         = HOST              # optional, with run_once
+  on         = HOST              # optional
   depends_on = [ADDRESS, ...]    # optional
   notify     = [handler.NAME, ...] # optional
   import     = true | [HOST, ...] # optional
@@ -55,7 +55,7 @@ A step block takes one label, the step's name, and contains:
 | `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host. See [for_each](#for_each). |
 | `when` | No | A condition, true or false for each host, that picks the hosts the step runs on. See [when](#when). |
 | `run_once` | No | `true` to run the step on one host only, such as for a database migration. See [run_once](#run_once). |
-| `on` | No | With `run_once`, the host to run on. See [run_once](#run_once). |
+| `on` | No | The host to run on. With `run_once`, it picks the one host. Without it, every host's step runs on this host instead, as Ansible's `delegate_to` does. See [on](#on). |
 | `depends_on` | No | A list of resources the step waits for, in addition to the step before it. See [depends_on](#depends_on). |
 | `notify` | No | A list of handlers in the same circuit to run when this step changes something on a host. See [Handlers](/reference/circuits/handlers). |
 | `import` | No | `true`, or a list of host names, to adopt the object already on those hosts instead of creating it. See [import](#import). |
@@ -404,7 +404,7 @@ step "restart" {
 }
 ```
 
-- **Which host:** the one `on` names, or else the first host key in sort order. HCL maps don't keep the order they're written in, so "first" means sorted: in `{ web2 = ..., db1 = ..., web1 = ... }` it's `db1`. `on` names one of the circuit's `hosts` keys and has to be known when planning. A name that isn't in `hosts` is an error, and so is `on` without `run_once = true`. Set `on` for anything that shouldn't move.
+- **Which host:** the one `on` names, or else the first host key in sort order. HCL maps don't keep the order they're written in, so "first" means sorted: in `{ web2 = ..., db1 = ..., web1 = ... }` it's `db1`. `on` names one of the circuit's `hosts` keys and has to be known when planning. A name that isn't in `hosts` is an error. Set `on` for anything that shouldn't move. Without `run_once`, `on` means something else: see [on](#on).
 - **The plan shows one instance:** `conn3x_command.app__migrate["db1"]`. In a step with [`for_each`](#for_each), it's that host's items.
 - **It waits for every host, even under [`strategy = "per_host"`](#per-host).** The steps before it finish on every host before it starts, and the steps after it start on any host only once it has finished. So `migrate` above never runs while a host is still on the old code, and `restart` never runs before the migration. Under `per_host` that makes a `run_once` step the one point where hosts wait for each other.
 - **Changing the host is a removal:** if `on` changes, or the first host changes because one was added or removed, the old instance is removed, with its [`on_remove`](/reference/circuits/removal), and the new host gets the step.
@@ -423,6 +423,47 @@ step "migrate" {
 ```
 
 To restart every host, give the restart its own step after the `run_once` one, or notify the handler from a step that runs on every host.
+
+## on
+
+:::note
+`on` without `run_once` is in Conn3x since v0.15.0. Earlier releases reject it.
+:::
+
+`on = "lb"` runs each host's step on `lb`, as Ansible's `delegate_to` does. Use it when the work for a host happens somewhere else: taking it out of a load balancer before it's changed, or adding it to a monitoring server.
+
+```hcl
+circuit "app" {
+  hosts = {
+    web1 = "203.0.113.11"
+    web2 = "203.0.113.12"
+    lb   = { address = "203.0.113.5", user = "admin" }
+  }
+
+  ssh {
+    user = "deploy"
+  }
+
+  step "drain" {
+    on = "lb"
+    command {
+      command = "lb-ctl drain ${each.key}"
+      ...
+    }
+  }
+
+  ...
+}
+```
+
+- **Each host keeps its own instance.** The plan shows `conn3x_command.app__drain["web1"]` and `["web2"]`, in each host's chain of steps, so ordering and [`strategy`](#per-host) work as they do for any step.
+- **`each` still means that host.** Above, `${each.key}` is `web1` in `web1`'s instance, though the command runs on `lb`.
+- **The connection is `lb`'s.** The step logs in at `lb`'s address, with any settings `lb`'s host object overrides, such as `user = "admin"`, and the circuit's `ssh` block for the rest.
+- **`on` names a key of `hosts`.** So the host it names is one the circuit configures too, and it gets its own instance of the step: above, `lb` runs `lb-ctl drain lb`.
+- **Not with `each` in the `ssh` block.** There `each` would still mean the host the step is for, not the host it runs on, so a circuit whose `ssh` block uses `each` can't delegate. Put the per-host setting in the host object instead.
+- **`on = "controller"` is reserved** for running a step on the machine Conn3x runs on. That isn't supported yet, and it's an error.
+
+With [`run_once = true`](#run_once), `on` picks the one host the step runs on, and there's one instance in the plan, not one per host.
 
 ## import
 

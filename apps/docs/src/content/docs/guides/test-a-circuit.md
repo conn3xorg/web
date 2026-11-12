@@ -126,6 +126,14 @@ Failure! 1 passed, 1 failed.
 
 `conn3x test` exits with `1` when any run fails and `0` when they all pass, so a CI job needs nothing more than the command.
 
+To show the results in a CI dashboard as well, write them as JUnit XML. New in v0.15.0:
+
+```sh
+conn3x test -junit-xml=results.xml
+```
+
+Each test file is a test suite, and each `run` block a test case, with a run's errors under its failure. The terminal output and the exit code stay the same, unless the file can't be written, which exits 1.
+
 ## Fake the host facts
 
 A circuit that reads [host facts](/reference/host-facts) is the one place a plan does log in: `conn3x_host` reads the host over SSH while planning. Without a mock, a test against an address nobody answers on waits for the connection and then fails:

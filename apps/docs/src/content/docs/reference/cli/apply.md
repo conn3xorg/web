@@ -155,8 +155,11 @@ Conn3x doesn't print a line for each host it has nothing to do on. To see where 
 | `-concise` | Leave out progress messages. |
 | `-show-sensitive` | Show sensitive values. |
 | `-report=FILE` | Write a JSON report of the run to `FILE`. See [-report](#-report). Not with `-json`. |
+| `-limit=PATTERN` | Apply circuit steps only on the hosts that match, and leave every other host's steps as they are. Not with a plan file: give it to `plan` instead. See [plan's -limit](/reference/cli/plan#-limit). New in v0.15.0. |
+| `-batch-size=N` | For a circuit with `batch_size`, the batch size for this run: a number of hosts, or a percentage such as `20%`. See [Batches](#batches). New in v0.15.0. |
+| `-max-failures=N` | For a circuit with `batch_size`, how many hosts may fail for this run before no more batches start. See [Batches](#batches). New in v0.15.0. |
 
-Without a plan file, `apply` also takes the planning options from [plan](/reference/cli/plan#options): `-var`, `-var-file`, `-target`, `-exclude`, `-replace`, `-refresh=false`, `-refresh-only` and `-destroy`. With a plan file, those were fixed when the plan was made.
+Without a plan file, `apply` also takes the planning options from [plan](/reference/cli/plan#options): `-var`, `-var-file`, `-target`, `-exclude`, `-replace`, `-refresh=false`, `-refresh-only`, `-destroy` and `-limit`. With a plan file, those were fixed when the plan was made.
 
 For the remaining options, see [OpenTofu's `apply` page](https://opentofu.org/docs/cli/commands/apply/).
 
@@ -238,6 +241,72 @@ The format is the JSON Schema at [docs.conn3x.org/schemas/report-1.json](https:/
 `-report` doesn't go with `-json`: that stream on standard output already has everything. To keep the human output and the JSON lines both, use `-json-into`.
 
 [`conn3x drift`](/reference/cli/drift#-report) takes `-report` too.
+
+## Batches
+
+A circuit with [`batch_size`](/reference/circuits) rolls out a few hosts at a time, as a play with Ansible's `serial` does, and stops starting batches once more hosts have failed than `max_failures` allows. Use it when a bad change should reach two servers, not all twenty. New in v0.15.0.
+
+```hcl
+circuit "web" {
+  hosts        = var.web_hosts
+  strategy     = "per_host"
+  batch_size   = 2      # or a percentage, such as "20%"
+  max_failures = 0      # the default
+
+  ...
+}
+```
+
+`conn3x apply` then:
+
+1. Plans everything, shows the plan and asks once, or goes ahead with `-auto-approve`.
+2. Cuts the hosts that have changes into batches, in name order, with `web2` before `web10`. A host with nothing to change isn't in any batch. A percentage is of the hosts that change, rounded up, and a batch always has at least one host.
+3. For each batch, plans again with [`-limit`](/reference/cli/plan#-limit) set to its hosts, and applies that plan. A batch's plan may only make changes the plan you approved had; anything else stops the run, since something changed in between.
+4. After a batch fails, plans its hosts again to see which still have changes left. Those count as failed. Once more hosts have failed than `max_failures`, no more batches start, and apply lists the hosts that failed and the ones it never reached.
+
+```text
+$ conn3x apply
+...
+Plan: 5 to add, 0 to change, 0 to destroy.
+
+Circuit "web" changes 5 hosts, which roll out in 3 batches of up to 2. No more batches start once more than 0 hosts have failed.
+
+Do you want to perform these actions in batches?
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+Batch 1 of 3: web1, web2
+...
+Batch 2 of 3: web3, web4
+...
+Error: 1 host failed, more than max_failures = 0, so no more batches start.
+  Failed: web3
+  Not reached: web5
+```
+
+When every batch runs but some hosts failed within `max_failures`, apply still exits 1 and names them. When none failed, it ends with `All 3 batches applied.` The next apply works as [When a step fails](#when-a-step-fails) describes: it batches only the hosts with something left to do.
+
+`-batch-size` and `-max-failures` override the circuit's values for one run:
+
+```sh
+conn3x apply -batch-size=1 -max-failures=2
+```
+
+Each plan and apply in the rollout takes the state lock for itself, so the lock isn't held from the first batch to the last.
+
+What a batched apply doesn't do yet:
+
+- A lockstep circuit, where every host waits for every other: `batch_size` needs `strategy = "per_host"`. `conn3x validate` says so.
+- A [`run_once`](/reference/circuits/steps#run_once) step in a batched circuit, since no one batch holds every host. Also an error at validate.
+- More than one batched circuit in the root module. Apply them one at a time with `-target`, or take `batch_size` off all but one.
+- Other changes in the same plan. If the plan also changes resources outside the batched circuit, apply lists them and stops. Apply those first, with `-target`.
+- A saved plan, `-destroy`, `-target`, `-exclude`, `-limit`, `-json`, `-json-into` or `-report`. Each is refused.
+- `-input=false` without `-auto-approve`, since nobody can answer the question.
+- The `remote` and `cloud` backends.
+- A circuit in a child module. Batching is read from the circuits in the root module.
+
+`-batch-size` or `-max-failures` without a circuit that has `batch_size` is an error.
 
 ## Exit codes
 
