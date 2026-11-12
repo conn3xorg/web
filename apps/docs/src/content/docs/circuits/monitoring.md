@@ -21,7 +21,7 @@ module "docker" {
 }
 
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.4"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.5"
 
   hosts = {
     nas    = "192.168.1.20"

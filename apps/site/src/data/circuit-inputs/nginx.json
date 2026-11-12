@@ -1,6 +1,6 @@
 {
   "name": "nginx",
-  "version": "v0.2.1",
+  "version": "v0.3.0",
   "hostObjects": true,
   "inputs": [
     {
@@ -26,6 +26,42 @@
       "type": "string",
       "default": "auto",
       "description": "How to open the port: \"auto\" uses firewalld or ufw if the host has one, \"firewalld\" or \"ufw\" installs and uses that one, \"none\" leaves the firewall alone.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_self_signed",
+      "type": "bool",
+      "default": false,
+      "description": "Make a key and a self-signed certificate on each host, and serve the site over HTTPS on tls_port too. For labs and internal services without a CA.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_port",
+      "type": "number",
+      "default": 443,
+      "description": "The port nginx serves HTTPS on, with tls_self_signed, and the port the firewall opens for it.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_names",
+      "type": "list(string)",
+      "default": [],
+      "description": "Names and addresses the certificate is for. The first is its common name. When empty, it's for the host's name in hosts.",
+      "sensitive": false,
+      "ephemeral": false,
+      "required": false
+    },
+    {
+      "name": "tls_days",
+      "type": "number",
+      "default": 365,
+      "description": "How long each certificate is valid, from 31 to 3650 days. It's renewed when 30 days are left.",
       "sensitive": false,
       "ephemeral": false,
       "required": false

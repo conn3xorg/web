@@ -108,7 +108,7 @@ Requires Conn3x v0.6.4 or later, systemd on each host, and outbound HTTPS to git
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.5/examples/local) to each on amd64, checks that the second plan has no changes, and scrapes the metrics from outside the host, before and after a restart.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-node-exporter/tree/v0.1.5/examples/local) to each on amd64, checks that the second plan has no changes, and scrapes the metrics from outside the host, before and after a restart. On a fresh host it then installs node_exporter 1.12.0, applies the circuit's pin over it, checks the plan has no changes and that the metrics report the pinned version.
 
 It was also applied by hand, with six other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, node_exporter ran under systemd, served metrics on port 9100, and circuit-monitoring's Prometheus scraped it through the Docker bridge. After a reboot it came back, the plan had no changes and the audit log had no SELinux denials. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 

@@ -15,7 +15,7 @@ A config change doesn't restart Prometheus. The circuit checks the new file with
 
 ```hcl
 module "node_exporter" {
-  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.4"
+  source = "github.com/conn3xorg/circuit-node-exporter?ref=v0.1.5"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
