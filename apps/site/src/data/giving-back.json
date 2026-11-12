@@ -1,6 +1,41 @@
 {
-  "otherMinutes": 74,
+  "otherMinutes": 78,
   "items": [
+    {
+      "date": "2026-11-12",
+      "repo": "prometheus/alertmanager",
+      "summary": "A change would refuse any silence whose matchers all match the empty string. We showed it also refuses the everyday maintenance silence alertname!=\"Watchdog\", and that existing silences of that shape can't be extended after upgrading.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5739#pullrequestreview-5868462618",
+      "minutes": 3
+    },
+    {
+      "date": "2026-11-12",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "A malformed recognizer span could be clipped into a valid one and reported as PII over unrelated text. We ran the fix's tests against the old code, reproduced the bad result, and flagged a small change for anyone calling the exported API directly.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2473#pullrequestreview-5868448679",
+      "minutes": 3
+    },
+    {
+      "date": "2026-11-12",
+      "repo": "github/advisory-database",
+      "summary": "A Kuma advisory named the v1 module for all of its 2.x ranges, so scanners matched none of them. We moved them to /v2 and kept 1.x covered, checked against go.mod, the Go module proxy, the Go vulnerability database and Kuma's 1.8.1 defaults.",
+      "url": "https://github.com/github/advisory-database/pull/11168",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-12",
+      "repo": "github/advisory-database",
+      "summary": "A GoBGP advisory named the unversioned module for a 4.x fix, so no 4.x module matched. We changed it to /v4, matching the Go vulnerability database, and noted that v3 has the same unchecked code.",
+      "url": "https://github.com/github/advisory-database/pull/11167",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-12",
+      "repo": "github/advisory-database",
+      "summary": "A Telepresence advisory named a module path with no Go versions at all. We changed it to /v2 and confirmed the fix commits landed in 2.31.0, not 2.30.0.",
+      "url": "https://github.com/github/advisory-database/pull/11166",
+      "minutes": 2
+    },
     {
       "date": "2026-11-11",
       "repo": "prometheus/prometheus",
