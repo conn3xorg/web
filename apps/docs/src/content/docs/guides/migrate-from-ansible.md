@@ -150,6 +150,7 @@ Some of what you set on a play, a task or the `ansible-playbook` command line ha
 | --- | --- |
 | `delegate_to: lb` on a task | [`on = "lb"`](/reference/circuits/steps#on) on the step. Each host keeps its own step, and it runs over `lb`'s connection. The converter writes it for you when `delegate_to` names a host. |
 | `delegate_to: localhost` on a task | [`on = "controller"`](/reference/circuits/steps#on-the-controller), on a `command` step. It runs on your machine, as you, without sudo. The converter writes it for `command` and `shell` tasks; other modules on the controller stay for review. Templated names stay for review too. |
+| An inventory file | [`hosts = provider::conn3x::inventory("inventory.ini", "web")`](/reference/circuits/hosts#from-an-ansible-inventory), which reads a group's hosts, ports, users and variables from it. New in v0.16.0. |
 | `ansible-playbook --limit 'web*'` | [`conn3x plan -limit='web*'`](/reference/cli/plan#-limit), or the same on `apply` and `refresh`. The pattern syntax is Ansible's, without groups. |
 | `serial: 2` or `serial: "20%"` on a play | [`batch_size = 2`](/reference/cli/apply#batches) or `"20%"` on a circuit with `strategy = "per_host"`. The converter writes both. A list or templated `serial` goes to review. |
 | `max_fail_percentage` | [`max_failures = "20%"`](/reference/cli/apply#batches). Ansible counts it in each batch, and Conn3x over every host that changes, rounded down. The converter writes it, with a comment saying so. |
