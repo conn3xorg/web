@@ -338,7 +338,7 @@ What a batched apply doesn't do yet:
 
 ## Rescues
 
-A circuit's [rescues](/reference/circuits/rescues) run after the apply, on the hosts where a step or handler they watch failed, in a plan of their own. Apply still exits 1. Its [always blocks](/reference/circuits/rescues#always) run next, wherever a step they watch ran. A configuration with rescues refuses `-target`, `-exclude`, `-json` and `-json-into`, as a batched one does. New in v0.16.0.
+A circuit's [rescues](/reference/circuits/rescues) run after the apply, on the hosts where a step or handler they watch failed, in a plan of their own. Apply still exits 1. Its [always blocks](/reference/circuits/rescues#always) run next, wherever a step they watch ran. Its [prereqs](/reference/circuits/rescues#prereq) run before the apply, where a step they're before is about to change. A configuration with rescues refuses `-target`, `-exclude`, `-json` and `-json-into`, as a batched one does. New in v0.16.0.
 
 ## Exit codes
 

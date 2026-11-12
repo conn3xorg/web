@@ -1,6 +1,6 @@
 ---
-title: Rescues and always blocks
-description: The rescue and always blocks, watches, when each runs and on which hosts, and what they leave in state and in the report.
+title: Rescues, always and prereq
+description: The rescue, always and prereq blocks, watches and before, when each runs and on which hosts, and what they leave in state and in the report.
 ---
 
 A rescue runs on a host only when a step or handler it watches failed there. Use it to put a host back the way it was when a change breaks it, as Ansible's `rescue` does. New in v0.16.0.
@@ -152,13 +152,37 @@ Always blocks run after the rescues, in a plan of their own, and are dropped fro
 
 An always block that fails fails the apply, even when every step succeeded.
 
+## prereq
+
+A `prereq` runs on a host before a step it's `before`, and only when that step is about to change there, as Salt's `prereq` does. Use it to take a host out of a load balancer only when its config is changing:
+
+```hcl
+prereq "lb_disable" {
+  before = [step.config]
+  on     = "lb"
+  command {
+    command = "lb-disable ${each.key}"
+  }
+}
+```
+
+It's written like a rescue, with `before` where a rescue has `watches`. Under the plan, apply says:
+
+```text
+Before config changes on a host, prereq "lb_disable" of circuit "app" runs there.
+```
+
+Once you approve, apply runs the prereqs on the hosts where a `before` step changes, in a plan of their own, and drops them from state. Then it plans again and checks that plan against the one you approved, since the prereqs ran in between. Something changed outside Conn3x and the plans differ? Apply stops and says what, and nothing else is applied.
+
+If a prereq fails, nothing it's before is applied, and apply exits 1. Pair a prereq with an always block, `lb_enable` above, to put the host back once its steps have run.
+
 ## With batches
 
-In a [batched](/reference/cli/apply#batches) circuit, each batch's rescues and always blocks run before the next batch starts. A rescued host still counts against `max_failures`. A failed always block doesn't stop the rollout, but apply exits 1 at the end.
+In a [batched](/reference/cli/apply#batches) circuit, each batch's prereqs run just before it, and its rescues and always blocks before the next batch starts. A rescued host still counts against `max_failures`. A failed always block doesn't stop the rollout, but apply exits 1 at the end.
 
 ## What stops them running
 
-- **A saved plan.** `conn3x apply plan.tfplan` applies the plan in one go, and warns that no rescue will run. Always blocks don't run either.
+- **A saved plan.** `conn3x apply plan.tfplan` applies the plan in one go, and warns that no rescue will run. Always blocks and prereqs don't run either.
 - **`-target`, `-exclude`, `-json` and `-json-into`.** Apply refuses them in a configuration with rescues, as it does with batches.
 - **`-destroy`.** A destroy runs no rescues.
 - **A circuit in a child module.** Rescues are read from the circuits in the root module, so a child module's rescues never run.
