@@ -7,7 +7,7 @@ You changed a step, and you'd like to know what it does to every host before any
 
 Most of a circuit can be tested without a server at all. A plan already says which package goes on which host and what every file will contain, so asserting on the plan catches a wrong template, a `for_each` that drops a host or a variable that doesn't reach a step. When you need to know the host really ends up that way, a run can apply to a container.
 
-This guide uses Conn3x v0.14.0.
+This guide uses Conn3x v0.15.0.
 
 ## Where tests go
 
@@ -125,6 +125,14 @@ Failure! 1 passed, 1 failed.
 ```
 
 `conn3x test` exits with `1` when any run fails and `0` when they all pass, so a CI job needs nothing more than the command.
+
+To show the results in a CI dashboard as well, write them as JUnit XML. New in v0.15.0:
+
+```sh
+conn3x test -junit-xml=results.xml
+```
+
+Each test file is a test suite, and each `run` block a test case, with a run's errors under its failure. The terminal output and the exit code stay the same, unless the file can't be written, which exits 1.
 
 ## Fake the host facts
 

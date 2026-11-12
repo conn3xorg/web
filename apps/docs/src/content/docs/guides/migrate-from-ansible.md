@@ -67,7 +67,7 @@ New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/fi
 
 ### Windows
 
-Also new in v0.7.0, Windows tasks convert into the [Windows modules](/modules/windows_file), which are [experimental](/reference/maturity#preview-and-experimental-together):
+Since v0.7.0, Windows tasks convert into the [Windows modules](/modules/windows_file), 15 of which have left [experimental](/reference/maturity#preview-and-experimental-together) since v0.15.0. These tasks convert:
 
 - From `ansible.windows`: `win_acl`, `win_acl_inheritance`, `win_command`, `win_copy`, `win_feature`, `win_file`, `win_group`, `win_group_membership`, `win_package`, `win_powershell`, `win_regedit`, `win_service`, `win_shell`, `win_user` and `win_wait_for`.
 - From `community.windows`: `win_firewall_rule`, `win_iis_webapppool`, `win_iis_website` and `win_scheduled_task`.
@@ -140,6 +140,17 @@ Since v0.12.0 the converter also tells you what it couldn't carry over from the 
 The command exits 3 while anything is left, so you can keep running it in CI until the count reaches zero.
 
 Your servers already look the way the playbook left them. To take them over without Conn3x setting everything up again, add `import = true` to the steps: see [Adopt servers you already run](/guides/adopt-servers).
+
+## Where Ansible's options went
+
+Some of what you set on a play, a task or the `ansible-playbook` command line has a Conn3x equivalent. Since v0.15.0:
+
+| Ansible | Conn3x |
+| --- | --- |
+| `delegate_to: lb` on a task | [`on = "lb"`](/reference/circuits/steps#on) on the step. Each host keeps its own step, and it runs over `lb`'s connection. The converter writes it for you when `delegate_to` names a host; `localhost` and templated names stay for review, since steps can't run on the controller yet. |
+| `ansible-playbook --limit 'web*'` | [`conn3x plan -limit='web*'`](/reference/cli/plan#-limit), or the same on `apply` and `refresh`. The pattern syntax is Ansible's, without groups. |
+| `serial: 2` or `serial: "20%"` on a play | [`batch_size = 2`](/reference/cli/apply#batches) or `"20%"` on a circuit with `strategy = "per_host"`. The converter writes both. A list or templated `serial` goes to review. |
+| `max_fail_percentage` | [`max_failures`](/reference/cli/apply#batches), a number of hosts. There's no percentage of failures: pick the count you'd accept. The converter leaves a TODO comment where a play set it. |
 
 ## Convert a role
 
