@@ -164,11 +164,20 @@ Each host comes back as a [host object](#host-object-fields), keyed by its inven
 | `ansible_ssh_private_key_file` | `private_key_file` |
 | Every variable, `ansible_*` ones included | `vars`, a map of strings |
 
-A host that doesn't set one of the first four leaves it to the circuit's `ssh` block. `vars` resolves the way Ansible resolves inventory variables: `all`'s first, then each group from the outermost in, then the host's own. Above, `web2` gets `role = "canary"` and `web1` gets `app`.
+A host that doesn't set one of the first four leaves it to the circuit's `ssh` block. Above, `web2` gets `role = "canary"` and `web1` gets `app`.
+
+`vars` also takes in the `group_vars/` and `host_vars/` directories beside the inventory, and resolves everything the way Ansible does:
+
+1. The inventory file's group variables: `all`'s, then each group's from the outermost in.
+2. `group_vars/all`, then `group_vars/<group>`, from the outermost group in.
+3. The inventory file's host variables.
+4. `host_vars/<host>`.
+
+For each group or host, Conn3x reads a file called `web`, `web.yml`, `web.yaml` or `web.json`, or every such file in a `web/` directory, in name order. Only plain values come through: a list or a map is left out, since `vars` holds strings. So is a value encrypted with Ansible Vault. A whole file encrypted with Vault is an error.
 
 The group takes in its child groups' hosts, and `"all"` takes in every host. An unknown group is an error that lists the groups the file has. A relative path is relative to where you run Conn3x, which is why the example starts with `path.module`.
 
-Not read yet: `group_vars/` and `host_vars/` directories, host ranges such as `web[01:20]`, and dynamic inventory scripts or plugins.
+Not read yet: host ranges such as `web[01:20]`, `group_vars/` beside the playbook rather than the inventory, and dynamic inventory scripts or plugins.
 
 ## Host object fields
 
