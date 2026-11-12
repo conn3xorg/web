@@ -1,6 +1,6 @@
 ---
-title: Rescues
-description: The rescue block, watches, when a rescue runs and on which hosts, and what it leaves in state and in the report.
+title: Rescues and always blocks
+description: The rescue and always blocks, watches, when each runs and on which hosts, and what they leave in state and in the report.
 ---
 
 A rescue runs on a host only when a step or handler it watches failed there. Use it to put a host back the way it was when a change breaks it, as Ansible's `rescue` does. New in v0.16.0.
@@ -128,16 +128,40 @@ In the [report](/reference/cli/apply#-report), the failed step keeps `"status": 
 
 If a rescue fails too, `rescued` isn't set, and apply says the host may still be as the failed step left it.
 
+## always
+
+An `always` block runs on every host where a step or handler it watches ran, whether it succeeded or failed, as Ansible's `always` does. It's written like a rescue, with `watches`:
+
+```hcl
+always "lb_enable" {
+  watches = [step.config, handler.restart]
+  on      = "lb"
+  command {
+    command = "lb-enable ${each.key}"
+  }
+}
+```
+
+Under the plan, apply says:
+
+```text
+After config or restart runs on a host, always "lb_enable" of circuit "app" runs there.
+```
+
+Always blocks run after the rescues, in a plan of their own, and are dropped from state the same way. A watched step with nothing to change isn't part of the apply, so nothing runs after it: an apply with no changes runs no always blocks.
+
+An always block that fails fails the apply, even when every step succeeded.
+
 ## With batches
 
-In a [batched](/reference/cli/apply#batches) circuit, a batch's failures are rescued before the next batch starts. A rescued host still counts against `max_failures`.
+In a [batched](/reference/cli/apply#batches) circuit, each batch's rescues and always blocks run before the next batch starts. A rescued host still counts against `max_failures`. A failed always block doesn't stop the rollout, but apply exits 1 at the end.
 
-## What stops rescues running
+## What stops them running
 
-- **A saved plan.** `conn3x apply plan.tfplan` applies the plan in one go, and warns that no rescue will run.
+- **A saved plan.** `conn3x apply plan.tfplan` applies the plan in one go, and warns that no rescue will run. Always blocks don't run either.
 - **`-target`, `-exclude`, `-json` and `-json-into`.** Apply refuses them in a configuration with rescues, as it does with batches.
 - **`-destroy`.** A destroy runs no rescues.
 - **A circuit in a child module.** Rescues are read from the circuits in the root module, so a child module's rescues never run.
 - **The `remote` and `cloud` backends**, which plan elsewhere.
 
-Converting an Ansible `block` with `rescue` still leaves a TODO. `always` blocks aren't built yet.
+Converting an Ansible `block` with `rescue` or `always` still leaves a TODO.
