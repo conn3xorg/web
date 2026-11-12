@@ -133,6 +133,7 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **Anything tagged `never`.** Ansible runs it only when you ask for one of its tags, and a step would run on every apply. That covers a task, a handler, an import, a role call or a whole play.
 - **A value encrypted with Ansible Vault.** The converter can't read it and won't write the ciphertext into a circuit, so a task that uses one stays. Pass the secret in through an [ephemeral variable](/reference/circuits/secrets) instead.
 - **A `src` outside the playbook's or role's directory,** or one that's a link. The converter reads only the files that came with the playbook.
+- **A block that sets `when`, `become` or another keyword,** which would apply to every task inside it, and a block with `rescue` or `always` inside another block's. So does a rescue task that reads `ansible_failed_task` or `ansible_failed_result`, or that notifies a handler.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
 
 Since v0.12.0 the converter also tells you what it couldn't carry over from the play itself. Keywords such as `check_mode`, `connection`, `module_defaults`, `environment`, `run_once`, `vars_prompt` and `vars_files` are listed at the top of the circuit. And a `copy` or `template` task without `mode` gets a note, because the step sets `0644` where Ansible left an existing file's mode alone.
@@ -152,6 +153,7 @@ Some of what you set on a play, a task or the `ansible-playbook` command line ha
 | `ansible-playbook --limit 'web*'` | [`conn3x plan -limit='web*'`](/reference/cli/plan#-limit), or the same on `apply` and `refresh`. The pattern syntax is Ansible's, without groups. |
 | `serial: 2` or `serial: "20%"` on a play | [`batch_size = 2`](/reference/cli/apply#batches) or `"20%"` on a circuit with `strategy = "per_host"`. The converter writes both. A list or templated `serial` goes to review. |
 | `max_fail_percentage` | [`max_failures = "20%"`](/reference/cli/apply#batches). Ansible counts it in each batch, and Conn3x over every host that changes, rounded down. The converter writes it, with a comment saying so. |
+| `block` with `rescue` and `always` | The block's tasks become steps in its place, the `rescue` tasks become [`rescue`](/reference/circuits/rescues) blocks and the `always` tasks [`always`](/reference/circuits/rescues#always) blocks, each watching the block's steps. A block nested inside another flattens into it. The converter writes these since v0.16.0. |
 
 ## Convert a role
 

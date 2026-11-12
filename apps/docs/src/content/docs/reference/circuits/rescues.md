@@ -164,4 +164,4 @@ In a [batched](/reference/cli/apply#batches) circuit, each batch's rescues and a
 - **A circuit in a child module.** Rescues are read from the circuits in the root module, so a child module's rescues never run.
 - **The `remote` and `cloud` backends**, which plan elsewhere.
 
-Converting an Ansible `block` with `rescue` or `always` still leaves a TODO.
+[`conn3x convert ansible`](/guides/migrate-from-ansible#where-ansibles-options-went) turns an Ansible `block` with `rescue` and `always` into steps with rescue and always blocks.
