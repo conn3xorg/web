@@ -115,6 +115,18 @@ const SHIPPED = [
       /Replace `0\.13\.0` with the version/i,
     ],
   },
+  {
+    feature: "-limit, batched rollouts, on, TLS modules, fifteen Windows modules out of experimental (v0.15.0)",
+    stale: [
+      /\b40 Linux modules/i,
+      /every `windows_\*` module is experimental/i,
+      /25 experimental Windows modules/i,
+      /`on` without `run_once` is an error/i,
+      /so can seven Windows modules/i,
+      /This guide uses Conn3x v0\.14\.0/i,
+      /Replace `0\.14\.0` with the version/i,
+    ],
+  },
 ];
 
 function files(dir) {

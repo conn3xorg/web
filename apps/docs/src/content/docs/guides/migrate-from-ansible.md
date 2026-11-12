@@ -67,7 +67,7 @@ New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/fi
 
 ### Windows
 
-Also new in v0.7.0, Windows tasks convert into the [Windows modules](/modules/windows_file), which are [experimental](/reference/maturity#preview-and-experimental-together):
+Since v0.7.0, Windows tasks convert into the [Windows modules](/modules/windows_file), 15 of which have left [experimental](/reference/maturity#preview-and-experimental-together) since v0.15.0. These tasks convert:
 
 - From `ansible.windows`: `win_acl`, `win_acl_inheritance`, `win_command`, `win_copy`, `win_feature`, `win_file`, `win_group`, `win_group_membership`, `win_package`, `win_powershell`, `win_regedit`, `win_service`, `win_shell`, `win_user` and `win_wait_for`.
 - From `community.windows`: `win_firewall_rule`, `win_iis_webapppool`, `win_iis_website` and `win_scheduled_task`.

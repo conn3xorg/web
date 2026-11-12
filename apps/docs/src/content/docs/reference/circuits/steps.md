@@ -510,7 +510,9 @@ the hosts that already have it; Conn3x then creates it on the rest.
 
 These modules can import: `authorized_key`, `cron`, `directory`, `file`, `firewalld`, `group`, `hostname`, `link`, `locale`, `mount`, `package`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw` and `user`. All but the first eight arrived in v0.9.0.
 
-Since v0.10.0, so can seven Windows modules: `windows_directory`, `windows_feature`, `windows_file`, `windows_group`, `windows_registry_value`, `windows_service` and `windows_user`. Any other module rejects `import`.
+Seventeen Windows modules can too. Since v0.10.0: `windows_directory`, `windows_feature`, `windows_file`, `windows_group`, `windows_registry_value`, `windows_service` and `windows_user`. Since v0.11.0: `windows_package`. Since v0.15.0: `windows_firewall_rule`, `windows_scheduled_task`, `windows_iis_app_pool`, `windows_iis_site`, `windows_acl`, `windows_dns_client`, `windows_ad_ou`, `windows_ad_group` and `windows_ad_user`. Any other module rejects `import`.
+
+A Windows step's import ID also carries its module's blocks, such as a scheduled task's triggers or a site's bindings, so the first plan after an import compares them instead of rewriting them.
 
 A few details:
 
@@ -576,12 +578,15 @@ conn3x import 'conn3x_file.site__motd["web1"]' \
 
 | Module | Names it |
 | --- | --- |
-| `file`, `directory`, `link`, `mount`, `windows_file`, `windows_directory` | `path` |
-| `package`, `service`, `user`, `group`, `cron`, `timer`, `sysctl`, `repository`, `postgresql_database`, `postgresql_role`, `mysql_database`, `windows_service`, `windows_feature`, `windows_user`, `windows_group` | `name` |
+| `file`, `directory`, `link`, `mount`, `windows_file`, `windows_directory`, `windows_acl` | `path` |
+| `package`, `service`, `user`, `group`, `cron`, `timer`, `sysctl`, `repository`, `postgresql_database`, `postgresql_role`, `mysql_database`, `windows_service`, `windows_feature`, `windows_user`, `windows_group`, `windows_firewall_rule`, `windows_iis_app_pool`, `windows_iis_site`, `windows_ad_group`, `windows_ad_user` | `name` |
 | `authorized_key` | `user` and `key` |
 | `mysql_user` | `name` and `host` |
 | `windows_registry_value` | `key` and `name` |
 | `windows_package` | `product_code` |
+| `windows_scheduled_task` | `path` and `name` |
+| `windows_dns_client` | `interface` |
+| `windows_ad_ou` | `name` and `path` |
 | `firewalld` | `zone`, `service` and `port` |
 | `ufw` | `action`, `port` and `from` |
 | `selinux_boolean` | `name` |
