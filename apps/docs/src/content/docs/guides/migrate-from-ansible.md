@@ -61,6 +61,8 @@ Since v0.14.0, a `postgresql_user` task with `db` and a database-level `priv` su
 
 Also new in v0.14.0: an `authorized_key` task with `exclusive: true` becomes an [authorized_key](/modules/authorized_key) step with `exclusive = true`, so the user's keys are exactly the ones it lists. A `file` task with `recurse: yes` becomes a [directory](/modules/directory) step with `recurse = true` when its `mode` is symbolic, such as `u=rwX,g=rX,o=`, or when it sets only `owner` and `group`. A numeric `mode` with `recurse` stays for review, because the directories need the execute bit and a numeric mode would give it to every file under them too.
 
+New in v0.17.0, `ansible.posix.synchronize` pushing a directory becomes a [directory_copy](/modules/directory_copy) step, and `delete: yes` carries over. rsync's trailing slash still decides where it lands: `src: site/` copies what's in `site` into `dest`, and `src: site` puts `site` itself under `dest`. Every file gets one mode and one owner, where rsync kept each file's own, so a note asks you to set them. Pull mode, `rsync_opts`, include and exclude rules, `dirs` and `copy_links` stay for review.
+
 A `cron` task still becomes a [cron](/modules/cron) step, which keeps the job in `/etc/cron.d`. If you'd rather the jobs stay in the user's own crontab, the one `crontab -e` edits, move them into one [crontab](/modules/crontab) step for that user, new in v0.14.0. It owns the whole file, so list every job the user should keep.
 
 New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/file#from-ansible) step, minus any quotes around `%s`. Ansible runs `validate` without a shell, and Conn3x runs it through `sh`, so one with a pipe, a redirect, `$`, a glob or a second line stays for review.

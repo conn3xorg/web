@@ -140,6 +140,18 @@ const SHIPPED = [
       /Replace `0\.15\.0` with the version/i,
     ],
   },
+  {
+    feature: "Junos modules, directory_copy, run subscripts (v0.17.0); Galaxy roles and ad-hoc runs (v0.16.0)",
+    stale: [
+      /\b49 Linux modules/i,
+      /then Junos, VyOS and classic Cisco IOS/i,
+      /What's left is pulling one from Galaxy/i,
+      /## Then: ad-hoc commands/i,
+      /Bring your Ansible inventory across with its `group_vars`/i,
+      /This guide uses Conn3x v0\.16\.0/i,
+      /Replace `0\.16\.0` with the version/i,
+    ],
+  },
 ];
 
 function files(dir) {
