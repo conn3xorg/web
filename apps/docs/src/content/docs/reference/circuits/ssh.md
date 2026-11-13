@@ -267,6 +267,7 @@ provider "postgresql" {
 - The `ssh` block is the same as anywhere else, so jump hosts, host keys and keys all work as they do for steps.
 - `local_host` is always `127.0.0.1`, and `local_port` is a free port, chosen each run, so nothing else on the machine has to give one up.
 - It's ephemeral: none of it lands in state or in a saved plan, and the tunnel closes when the run is done with it.
+- As with `ssh -L`, any user on the machine can connect to the port while the run lasts, and reach `remote` as the SSH user. On a shared CI runner, keep that in mind.
 
 A provider that uses it opens the tunnel at plan and again at apply, so the host has to answer at both. If the same configuration creates the host, apply that first, with `-target`, or from a configuration of its own.
 
