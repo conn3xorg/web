@@ -53,6 +53,18 @@ web2 | ok
 
 The pattern is the one [`-limit`](/reference/cli/plan#-limit) takes: names and globs split by `,` or `:`, `!` in front to leave hosts out, `&` to narrow, and `~` for a regular expression. Here it also matches group names, as Ansible's does, so `webservers:&eu` is the hosts in both groups, and `all` is every host.
 
+Since v0.17.0 a group takes a subscript too, to pick hosts by their place in it, counted as current Ansible counts them: from 0, the end left out, negative from the end, in the order the inventory lists them.
+
+| Pattern | Picks |
+| --- | --- |
+| `webservers[0]` | the first host in `webservers` |
+| `webservers[-1]` | the last |
+| `webservers[0:2]` | the first two |
+| `webservers[1:]` | every host but the first |
+| `all[:3]` | the first three hosts in the inventory |
+
+A group's own hosts come before its children's. A name in brackets that isn't a group stays a glob, so `web[0]` is a host called `web0`.
+
 ## Commands and modules
 
 Without `-m`, `-a` is a command, run through the host's shell, and its output is printed under the host's line. A command always runs, so it always reports `changed`, or `failed` when it exits nonzero.
