@@ -98,7 +98,7 @@ So is an ignore that no longer matches anything, so stale ones don't pile up.
 ```yaml
 - uses: conn3xorg/setup-conn3x@v1
   with:
-    version: 0.15.0
+    version: 0.16.0
 - name: Lint the circuit
   run: conn3x lint
 ```
