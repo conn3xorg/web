@@ -41,7 +41,7 @@ Conn3x uses SSH and nothing else. By default, it installs nothing on the hosts. 
 
 Paths that start with `~/` are relative to your home directory. Other relative paths are relative to the working directory, which `-chdir` sets.
 
-There is no argument for an inline private key or password, because resource arguments are stored in state. Point `private_key_file` at a key, or use the agent. A key file protected by a passphrase can't be read; load it into the agent instead and leave `private_key_file` unset.
+There is no argument for an inline private key or password, because resource arguments are stored in state. Point `private_key_file` at a key, use the agent, or, since v0.16.0, give keys from a secret store to the provider block: see [Keys from a secret store](#keys-from-a-secret-store). A key file protected by a passphrase can't be read; load it into the agent instead and leave `private_key_file` unset.
 
 Every argument takes an expression, such as a variable. `conn3x validate` rejects a `timeout` that isn't a valid duration. A missing `user`, a port outside 1 to 65535, and a key file that can't be read are reported when Conn3x first connects, during `plan` or `apply`.
 
@@ -83,6 +83,33 @@ Conn3x builds each host's connection settings from up to three places. The first
 When none of them sets a value, the default in the table above applies.
 
 `become`, `become_password_file`, `known_hosts_file`, `timeout`, `confirm_after` and `ssh_config_file` can't be set per host. They come from the `ssh` block for every host in the circuit, with `known_hosts_file` falling back to the config file's `UserKnownHostsFile`.
+
+## Keys from a secret store
+
+Keep your SSH keys in Vault, OpenBao or a cloud secret manager? Give them to the provider block, and they never touch the disk. New in v0.16.0.
+
+```hcl
+terraform {
+  required_providers {
+    conn3x = { source = "terraform.io/builtin/conn3x" }
+  }
+}
+
+ephemeral "vault_kv_secret_v2" "deploy_key" {
+  mount = "secret"
+  name  = "ssh/deploy"
+}
+
+provider "conn3x" {
+  private_keys = [ephemeral.vault_kv_secret_v2.deploy_key.data["private_key"]]
+}
+```
+
+Every login tries these keys after the step's `private_key_file` and before the SSH agent. With no agent running, they're enough on their own. A circuit in a module uses them too, since OpenTofu passes the default provider down.
+
+`private_keys` is write-only, so it takes an [ephemeral value](https://opentofu.org/docs/language/ephemeral-values/), and provider configuration isn't kept in state or in plan files. Feed it from an ephemeral resource, as above, or a variable with `ephemeral = true`. A plain variable's value is saved in a plan file, so it would undo the point.
+
+Keys are PEM or OpenSSH format, without a passphrase. A key Conn3x can't read stops the plan, and the error says which entry it is without quoting any of it.
 
 ## SSH config files
 
