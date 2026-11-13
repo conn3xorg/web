@@ -1,13 +1,13 @@
 ---
 title: Network devices
-description: "How Conn3x configures switches over their own CLI: Arista EOS first, experimental since v0.9.0."
+description: "How Conn3x configures switches over their own CLI: Arista EOS since v0.9.0, Juniper Junos since v0.17.0, both experimental."
 ---
 
 :::note
-The `eos_*` modules are in Conn3x since v0.9.0, and all of them are experimental. `eos_interface`, `eos_user` and one commit per switch are new in v0.10.0. Earlier releases don't know the modules they lack, so a circuit that uses one fails `conn3x validate`.
+The `eos_*` modules are in Conn3x since v0.9.0, and all of them are experimental. `eos_interface`, `eos_user` and one commit per switch are new in v0.10.0. The `junos_*` modules are new in v0.17.0, and experimental too. Earlier releases don't know the modules they lack, so a circuit that uses one fails `conn3x validate`.
 :::
 
-A switch is a host like any other in a circuit. You list it in `hosts`, reach it through the circuit's `ssh` block, and the step's module decides how Conn3x talks to it. A `package` step runs shell commands. An `eos_*` step types into the switch's own CLI. There's no shell, no `sudo` and no agent on the switch, and nothing to install there.
+A switch is a host like any other in a circuit. You list it in `hosts`, reach it through the circuit's `ssh` block, and the step's module decides how Conn3x talks to it. A `package` step runs shell commands. An `eos_*` or `junos_*` step types into the switch's own CLI. There's no shell, no `sudo` and no agent on the switch, and nothing to install there.
 
 ```hcl
 circuit "leafs" {
@@ -41,11 +41,11 @@ circuit "leafs" {
 }
 ```
 
-Keep switches in their own circuit. An `ssh` block that suits a Linux server, with `become` for example, is refused on an `eos_*` step, and `confirm_after` (below) is refused on everything else.
+Keep switches in their own circuit. An `ssh` block that suits a Linux server, with `become` for example, is refused on an `eos_*` or `junos_*` step, and `confirm_after` (below) is refused on everything else.
 
 ## What works today
 
-Arista EOS, and only that so far:
+Arista EOS, and since v0.17.0 Juniper Junos, which has [its own section](#juniper-junos) below. For EOS:
 
 | Module | What it owns |
 | --- | --- |
@@ -135,9 +135,60 @@ Two modules could cut Conn3x off from the switch it's changing, so both refuse t
 
 Passwords and their hashes are masked in session diffs and errors, so a log never holds one.
 
+## Juniper Junos
+
+New in v0.17.0, and experimental like the EOS modules. Conn3x talks to Junos the way it talks to EOS, over SSH and the device's own CLI, with no NETCONF to turn on and nothing to install.
+
+| Module | What it owns |
+| --- | --- |
+| [`junos_config`](/modules/junos_config) | Set statements, written the way `show configuration \| display set` prints them. Other statements are left alone, or with `match = "block"` the statements under a `prefix` must be exactly these. |
+| [`junos_hostname`](/modules/junos_hostname) | The device's host name. |
+| [`junos_interface`](/modules/junos_interface) | One interface's description, enabled or disabled, MTU, and on a switch port, access or trunk and its VLAN members. |
+| [`junos_user`](/modules/junos_user) | A local account: login class, SSH keys, and a password that stays out of state. |
+| [`junos_vlan`](/modules/junos_vlan) | A VLAN by name and its ID. Removing the step deletes the VLAN. |
+
+A `conn3x_junos_device` data source reads the host name, model and Junos version, for preconditions.
+
+It's tested against vJunos-switch 26.2R1.7 on a lab VM, not yet in CI and not on hardware.
+
+### The login
+
+Log in as a user of class `super-user`, whose login starts in the CLI:
+
+```
+set system login user ops class super-user
+set system login user ops authentication ssh-ed25519 "ssh-ed25519 AAAA..."
+```
+
+`root` is refused, because its login starts in a shell.
+
+### How a change goes in
+
+Junos answers every command with exit status 0, even one it refused, and a script typed into its CLI can't stop halfway: after a refused line, a `commit` still commits everything else. So Conn3x reads every answer for the device's own errors, and sends each change twice.
+
+1. **A dry run** in `configure private`: the lines, `commit check`, then `rollback` and `exit`. If the device refuses anything, Conn3x stops with the device's own words, and nothing has changed.
+2. **The commit** in `configure exclusive`, with `commit confirmed 5`. Junos refuses `commit confirmed` in private mode, which is why there are two passes. If someone else holds the configuration lock, Conn3x stops, and nothing has changed.
+3. **The confirm.** After `confirm_after`, Conn3x logs in again over a new connection and runs `commit check`, which confirms. If that login can't get in, Junos rolls the change back by itself within five minutes.
+
+Commits on Junos persist, so there's no save step.
+
+While a commit confirmed waits for its confirm, Junos says so every time you enter configuration mode, and Conn3x listens. A refresh counts the device's steps as out of sync, since their lines may yet roll back, and an apply stops before it sends anything. A session that ends mid-commit never reads as "nothing changed" either: the commit may be what cut it.
+
+### One commit per device
+
+As on EOS, a device's steps in a circuit share one commit per apply. Junos keeps nothing between logins, so the lines wait in Conn3x until the circuit's last step is in. Each step still runs the dry run over everything staged so far, so a refused line fails the step that brought it. On vJunos, a seven-step circuit and its destroy each made exactly one commit.
+
+The plan shows `conn3x_junos_commit.<circuit>__commit` and `conn3x_junos_removals.<circuit>__removals`, which work like their EOS twins above.
+
+### Guards
+
+- `junos_interface` won't disable a management interface (`fxp0`, `em0`, `me0`, `vme`), or the interface that holds the address Conn3x connects to.
+- `junos_user` won't demote or delete the account Conn3x logs in as.
+- `junos_config` takes nothing but `set` statements, so no line can leave configuration mode, commit early or run another command.
+
 ## What's coming
 
-- More EOS modules, and lines kept out of state for secrets in `eos_config`.
-- Junos, VyOS and classic Cisco IOS after that. See the [roadmap](/roadmap).
+- More EOS and Junos modules, and lines kept out of state for secrets in `eos_config` and `junos_config`.
+- VyOS and classic Cisco IOS after that. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).
