@@ -148,6 +148,7 @@ const SHIPPED = [
       /What's left is pulling one from Galaxy/i,
       /## Then: ad-hoc commands/i,
       /Bring your Ansible inventory across with its `group_vars`/i,
+      /Still to come: running a step on the machine Conn3x runs on/i,
       /This guide uses Conn3x v0\.16\.0/i,
       /Replace `0\.16\.0` with the version/i,
     ],
