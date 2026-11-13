@@ -35,7 +35,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
 | Modules | A very large ecosystem of collections on Ansible Galaxy | 50 Linux modules, 25 Windows modules (3 still experimental), and [127 official circuits](/circuits) |
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
-| Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS and Juniper Junos](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
+| Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos and VyOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
 | Maturity | In production use for more than a decade | Before 1.0, at v0.10.0 |
 
@@ -254,7 +254,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 ## What Conn3x can't do yet
 
 - Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
-- Network devices means Arista EOS and Juniper Junos for now: ten experimental modules over the switch's own CLI, five for each, tested on cEOS-lab and vJunos-switch and not yet on hardware. VyOS and classic Cisco IOS are next.
+- Network devices means Arista EOS, Juniper Junos and VyOS for now: thirteen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch and a VyOS container, and not yet on hardware. Classic Cisco IOS is next.
 - macOS hosts are planned, not shipped.
 - There's no web UI and no built-in credential store.
 - Adopting a running server works for 25 Linux modules, the database steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them. None of the seven Linux steps new in v0.16.0 imports yet.

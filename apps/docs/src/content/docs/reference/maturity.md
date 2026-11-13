@@ -45,7 +45,8 @@ Experimental is about each module inside it. An experimental module is new, and 
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |
 | The [Circuit Builder](https://conn3x.org/build), for hosts you already have | Stable | CI validates every circuit it offers, alone and in a set of realistic builds. |
 | The Builder creating the servers on AWS, Azure, Google Cloud or DigitalOcean | Preview | We've applied its configs on real servers on all four, by hand rather than on every change. On Azure it creates Linux hosts only. |
-| Windows hosts in the Builder, VyOS and classic Cisco IOS over their own CLI, macOS hosts | Planned | See the [roadmap](/roadmap). |
+| [VyOS modules](/network-devices#vyos) (`vyos_config`, `vyos_hostname`, `vyos_interface` since v0.18.0) | Experimental | Tested against VyOS 2026.11.13-0016-rolling in a container on a lab VM, not in CI and not on hardware. |
+| Windows hosts in the Builder, classic Cisco IOS over its own CLI, macOS hosts | Planned | See the [roadmap](/roadmap). |
 
 ## Now, Next and After that
 
