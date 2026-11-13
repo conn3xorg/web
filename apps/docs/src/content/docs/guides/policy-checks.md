@@ -30,7 +30,7 @@ conn3x_ufw_rule.web__ssh_ufw["web1"]
 
 - The type is `conn3x_` followed by the step's kind: `conn3x_ufw_rule`, `conn3x_firewalld`, `conn3x_download`, `conn3x_repository`.
 - The name is the circuit, two underscores, then the step: circuit `web`, step `ssh_ufw`.
-- The index is the host's name from `hosts`: `web1`. The address Conn3x connects to is in `change.after.ssh.host`.
+- The index is the host's name from `hosts`: `web1`. A step with its own `for_each` adds the item after a slash, such as `web1/users`, and a FAIL line then reads "on web1/users". The address Conn3x connects to is in `change.after.ssh.host`.
 
 The step's arguments are in `change.after`, with `null` for those you didn't set. `change.actions` says what the plan does to the step: `["create"]`, `["update"]`, `["delete"]`, or `["delete", "create"]` for a replacement. Steps being removed have nothing to check, so the policies below look only at steps being created or changed.
 
