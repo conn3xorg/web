@@ -1,6 +1,48 @@
 {
-  "otherMinutes": 78,
+  "otherMinutes": 79,
   "items": [
+    {
+      "date": "2026-11-13",
+      "repo": "github/advisory-database",
+      "summary": "An imgproxy advisory listed three module paths that have no 4.x versions, so it matched nothing. We moved it to /v4, as imgproxy's own advisory says, and checked that against go.mod and the Go module proxy.",
+      "url": "https://github.com/github/advisory-database/pull/11254",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "A change folds Arabic-Indic and other digits to ASCII inside every pattern recognizer, always on. We pointed out that the project's opt-in text normalizers already do this kind of folding, with offset mapping, and what choosing always-on changes.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2480#pullrequestreview-5884035008",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "prometheus/alertmanager",
+      "summary": "A fix for a flaky test against a full systemd socket. We confirmed why a reused sender could block before the receiver's queue filled, and flagged that the new fill loop has no bound.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5741#pullrequestreview-5884026202",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "prometheus/prometheus",
+      "summary": "A docs fix added Vultr to the scrape config list. We compared every registered service discovery against the docs and found five AWS ones that are registered as their own keys but documented only as aws_sd_config roles.",
+      "url": "https://github.com/prometheus/prometheus/pull/20428#pullrequestreview-5884010782",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "A fix stopped \"business\" counting as context for a Canadian SIN. We confirmed the cause and found the same substring trap in other recognizers, from \"pan\" in \"company\" to \"us\" in \"status\".",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2484#pullrequestreview-5884001014",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-12",
+      "repo": "tailscale/tailscale",
+      "summary": "Two pull requests fixing the same DNS bug arrived 90 seconds apart. We showed their code changes were identical and said what else differed, so maintainers can pick one.",
+      "url": "https://github.com/tailscale/tailscale/pull/22367#issuecomment-6839542602",
+      "minutes": 1
+    },
     {
       "date": "2026-11-12",
       "repo": "prometheus/alertmanager",
