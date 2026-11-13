@@ -160,6 +160,14 @@ Some of what you set on a play, a task or the `ansible-playbook` command line ha
 
 Since v0.9.0 there's `-role`. Point it at a role's directory, and `-out` at a new one, and you get a circuit laid out like the ones in [the catalogue](/circuits), ready to call as a module.
 
+Since v0.16.0, `-role` also takes a role straight from Galaxy, so there's no `ansible-galaxy install` first:
+
+```sh
+conn3x convert ansible -role geerlingguy.nginx,3.3.1 -out circuit-nginx
+```
+
+Leave off the version to get the newest one Galaxy lists. Conn3x downloads the role from GitHub, as `ansible-galaxy` does, converts it from a temporary directory, and adds a "Source" section to the circuit's README naming the role, the version and the repository. A directory with the same name on disk is used instead. Collections aren't downloaded; their roles come with the collection.
+
 ```sh
 conn3x convert ansible -role roles/app -out circuit-app
 ```
