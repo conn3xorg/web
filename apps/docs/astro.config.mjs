@@ -79,6 +79,7 @@ export default defineConfig({
             ...["hosts", "ssh", "steps", "handlers", "removal", "secrets", "addresses", "expressions"].map((page) => `reference/circuits/${page}`),
             "reference/host-facts",
             "reference/host-packages-and-services",
+            "reference/host-files-and-commands",
             "reference/eos-device",
           ],
         },
