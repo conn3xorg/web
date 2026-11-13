@@ -40,11 +40,12 @@ Experimental is about each module inside it. An experimental module is new, and 
 | Running Conn3x itself on Windows (`conn3x.exe`) | Experimental | New in v0.10.0. It ran a plan and apply from Windows Server 2025 against Ubuntu and against itself. |
 | Network-device circuits: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans), [Proxmox VE network](/circuits/proxmox-network) | Experimental | Each was tested on a virtual image of its device, not hardware, through a community OpenTofu provider. |
 | [Arista EOS modules](/network-devices) (`eos_config`, `eos_hostname`, `eos_vlan` since v0.9.0; `eos_interface` and `eos_user` since v0.10.0) | Experimental | Tested against cEOS-lab 4.37.0F on a local machine, not in CI and not on hardware. |
+| [Juniper Junos modules](/network-devices#juniper-junos) (`junos_config`, `junos_hostname`, `junos_vlan`, `junos_interface`, `junos_user` since v0.17.0) | Experimental | Tested against vJunos-switch 26.2R1.7 on a lab VM, not in CI and not on hardware. |
 | [`conn3x lint`](/reference/cli/lint), [`conn3x mcp`](/reference/cli/mcp) and [run reports](/reference/cli/apply#-report) | Experimental | New in v0.10.0. Their output and flags may change between releases. |
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |
 | The [Circuit Builder](https://conn3x.org/build), for hosts you already have | Stable | CI validates every circuit it offers, alone and in a set of realistic builds. |
 | The Builder creating the servers on AWS, Azure, Google Cloud or DigitalOcean | Preview | We've applied its configs on real servers on all four, by hand rather than on every change. On Azure it creates Linux hosts only. |
-| Windows hosts in the Builder, other network devices over their own CLI, macOS hosts | Planned | See the [roadmap](/roadmap). |
+| Windows hosts in the Builder, VyOS and classic Cisco IOS over their own CLI, macOS hosts | Planned | See the [roadmap](/roadmap). |
 
 ## Now, Next and After that
 
