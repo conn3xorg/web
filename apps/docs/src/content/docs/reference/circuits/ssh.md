@@ -268,7 +268,7 @@ provider "postgresql" {
 - `local_host` is always `127.0.0.1`, and `local_port` is a free port, chosen each run, so nothing else on the machine has to give one up.
 - It's ephemeral: none of it lands in state or in a saved plan, and the tunnel closes when the run is done with it.
 
-A provider that uses it opens the tunnel at plan and again at apply. The host has to be up for both, so create it in an earlier apply, or in the same circuit before the provider's resources need it.
+A provider that uses it opens the tunnel at plan and again at apply, so the host has to answer at both. If the same configuration creates the host, apply that first, with `-target`, or from a configuration of its own.
 
 ## Connecting and retries
 
