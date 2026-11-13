@@ -1,0 +1,92 @@
+---
+title: conn3x run
+description: Run one command or one module on the hosts in an inventory that a pattern matches, without a circuit and without state.
+---
+
+`conn3x run` is for the jobs that don't belong in a circuit: check a service on every web server, restart nginx after a certificate renews, see which hosts still have an old package. It's Ansible's ad-hoc mode, `ansible webservers -m service -a "name=nginx state=restarted"`, reading the same inventory. New in v0.16.0.
+
+This command is Conn3x only.
+
+## Usage
+
+```sh
+conn3x run -i <INVENTORY> [options] <PATTERN> -a <COMMAND>
+conn3x run -i <INVENTORY> [options] <PATTERN> -m <MODULE> -a <NAME=VALUE ...>
+```
+
+## Examples
+
+Check nginx on every web server except `web3`:
+
+```sh
+conn3x run -i hosts.ini 'web*:!web3' -a 'systemctl is-active nginx'
+```
+
+```text
+web1 | changed
+  active
+web2 | changed
+  active
+```
+
+Restart it on the web servers in Europe, as root:
+
+```sh
+conn3x run -i hosts.ini 'webservers:&eu' -m service -a 'name=nginx action=restart' -become
+```
+
+See which hosts are missing a package, without installing it:
+
+```sh
+conn3x run -i hosts.ini all -m package -a 'name=htop' -check
+```
+
+```text
+db1 | ok
+web1 | would change
+web2 | ok
+```
+
+## Hosts
+
+`-i` names an Ansible inventory, INI or YAML. Conn3x reads it as [`provider::conn3x::inventory`](/reference/circuits/hosts#from-an-ansible-inventory) does: each host's address from `ansible_host`, and `ansible_port`, `ansible_user` and `ansible_ssh_private_key_file` where they're set, with the `group_vars/` and `host_vars/` directories beside it.
+
+The pattern is the one [`-limit`](/reference/cli/plan#-limit) takes: names and globs split by `,` or `:`, `!` in front to leave hosts out, `&` to narrow, and `~` for a regular expression. Here it also matches group names, as Ansible's does, so `webservers:&eu` is the hosts in both groups, and `all` is every host.
+
+## Commands and modules
+
+Without `-m`, `-a` is a command, run through the host's shell, and its output is printed under the host's line. A command always runs, so it always reports `changed`, or `failed` when it exits nonzero.
+
+With `-m`, it's any module a step can use, such as `service`, `package`, `file` or `windows_service`. `-a` holds its arguments as `NAME=VALUE`, split as a shell would split them, so quote a value with spaces. Values are read as in [`conn3x generate step`](/reference/cli/generate-step): as written for a string argument, and as HCL otherwise, such as `uid=1000` or `groups=["ops"]`.
+
+A module does exactly what it does in a step. Conn3x reads the host as a refresh would and plans again from what it found. If that plan changes nothing, the host is `ok` and nothing runs. Otherwise the module applies and the host is `changed`. A module's own checks and refusals still apply. A `command` with `creates`, `removes` or `unless` is skipped the same way.
+
+## Options
+
+| Option | Description |
+| --- | --- |
+| `-i`, `-inventory` | The inventory file. Required. |
+| `-m` | The module to run. Without it, `-a` is a command. |
+| `-a` | The command, or the module's arguments. |
+| `-become` | Run as root through `sudo`, as `become` in a circuit's ssh block. |
+| `-check` | Say what would change, and change nothing. A command reports `would change`. |
+| `-user` | The user to log in as, where the inventory doesn't set `ansible_user`. |
+| `-port` | The SSH port, where the inventory doesn't set `ansible_port`. |
+| `-private-key-file` | The key to log in with, where the inventory doesn't set one. Defaults to the SSH agent. |
+| `-known-hosts-file` | The known_hosts file to check hosts against. Defaults to `~/.ssh/known_hosts`. |
+| `-forks` | How many hosts to run on at once. Defaults to 10. |
+| `-json` | Print one JSON object per host, with `host`, `status`, `error`, `stdout` and `stderr`, for scripts. |
+
+Each host is checked against known_hosts, as a plan checks it: an unknown host key fails that host. Nothing is written to state or to the working directory.
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| 0 | It ran on every host it matched, and none failed. |
+| 1 | An error before any host ran, such as a bad pattern, an unknown module, or a pattern that matches nothing. |
+| 2 | At least one host failed. |
+
+## Not yet
+
+Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. There's no file transfer yet, such as Ansible's `-m copy src=`.

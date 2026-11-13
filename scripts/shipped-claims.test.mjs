@@ -127,6 +127,19 @@ const SHIPPED = [
       /Replace `0\.14\.0` with the version/i,
     ],
   },
+  {
+    feature: "rescue/always/prereq, inventories, Galaxy roles, conn3x run, storage and container steps (v0.16.0)",
+    stale: [
+      /\b42 Linux modules/i,
+      /10 (?:still )?experimental/i,
+      /10 of its 25 modules/i,
+      /no ad-hoc (?:mode|command)/i,
+      /\| Ad-hoc commands \| [^|]+\| None/i,
+      /eight Windows ones/i,
+      /This guide uses Conn3x v0\.15\.0/i,
+      /Replace `0\.15\.0` with the version/i,
+    ],
+  },
 ];
 
 function files(dir) {

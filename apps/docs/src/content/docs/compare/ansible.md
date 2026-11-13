@@ -32,8 +32,8 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | A run that fails part way | Rerun the playbook, and every task runs again on every host. A retry file, or relaunching on failed hosts in AWX, narrows it to the hosts that failed | The next apply does only what's left: a step that finished on a host isn't run there again. See [When a step fails](/reference/cli/apply#when-a-step-fails) |
 | Removing something | Delete the task and the host keeps it, unrecorded. Write a `state: absent` task to remove it | Delete the step and the plan shows it; `on_remove` decides what the host keeps |
 | Cloud resources | Cloud collections such as `amazon.aws`, `azure.azcollection` and `google.cloud` | Any OpenTofu provider, in the same plan as the servers |
-| Ad-hoc commands | `ansible all -a "uptime"` | None |
-| Modules | A very large ecosystem of collections on Ansible Galaxy | 42 Linux modules, 25 Windows modules (10 still experimental), and [127 official circuits](/circuits) |
+| Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
+| Modules | A very large ecosystem of collections on Ansible Galaxy | 49 Linux modules, 25 Windows modules (3 still experimental), and [127 official circuits](/circuits) |
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | Three experimental circuits, through community OpenTofu providers |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
@@ -226,10 +226,10 @@ So the preview is close. Where the two part ways is everything around it: Conn3x
 
 There are plenty of jobs where Ansible is the right tool, and we'd rather say so:
 
-- Ad-hoc work. `ansible all -m ping`, or a one-off command across a group during an incident, is quick and useful. Conn3x has no ad-hoc mode: it only runs what a circuit describes.
+- Ad-hoc work, at Ansible's breadth. `conn3x run` covers the one-off command or module across a group, from the same inventory, but Ansible has years of habits and modules behind its ad-hoc mode, and `-m` in Conn3x takes only the modules a step can run.
 - Network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their own CLI is only planned.
-- Windows at scale. Ansible's Windows support has years of production use behind it. Windows in Conn3x is a preview, and 10 of its 25 modules, Active Directory among them, are still experimental. It can build a forest, join servers, add a domain controller and keep the OUs, groups and users in the domain, but a whole lab from one config hasn't been tested yet.
-- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 42 Linux modules and 127 circuits, which cover a lot of ground and are still a much smaller set.
+- Windows at scale. Ansible's Windows support has years of production use behind it. Windows in Conn3x is a preview: 22 of its 25 modules are out of experimental, and `windows_ad_domain`, `windows_ad_group` and `windows_update` still are. It can build a forest, join servers, add a domain controller and keep the OUs, groups and users in the domain, but a whole lab from one config hasn't been tested yet.
+- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 49 Linux modules and 127 circuits, which cover a lot of ground and are still a much smaller set.
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
 - A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x has none of that; you run it from CI.
 - Team familiarity. Ansible is widely known, widely taught and well documented. A team that's fluent in it gives up real speed by switching.
@@ -256,8 +256,8 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 - Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
 - Network devices means Arista EOS for now: five experimental modules, `eos_config`, `eos_hostname`, `eos_interface`, `eos_user` and `eos_vlan`, over the switch's own CLI. Other vendors are planned.
 - macOS hosts are planned, not shipped.
-- There's no ad-hoc command, no web UI and no built-in credential store.
-- Adopting a running server works for 25 Linux modules, the database steps among them, and eight Windows ones; [Adopt servers](/guides/adopt-servers) lists them. Active Directory, IIS, ACLs and Windows firewall rules can't import yet.
+- There's no web UI and no built-in credential store.
+- Adopting a running server works for 25 Linux modules, the database steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them. None of the seven Linux steps new in v0.16.0 imports yet.
 
 The [roadmap](/roadmap) has the order we're building things in.
 

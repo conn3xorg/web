@@ -461,9 +461,31 @@ circuit "app" {
 - **The connection is `lb`'s.** The step logs in at `lb`'s address, with any settings `lb`'s host object overrides, such as `user = "admin"`, and the circuit's `ssh` block for the rest.
 - **`on` names a key of `hosts`.** So the host it names is one the circuit configures too, and it gets its own instance of the step: above, `lb` runs `lb-ctl drain lb`.
 - **Not with `each` in the `ssh` block.** There `each` would still mean the host the step is for, not the host it runs on, so a circuit whose `ssh` block uses `each` can't delegate. Put the per-host setting in the host object instead.
-- **`on = "controller"` is reserved** for running a step on the machine Conn3x runs on. That isn't supported yet, and it's an error.
 
 With [`run_once = true`](#run_once), `on` picks the one host the step runs on, and there's one instance in the plan, not one per host.
+
+### On the controller
+
+:::note
+`on = "controller"` is in Conn3x since v0.16.0. Earlier releases reject it.
+:::
+
+`on = "controller"` runs each host's step on the machine you run Conn3x on, as Ansible's `delegate_to: localhost` does. Reach for it when the work for a host is a call from your side: an API request, a DNS update, a ticket.
+
+```hcl
+step "register" {
+  on = "controller"
+  command {
+    command = "curl -fsS -X POST https://inventory.internal/hosts/${each.key}"
+    unless  = "curl -fsS https://inventory.internal/hosts/${each.key}"
+  }
+}
+```
+
+- **Only `command` steps,** for now. Any other module with `on = "controller"` is an error at validate.
+- **Once per host.** As with any `on`, each host keeps its own instance, `each.key` is that host, and the step sits in that host's chain.
+- **It runs as you.** The command runs with `/bin/sh -c`, as whoever runs Conn3x, in Conn3x's working directory and with its environment. Nothing from the circuit's `ssh` block applies, `become` included, so it never runs with sudo. It needs `/bin/sh`, so Conn3x on Windows can't run it.
+- **`controller` always means your machine.** A host in `hosts` named `controller` can't be reached with `on`.
 
 ## import
 
@@ -510,7 +532,7 @@ the hosts that already have it; Conn3x then creates it on the rest.
 
 These modules can import: `authorized_key`, `cron`, `directory`, `file`, `firewalld`, `group`, `hostname`, `link`, `locale`, `mount`, `package`, `repository`, `selinux_boolean`, `selinux_fcontext`, `service`, `sysctl`, `template`, `timer`, `timezone`, `ufw` and `user`. All but the first eight arrived in v0.9.0.
 
-Seventeen Windows modules can too. Since v0.10.0: `windows_directory`, `windows_feature`, `windows_file`, `windows_group`, `windows_registry_value`, `windows_service` and `windows_user`. Since v0.11.0: `windows_package`. Since v0.15.0: `windows_firewall_rule`, `windows_scheduled_task`, `windows_iis_app_pool`, `windows_iis_site`, `windows_acl`, `windows_dns_client`, `windows_ad_ou`, `windows_ad_group` and `windows_ad_user`. Any other module rejects `import`.
+Twenty-one Windows modules can too. Since v0.10.0: `windows_directory`, `windows_feature`, `windows_file`, `windows_group`, `windows_registry_value`, `windows_service` and `windows_user`. Since v0.11.0: `windows_package`. Since v0.15.0: `windows_firewall_rule`, `windows_scheduled_task`, `windows_iis_app_pool`, `windows_iis_site`, `windows_acl`, `windows_dns_client`, `windows_ad_ou`, `windows_ad_group` and `windows_ad_user`. Since v0.16.0: `windows_ad_forest`, `windows_ad_domain`, `windows_ad_domain_controller` and `windows_domain_membership`, which adopt a host that's already that forest's or domain's controller, or already a member, with no password needed. Any other module rejects `import`.
 
 A Windows step's import ID also carries its module's blocks, such as a scheduled task's triggers or a site's bindings, so the first plan after an import compares them instead of rewriting them.
 
@@ -587,6 +609,8 @@ conn3x import 'conn3x_file.site__motd["web1"]' \
 | `windows_scheduled_task` | `path` and `name` |
 | `windows_dns_client` | `interface` |
 | `windows_ad_ou` | `name` and `path` |
+| `windows_ad_forest`, `windows_ad_domain`, `windows_ad_domain_controller` | `domain_name` |
+| `windows_domain_membership` | `domain` |
 | `firewalld` | `zone`, `service` and `port` |
 | `ufw` | `action`, `port` and `from` |
 | `selinux_boolean` | `name` |

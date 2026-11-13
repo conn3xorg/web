@@ -31,7 +31,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | State | Terraform state for the cloud; Ansible keeps none by design | One state for both |
 | Taking over what's already running | `import` blocks for the cloud; Ansible keeps no state, so a playbook just runs against the server | `import` and `lifecycle` on cloud resources and on host steps alike |
 | Spotting hand edits | `tofu plan` for the cloud, `--check --diff` for the servers | `conn3x drift`, which exits `2` when either has moved |
-| Ad-hoc commands | `ansible all -a "uptime"` | None. Conn3x only runs what a circuit describes |
+| Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Ansible collections for many vendors' gear | Three experimental circuits, through community OpenTofu providers |
 | Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [127 official circuits](/circuits) |
@@ -426,9 +426,9 @@ We'd rather you pick the right tool than ours. Stay with the pair, or keep part 
 
 - You lean on their ecosystems. The Terraform and OpenTofu registries and Ansible Galaxy hold years of providers, modules, roles and collections. Conn3x uses every OpenTofu provider and module, but its server-side modules and circuits are a much smaller set than Ansible's collections, and a role you depend on has no automatic equivalent.
 - Your team already knows them. Both tools have long track records, wide hiring pools, books, courses and answers for nearly every error message. Two tools your team understands can beat one tool they'd have to learn, especially for a setup that already works.
-- You run ad-hoc commands. `ansible all -m ping` or a one-off `ansible web -a "systemctl restart nginx"` is quick and useful during an incident. Conn3x has no ad-hoc mode: it only does what a circuit describes.
+- You live in ad-hoc mode. `conn3x run` does the one-off `systemctl restart nginx` across a group from the same inventory, but if most of your Ansible is `ansible web -m ...` during incidents, Ansible's ad-hoc modules are still broader.
 - You configure network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their own CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their CLI is only planned.
-- You manage Windows at scale. Ansible's Windows support has been in use for years. Windows in Conn3x is a preview, and 10 of its 25 modules, Active Directory among them, are still experimental, so their arguments may change between releases.
+- You manage Windows at scale. Ansible's Windows support has been in use for years. Windows in Conn3x is a preview: 22 of its 25 modules are out of experimental, and the other three, `windows_ad_domain`, `windows_ad_group` and `windows_update`, may still change their arguments between releases.
 - You need a UI, RBAC and scheduling built in. AWX and Red Hat Ansible Automation Platform give you job templates, credentials, access control and a web UI. HCP Terraform and other platforms do the same for Terraform runs. Conn3x is a CLI: CI or cron runs it.
 - You can't take on a pre-1.0 tool. Conn3x is at v0.10.0. Stable parts are tested on every change, but "stable" before 1.0 means tested, not frozen, and a release can change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
@@ -439,8 +439,8 @@ None of that has to be all or nothing. Because Conn3x runs your existing configu
 - Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
 - Network devices means Arista EOS for now: five experimental modules, `eos_config`, `eos_hostname`, `eos_interface`, `eos_user` and `eos_vlan`, over the switch's own CLI. Other vendors are planned.
 - macOS hosts are planned, not shipped.
-- There's no ad-hoc command and no web UI. There are no inventory plugins either: `hosts` is an expression, so you build it from resources or data sources instead.
-- Adopting a running server works for 25 Linux modules, the database steps among them, and eight Windows ones; [Adopt servers](/guides/adopt-servers) lists them. Active Directory, IIS, ACLs and Windows firewall rules can't import yet.
+- There's no web UI. There are no dynamic inventory plugins either. `hosts` is an expression: read a static INI or YAML inventory with [`provider::conn3x::inventory`](/reference/circuits/hosts), or build it from resources and data sources.
+- Adopting a running server works for 25 Linux modules, the database steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them. None of the seven Linux steps new in v0.16.0 imports yet.
 - Jinja templates don't carry over. You rewrite them in `templatefile` syntax for a [template](/modules/template) step.
 - Ansible roles, `include_tasks` and `import_tasks` aren't converted by `conn3x convert ansible`. It marks them `TODO(convert)` and you add their tasks as steps.
 

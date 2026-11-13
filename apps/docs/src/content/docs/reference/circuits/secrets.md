@@ -96,6 +96,54 @@ circuit "db" {
 
 A secret written into the configuration, as a literal or a variable's `default`, is part of the configuration, so it ends up in saved plan files even with `content_wo`.
 
+## SOPS files
+
+Want your secrets in the repository, next to the circuits, the way Ansible Vault kept them? Encrypt them with [SOPS](https://getsops.io) and age, and read them with the `conn3x_secrets` ephemeral resource. New in v0.16.0.
+
+```hcl
+terraform {
+  required_providers {
+    conn3x = { source = "terraform.io/builtin/conn3x" }
+  }
+}
+
+ephemeral "conn3x_secrets" "app" {
+  file = "${path.module}/secrets.sops.yaml"
+}
+
+circuit "app" {
+  hosts = var.hosts
+  ssh {
+    user   = "deploy"
+    become = true
+  }
+
+  step "db_password" {
+    file {
+      path       = "/etc/app/db_password"
+      content_wo = ephemeral.conn3x_secrets.app.values["db_password"]
+      mode       = "0600"
+    }
+  }
+}
+```
+
+`values` is a map of the file's values: top-level keys as written, nested ones joined with dots, such as `db.password`, and list items by index, such as `hosts.0`. Because the resource is ephemeral, its values never reach state or a plan file, and OpenTofu stops you using one anywhere that would keep it. They go into write-only arguments such as `content_wo`, into ephemeral variables, and into the provider block's [`private_keys`](/reference/circuits/ssh#keys-from-a-secret-store).
+
+**Keys.** Conn3x finds your age key where sops does: `SOPS_AGE_KEY`, the file `SOPS_AGE_KEY_FILE` names, or `sops/age/keys.txt` in your config directory. In CI, put the key in the pipeline's secret store as `SOPS_AGE_KEY`. To share the file with a teammate, add their age public key to `.sops.yaml` and run `sops updatekeys`. That's sops's own workflow, and Conn3x doesn't change it.
+
+**Checking.** Conn3x checks the file's MAC as sops does, so a value edited without the key, or moved to another key, stops the plan.
+
+**What it doesn't read yet:** recipients other than age, such as cloud KMS or PGP, and files that choose what to encrypt by comment, with `encrypted_comment_regex`. Writing and re-keying files is sops's job.
+
+**From Ansible Vault.** `conn3x convert ansible` leaves each vaulted value as a TODO that says how to move it:
+
+```sh
+ansible-vault view group_vars/all/vault.yml \
+  | sops -e --input-type yaml --output-type yaml --age <recipient> /dev/stdin \
+  > secrets.sops.yaml
+```
+
 ## Connection secrets
 
-The `ssh` block has no argument for an inline private key or sudo password. `private_key_file` and `become_password_file` take paths, and only the paths are stored in state. See [The ssh block](/reference/circuits/ssh).
+The `ssh` block has no argument for an inline private key or sudo password. `private_key_file` and `become_password_file` take paths, and only the paths are stored in state. See [The ssh block](/reference/circuits/ssh). Since v0.16.0, keys can also come from a secret store through the provider block: see [Keys from a secret store](/reference/circuits/ssh#keys-from-a-secret-store).

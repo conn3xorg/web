@@ -57,7 +57,7 @@ circuit "NAME" {
   hosts        = EXPRESSION
   strategy     = "lockstep" | "per_host" # optional
   batch_size   = NUMBER | "PERCENT%"     # optional, with per_host
-  max_failures = NUMBER                  # optional, with batch_size
+  max_failures = NUMBER | "PERCENT%"     # optional, with batch_size
 
   ssh {
     ARGUMENT = EXPRESSION
@@ -86,7 +86,7 @@ A circuit block takes one label, the circuit's name, and these arguments and blo
 | `hosts` | Yes | The hosts to configure. A map of host names to addresses or host objects, or a set of addresses. See [Hosts](/reference/circuits/hosts). |
 | `strategy` | No | `"lockstep"`, the default: each step waits for the step before it on every host. `"per_host"`: each host runs its own chain of steps. Since v0.9.0. See [Per host](/reference/circuits/steps#per-host). |
 | `batch_size` | No | Apply the circuit to this many hosts at a time, such as `2`, or this percentage of the hosts that change, such as `"20%"`. Needs `strategy = "per_host"`, and has to be a constant. New in v0.15.0. See [Batches](/reference/cli/apply#batches). |
-| `max_failures` | No | With `batch_size`, how many hosts may fail before no more batches start. A constant whole number. Defaults to `0`: the first failure stops the rollout. New in v0.15.0. |
+| `max_failures` | No | With `batch_size`, how many hosts may fail before no more batches start: a number, such as `2`, or a percentage of the hosts that change, rounded down, such as `"20%"`. A constant. Defaults to `0`: the first failure stops the rollout. New in v0.15.0; percentages since v0.16.0. |
 | `ssh` | Yes | Exactly one block. How to log in to every host. See [The ssh block](/reference/circuits/ssh). |
 | `step` | No | Any number of blocks. Each holds one module and runs on every host, in the order written. See [Steps](/reference/circuits/steps). |
 | `handler` | No | Any number of blocks. Each restarts or reloads a service on the hosts where a step that notifies it changed something. See [Handlers](/reference/circuits/handlers). |
@@ -153,6 +153,7 @@ Because steps are resources, everything that works with resources works with the
 - [The ssh block](/reference/circuits/ssh): every connection setting, jump hosts, host keys and sudo.
 - [Steps](/reference/circuits/steps): ordering, dependencies, `for_each` and `lifecycle`.
 - [Handlers](/reference/circuits/handlers): `notify`, when handlers run, and the `revision` attribute.
+- [Rescues, always and prereq](/reference/circuits/rescues): what runs on a host after a step fails, after it runs at all, or before it changes.
 - [Removal](/reference/circuits/removal): what `on_remove` does for each module.
 - [Secrets](/reference/circuits/secrets): write-only content and ephemeral variables.
 - [Resource addresses](/reference/circuits/addresses): targeting steps and hosts, and using the state commands.

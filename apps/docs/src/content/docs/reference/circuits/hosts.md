@@ -115,6 +115,72 @@ circuit "app" {
 
 For a complete example with DigitalOcean droplets and host keys pinned at creation, see [Provision and configure](/guides/provision-and-configure).
 
+### From an Ansible inventory
+
+Already have an inventory? Keep it. `provider::conn3x::inventory` reads one group from an INI or YAML inventory and returns it as host objects, so you don't retype the list. New in v0.16.0.
+
+```ini
+# inventory.ini
+[web]
+web1 ansible_host=203.0.113.10
+web2 ansible_host=203.0.113.11 ansible_port=2222 role=canary
+
+[web:vars]
+role=app
+```
+
+```hcl
+terraform {
+  required_providers {
+    conn3x = { source = "terraform.io/builtin/conn3x" }
+  }
+}
+
+circuit "web" {
+  hosts = provider::conn3x::inventory("${path.module}/inventory.ini", "web")
+
+  ssh {
+    user = "deploy"
+  }
+
+  step "motd" {
+    file {
+      path    = "/etc/motd"
+      content = "This is ${each.key}, a ${each.value.vars.role} server.\n"
+    }
+  }
+}
+```
+
+Provider functions need their provider in `required_providers`, as in OpenTofu. Conn3x is built in, so that's the only setup.
+
+Each host comes back as a [host object](#host-object-fields), keyed by its inventory name:
+
+| Inventory | Host object |
+| --- | --- |
+| `ansible_host` | `address`. Without it, the address is the host's name. |
+| `ansible_port` | `port` |
+| `ansible_user` | `user` |
+| `ansible_ssh_private_key_file` | `private_key_file` |
+| Every variable, `ansible_*` ones included | `vars`, a map of strings |
+
+A host that doesn't set one of the first four leaves it to the circuit's `ssh` block. Above, `web2` gets `role = "canary"` and `web1` gets `app`.
+
+`vars` also takes in the `group_vars/` and `host_vars/` directories beside the inventory, and resolves everything the way Ansible does:
+
+1. The inventory file's group variables: `all`'s, then each group's from the outermost in.
+2. `group_vars/all`, then `group_vars/<group>`, from the outermost group in.
+3. The inventory file's host variables.
+4. `host_vars/<host>`.
+
+For each group or host, Conn3x reads a file called `web`, `web.yml`, `web.yaml` or `web.json`, or every such file in a `web/` directory, in name order. Only plain values come through: a list or a map is left out, since `vars` holds strings. So is a value encrypted with Ansible Vault. A whole file encrypted with Vault is an error.
+
+The group takes in its child groups' hosts, and `"all"` takes in every host. An unknown group is an error that lists the groups the file has. A relative path is relative to where you run Conn3x, which is why the example starts with `path.module`.
+
+Host ranges expand as in Ansible: `web[01:20]` is `web01` to `web20`, `db-[a:f]` is `db-a` to `db-f`, and `[1:9:2]` counts in twos.
+
+Not read yet: `group_vars/` beside the playbook rather than the inventory, and dynamic inventory scripts or plugins.
+
 ## Host object fields
 
 | Field | Type | Description |

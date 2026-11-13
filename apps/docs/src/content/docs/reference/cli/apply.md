@@ -157,7 +157,7 @@ Conn3x doesn't print a line for each host it has nothing to do on. To see where 
 | `-report=FILE` | Write a JSON report of the run to `FILE`. See [-report](#-report). Not with `-json`. |
 | `-limit=PATTERN` | Apply circuit steps only on the hosts that match, and leave every other host's steps as they are. Not with a plan file: give it to `plan` instead. See [plan's -limit](/reference/cli/plan#-limit). New in v0.15.0. |
 | `-batch-size=N` | For a circuit with `batch_size`, the batch size for this run: a number of hosts, or a percentage such as `20%`. See [Batches](#batches). New in v0.15.0. |
-| `-max-failures=N` | For a circuit with `batch_size`, how many hosts may fail for this run before no more batches start. See [Batches](#batches). New in v0.15.0. |
+| `-max-failures=N` | For a circuit with `batch_size`, how many hosts may fail for this run before no more batches start: a number, or a percentage such as `10%`. See [Batches](#batches). New in v0.15.0; percentages since v0.16.0. |
 
 Without a plan file, `apply` also takes the planning options from [plan](/reference/cli/plan#options): `-var`, `-var-file`, `-target`, `-exclude`, `-replace`, `-refresh=false`, `-refresh-only`, `-destroy` and `-limit`. With a plan file, those were fixed when the plan was made.
 
@@ -233,6 +233,7 @@ That's the [try-it-locally](/tutorials/try-locally) circuit's first apply, cut t
 
 - **Hosts** are keyed by their name in the circuit's `hosts`, with steps in the order they were planned. A step in a `for_each` loop has an `item`.
 - **`status`** is `ok`, `failed` or `skipped`. A skipped step has a `reason`, such as `an earlier step failed on this host`.
+- **`rescued`** is `true` on a host where a step failed and its [rescues](/reference/circuits/rescues) then ran without failing. The run still failed.
 - **`cloud`** lists every resource that isn't a host step, such as a server.
 - **No values.** A report holds addresses, actions, timings and errors, and never an attribute's value, since reports get copied to other systems. An error is kept as printed, so a command that printed a secret in its error would carry it, and the file is written readable by its owner only. Since v0.12.0 that holds for a report that was already there with a wider mode, and a link at the path is replaced, not followed.
 
@@ -260,9 +261,10 @@ circuit "web" {
 `conn3x apply` then:
 
 1. Plans everything, shows the plan and asks once, or goes ahead with `-auto-approve`.
-2. Cuts the hosts that have changes into batches, in name order, with `web2` before `web10`. A host with nothing to change isn't in any batch. A percentage is of the hosts that change, rounded up, and a batch always has at least one host.
-3. For each batch, plans again with [`-limit`](/reference/cli/plan#-limit) set to its hosts, and applies that plan. A batch's plan may only make changes the plan you approved had; anything else stops the run, since something changed in between.
-4. After a batch fails, plans its hosts again to see which still have changes left. Those count as failed. Once more hosts have failed than `max_failures`, no more batches start, and apply lists the hosts that failed and the ones it never reached.
+2. Applies any other changes in the plan first, in one go. See [Other changes](#other-changes).
+3. Cuts the hosts that have changes into batches, in name order, with `web2` before `web10`. A host with nothing to change isn't in any batch. A percentage is of the hosts that change, rounded up, and a batch always has at least one host.
+4. For each batch, plans again with [`-limit`](/reference/cli/plan#-limit) set to its hosts, and applies that plan. A batch's plan may only make changes the plan you approved had; anything else stops the run, since something changed in between.
+5. After a batch fails, plans its hosts again to see which still have changes left. Those count as failed. Once more hosts have failed than `max_failures`, no more batches start, and apply lists the hosts that failed and the ones it never reached.
 
 ```text
 $ conn3x apply
@@ -287,11 +289,39 @@ Error: 1 host failed, more than max_failures = 0, so no more batches start.
 
 When every batch runs but some hosts failed within `max_failures`, apply still exits 1 and names them. When none failed, it ends with `All 3 batches applied.` The next apply works as [When a step fails](#when-a-step-fails) describes: it batches only the hosts with something left to do.
 
-`-batch-size` and `-max-failures` override the circuit's values for one run:
+`max_failures` can be a percentage too, such as `"20%"`: of the hosts that change, rounded down, over the whole rollout. Ansible's `max_fail_percentage` counts within each batch instead. Apply's messages give both forms, such as `within max_failures = 20% (2 of 10 hosts)`. Percentages are new in v0.16.0.
+
+`-batch-size` and `-max-failures` override the circuit's values for one run, and apply to every batched circuit:
 
 ```sh
 conn3x apply -batch-size=1 -max-failures=2
+conn3x apply -max-failures=10%
 ```
+
+[`-limit`](/reference/cli/plan#-limit) narrows the hosts that get batched: `-limit='web*'` rolls out only the matching hosts. [`-report`](#-report) writes one report for the whole rollout, with every batch's hosts in it; a host from a batch that never started isn't in it, and the report's errors name those. Both are new in v0.16.0.
+
+### Several batched circuits
+
+Since v0.16.0, more than one circuit can have `batch_size`. They roll out one after the other, each in its own batches, in the order their steps depend on each other: if `web`'s steps depend on `db`'s, directly or through another resource, every batch of `db` runs first. Circuits that don't depend on each other go in the order they're written. Two circuits whose steps depend on each other can't be ordered, and apply stops before it asks.
+
+```text
+Circuit "db" changes 1 host, which roll out in 1 batch of up to 1. ...
+Circuit "web" changes 2 hosts, which roll out in 2 batches of up to 1. ...
+
+Each circuit rolls out after the one before it, in this order.
+...
+Circuit "db", batch 1 of 1: web1
+...
+Circuit "web", batch 1 of 2: web1
+```
+
+Each batch plans only its own circuit's steps, so two circuits can share a host. If a circuit ends with failed hosts, even within its `max_failures`, the circuits after it don't start, since they may depend on those hosts.
+
+### Other changes
+
+Since v0.16.0, a plan that changes more than the batched circuits' steps, such as the VMs they run on, still applies in batches. Before the first batch, apply plans those other changes alone, with `-target`, checks that plan against the one you approved, and applies it. If they fail, no batch starts.
+
+That works when the circuits need the other changes, and not the other way round. A resource that depends on a batched step, such as a DNS record that waits for the web servers, can't apply before the rollout, and the steps can't all apply at once. Apply names those steps and stops before anything changes. Apply such resources after the rollout, with `-target`.
 
 Each plan and apply in the rollout takes the state lock for itself, so the lock isn't held from the first batch to the last.
 
@@ -299,14 +329,16 @@ What a batched apply doesn't do yet:
 
 - A lockstep circuit, where every host waits for every other: `batch_size` needs `strategy = "per_host"`. `conn3x validate` says so.
 - A [`run_once`](/reference/circuits/steps#run_once) step in a batched circuit, since no one batch holds every host. Also an error at validate.
-- More than one batched circuit in the root module. Apply them one at a time with `-target`, or take `batch_size` off all but one.
-- Other changes in the same plan. If the plan also changes resources outside the batched circuit, apply lists them and stops. Apply those first, with `-target`.
-- A saved plan, `-destroy`, `-target`, `-exclude`, `-limit`, `-json`, `-json-into` or `-report`. Each is refused.
+- A saved plan, `-destroy`, `-target`, `-exclude`, `-json` or `-json-into`. Each is refused.
 - `-input=false` without `-auto-approve`, since nobody can answer the question.
 - The `remote` and `cloud` backends.
 - A circuit in a child module. Batching is read from the circuits in the root module.
 
 `-batch-size` or `-max-failures` without a circuit that has `batch_size` is an error.
+
+## Rescues
+
+A circuit's [rescues](/reference/circuits/rescues) run after the apply, on the hosts where a step or handler they watch failed, in a plan of their own. Apply still exits 1. Its [always blocks](/reference/circuits/rescues#always) run next, wherever a step they watch ran. Its [prereqs](/reference/circuits/rescues#prereq) run before the apply, where a step they're before is about to change. A configuration with rescues refuses `-target`, `-exclude`, `-json` and `-json-into`, as a batched one does. New in v0.16.0.
 
 ## Exit codes
 

@@ -131,8 +131,9 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 - **A `file` link that sets `owner`, `group` or `mode`.** A Conn3x [link](/modules/link) step doesn't manage those, so the converter won't quietly drop them.
 - **A `command` task with shell characters,** such as `;`, `|`, `$`, `*` or `>`. Ansible runs `command` without a shell and a [command](/modules/command) step runs through one, so since v0.12.0 the converter doesn't guess which you meant.
 - **Anything tagged `never`.** Ansible runs it only when you ask for one of its tags, and a step would run on every apply. That covers a task, a handler, an import, a role call or a whole play.
-- **A value encrypted with Ansible Vault.** The converter can't read it and won't write the ciphertext into a circuit, so a task that uses one stays. Pass the secret in through an [ephemeral variable](/reference/circuits/secrets) instead.
+- **A value encrypted with Ansible Vault.** The converter can't read it and won't write the ciphertext into a circuit, so a task that uses one stays. Since v0.16.0 its TODO says how to move the secret to a [SOPS file](/reference/circuits/secrets#sops-files), which `conn3x_secrets` reads without it ever reaching state. An [ephemeral variable](/reference/circuits/secrets#ephemeral-variables) works too.
 - **A `src` outside the playbook's or role's directory,** or one that's a link. The converter reads only the files that came with the playbook.
+- **A block that sets `when`, `become` or another keyword,** which would apply to every task inside it, and a block with `rescue` or `always` inside another block's. So does a rescue task that reads `ansible_failed_task` or `ansible_failed_result`, or that notifies a handler.
 - **Arguments it doesn't know.** Rather than drop an argument and change behaviour silently, it leaves the whole task.
 
 Since v0.12.0 the converter also tells you what it couldn't carry over from the play itself. Keywords such as `check_mode`, `connection`, `module_defaults`, `environment`, `run_once`, `vars_prompt` and `vars_files` are listed at the top of the circuit. And a `copy` or `template` task without `mode` gets a note, because the step sets `0644` where Ansible left an existing file's mode alone.
@@ -147,14 +148,26 @@ Some of what you set on a play, a task or the `ansible-playbook` command line ha
 
 | Ansible | Conn3x |
 | --- | --- |
-| `delegate_to: lb` on a task | [`on = "lb"`](/reference/circuits/steps#on) on the step. Each host keeps its own step, and it runs over `lb`'s connection. The converter writes it for you when `delegate_to` names a host; `localhost` and templated names stay for review, since steps can't run on the controller yet. |
+| `delegate_to: lb` on a task | [`on = "lb"`](/reference/circuits/steps#on) on the step. Each host keeps its own step, and it runs over `lb`'s connection. The converter writes it for you when `delegate_to` names a host. |
+| `delegate_to: localhost` on a task | [`on = "controller"`](/reference/circuits/steps#on-the-controller), on a `command` step. It runs on your machine, as you, without sudo. The converter writes it for `command` and `shell` tasks; other modules on the controller stay for review. Templated names stay for review too. |
+| `group_vars/` and `host_vars/` | Read with the inventory, by `-i` and by `inventory()`. Since v0.16.0, a `{{ var }}` every host in the play shares becomes its value in the step; one that differs by host stays for review. |
+| An inventory file | [`hosts = provider::conn3x::inventory("inventory.ini", "web")`](/reference/circuits/hosts#from-an-ansible-inventory), which reads a group's hosts, ports, users and variables from it. New in v0.16.0. |
 | `ansible-playbook --limit 'web*'` | [`conn3x plan -limit='web*'`](/reference/cli/plan#-limit), or the same on `apply` and `refresh`. The pattern syntax is Ansible's, without groups. |
 | `serial: 2` or `serial: "20%"` on a play | [`batch_size = 2`](/reference/cli/apply#batches) or `"20%"` on a circuit with `strategy = "per_host"`. The converter writes both. A list or templated `serial` goes to review. |
-| `max_fail_percentage` | [`max_failures`](/reference/cli/apply#batches), a number of hosts. There's no percentage of failures: pick the count you'd accept. The converter leaves a TODO comment where a play set it. |
+| `max_fail_percentage` | [`max_failures = "20%"`](/reference/cli/apply#batches). Ansible counts it in each batch, and Conn3x over every host that changes, rounded down. The converter writes it, with a comment saying so. |
+| `block` with `rescue` and `always` | The block's tasks become steps in its place, the `rescue` tasks become [`rescue`](/reference/circuits/rescues) blocks and the `always` tasks [`always`](/reference/circuits/rescues#always) blocks, each watching the block's steps. A block nested inside another flattens into it. The converter writes these since v0.16.0. |
 
 ## Convert a role
 
 Since v0.9.0 there's `-role`. Point it at a role's directory, and `-out` at a new one, and you get a circuit laid out like the ones in [the catalogue](/circuits), ready to call as a module.
+
+Since v0.16.0, `-role` also takes a role straight from Galaxy, so there's no `ansible-galaxy install` first:
+
+```sh
+conn3x convert ansible -role geerlingguy.nginx,3.3.1 -out circuit-nginx
+```
+
+Leave off the version to get the newest one Galaxy lists. Conn3x downloads the role from GitHub, as `ansible-galaxy` does, converts it from a temporary directory, and adds a "Source" section to the circuit's README naming the role, the version and the repository. A directory with the same name on disk is used instead. Collections aren't downloaded; their roles come with the collection.
 
 ```sh
 conn3x convert ansible -role roles/app -out circuit-app
