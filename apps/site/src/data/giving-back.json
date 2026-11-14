@@ -2,6 +2,48 @@
   "otherMinutes": 83,
   "items": [
     {
+      "date": "2026-11-14",
+      "repo": "tailscale/tailscale",
+      "summary": "A loong64 fix makes a raw statx call so a file-descriptor count stops allocating. We suggested keeping it to loong64, so the other platforms keep the plain fstat and don't pick up unsafe.",
+      "url": "https://github.com/tailscale/tailscale/pull/22386#issuecomment-6874441837",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-14",
+      "repo": "keycloak/keycloak",
+      "summary": "A fix turns an import crash on incomplete old-format credentials into an error. We asked for the missing field to be named, and confirmed that refusing a null algorithm is right, since on main that fails at the first login instead.",
+      "url": "https://github.com/keycloak/keycloak/pull/55181#issuecomment-6874427841",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-14",
+      "repo": "BerriAI/litellm",
+      "summary": "A fix returns a 400 for streaming across comma-separated models. We showed it would also refuse string \"true\" requests, which the proxy treats as non-streaming and which work today.",
+      "url": "https://github.com/BerriAI/litellm/pull/51782#issuecomment-6874421767",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-14",
+      "repo": "prometheus/prometheus",
+      "summary": "A UI fix ignores invalid timestamps in query URLs. We found a second parseTime with the same NaN problem, which slips past the \"never\" check in the duration formatter.",
+      "url": "https://github.com/prometheus/prometheus/pull/20447#pullrequestreview-5903080012",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-14",
+      "repo": "prometheus/prometheus",
+      "summary": "A docs fix adds the remote read chunked_read_limit. We checked the default and the error text, and noted that it covers only streamed responses, while sampled ones are read without a limit.",
+      "url": "https://github.com/prometheus/prometheus/pull/20445#pullrequestreview-5903074997",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-14",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "An equality fix for anonymizer results. We confirmed it, and pointed out that comparing a result with anything that isn't one raises instead of returning False.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2489#pullrequestreview-5903067000",
+      "minutes": 1
+    },
+    {
       "date": "2026-11-13",
       "repo": "tailscale/tailscale",
       "summary": "A fix stops a second tailscaled from stripping a running daemon's tun addresses. We found that the netfilter cleanup just before it still removes the running daemon's firewall chains, and suggested moving the check above it.",
