@@ -13,6 +13,7 @@ This command is Conn3x only.
 conn3x run -i <INVENTORY> [options] <PATTERN> -a <COMMAND>
 conn3x run -i <INVENTORY> [options] <PATTERN> -m <MODULE> -a <NAME=VALUE ...>
 conn3x run -i <INVENTORY> [options] <PATTERN> -task <FILE> [-a <NAME=VALUE ...>]
+conn3x run -i <INVENTORY> [options] <PATTERN> -plan <FILE> [-a <NAME=VALUE ...>]
 ```
 
 ## Examples
@@ -139,6 +140,51 @@ A step's arguments are expressions that can read `param.NAME`, `host.name` (the 
 
 `-check` runs every step in check mode. With `-json`, each host's object has `host`, `status`, and `steps`, a list with each step's `step`, `status`, `error`, `stdout` and `stderr`.
 
+## Plans
+
+A release is rarely one task on one set of hosts. Migrate the database on one host, then deploy to the web servers: that's a plan. `-plan` runs a plan file's runs in order, each a task on its own hosts, the job a Bolt plan does.
+
+```hcl title="release.plan.hcl"
+plan "release" {
+  param "version" {}
+
+  run "migrate" {
+    task   = "tasks/migrate.task.hcl"
+    hosts  = "db[0]"
+    params = { version = param.version }
+  }
+
+  run "deploy" {
+    task   = "tasks/deploy.task.hcl"
+    hosts  = "web"
+    params = { version = param.version }
+  }
+}
+```
+
+```sh
+conn3x run -i hosts.ini all -plan release.plan.hcl -a 'version=1.4.2' -become
+```
+
+```text
+== migrate: task migrate, 1 host(s)
+db1 | changed
+  schema: changed
+== deploy: task deploy, 2 host(s)
+web1 | changed
+  pkg: changed
+web2 | changed
+  pkg: changed
+```
+
+Each `run` takes three arguments:
+
+- `task`, the task file, relative to the plan file.
+- `hosts`, a host pattern as `run` takes one. It can use `param.*`.
+- `params`, an object of the task's params. It can be left out when the task's params all have defaults.
+
+Before anything runs, Conn3x works out every run's hosts and params, so a typo in the last run stops the plan before the first one touches a host. If any host fails in a run, the plan stops there, the runs after it say `skipped`, and the exit code is 2. The command's own PATTERN narrows every run: `web` runs just the runs' web hosts, and `all` leaves each run's pattern as written. With `-json`, every host's object carries its `run`, and a skipped run prints `{"run": "deploy", "status": "skipped"}`.
+
 ## Options
 
 | Option | Description |
@@ -146,7 +192,8 @@ A step's arguments are expressions that can read `param.NAME`, `host.name` (the 
 | `-i`, `-inventory` | The inventory file. Required. |
 | `-m` | The module to run. Without it, `-a` is a command. |
 | `-task` | A task file to run, instead of `-m`. |
-| `-a` | The command, the module's arguments, or the task's params. |
+| `-plan` | A plan file to run, instead of `-m` or `-task`. |
+| `-a` | The command, the module's arguments, or the task's or plan's params. |
 | `-become` | Run as root through `sudo`, as `become` in a circuit's ssh block. |
 | `-check` | Say what would change, and change nothing. A command reports `would change`. |
 | `-user` | The user to log in as, where the inventory doesn't set `ansible_user`. |
@@ -168,4 +215,4 @@ Each host is checked against known_hosts, as a plan checks it: an unknown host k
 
 ## Not yet
 
-Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. There's no file transfer yet, such as Ansible's `-m copy src=`. In a task, network-device modules aren't there yet. Chaining tasks into a plan comes later.
+Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. There's no file transfer yet, such as Ansible's `-m copy src=`. In a task, network-device modules aren't there yet.
