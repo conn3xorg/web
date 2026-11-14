@@ -243,6 +243,34 @@ circuit "db" {
 }
 ```
 
+## Tunnels to what only the host reaches
+
+New in v0.18.0. A circuit installs PostgreSQL on a private host, and then the `postgresql` provider has to create its databases, but it can't reach the private address. `ephemeral "conn3x_ssh_tunnel"` opens a port on the machine Conn3x runs on, for the length of the run, and forwards it over SSH to an address the host can reach, the way `ssh -L` does:
+
+```hcl
+ephemeral "conn3x_ssh_tunnel" "db" {
+  remote = "127.0.0.1:5432"
+
+  ssh {
+    host = "10.0.1.5"
+    user = "ops"
+  }
+}
+
+provider "postgresql" {
+  host = ephemeral.conn3x_ssh_tunnel.db.local_host
+  port = ephemeral.conn3x_ssh_tunnel.db.local_port
+}
+```
+
+- `remote` is what to reach, as the host sees it: `127.0.0.1:5432` for a database on its loopback, or `10.0.2.7:6379` for a cache beside it.
+- The `ssh` block is the same as anywhere else, so jump hosts, host keys and keys all work as they do for steps.
+- `local_host` is always `127.0.0.1`, and `local_port` is a free port, chosen each run, so nothing else on the machine has to give one up.
+- It's ephemeral: none of it lands in state or in a saved plan, and the tunnel closes when the run is done with it.
+- As with `ssh -L`, any user on the machine can connect to the port while the run lasts, and reach `remote` as the SSH user. On a shared CI runner, keep that in mind.
+
+A provider that uses it opens the tunnel at plan and again at apply, so the host has to answer at both. If the same configuration creates the host, apply that first, with `-target`, or from a configuration of its own.
+
 ## Connecting and retries
 
 When a host doesn't answer, because it refuses or resets the connection, is unreachable, or times out, Conn3x keeps trying until `timeout` has passed. This covers servers that are still booting. Each attempt waits up to 15 seconds. A host key that doesn't match and a login that the server rejects fail at once, without retrying. So does a name that DNS says doesn't exist, for the target or a jump host, so a typo costs you seconds rather than the whole `timeout`. A DNS lookup that times out is still retried.

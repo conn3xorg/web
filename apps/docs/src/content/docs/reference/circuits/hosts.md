@@ -234,6 +234,44 @@ Inside a step's module block, `each.key` is the host's name and `each.value` is 
 
 The same holds in a step with its own `for_each`. There, `item.key` and `item.value` are the item, and `each` is still the host. See [Steps](/reference/circuits/steps#for_each).
 
+## Layered host data
+
+New in v0.18.0. Set a value once for every host, then override it for an environment, a group or one host, the way Puppet's Hiera does. The layers are YAML files in a directory, and a `hierarchy.yaml` there lists them, highest priority first:
+
+```yaml
+hierarchy:
+  - hosts/{host}.yaml
+  - groups/{group}.yaml
+  - env/{env}.yaml
+  - common.yaml
+```
+
+`provider::conn3x::hostdata` reads them for one host:
+
+```hcl
+step "ntp" {
+  file {
+    path    = "/etc/chrony.d/servers.conf"
+    content = join("\n", [
+      for s in provider::conn3x::hostdata("${path.module}/data", {
+        host  = each.key
+        group = ["web", "eu"]
+        env   = var.env
+      }).values.ntp_servers : "server ${s} iburst"
+    ])
+  }
+}
+```
+
+- Each top-level key comes from the first layer that sets it. So `ntp_servers` in `groups/eu.yaml` beats the one in `common.yaml`, and `hosts/web1.yaml` beats both.
+- A placeholder given a list, such as `group` above, makes one layer per item, in the order you give them.
+- `values` keeps the YAML types, numbers and lists included. `from` maps each key to the file it came from. Put it in an output when you need to see why a host got a value.
+- A layer whose file doesn't exist is skipped. A placeholder that `vars` doesn't set is an error, so a typo can't quietly skip a layer.
+- Write the hierarchy as a block list, or quote each path: in a `[ ]` list, YAML reads `{host}` as a mapping.
+- Keep secrets out of it. A SOPS-encrypted layer is refused; read those with [`ephemeral "conn3x_secrets"`](/reference/circuits/secrets#sops-files), so they stay out of state.
+
+Provider functions need `conn3x` in `required_providers`, as for the [inventory function](#from-an-ansible-inventory).
+
 ## Instance keys
 
 Every resource a circuit creates has one instance per host, keyed by the host's key in `hosts`:

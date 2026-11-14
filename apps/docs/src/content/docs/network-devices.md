@@ -1,13 +1,13 @@
 ---
 title: Network devices
-description: "How Conn3x configures switches over their own CLI: Arista EOS since v0.9.0, Juniper Junos since v0.17.0, both experimental."
+description: "How Conn3x configures switches and routers over their own CLI: Arista EOS since v0.9.0, Juniper Junos since v0.17.0 and VyOS since v0.18.0, all experimental."
 ---
 
 :::note
-The `eos_*` modules are in Conn3x since v0.9.0, and all of them are experimental. `eos_interface`, `eos_user` and one commit per switch are new in v0.10.0. The `junos_*` modules are new in v0.17.0, and experimental too. Earlier releases don't know the modules they lack, so a circuit that uses one fails `conn3x validate`.
+The `eos_*` modules are in Conn3x since v0.9.0, and all of them are experimental. `eos_interface`, `eos_user` and one commit per switch are new in v0.10.0. The `junos_*` modules are new in v0.17.0, and the `vyos_*` modules in v0.18.0, experimental too. Earlier releases don't know the modules they lack, so a circuit that uses one fails `conn3x validate`.
 :::
 
-A switch is a host like any other in a circuit. You list it in `hosts`, reach it through the circuit's `ssh` block, and the step's module decides how Conn3x talks to it. A `package` step runs shell commands. An `eos_*` or `junos_*` step types into the switch's own CLI. There's no shell, no `sudo` and no agent on the switch, and nothing to install there.
+A switch is a host like any other in a circuit. You list it in `hosts`, reach it through the circuit's `ssh` block, and the step's module decides how Conn3x talks to it. A `package` step runs shell commands. An `eos_*`, `junos_*` or `vyos_*` step types into the device's own CLI. There's no shell, no `sudo` and no agent on the switch, and nothing to install there.
 
 ```hcl
 circuit "leafs" {
@@ -41,11 +41,11 @@ circuit "leafs" {
 }
 ```
 
-Keep switches in their own circuit. An `ssh` block that suits a Linux server, with `become` for example, is refused on an `eos_*` or `junos_*` step, and `confirm_after` (below) is refused on everything else.
+Keep switches in their own circuit. An `ssh` block that suits a Linux server, with `become` for example, is refused on an `eos_*`, `junos_*` or `vyos_*` step, and `confirm_after` (below) is refused on everything else.
 
 ## What works today
 
-Arista EOS, and since v0.17.0 Juniper Junos, which has [its own section](#juniper-junos) below. For EOS:
+Arista EOS, since v0.17.0 Juniper Junos, and since v0.18.0 VyOS; [Junos](#juniper-junos) and [VyOS](#vyos) have their own sections below. For EOS:
 
 | Module | What it owns |
 | --- | --- |
@@ -186,9 +186,56 @@ The plan shows `conn3x_junos_commit.<circuit>__commit` and `conn3x_junos_removal
 - `junos_user` won't demote or delete the account Conn3x logs in as.
 - `junos_config` takes nothing but `set` statements, so no line can leave configuration mode, commit early or run another command.
 
+## VyOS
+
+New in v0.18.0, and experimental. VyOS is a common router in homelabs and small sites, and Conn3x talks to it over SSH with nothing to install, through VyOS's own scripting.
+
+| Module | What it owns |
+| --- | --- |
+| [`vyos_config`](/modules/vyos_config) | Set statements, written the way `show configuration commands` prints them, with quotes compared loosely: `'uplink'`, `"uplink"` and `uplink` are the same value. Other statements are left alone, or with `match = "block"` the statements under a `prefix` must be exactly these. |
+| [`vyos_hostname`](/modules/vyos_hostname) | The router's host name. |
+| [`vyos_interface`](/modules/vyos_interface) | One interface's description, its whole list of addresses, enabled or disabled, and its MTU. |
+
+A `conn3x_vyos_device` data source reads the host name and VyOS version, for preconditions.
+
+It's tested against VyOS 2026.11.13-0016-rolling in a container on a lab VM, not yet in CI and not on hardware.
+
+### The login
+
+Log in as a user in the `vyattacfg` group, such as VyOS's own `vyos` user, with a key. `become` and `agent` are refused.
+
+### How a change goes in
+
+VyOS has Junos's trap: a script typed into its configuration mode carries on past a refused line, and a later `commit` still commits everything else. So Conn3x reads every answer, and sends each change twice.
+
+1. **A dry run:** the lines, `compare`, then `exit discard`. If the router answers `Set failed` or `is not valid`, Conn3x stops with its words, and nothing has changed.
+2. **The commit**, with `commit-confirm 5`. VyOS asks "Proceed ? [Y/n]" first, and Conn3x answers it. Left unanswered in a script, it waits forever.
+3. **The confirm.** After `confirm_after`, Conn3x logs in again over a new connection, runs `confirm` and saves. A change that locks Conn3x out never gets confirmed, so VyOS rolls it back by itself within five minutes. VyOS keeps nothing across a reboot that isn't saved, which is why the save comes last.
+
+While a commit-confirm waits for its confirm, VyOS runs a timer for it, and Conn3x asks about that timer. A refresh then counts the router's steps as out of sync, and an apply stops before it sends anything.
+
+### Reload, not reboot
+
+VyOS's default way to undo an unconfirmed commit is to **reboot** the router. That gets rid of a change that locked you out, but it takes everything behind the router down with it. Have it reload the previous configuration instead:
+
+```
+set system config-management commit-confirm action reload
+```
+
+Until the router says `reload`, every refresh of a `vyos_*` step warns.
+
+### One commit per router
+
+As with Junos and EOS, a router's steps in a circuit share one commit per apply, through `conn3x_vyos_commit.<circuit>__commit` and `conn3x_vyos_removals.<circuit>__removals`. On the lab router, three steps and their destroy each made exactly one commit.
+
+### Guards
+
+- `vyos_interface` won't take off the address Conn3x connects to, or disable the interface that holds it.
+- `vyos_config` takes nothing but `set` statements.
+
 ## What's coming
 
-- More EOS and Junos modules, and lines kept out of state for secrets in `eos_config` and `junos_config`.
-- VyOS and classic Cisco IOS after that. See the [roadmap](/roadmap).
+- More EOS, Junos and VyOS modules, and lines kept out of state for secrets in their `_config` steps.
+- Classic Cisco IOS after that. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).

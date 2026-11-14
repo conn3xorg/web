@@ -82,3 +82,22 @@ Replace the placeholder with the real content, or a reference to it, before you 
 | --- | --- |
 | 0 | It printed a step. |
 | 1 | An error, including a host that doesn't have the object: `203.0.113.10 doesn't have file /etc/not-here`. |
+
+## Many steps at once: generate steps
+
+New in v0.18.0. Adopting a long-lived server means a step for every package, service and user you care about. `generate steps` lists what a host has, and with `-match` prints a step for each object that matches, read exactly as `generate step` reads one:
+
+```sh
+conn3x generate steps -host 203.0.113.10 -user root packages
+conn3x generate steps -host 203.0.113.10 -user root -match 'nginx*,postgresql-16' packages >> adopt.circuit.hcl
+conn3x generate steps -host 203.0.113.10 -user root -match 'alice,bob' users >> adopt.circuit.hcl
+```
+
+| Kind | What it lists | Step |
+| --- | --- | --- |
+| `packages` | Every installed package. | `package` |
+| `services` | Every systemd service unit. | `service` |
+| `users` | Accounts with a UID from 1000: the ones people made, not the system's. | `user` |
+| `mounts` | The mount points `/etc/fstab` lists, swap left out. | `mount` |
+
+Without `-match` it prints one name per line, so you can pick from the list or pipe it through `grep`. `-match` takes globs separated by commas. Every step has `import = true` and a name of its own, so pasting them into a circuit and planning shows them as imports with nothing to change. An object that can't be read is reported on stderr, and the rest still print. It exits `1` when anything failed, or when `-match` matched nothing.

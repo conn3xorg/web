@@ -33,7 +33,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | Spotting hand edits | `tofu plan` for the cloud, `--check --diff` for the servers | `conn3x drift`, which exits `2` when either has moved |
 | Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
-| Network devices | Ansible collections for many vendors' gear | [Arista EOS and Juniper Junos](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
+| Network devices | Ansible collections for many vendors' gear | [Arista EOS, Juniper Junos and VyOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [127 official circuits](/circuits) |
 | Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.10.0 |
 
@@ -437,7 +437,7 @@ None of that has to be all or nothing. Because Conn3x runs your existing configu
 ## What Conn3x can't do yet
 
 - Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
-- Network devices means Arista EOS and Juniper Junos for now: ten experimental modules over the switch's own CLI, five for each, tested on cEOS-lab and vJunos-switch and not yet on hardware. VyOS and classic Cisco IOS are next.
+- Network devices means Arista EOS, Juniper Junos and VyOS for now: thirteen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch and a VyOS container, and not yet on hardware. Classic Cisco IOS is next.
 - macOS hosts are planned, not shipped.
 - There's no web UI. There are no dynamic inventory plugins either. `hosts` is an expression: read a static INI or YAML inventory with [`provider::conn3x::inventory`](/reference/circuits/hosts), or build it from resources and data sources.
 - Adopting a running server works for 25 Linux modules, the database steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them. None of the seven Linux steps new in v0.16.0 imports yet.
