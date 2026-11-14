@@ -55,6 +55,7 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 
 | Module | Default | What `"delete"` does |
 | --- | --- | --- |
+| [`acl`](/modules/acl) | `"forget"` | Takes a user or group entry out. A path always keeps its mask and other entries. |
 | [`authorized_key`](/modules/authorized_key) | `"delete"` | Removes the key from the user's authorized keys. |
 | [`block`](/modules/block) | `"forget"` | Takes the managed block back out of the file. |
 | [`cron`](/modules/cron) | `"delete"` | Removes the cron job. |
@@ -64,12 +65,14 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 | [`firewalld`](/modules/firewalld) | `"delete"` | Removes the rule, closing the port again. |
 | [`group`](/modules/group) | `"forget"` | Removes the group. |
 | [`ini`](/modules/ini) | `"forget"` | Removes the option. It doesn't bring back a value the step replaced. |
+| [`json_value`](/modules/json_value) | `"forget"` | Takes the key out of the file. The object it was in stays. |
 | [`known_hosts`](/modules/known_hosts) | `"delete"` | Removes that key, so a key you retire stops being trusted. |
 | [`limit`](/modules/limit) | `"forget"` | Removes the limit. |
 | [`line`](/modules/line) | `"forget"` | Takes the line edit back out of the file. |
 | [`link`](/modules/link) | `"forget"` | Removes the symbolic link. |
 | [`mount`](/modules/mount) | `"forget"` | Unmounts the file system and removes its fstab entry. |
 | [`package`](/modules/package) | `"forget"` | Uninstalls the package. |
+| [`package_hold`](/modules/package_hold) | `"forget"` | Releases the hold, so the package updates again. |
 | [`pip`](/modules/pip) | `"forget"` | Uninstalls the package. The venv stays. |
 | [`replace`](/modules/replace) | `"forget"` | Not allowed: the old text is gone, so the file stays as it is. |
 | [`repository`](/modules/repository) | `"forget"` | Removes the repository's files. |
@@ -80,6 +83,7 @@ Most modules default to `"forget"`, so deleting a line of configuration can't ta
 | [`timer`](/modules/timer) | `"delete"` | Stops the timer and removes its units. |
 | [`ufw`](/modules/ufw) | `"delete"` | Removes the rule, closing the port again. |
 | [`user`](/modules/user) | `"forget"` | Removes the account and keeps its home directory. |
+| [`xml_value`](/modules/xml_value) | `"forget"` | Takes the attribute, or the element, out of the file. |
 | [`windows_file`](/modules/windows_file) | `"forget"` | Deletes the file, or a link standing in its place, but never what a link points to. |
 | [`windows_firewall_rule`](/modules/windows_firewall_rule) | `"delete"` | Deletes the rule. |
 | [`windows_group`](/modules/windows_group) | `"forget"` | Deletes the group. |

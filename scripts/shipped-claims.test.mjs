@@ -164,6 +164,18 @@ const SHIPPED = [
       /Conn3x v0\.17\.0 \[installed\]/i,
     ],
   },
+  {
+    feature: "all 25 Windows modules out of experimental, uri, json_value, xml_value, acl, package_hold, plans (v0.19.0)",
+    stale: [
+      /22 of (?:the|its) 25/i,
+      /3 still experimental/i,
+      /the other 10 `windows_\*` modules/i,
+      /the release after v0\.18\.0/i,
+      /This guide uses Conn3x v0\.18\.0/i,
+      /Replace `0\.18\.0` with the version/i,
+      /\b50 Linux modules/i,
+    ],
+  }
 ];
 
 function files(dir) {
