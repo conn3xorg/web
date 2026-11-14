@@ -152,6 +152,16 @@ const SHIPPED = [
       /Replace `0\.16\.0` with the version/i,
     ],
   },
+  {
+    feature: "VyOS modules, conn3x_ssh_tunnel, hostdata, conn3x_file/conn3x_command, generate steps, run -task (v0.18.0)",
+    stale: [
+      /naming a set of steps as a task/i,
+      /-m service -a 'name=nginx action=restart'/i,
+      /This guide uses Conn3x v0\.17\.0/i,
+      /Replace `0\.17\.0` with the version/i,
+      /Conn3x v0\.17\.0 \[installed\]/i,
+    ],
+  },
 ];
 
 function files(dir) {
