@@ -63,6 +63,12 @@ Also new in v0.14.0: an `authorized_key` task with `exclusive: true` becomes an 
 
 New in v0.17.0, `ansible.posix.synchronize` pushing a directory becomes a [directory_copy](/modules/directory_copy) step, and `delete: yes` carries over. rsync's trailing slash still decides where it lands: `src: site/` copies what's in `site` into `dest`, and `src: site` puts `site` itself under `dest`. Every file gets one mode and one owner, where rsync kept each file's own, so a note asks you to set them. Pull mode, `rsync_opts`, include and exclude rules, `dirs` and `copy_links` stay for review.
 
+Since the release after v0.19.0, three more kinds of task convert:
+
+- **Waiting for an app.** A `uri` task that retries until it gets a status, such as `until: health.status == 200` with `retries: 30` and `delay: 2`, becomes a [wait_for](/modules/wait_for) step with `url` and a `timeout` of 60s. The registered result isn't kept, and any other `uri` task stays for review.
+- **ACL entries.** `ansible.posix.acl` becomes an [acl](/modules/acl) step for its one entry. Ansible's `state` defaults to `query`, which reads and changes nothing, so a task without `state: present` or `absent` stays for review. So do `recursive` and the `X` permission.
+- **Package holds.** `dpkg_selections` with `hold` or `install`, and `community.general.yum_versionlock`, become [package_hold](/modules/package_hold) steps. A versionlock name with a version or a wildcard, such as `httpd-0:2.4.57-2.el9`, stays for review: a hold keeps whatever version is installed.
+
 A `cron` task still becomes a [cron](/modules/cron) step, which keeps the job in `/etc/cron.d`. If you'd rather the jobs stay in the user's own crontab, the one `crontab -e` edits, move them into one [crontab](/modules/crontab) step for that user, new in v0.14.0. It owns the whole file, so list every job the user should keep.
 
 New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/file#from-ansible) step, minus any quotes around `%s`. Ansible runs `validate` without a shell, and Conn3x runs it through `sh`, so one with a pipe, a redirect, `$`, a glob or a second line stays for review.
