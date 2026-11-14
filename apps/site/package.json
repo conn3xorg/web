@@ -10,7 +10,7 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "astro": "7.4.5",
+    "astro": "7.4.7",
     "@astrojs/sitemap": "3.7.4",
     "@astrojs/rss": "4.0.19"
   },
