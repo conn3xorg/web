@@ -272,7 +272,7 @@ step "ntp" {
 
 ### Encrypted layers
 
-Since the release after v0.18.0, `ephemeral "conn3x_hostdata"` reads the same hierarchy with the same rule, first layer wins, and decrypts the layers that are encrypted with SOPS and age, such as a `common.sops.yaml` holding each environment's database password. It's ephemeral, so its values never reach plan or state. Use them in write-only arguments, such as `content_wo` and `password_wo`.
+Since v0.19.0, `ephemeral "conn3x_hostdata"` reads the same hierarchy with the same rule, first layer wins, and decrypts the layers that are encrypted with SOPS and age, such as a `common.sops.yaml` holding each environment's database password. It's ephemeral, so its values never reach plan or state. Use them in write-only arguments, such as `content_wo` and `password_wo`.
 
 ```hcl
 ephemeral "conn3x_hostdata" "web1" {

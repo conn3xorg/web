@@ -134,7 +134,7 @@ A host is `changed` when any of its steps changed, and `failed` when one failed.
 A file holds one `task` block. Inside it:
 
 - `param "NAME"` declares a param. One without a `default` is required. `-a` gives them as `NAME=VALUE`, and naming a param the task doesn't declare is an error.
-- `step "NAME"` holds exactly one module block, the same blocks a circuit's steps use, with the same `ok` and `changed` as `-m`. Step names are unique. Since the release after v0.18.0, a module's nested blocks work too, such as a `crontab` step's `job` blocks. The `ssh` block is the one exception: it comes from the inventory and the flags.
+- `step "NAME"` holds exactly one module block, the same blocks a circuit's steps use, with the same `ok` and `changed` as `-m`. Step names are unique. Since v0.19.0, a module's nested blocks work too, such as a `crontab` step's `job` blocks. The `ssh` block is the one exception: it comes from the inventory and the flags.
 
 A step's arguments are expressions that can read `param.NAME`, `host.name` (the inventory name), and `host.vars`, the inventory's variables for the host. Vault-encrypted values are left out of `host.vars`. The functions `upper`, `lower`, `join` and `format` are there too.
 
@@ -185,7 +185,7 @@ Each `run` takes three arguments:
 
 Before anything runs, Conn3x works out every run's hosts and params, so a typo in the last run stops the plan before the first one touches a host. If any host fails in a run, the plan stops there, the runs after it say `skipped`, and the exit code is 2. The command's own PATTERN narrows every run: `web` runs just the runs' web hosts, and `all` leaves each run's pattern as written. With `-json`, every host's object carries its `run`, and a skipped run prints `{"run": "deploy", "status": "skipped"}`.
 
-A run's params can read what the runs before it did, as `run.NAME.HOST.STEP.stdout`, with `stderr` and `status` beside it, so a deploy can take the schema version a migration printed. `trimspace` takes a command's newline off. Params that read `run` are checked for their names before anything runs and evaluated just before their run. `hosts` has to be known from the start, so it can't read `run`. Since the release after v0.18.0.
+A run's params can read what the runs before it did, as `run.NAME.HOST.STEP.stdout`, with `stderr` and `status` beside it, so a deploy can take the schema version a migration printed. `trimspace` takes a command's newline off. Params that read `run` are checked for their names before anything runs and evaluated just before their run. `hosts` has to be known from the start, so it can't read `run`. Since v0.19.0.
 
 ```hcl
 run "deploy" {
@@ -211,7 +211,7 @@ run "deploy" {
 | `-private-key-file` | The key to log in with, where the inventory doesn't set one. Defaults to the SSH agent. |
 | `-known-hosts-file` | The known_hosts file to check hosts against. Defaults to `~/.ssh/known_hosts`. |
 | `-forks` | How many hosts to run on at once. Defaults to 10. |
-| `-batch-size` | Run on this many hosts at a time, or a percentage such as `20%`, rounded up, starting the next batch once a batch is done. Since the release after v0.18.0. |
+| `-batch-size` | Run on this many hosts at a time, or a percentage such as `20%`, rounded up, starting the next batch once a batch is done. Since v0.19.0. |
 | `-max-failures` | With `-batch-size`, how many hosts may fail before no more batches start. Defaults to 0. The hosts never reached say `skipped`, and the exit code is 2. |
 | `-json` | Print one JSON object per host, with `host`, `status`, `error`, `stdout` and `stderr`, for scripts. |
 
