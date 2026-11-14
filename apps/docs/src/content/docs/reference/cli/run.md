@@ -133,7 +133,7 @@ A host is `changed` when any of its steps changed, and `failed` when one failed.
 A file holds one `task` block. Inside it:
 
 - `param "NAME"` declares a param. One without a `default` is required. `-a` gives them as `NAME=VALUE`, and naming a param the task doesn't declare is an error.
-- `step "NAME"` holds exactly one module block, the same blocks a circuit's steps use, with the same `ok` and `changed` as `-m`. Step names are unique.
+- `step "NAME"` holds exactly one module block, the same blocks a circuit's steps use, with the same `ok` and `changed` as `-m`. Step names are unique. Since the release after v0.18.0, a module's nested blocks work too, such as a `crontab` step's `job` blocks. The `ssh` block is the one exception: it comes from the inventory and the flags.
 
 A step's arguments are expressions that can read `param.NAME`, `host.name` (the inventory name), and `host.vars`, the inventory's variables for the host. Vault-encrypted values are left out of `host.vars`. The functions `upper`, `lower`, `join` and `format` are there too.
 
@@ -168,4 +168,4 @@ Each host is checked against known_hosts, as a plan checks it: an unknown host k
 
 ## Not yet
 
-Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. There's no file transfer yet, such as Ansible's `-m copy src=`. In a task, a step's module takes arguments only, not nested blocks, and network-device modules aren't there yet. Chaining tasks into a plan comes later.
+Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. There's no file transfer yet, such as Ansible's `-m copy src=`. In a task, network-device modules aren't there yet. Chaining tasks into a plan comes later.
