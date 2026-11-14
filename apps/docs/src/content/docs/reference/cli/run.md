@@ -227,4 +227,6 @@ Each host is checked against known_hosts, as a plan checks it: an unknown host k
 
 ## Not yet
 
-Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. In a task, network-device modules aren't there yet.
+Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here: their lines wait in a config session for a circuit's commit, and `conn3x run` has no circuit.
+
+Junos and VyOS steps do run, with `-m` or in a task. Each step commits on its own, with the same confirm wait a circuit's commit has, so a task with five router steps commits five times. If you want them in one commit, put them in a circuit.
