@@ -77,7 +77,7 @@ A group's own hosts come before its children's. A name in brackets that isn't a 
 
 Without `-m`, `-a` is a command, run through the host's shell, and its output is printed under the host's line. A command always runs, so it always reports `changed`, or `failed` when it exits nonzero.
 
-With `-m`, it's any module a step can use, such as `service`, `package`, `file` or `windows_service`. `-a` holds its arguments as `NAME=VALUE`, split as a shell would split them, so quote a value with spaces. Values are read as in [`conn3x generate step`](/reference/cli/generate-step): as written for a string argument, and as HCL otherwise, such as `uid=1000` or `groups=["ops"]`.
+With `-m`, it's any module a step can use, such as `service`, `package`, `file` or `windows_service`. `-a` holds its arguments as `NAME=VALUE`, split as a shell would split them, so quote a value with spaces. Values are read as in [`conn3x generate step`](/reference/cli/generate-step): as written for a string argument, and as HCL otherwise, such as `uid=1000` or `groups=["ops"]`. `-m file` also takes `src=PATH`, a text file on this machine to send as the content, as Ansible's `-m copy` does.
 
 A module does exactly what it does in a step. Conn3x reads the host as a refresh would and plans again from what it found. If that plan changes nothing, the host is `ok` and nothing runs. Otherwise the module applies and the host is `changed`. A module's own checks and refusals still apply. A `command` with `creates`, `removes` or `unless` is skipped the same way.
 
@@ -215,4 +215,4 @@ Each host is checked against known_hosts, as a plan checks it: an unknown host k
 
 ## Not yet
 
-Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. There's no file transfer yet, such as Ansible's `-m copy src=`. In a task, network-device modules aren't there yet.
+Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. In a task, network-device modules aren't there yet.
