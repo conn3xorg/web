@@ -148,6 +148,7 @@ const SHIPPED = [
       /What's left is pulling one from Galaxy/i,
       /## Then: ad-hoc commands/i,
       /Bring your Ansible inventory across with its `group_vars`/i,
+      /Still to come: running a step on the machine Conn3x runs on/i,
       /This guide uses Conn3x v0\.16\.0/i,
       /Replace `0\.16\.0` with the version/i,
     ],
@@ -156,6 +157,7 @@ const SHIPPED = [
     feature: "VyOS modules, conn3x_ssh_tunnel, hostdata, conn3x_file/conn3x_command, generate steps, run -task (v0.18.0)",
     stale: [
       /naming a set of steps as a task/i,
+      /Still to come: looking a value up by host/i,
       /-m service -a 'name=nginx action=restart'/i,
       /This guide uses Conn3x v0\.17\.0/i,
       /Replace `0\.17\.0` with the version/i,
