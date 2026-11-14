@@ -3,6 +3,48 @@
   "items": [
     {
       "date": "2026-11-13",
+      "repo": "tailscale/tailscale",
+      "summary": "A fix stops a second tailscaled from stripping a running daemon's tun addresses. We found that the netfilter cleanup just before it still removes the running daemon's firewall chains, and suggested moving the check above it.",
+      "url": "https://github.com/tailscale/tailscale/pull/22387#issuecomment-6873395624",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "prometheus/prometheus",
+      "summary": "A fix for agent mode logging an out-of-order window of 0. We traced where the real value comes from to confirm it, and suggested a shorter test.",
+      "url": "https://github.com/prometheus/prometheus/pull/20444#pullrequestreview-5902429631",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "prometheus/prometheus",
+      "summary": "A benchmark mixed b.Loop with RunParallel, so it measured the wrong thing. We checked the three other benchmarks that use both and confirmed they keep them apart.",
+      "url": "https://github.com/prometheus/prometheus/pull/20446#pullrequestreview-5902424577",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "A mask operator fix refuses an empty masking character. We showed that it used to delete the characters, so the output's offsets no longer matched the results.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2487#pullrequestreview-5902420173",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "A fix sorts results before merging neighbours separated by spaces, which had left text in clear. We confirmed that overlapping results can't be merged by that step, and pointed at the root cause in conflict resolution.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2490#pullrequestreview-5902418403",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "A fix compiles each regex allow-list term on its own, so backreferences keep their numbering. We noted that the regex timeout now applies once per term, and how to keep the old bound.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2491#pullrequestreview-5902415342",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-13",
       "repo": "github/advisory-database",
       "summary": "An imgproxy advisory listed three module paths that have no 4.x versions, so it matched nothing. We moved it to /v4, as imgproxy's own advisory says, and checked that against go.mod and the Go module proxy.",
       "url": "https://github.com/github/advisory-database/pull/11254",
