@@ -201,6 +201,8 @@ Before anything runs, Conn3x works out every run's hosts and params, so a typo i
 | `-private-key-file` | The key to log in with, where the inventory doesn't set one. Defaults to the SSH agent. |
 | `-known-hosts-file` | The known_hosts file to check hosts against. Defaults to `~/.ssh/known_hosts`. |
 | `-forks` | How many hosts to run on at once. Defaults to 10. |
+| `-batch-size` | Run on this many hosts at a time, or a percentage such as `20%`, rounded up, starting the next batch once a batch is done. Since the release after v0.18.0. |
+| `-max-failures` | With `-batch-size`, how many hosts may fail before no more batches start. Defaults to 0. The hosts never reached say `skipped`, and the exit code is 2. |
 | `-json` | Print one JSON object per host, with `host`, `status`, `error`, `stdout` and `stderr`, for scripts. |
 
 Each host is checked against known_hosts, as a plan checks it: an unknown host key fails that host. Nothing is written to state or to the working directory.
