@@ -21,7 +21,7 @@ You shouldn't have to find that out on your servers. So before any change to Con
 <details>
 <summary>Read the diagram as text</summary>
 
-- **Every pull request**, as required checks: circuits applied over SSH to Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13 hosts running in Podman, then checked on the host, once with the host agent off and once with it required. Every docs example and every `examples/` directory must validate. Every OpenTofu file Conn3x changes is marked, and more than five fails. The build fails if `conn3x` grows past the `tofu` it's built from.
+- **Every pull request**, as required checks: circuits applied over SSH to Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13 hosts running in Podman, then checked on the host, once with the host agent off and once with it required. Every docs example and every `examples/` directory must validate. Every OpenTofu file Conn3x changes is marked, and more than five fails. The build fails if `conn3x` grows more than 3 MB past the `tofu` it's built from.
 - **Every night:** one plan creates a Rocky Linux 10 and an Ubuntu 24.04 droplet on DigitalOcean and sets them up, with firewalld and ufw, SELinux, a mount, sysctl, sudo and a reboot. Then it fetches the page through the firewall, reads the host as root, plans again for `No changes.` and runs drift for `No drift`.
 - **Every release:** built in GitHub Actions. `checksums.txt` is signed with cosign, every archive has build provenance you can check with `gh attestation verify`, and every archive has an SBOM.
 
