@@ -247,9 +247,31 @@ As with Junos and EOS, a router's steps in a circuit share one commit per apply,
 - `vyos_interface` won't take off the address Conn3x connects to, or disable the interface that holds it.
 - `vyos_config` takes nothing but `set` statements.
 
+## Cisco IOS XE
+
+New in the release after v0.19.0, and experimental. [`ios_config`](/modules/ios_config) owns lines of an IOS XE device's running configuration, under the blocks they sit in, the way `eos_config` does on Arista. It's tested against IOS XE 17.18 (IOL-XE) in Cisco Modeling Labs on a lab VM, not yet in CI and not on hardware.
+
+### The login
+
+Log in as a user with privilege 15, so the session starts at `#`, with an SSH key. `become` and `agent` are refused. IOS XE closes the connection after each command, so Conn3x opens a login per command, one at a time per device, which keeps it well inside `ip ssh maxstartups` and a five-line `line vty 0 4`.
+
+### How a change goes in
+
+IOS has no candidate configuration: each line is live once typed, and a refused line doesn't stop the ones after it. What makes a change safe is the revert timer.
+
+1. **The checks.** The device must have a configuration archive (`archive` with a `path`), which the revert timer rolls back to, and no change already waiting for its confirm. If either is missing, Conn3x stops before it types anything.
+2. **The change**, under `configure terminal revert timer 5`. If IOS answers any line with a `%` message, Conn3x runs `configure revert now` at once, and nothing of the change stays.
+3. **The confirm.** After `confirm_after`, Conn3x logs in again, runs `configure confirm`, and saves with `write memory`. A change that locks Conn3x out never gets confirmed, so IOS rolls it back by itself within five minutes.
+
+### One change per device
+
+In a circuit, a device's `ios_*` steps share one change per apply, as on Junos and VyOS.
+
+Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses, so it isn't supported yet.
+
 ## What's coming
 
-- More EOS, Junos and VyOS modules, and lines kept out of state for secrets in their `_config` steps.
-- Classic Cisco IOS after that. See the [roadmap](/roadmap).
+- More EOS, Junos, VyOS and IOS XE modules, and lines kept out of state for secrets in their `_config` steps.
+- Classic Cisco IOS, behind an opt-in for its SHA-1 SSH. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).
