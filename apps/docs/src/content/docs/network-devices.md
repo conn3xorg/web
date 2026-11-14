@@ -126,6 +126,20 @@ Sharing a session changes a few things:
 - **A step you delete from a circuit that stays** commits its removal in the run's session when one is open, and in a session of its own when nothing else on that switch changes.
 - **Removals aren't lost with a failed session.** If a session that holds removals fails, such as when another run took the switch, Conn3x has already forgotten those steps, so it commits the removals on their own. If that fails too, the error lists the lines to remove by hand.
 
+## A copy before every change
+
+Since the release after v0.19.0, a circuit's `device_backup_dir` keeps the configuration each device had before a change, the copy most teams take by hand, or with Oxidized or RANCID, before touching a switch:
+
+```hcl
+circuit "core" {
+  hosts             = var.switches
+  device_backup_dir = "${path.module}/backups"
+  ...
+}
+```
+
+Before a commit that changes a device, Conn3x writes that device's configuration as it was to `backups/HOST-20261114T103000Z.cfg` on the machine running Conn3x. For Junos and VyOS it's the configuration the circuit's first step read, which is what the commit changes from. For EOS it's `show running-config`, read just before the session commits. An apply that changes nothing on a device writes nothing, and no backup overwrites another. Files are readable by their owner only, in a directory only its owner can open, since a configuration can hold hashed secrets. If a backup can't be written, the commit stops before it sends anything.
+
 ## Guards on your own login
 
 Two modules could cut Conn3x off from the switch it's changing, so both refuse to:
