@@ -99,5 +99,8 @@ conn3x generate steps -host 203.0.113.10 -user root -match 'alice,bob' users >> 
 | `services` | Every systemd service unit. | `service` |
 | `users` | Accounts with a UID from 1000: the ones people made, not the system's. | `user` |
 | `mounts` | The mount points `/etc/fstab` lists, swap left out. | `mount` |
+| `sysctl` | The kernel parameters set in `/etc/sysctl.conf` and `/etc/sysctl.d`, with their values, the later file winning. Since the release after v0.18.0. | `sysctl` |
+
+A `sysctl` step keeps its setting in a file of its own, `/etc/sysctl.d/90-conn3x-NAME.conf`, so adopting one plans a change: the first apply writes that file. The file the setting came from stays, and the kernel reads these files in name order, so a later one, such as `90-local.conf`, wins at boot. Take the setting out of it once the step is in.
 
 Without `-match` it prints one name per line, so you can pick from the list or pipe it through `grep`. `-match` takes globs separated by commas. Every step has `import = true` and a name of its own, so pasting them into a circuit and planning shows them as imports with nothing to change. An object that can't be read is reported on stderr, and the rest still print. It exits `1` when anything failed, or when `-match` matched nothing.
