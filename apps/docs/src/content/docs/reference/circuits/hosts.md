@@ -268,7 +268,27 @@ step "ntp" {
 - `values` keeps the YAML types, numbers and lists included. `from` maps each key to the file it came from. Put it in an output when you need to see why a host got a value.
 - A layer whose file doesn't exist is skipped. A placeholder that `vars` doesn't set is an error, so a typo can't quietly skip a layer.
 - Write the hierarchy as a block list, or quote each path: in a `[ ]` list, YAML reads `{host}` as a mapping.
-- Keep secrets out of it. A SOPS-encrypted layer is refused; read those with [`ephemeral "conn3x_secrets"`](/reference/circuits/secrets#sops-files), so they stay out of state.
+- The function refuses a SOPS-encrypted layer, since whatever it returns can land in plan and state. Read a hierarchy with secrets in it through the ephemeral reader below.
+
+### Encrypted layers
+
+Since the release after v0.18.0, `ephemeral "conn3x_hostdata"` reads the same hierarchy with the same rule, first layer wins, and decrypts the layers that are encrypted with SOPS and age, such as a `common.sops.yaml` holding each environment's database password. It's ephemeral, so its values never reach plan or state. Use them in write-only arguments, such as `content_wo` and `password_wo`.
+
+```hcl
+ephemeral "conn3x_hostdata" "web1" {
+  dir  = "${path.module}/data"
+  vars = { host = "web1", group = ["web"] }
+}
+
+resource "conn3x_file" "db_password" {
+  path       = "/etc/db_password"
+  content_wo = ephemeral.conn3x_hostdata.web1.values.db_password
+  mode       = "0600"
+  # ssh { ... }
+}
+```
+
+It finds the age key the way sops does: `SOPS_AGE_KEY`, `SOPS_AGE_KEY_FILE`, or `sops/age/keys.txt` in your config directory. A value from an encrypted layer is a string, with nested keys joined by dots, such as `db.password`, as [`conn3x_secrets`](/reference/circuits/secrets#sops-files) gives them, and `from` names the file it came from.
 
 Provider functions need `conn3x` in `required_providers`, as for the [inventory function](#from-an-ansible-inventory).
 
