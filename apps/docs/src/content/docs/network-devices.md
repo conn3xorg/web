@@ -126,6 +126,20 @@ Sharing a session changes a few things:
 - **A step you delete from a circuit that stays** commits its removal in the run's session when one is open, and in a session of its own when nothing else on that switch changes.
 - **Removals aren't lost with a failed session.** If a session that holds removals fails, such as when another run took the switch, Conn3x has already forgotten those steps, so it commits the removals on their own. If that fails too, the error lists the lines to remove by hand.
 
+## A copy before every change
+
+Since the release after v0.19.0, a circuit's `device_backup_dir` keeps the configuration each device had before a change, the copy most teams take by hand, or with Oxidized or RANCID, before touching a switch:
+
+```hcl
+circuit "core" {
+  hosts             = var.switches
+  device_backup_dir = "${path.module}/backups"
+  ...
+}
+```
+
+Before a commit that changes a device, Conn3x writes that device's configuration as it was to `backups/HOST-20261114T103000Z.cfg` on the machine running Conn3x. For Junos and VyOS it's the configuration the circuit's first step read, which is what the commit changes from. For EOS it's `show running-config`, read just before the session commits. An apply that changes nothing on a device writes nothing, and no backup overwrites another. Files are readable by their owner only, in a directory only its owner can open, since a configuration can hold hashed secrets. If a backup can't be written, the commit stops before it sends anything.
+
 ## Guards on your own login
 
 Two modules could cut Conn3x off from the switch it's changing, so both refuse to:
@@ -233,9 +247,31 @@ As with Junos and EOS, a router's steps in a circuit share one commit per apply,
 - `vyos_interface` won't take off the address Conn3x connects to, or disable the interface that holds it.
 - `vyos_config` takes nothing but `set` statements.
 
+## Cisco IOS XE
+
+New in the release after v0.19.0, and experimental. [`ios_config`](/modules/ios_config) owns lines of an IOS XE device's running configuration, under the blocks they sit in, the way `eos_config` does on Arista. It's tested against IOS XE 17.18 (IOL-XE) in Cisco Modeling Labs on a lab VM, not yet in CI and not on hardware.
+
+### The login
+
+Log in as a user with privilege 15, so the session starts at `#`, with an SSH key. `become` and `agent` are refused. IOS XE closes the connection after each command, so Conn3x opens a login per command, one at a time per device, which keeps it well inside `ip ssh maxstartups` and a five-line `line vty 0 4`.
+
+### How a change goes in
+
+IOS has no candidate configuration: each line is live once typed, and a refused line doesn't stop the ones after it. What makes a change safe is the revert timer.
+
+1. **The checks.** The device must have a configuration archive (`archive` with a `path`), which the revert timer rolls back to, and no change already waiting for its confirm. If either is missing, Conn3x stops before it types anything.
+2. **The change**, under `configure terminal revert timer 5`. If IOS answers any line with a `%` message, Conn3x runs `configure revert now` at once, and nothing of the change stays.
+3. **The confirm.** After `confirm_after`, Conn3x logs in again, runs `configure confirm`, and saves with `write memory`. A change that locks Conn3x out never gets confirmed, so IOS rolls it back by itself within five minutes.
+
+### One change per device
+
+In a circuit, a device's `ios_*` steps share one change per apply, as on Junos and VyOS.
+
+Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses, so it isn't supported yet.
+
 ## What's coming
 
-- More EOS, Junos and VyOS modules, and lines kept out of state for secrets in their `_config` steps.
-- Classic Cisco IOS after that. See the [roadmap](/roadmap).
+- More EOS, Junos, VyOS and IOS XE modules, and lines kept out of state for secrets in their `_config` steps.
+- Classic Cisco IOS, behind an opt-in for its SHA-1 SSH. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).
