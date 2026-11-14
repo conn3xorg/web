@@ -185,6 +185,16 @@ Each `run` takes three arguments:
 
 Before anything runs, Conn3x works out every run's hosts and params, so a typo in the last run stops the plan before the first one touches a host. If any host fails in a run, the plan stops there, the runs after it say `skipped`, and the exit code is 2. The command's own PATTERN narrows every run: `web` runs just the runs' web hosts, and `all` leaves each run's pattern as written. With `-json`, every host's object carries its `run`, and a skipped run prints `{"run": "deploy", "status": "skipped"}`.
 
+A run's params can read what the runs before it did, as `run.NAME.HOST.STEP.stdout`, with `stderr` and `status` beside it, so a deploy can take the schema version a migration printed. `trimspace` takes a command's newline off. Params that read `run` are checked for their names before anything runs and evaluated just before their run. `hosts` has to be known from the start, so it can't read `run`. Since the release after v0.18.0.
+
+```hcl
+run "deploy" {
+  task   = "tasks/deploy.task.hcl"
+  hosts  = "web"
+  params = { schema = trimspace(run.migrate.db1.schema.stdout) }
+}
+```
+
 ## Options
 
 | Option | Description |
