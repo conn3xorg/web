@@ -14,3 +14,4 @@ overrides:
   zod@3: ^4.6.6
   glob@13: ^14.0.2
   minimatch@10: ^11.0.1
+  fast-xml-parser@5: ^5.12.0
