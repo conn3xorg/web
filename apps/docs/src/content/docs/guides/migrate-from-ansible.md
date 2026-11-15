@@ -113,7 +113,7 @@ Since v0.7.3, `ping` goes the same way. Conn3x connects to every host before it 
 
 `setup`, `service_facts` and `package_facts` are dropped too, since they only gather facts. If a later task in the play, or one of its handlers, reads those facts, the note says so, and that task stays for review. A step can't read Ansible's facts, so check what the task did with them. [Host facts](/reference/host-facts) are the Conn3x way to read a host's OS at plan time.
 
-A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each):
+A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each). Since the release after v0.19.0, so does `with_items:` over one:
 
 ```hcl
 step "tools" {
