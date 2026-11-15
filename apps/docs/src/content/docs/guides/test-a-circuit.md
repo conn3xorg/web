@@ -357,7 +357,7 @@ run "converge" {
 }
 ```
 
-The setup run starts the image with Podman, waits for systemd to finish booting, makes a key for root and pins the container's host key. The circuit then logs in at `127.0.0.1` as `root`. When the file is done, `conn3x test` destroys the later runs first, so the circuit's steps go while the container is still up, and then the container goes too. It needs Podman on the machine running the test. Each container carries the label `io.conn3x.test-container=true`, so if a run is killed halfway, `podman ps --filter label=io.conn3x.test-container=true` finds what it left.
+The setup run starts the image, waits for systemd to finish booting, makes a key for root and pins the container's host key. The circuit then logs in at `127.0.0.1` as `root`. When the file is done, `conn3x test` destroys the later runs first, so the circuit's steps go while the container is still up, and then the container goes too. It needs Podman or Docker on the machine running the test: `runtime` picks one, and it defaults to Podman when it's installed. Under Docker, the container shares the host's cgroup namespace, which systemd needs, but it doesn't run privileged. Each container carries the label `io.conn3x.test-container=true`, so if a run is killed halfway, `podman ps --filter label=io.conn3x.test-container=true` finds what it left.
 
 To test on more than one distribution in the same run, add a container per image. The circuit's `known_hosts_file` is one file, so give the others a host object with their own `port`, `private_key_file` and `host_key`, which `conn3x_test_container` outputs:
 
