@@ -37,6 +37,7 @@ Conn3x uses SSH and nothing else. By default, it installs nothing on the hosts. 
 | `timeout` | string | `"3m"` | How long to keep retrying while a host doesn't answer, as a duration such as `"90s"` or `"5m"`. |
 | `confirm_after` | string | `"30s"` | Arista EOS steps only, since v0.9.0. How long to wait after committing a change before logging in again to confirm it, from `"5s"` to under `"4m"`. See [Network devices](/network-devices#why-it-waits-before-confirming). |
 | `jump_hosts` | list of strings | None | Hosts to connect through first, in order, like `ssh -J`. See [Jump hosts](#jump-hosts). |
+| `legacy_algorithms` | bool | `false` | Also offers this host the SHA-1 algorithms an old device needs: `ssh-rsa` host key signatures, SHA-1 Diffie-Hellman key exchange and `hmac-sha1`. They go after the modern ones, and only to this host, never to a jump host. Classic Cisco IOS 15 needs it. SHA-1 is weaker, so set it only for devices that can't do better. Since the release after v0.19.0. |
 | `ssh_config_file` | string | None | An OpenSSH client config file to read settings from, such as `"~/.ssh/config"`. Conn3x reads no SSH config unless you set this. See [SSH config files](#ssh-config-files). |
 
 Paths that start with `~/` are relative to your home directory. Other relative paths are relative to the working directory, which `-chdir` sets.
@@ -76,7 +77,7 @@ Both of `app1`'s instances log in with `~/.ssh/app1`. For the five settings a [h
 
 Conn3x builds each host's connection settings from up to three places. The first one that sets a value wins:
 
-1. The host's [host object](/reference/circuits/hosts#host-object-fields) in `hosts`, for `user`, `port`, `private_key_file`, `host_key` and `jump_hosts`.
+1. The host's [host object](/reference/circuits/hosts#host-object-fields) in `hosts`, for `user`, `port`, `private_key_file`, `host_key`, `jump_hosts` and `legacy_algorithms`.
 2. The circuit's `ssh` block.
 3. The file named in `ssh_config_file`, for `User`, `Port`, `IdentityFile`, `UserKnownHostsFile` and `ProxyJump`.
 

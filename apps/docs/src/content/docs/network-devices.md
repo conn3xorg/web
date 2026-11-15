@@ -282,11 +282,13 @@ IOS has no candidate configuration: each line is live once typed, and a refused 
 
 In a circuit, a device's `ios_*` steps share one change per apply, as on Junos and VyOS.
 
-Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses, so it isn't supported yet.
+Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses by default. Since the release after v0.19.0, `legacy_algorithms = true` on that device's [host object](/reference/circuits/hosts#host-object-fields) lets Conn3x connect. It doesn't apply to your other hosts. `ios_config` hasn't been tested on classic IOS yet, so treat it as untried there.
+
+Upgrading changes one thing for a host with a pinned RSA `host_key`. If its sshd only signs with `ssh-rsa`, it connected before by accident, since a pinned RSA key used to ask for the SHA-1 signature. It now fails with `no common algorithm` until the host sets `legacy_algorithms = true`.
 
 ## What's coming
 
 - More EOS, Junos, VyOS and IOS XE modules, and `lines_wo` for secrets in `junos_config`, `vyos_config` and `ios_config`, as `eos_config` has.
-- Classic Cisco IOS, behind an opt-in for its SHA-1 SSH. See the [roadmap](/roadmap).
+- `ios_config` tested on classic Cisco IOS. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).
