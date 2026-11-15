@@ -378,6 +378,145 @@ output "debian" {
 
 Then the circuit takes it as `hosts = { web1 = "127.0.0.1", debian = var.debian }`, and the converge run passes `debian = run.host.debian`.
 
+### Test on a cloud VM
+
+Some things only show up on a real machine: a cloud image's own packages, its kernel, its sshd. The setup module doesn't have to start a container. It can create a VM with any provider, and the circuit takes its address the same way. This one makes a small EC2 instance:
+
+```hcl
+# tests/setup-aws/main.tf
+terraform {
+  required_providers {
+    aws   = { source = "hashicorp/aws" }
+    tls   = { source = "hashicorp/tls" }
+    local = { source = "hashicorp/local" }
+  }
+}
+
+variable "allow_from" {
+  type        = string
+  description = "The CIDR allowed to reach port 22, such as your IP with /32."
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "tls_private_key" "login" {
+  algorithm = "ED25519"
+}
+
+resource "tls_private_key" "host" {
+  algorithm = "ED25519"
+}
+
+resource "local_sensitive_file" "key" {
+  content         = tls_private_key.login.private_key_openssh
+  filename        = "${path.root}/.test-key"
+  file_permission = "0600"
+}
+
+resource "aws_key_pair" "login" {
+  key_name_prefix = "conn3x-test-"
+  public_key      = tls_private_key.login.public_key_openssh
+}
+
+resource "aws_security_group" "ssh" {
+  name_prefix = "conn3x-test-"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.allow_from]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+data "aws_ssm_parameter" "ubuntu" {
+  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
+}
+
+resource "aws_instance" "web1" {
+  ami                    = data.aws_ssm_parameter.ubuntu.value
+  instance_type          = "t3.micro"
+  key_name               = aws_key_pair.login.key_name
+  vpc_security_group_ids = [aws_security_group.ssh.id]
+  user_data = join("\n", ["#cloud-config", yamlencode({
+    ssh_deletekeys = true
+    ssh_genkeytypes = []
+    ssh_keys = {
+      ed25519_private = tls_private_key.host.private_key_openssh
+      ed25519_public  = tls_private_key.host.public_key_openssh
+    }
+  })])
+  tags = { Name = "conn3x-test", owner = "conn3x-ci" }
+}
+
+output "address" { value = aws_instance.web1.public_ip }
+output "key" { value = local_sensitive_file.key.filename }
+output "host_key" { value = trimspace(tls_private_key.host.public_key_openssh) }
+```
+
+The setup module makes the instance's host key itself and hands it to cloud-init, so the circuit pins it with `host_key` instead of trusting whatever key answers first. The private half travels in the instance's user data, where anything running on the instance can read it, which is fine for a VM that lives for one test.
+
+The circuit takes the three outputs as variables:
+
+```hcl
+circuit "web" {
+  hosts = {
+    web1 = { address = var.address, host_key = var.host_key }
+  }
+
+  ssh {
+    user             = "ubuntu"
+    private_key_file = var.key
+    become           = true
+  }
+
+  step "motd" {
+    file {
+      path    = "/etc/motd"
+      content = "Managed by Conn3x.\n"
+    }
+  }
+}
+```
+
+And the test file passes them on:
+
+```hcl
+run "host" {
+  module {
+    source = "./tests/setup-aws"
+  }
+  variables {
+    allow_from = "203.0.113.7/32" # your IP
+  }
+}
+
+run "converge" {
+  variables {
+    address  = run.host.address
+    key      = run.host.key
+    host_key = run.host.host_key
+  }
+  idempotent = true
+
+  assert {
+    condition     = conn3x_file.web__motd["web1"].sha256 == sha256("Managed by Conn3x.\n")
+    error_message = "/etc/motd doesn't match the circuit."
+  }
+}
+```
+
+Run `conn3x init` first, which installs the AWS, TLS and local providers, then `conn3x test` with AWS credentials in the environment. The first plan waits while the instance boots, since a dial keeps trying for the `ssh` block's `timeout`. In us-west-2 the whole file, from creating the instance to terminating it, took under 90 seconds. At the end the instance, its security group, the key pair and the local key file are all destroyed. If a run is killed halfway, look for instances tagged `Name = conn3x-test`.
+
+On Azure or Google Cloud, the setup module would create the VM and output the same three values. Only the AWS version above has been run so far.
+
 ### What the clean-up leaves on the host
 
 When the file finishes, `conn3x test` destroys what it applied, and destroying a step does what its [`on_remove`](/reference/circuits/removal) says. Most modules default to `"forget"`, so after the run above `tree`, the `deploy` user and `/etc/motd` are all still on the container. Conn3x only dropped them from the test's state.
