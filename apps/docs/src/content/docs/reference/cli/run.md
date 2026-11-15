@@ -59,7 +59,7 @@ web2 | ok
 
 `-i` names an Ansible inventory, INI or YAML. Conn3x reads it as [`provider::conn3x::inventory`](/reference/circuits/hosts#from-an-ansible-inventory) does: each host's address from `ansible_host`, and `ansible_port`, `ansible_user` and `ansible_ssh_private_key_file` where they're set, with the `group_vars/` and `host_vars/` directories beside it.
 
-A host behind AWS Session Manager or Google Cloud IAP takes its proxy the way Ansible's do, since the release after v0.19.0: `-o ProxyCommand=...` in `ansible_ssh_common_args` or `ansible_ssh_extra_args`. It runs without a shell, so a pipe or a `$` in it is refused.
+A host behind AWS Session Manager or Google Cloud IAP takes its proxy the way Ansible's do, since v0.20.0: `-o ProxyCommand=...` in `ansible_ssh_common_args` or `ansible_ssh_extra_args`. It runs without a shell, so a pipe or a `$` in it is refused.
 
 ```ini
 [private]
@@ -68,7 +68,7 @@ i-0abc123 ansible_user=ec2-user ansible_ssh_common_args='-o ProxyCommand="aws ss
 
 ### From your circuits
 
-Since the release after v0.19.0, `-circuits DIR` takes the hosts from the circuits you already have instead, so there's no inventory to keep beside them. Each circuit is a group named after it, and each host keeps the circuit's `ssh` settings, with its host object's own `user`, `port` or `private_key_file` over them:
+Since v0.20.0, `-circuits DIR` takes the hosts from the circuits you already have instead, so there's no inventory to keep beside them. Each circuit is a group named after it, and each host keeps the circuit's `ssh` settings, with its host object's own `user`, `port` or `private_key_file` over them:
 
 ```
 conn3x run -circuits . web -a 'systemctl status nginx'
@@ -218,7 +218,7 @@ run "deploy" {
 | Option | Description |
 | --- | --- |
 | `-i`, `-inventory` | The inventory file. This or `-circuits`. |
-| `-circuits` | A directory whose circuits to take hosts from, instead of an inventory. Since the release after v0.19.0. |
+| `-circuits` | A directory whose circuits to take hosts from, instead of an inventory. Since v0.20.0. |
 | `-m` | The module to run. Without it, `-a` is a command. |
 | `-task` | A task file to run, instead of `-m`. |
 | `-plan` | A plan file to run, instead of `-m` or `-task`. |

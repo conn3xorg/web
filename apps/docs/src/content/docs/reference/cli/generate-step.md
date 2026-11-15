@@ -100,8 +100,8 @@ conn3x generate steps -host 203.0.113.10 -user root -match 'alice,bob' users >> 
 | `users` | Accounts with a UID from 1000: the ones people made, not the system's. | `user` |
 | `mounts` | The mount points `/etc/fstab` lists, swap left out. | `mount` |
 | `sysctl` | The kernel parameters set in `/etc/sysctl.conf` and `/etc/sysctl.d`, with their values, the later file winning. Since v0.19.0. | `sysctl` |
-| `timers` | The systemd timers written into `/etc/systemd/system`, not a package's own, with their schedule and command. Since the release after v0.19.0. | `timer` |
-| `windows_features` | A Windows host's installed features. Since the release after v0.19.0. | `windows_feature` |
+| `timers` | The systemd timers written into `/etc/systemd/system`, not a package's own, with their schedule and command. Since v0.20.0. | `timer` |
+| `windows_features` | A Windows host's installed features. Since v0.20.0. | `windows_feature` |
 | `windows_services` | Its services. | `windows_service` |
 | `windows_users` | Its local users. Not on a domain controller, which has none. | `windows_user` |
 | `windows_groups` | Its local groups. Not on a domain controller. | `windows_group` |

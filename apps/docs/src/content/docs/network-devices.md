@@ -128,7 +128,7 @@ Sharing a session changes a few things:
 
 ## A copy before every change
 
-Since the release after v0.19.0, a circuit's `device_backup_dir` keeps the configuration each device had before a change, the copy most teams take by hand, or with Oxidized or RANCID, before touching a switch:
+Since v0.20.0, a circuit's `device_backup_dir` keeps the configuration each device had before a change, the copy most teams take by hand, or with Oxidized or RANCID, before touching a switch:
 
 ```hcl
 circuit "core" {
@@ -164,7 +164,7 @@ step "aaa" {
 
 State keeps an HMAC of the lines and where each one starts up to its secret, such as `tacacs-server key`. The switch prints most secrets hashed, so a refresh checks only that a line with that start is there. A changed secret changes the HMAC, and the next apply sends the lines again. SNMP communities are refused, because a community's name is its secret; use an SNMPv3 user. The [eos_config reference](/modules/eos_config#secrets-in-lines_wo) has the details.
 
-`junos_config` and `vyos_config` take `lines_wo` too, since the release after v0.19.0. There a secret is the statement's last word, after a keyword ending in `password`, `secret` or `key`, such as `set protocols bgp 65000 neighbor 192.0.2.1 password 'MyPassword'`. State keeps the statement without that word. Plain-text passwords and SNMP communities are refused, as on EOS. Rotation hasn't been tried on a real switch yet, so if your switch refuses it, tell us on [#859](https://github.com/conn3xorg/conn3x/issues/859).
+`junos_config` and `vyos_config` take `lines_wo` too, since v0.20.0. There a secret is the statement's last word, after a keyword ending in `password`, `secret` or `key`, such as `set protocols bgp 65000 neighbor 192.0.2.1 password 'MyPassword'`. State keeps the statement without that word. Plain-text passwords and SNMP communities are refused, as on EOS. Rotation hasn't been tried on a real switch yet, so if your switch refuses it, tell us on [#859](https://github.com/conn3xorg/conn3x/issues/859).
 
 ## Juniper Junos
 
@@ -266,7 +266,7 @@ As with Junos and EOS, a router's steps in a circuit share one commit per apply,
 
 ## Cisco IOS XE
 
-New in the release after v0.19.0, and experimental. [`ios_config`](/modules/ios_config) owns lines of an IOS XE device's running configuration, under the blocks they sit in, the way `eos_config` does on Arista. It's tested against IOS XE 17.18 (IOL-XE) and classic IOS 15.9 (IOSv) in Cisco Modeling Labs on a lab VM, not yet in CI and not on hardware.
+New in v0.20.0, and experimental. [`ios_config`](/modules/ios_config) owns lines of an IOS XE device's running configuration, under the blocks they sit in, the way `eos_config` does on Arista. It's tested against IOS XE 17.18 (IOL-XE) and classic IOS 15.9 (IOSv) in Cisco Modeling Labs on a lab VM, not yet in CI and not on hardware.
 
 ### The login
 
@@ -284,7 +284,7 @@ IOS has no candidate configuration: each line is live once typed, and a refused 
 
 In a circuit, a device's `ios_*` steps share one change per apply, as on Junos and VyOS.
 
-Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses by default. Since the release after v0.19.0, `legacy_algorithms = true` on that device's [host object](/reference/circuits/hosts#host-object-fields) lets Conn3x connect. It doesn't apply to your other hosts. `ios_config` works there the same way, revert timer included; the archive `path` is `flash:` on IOSv rather than `unix:`.
+Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses by default. Since v0.20.0, `legacy_algorithms = true` on that device's [host object](/reference/circuits/hosts#host-object-fields) lets Conn3x connect. It doesn't apply to your other hosts. `ios_config` works there the same way, revert timer included; the archive `path` is `flash:` on IOSv rather than `unix:`.
 
 Write each line the way `show running-config` prints it, since that's what Conn3x compares against. Classic IOS prints access-list entries without their sequence numbers, so `permit 192.0.2.0 0.0.0.255` matches there and `10 permit 192.0.2.0 0.0.0.255` would show as drift on every plan. IOS XE prints the numbers.
 
