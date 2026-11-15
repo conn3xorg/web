@@ -2,6 +2,55 @@
   "otherMinutes": 83,
   "items": [
     {
+      "date": "2026-11-15",
+      "repo": "prometheus/prometheus",
+      "summary": "A check that remote-written labels arrive sorted sat in the remote read path instead, the only caller of the function it changed. We pointed to where write ingestion validates labels, so the issue it meant to close gets fixed.",
+      "url": "https://github.com/prometheus/prometheus/pull/20454#issuecomment-6890782237",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "prometheus/alertmanager",
+      "summary": "Alertmanager's idle timeout goes past the Prometheus client's, so alert posts stop racing a closing connection. We checked the client's five-minute default and why a POST can't be retried.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5744#issuecomment-6890782580",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "tailscale/tailscale",
+      "summary": "A tray fix asks for the daemon's state on every subscribe, but that first message can also carry the login URL, which would reopen the browser each time. We suggested skipping it on that message.",
+      "url": "https://github.com/tailscale/tailscale/pull/22409#issuecomment-6890782886",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "tailscale/tailscale",
+      "summary": "Bianbu Linux joins the installer. We checked that Tailscale's Ubuntu repository has RISC-V packages for the releases it's based on.",
+      "url": "https://github.com/tailscale/tailscale/pull/22404#issuecomment-6890783174",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Directory redaction now finds DICOM files by their header as well as their name, and warns about any file it leaves alone. We noted which files the header check still misses, and that they now show in the warning.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2493#issuecomment-6890783476",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "prometheus/prometheus",
+      "summary": "New docs on when timestamp() returns a sample's own time. We added that parentheses don't change it, and that start_timestamp() works the same way.",
+      "url": "https://github.com/prometheus/prometheus/pull/20457#issuecomment-6890783761",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "BerriAI/litellm",
+      "summary": "File downloads stop forwarding stale compression headers. We pointed to the helper plugin routes already use, which also sandboxes provider-supplied pages served from the proxy's origin.",
+      "url": "https://github.com/BerriAI/litellm/pull/51915#issuecomment-6890784069",
+      "minutes": 1
+    },
+    {
       "date": "2026-11-14",
       "repo": "tailscale/tailscale",
       "summary": "A loong64 fix makes a raw statx call so a file-descriptor count stops allocating. We suggested keeping it to loong64, so the other platforms keep the plain fstat and don't pick up unsafe.",
