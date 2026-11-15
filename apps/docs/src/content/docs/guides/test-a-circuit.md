@@ -359,8 +359,6 @@ run "converge" {
 
 The setup run starts the image with Podman, waits for systemd to finish booting, makes a key for root and pins the container's host key. The circuit then logs in at `127.0.0.1` as `root`. When the file is done, `conn3x test` destroys the later runs first, so the circuit's steps go while the container is still up, and then the container goes too. It needs Podman on the machine running the test. Each container carries the label `io.conn3x.test-container=true`, so if a run is killed halfway, `podman ps --filter label=io.conn3x.test-container=true` finds what it left.
 
-To test on all three distributions, give the setup module one container per image and the circuit one host per container.
-
 ### What the clean-up leaves on the host
 
 When the file finishes, `conn3x test` destroys what it applied, and destroying a step does what its [`on_remove`](/reference/circuits/removal) says. Most modules default to `"forget"`, so after the run above `tree`, the `deploy` user and `/etc/motd` are all still on the container. Conn3x only dropped them from the test's state.
