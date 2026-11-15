@@ -266,7 +266,7 @@ As with Junos and EOS, a router's steps in a circuit share one commit per apply,
 
 ## Cisco IOS XE
 
-New in the release after v0.19.0, and experimental. [`ios_config`](/modules/ios_config) owns lines of an IOS XE device's running configuration, under the blocks they sit in, the way `eos_config` does on Arista. It's tested against IOS XE 17.18 (IOL-XE) in Cisco Modeling Labs on a lab VM, not yet in CI and not on hardware.
+New in the release after v0.19.0, and experimental. [`ios_config`](/modules/ios_config) owns lines of an IOS XE device's running configuration, under the blocks they sit in, the way `eos_config` does on Arista. It's tested against IOS XE 17.18 (IOL-XE) and classic IOS 15.9 (IOSv) in Cisco Modeling Labs on a lab VM, not yet in CI and not on hardware.
 
 ### The login
 
@@ -284,13 +284,14 @@ IOS has no candidate configuration: each line is live once typed, and a refused 
 
 In a circuit, a device's `ios_*` steps share one change per apply, as on Junos and VyOS.
 
-Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses by default. Since the release after v0.19.0, `legacy_algorithms = true` on that device's [host object](/reference/circuits/hosts#host-object-fields) lets Conn3x connect. It doesn't apply to your other hosts. `ios_config` hasn't been tested on classic IOS yet, so treat it as untried there.
+Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses by default. Since the release after v0.19.0, `legacy_algorithms = true` on that device's [host object](/reference/circuits/hosts#host-object-fields) lets Conn3x connect. It doesn't apply to your other hosts. `ios_config` works there the same way, revert timer included; the archive `path` is `flash:` on IOSv rather than `unix:`.
+
+Write each line the way `show running-config` prints it, since that's what Conn3x compares against. Classic IOS prints access-list entries without their sequence numbers, so `permit 192.0.2.0 0.0.0.255` matches there and `10 permit 192.0.2.0 0.0.0.255` would show as drift on every plan. IOS XE prints the numbers.
 
 Upgrading changes one thing for a host with a pinned RSA `host_key`. If its sshd only signs with `ssh-rsa`, it connected before by accident, since a pinned RSA key used to ask for the SHA-1 signature. It now fails with `no common algorithm` until the host sets `legacy_algorithms = true`.
 
 ## What's coming
 
-- More EOS, Junos, VyOS and IOS XE modules, and `lines_wo` for secrets in `ios_config`.
-- `ios_config` tested on classic Cisco IOS. See the [roadmap](/roadmap).
+- More EOS, Junos, VyOS and IOS XE modules, and `lines_wo` for secrets in `ios_config`. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).
