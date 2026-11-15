@@ -329,4 +329,6 @@ ssh {
 
 `ssh_config_file` reads `ProxyCommand` too, split into plain words and quotes. A line that needs a shell, with a pipe, `$` or a redirection, is refused, and so is a host that sets both `ProxyCommand` and `ProxyJump`. Closing the connection ends the command and anything it started, such as the Session Manager plugin.
 
-These have been tested with a stand-in proxy, not yet against SSM or IAP themselves. If you run Conn3x through either, tell us how it goes.
+Both have been tested end to end: Amazon Linux 2023 behind Session Manager with no inbound rules, and Debian 12 behind IAP with no external IP. Record the host key first, as you would for any host: `ssh -o ProxyCommand="..." user@i-0abc123 true` with the same command adds it to your known_hosts under the instance ID or name.
+
+`conn3x run -circuits` doesn't carry `proxy_command` over yet. For a one-off command on these hosts, use an inventory with `-i`.
