@@ -204,7 +204,7 @@ roles/app/                  circuit-app/
 
 - `tasks/main.yml` becomes the steps, with any `import_tasks` read in where it sits. `handlers/main.yml` becomes the handlers.
 - Each default in `defaults/main.yml` becomes a variable with that default, so you set it where you call the circuit, as a play would.
-- A `when` that tests the OS family, or turns a true-or-false default on or off (`fail2ban_enabled | bool`, `not repo_add`), becomes the step's `when`. Since the release after v0.19.0, a `when` list mixing the two converts too, joined with `&&` as Ansible ANDs a list: `local.os_family[each.key] == "debian" && var.fail2ban_enabled`.
+- A `when` that tests the OS family, turns a true-or-false default on or off (`fail2ban_enabled | bool`, `not repo_add`), or, since the release after v0.19.0, compares a text default to text (`install_method == 'package'`), becomes the step's `when`. Since the release after v0.19.0, a `when` list mixing the two converts too, joined with `&&` as Ansible ANDs a list: `local.os_family[each.key] == "debian" && var.fail2ban_enabled`.
 - `vars/main.yml` is filled in where it's used. In Ansible a role's vars beat anything the play sets, so the circuit doesn't let a caller change them either.
 - A template that only prints variables with `{{ name }}` becomes a `.tftpl` file and a [template](/modules/template) step. The files your tasks copy come along into `files/`.
 - `variables.tf` starts with the `hosts` and `ssh_` variables every circuit in the catalogue takes, so you call this one the same way.
