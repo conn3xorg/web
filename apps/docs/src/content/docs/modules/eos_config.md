@@ -76,11 +76,23 @@ step "mgmt_acl" {
 }
 ```
 
+Lines that hold a secret go in `lines_wo`, which state never keeps:
+
+```hcl
+step "aaa" {
+  eos_config {
+    lines    = ["tacacs-server host 10.0.0.5"]
+    lines_wo = ["tacacs-server key use-an-ephemeral-variable-here"]
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `lines` | list of string | No | The lines, as show running-config prints them, without the indent. The switch must print a line back exactly as written, or it never shows as in sync. |
+| `lines` | list of string | No | The lines, as show running-config prints them, without the indent. The switch must print a line back exactly as written, or it never shows as in sync. State keeps them, so put lines holding a secret in lines_wo. |
+| `lines_wo` | list of string | No | Write-only: lines that hold a secret, such as "tacacs-server key MyKey" or "ntp authentication-key 2 sha1 MyKey", never kept in state. The switch shows these hashed or encrypted, so each is matched by its start, the line up to its secret ("tacacs-server key", "ntp authentication-key 2"): it owns every line under the parent that starts that way, and is in sync when one is there. snmp-server community lines are refused, since the community is its own name; use an SNMPv3 user. A change to any of them sends them all again. |
 | `match` | string | No | "lines" (default): these lines must be there, and others under the parent are left alone. "block": the block must be exactly these lines, so others under it are removed. Needs parents. |
 | `on_remove` | string | No | What happens on the switch when this resource is removed: "forget" (default) leaves the lines, "delete" removes them with "no" and leaves the parent. |
 | `parents` | list of string | No | The block the lines go under, outermost first, as show running-config prints it, such as ["interface Ethernet1"] or ["router bgp 65000", "address-family ipv4"]. Leave unset for top-level lines. |
@@ -92,9 +104,25 @@ Conn3x sets these; reference them as `conn3x_eos_config.<circuit>__<step>["<host
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether the switch had these lines at the last refresh. |
+| `lines_hmac` | string | An HMAC of lines_wo, keyed outside state, so a change plans an update. |
+| `lines_wo_prefixes` | list of string | How each lines_wo line starts, up to its secret, such as "tacacs-server key". A refresh checks these are there, and a removal takes them out. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_eos_config` resource, one instance per host, and connects with its circuit's `ssh` block.
+
+## Secrets in lines_wo
+
+`lines_wo` is write-only, so a secret line never lands in state or in the plan. State keeps two things instead: `lines_hmac`, an HMAC of the lines keyed outside state, and `lines_wo_prefixes`, where each line starts up to its secret, such as `tacacs-server key`.
+
+The switch prints most secrets hashed or encrypted, so Conn3x can't compare them with yours. A refresh checks something smaller: that a line starting with each prefix is there. If you change a secret, the HMAC changes and the plan shows an update. The apply then removes the lines each prefix owns and sends yours again. If you remove the line by hand, the step shows as out of sync. But a secret changed by hand on the switch still looks in sync, because the switch can't show which secret it holds.
+
+Rotation hasn't been tried on a real switch yet, only against the test suite's fake one. A change removes the switch's own line as `show running-config` prints it, such as `no tacacs-server key 7 <hash>`, then sends yours. If your switch refuses that, please say so on [#859](https://github.com/conn3xorg/conn3x/issues/859).
+
+A prefix owns every line under the parent that starts with it. A number before an algorithm counts as part of the line's name, so `ntp authentication-key 2 sha1 MyKey` has the prefix `ntp authentication-key 2`, and keys 1 and 2 are separate lines. An encryption type such as the `7` in `tacacs-server key 7 <hash>` doesn't count. Each line in `lines_wo` needs its own prefix, and no line in `lines` can start with one.
+
+`snmp-server community` lines are refused. The community is both its name and its secret, so the switch can't show which community is this step's, and changing or removing it would take out communities other people set. Use an SNMPv3 user instead: `snmp-server user ops monitoring v3 auth sha <secret> priv aes <secret>`.
+
+A line in `lines_wo` must hold a secret Conn3x knows, a key, secret or password; other lines belong in `lines`. Planning `lines_wo` needs the HMAC key, `CONN3X_HMAC_KEY` or `~/.config/conn3x/hmac.key`. Pass the secret through a variable file or `TF_VAR_`, not `-var`, since OpenTofu logs its command line.
 
 ## Notes
 
@@ -110,4 +138,4 @@ A step lowers to the `conn3x_eos_config` resource, one instance per host, and co
 - EOS has no shell and no sudo, so `become` and `agent` are refused in the circuit's `ssh` block. Log in with a key; password login isn't supported yet.
 - A line the switch rewrites, such as `int et1` for `interface Ethernet1`, never matches, and the step shows as changed on every plan. Copy lines from `show running-config`.
 - A line can't leave or end the config session, so `end`, `exit`, `configure`, `write`, `copy`, `commit`, `abort`, `reload`, `bash`, `enable`, `disable`, `do`, `run` and `rollback` are refused as a line's first word, and so is any short form of them, such as `conf t` or `wr`. EOS would take the short form for the command, and the lines after it would go live outside the session and its revert timer. Control characters are refused too.
-- Don't put secrets in `lines`: they'd be stored in state. Write-only lines are planned for a later release. In logs and errors Conn3x hides what follows `secret`, `password`, `key`, `key-string`, `community`, `auth` and `priv` on a line.
+- Don't put secrets in `lines`: state keeps them as written, so a plan warns about a line that looks like one. Use `lines_wo`. In logs and errors Conn3x hides what follows `secret`, `password`, `key`, `key-string`, `community`, `auth` and `priv` on a line.

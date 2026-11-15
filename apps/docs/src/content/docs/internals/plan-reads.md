@@ -33,7 +33,7 @@ Planning itself never connects to a host. Once the refresh is done, comparing st
 
 ## Reads run in parallel
 
-Each step instance is read on its own, so the reads for different steps and different hosts run at the same time, up to `-parallelism` (10 by default). Reads of the same host share one SSH connection, and each read runs its commands in sessions on it. [Connection pooling and host keys](/internals/connections) explains the session limit.
+Each step instance is read on its own, so the reads for different steps and different hosts run at the same time, up to `-parallelism` (50 by default). Reads of the same host share one SSH connection, and each read runs its commands in sessions on it. [Connection pooling and host keys](/internals/connections) explains the session limit.
 
 ## When a host doesn't answer
 

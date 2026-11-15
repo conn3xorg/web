@@ -93,7 +93,7 @@ No changes. Your infrastructure matches the configuration.
 | `-compact-warnings` | Show warnings as summaries only, when there are no errors. |
 | `-concise` | Leave out progress messages. |
 | `-show-sensitive` | Show sensitive values instead of `(sensitive value)`. |
-| `-parallelism=N` | How many resource operations run at once, host reads included. Defaults to `10`. |
+| `-parallelism=N` | How many resource operations run at once, host reads included. Defaults to `50` since v0.20.0, where OpenTofu's is `10`. |
 | `-lock=false` | Don't lock state. Dangerous when others run Conn3x against the same state. |
 | `-lock-timeout=DURATION` | How long to retry a state lock, such as `30s`. |
 

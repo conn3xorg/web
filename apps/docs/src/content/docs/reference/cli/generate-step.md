@@ -100,6 +100,15 @@ conn3x generate steps -host 203.0.113.10 -user root -match 'alice,bob' users >> 
 | `users` | Accounts with a UID from 1000: the ones people made, not the system's. | `user` |
 | `mounts` | The mount points `/etc/fstab` lists, swap left out. | `mount` |
 | `sysctl` | The kernel parameters set in `/etc/sysctl.conf` and `/etc/sysctl.d`, with their values, the later file winning. Since v0.19.0. | `sysctl` |
+| `timers` | The systemd timers written into `/etc/systemd/system`, not a package's own, with their schedule and command. Since v0.20.0. | `timer` |
+| `windows_features` | A Windows host's installed features. Since v0.20.0. | `windows_feature` |
+| `windows_services` | Its services. | `windows_service` |
+| `windows_users` | Its local users. Not on a domain controller, which has none. | `windows_user` |
+| `windows_groups` | Its local groups. Not on a domain controller. | `windows_group` |
+
+A Windows step holds the name alone, with `import = true`. A Windows read says whether the host matches but not what its settings are, so there's nothing more to copy, and these modules leave every argument you don't set as it is.
+
+A `timers` step holds everything it reads from the timer's two units: `on_calendar`, `command`, and `user`, `description` and `persistent` where they're set. A timer step writes its units its own way, so adopting one plans a change, and the first apply rewrites them with the same schedule and command. A timer with something a timer step doesn't set, such as `RandomizedDelaySec` or a second `OnCalendar`, shows in the list with the reason, and `-match` leaves it out rather than adopt it as something else.
 
 A `sysctl` step keeps its setting in a file of its own, `/etc/sysctl.d/90-conn3x-NAME.conf`, so adopting one plans a change: the first apply writes that file. The file the setting came from stays, and the kernel reads these files in name order, so a later one, such as `90-local.conf`, wins at boot. Take the setting out of it once the step is in.
 

@@ -52,6 +52,8 @@ Conn3x sends keepalives only in these two cases, when it hands out a pooled conn
 
 A dial connects, checks the host key, and logs in. When the host doesn't answer, Conn3x keeps trying until the `ssh` block's `timeout` (3 minutes by default) has passed, waiting 1, 2 and 4 seconds between the first attempts and 8 seconds after that. Each attempt has 15 seconds to finish, across all its jump hosts.
 
+Every host behind a jump host opens its own connection to it, and sshd's `MaxStartups` refuses new logins past 10 at once by default. So since v0.20.0, Conn3x has at most 8 logins in progress through any one jump host; the rest wait their turn, within the same timeout. That keeps a fleet behind one bastion safe at any `-parallelism`.
+
 These failures end the dial at once, without waiting out the `timeout`:
 
 - a host key that isn't recorded, or doesn't match;

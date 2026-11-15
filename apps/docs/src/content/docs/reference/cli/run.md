@@ -59,6 +59,24 @@ web2 | ok
 
 `-i` names an Ansible inventory, INI or YAML. Conn3x reads it as [`provider::conn3x::inventory`](/reference/circuits/hosts#from-an-ansible-inventory) does: each host's address from `ansible_host`, and `ansible_port`, `ansible_user` and `ansible_ssh_private_key_file` where they're set, with the `group_vars/` and `host_vars/` directories beside it.
 
+A host behind AWS Session Manager or Google Cloud IAP takes its proxy the way Ansible's do, since v0.20.0: `-o ProxyCommand=...` in `ansible_ssh_common_args` or `ansible_ssh_extra_args`. It runs without a shell, so a pipe or a `$` in it is refused.
+
+```ini
+[private]
+i-0abc123 ansible_user=ec2-user ansible_ssh_common_args='-o ProxyCommand="aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters portNumber=%p"'
+```
+
+### From your circuits
+
+Since v0.20.0, `-circuits DIR` takes the hosts from the circuits you already have instead, so there's no inventory to keep beside them. Each circuit is a group named after it, and each host keeps the circuit's `ssh` settings, with its host object's own `user`, `port` or `private_key_file` over them:
+
+```
+conn3x run -circuits . web -a 'systemctl status nginx'
+conn3x run -circuits . 'web,db' -m package -a 'name=htop'
+```
+
+It reads the values as written. A circuit whose `hosts` or `ssh` settings need a variable, a local or a function to work out, such as `hosts = var.hosts`, is an error that says so; keep an inventory with `-i` for those for now. So is a host that two circuits reach in different ways. `ssh` settings past `user`, `port`, `private_key_file`, `known_hosts_file`, `host_key`, `become`, `timeout` and `proxy_command`, such as `jump_hosts`, aren't carried over yet, and naming one is an error.
+
 The pattern is the one [`-limit`](/reference/cli/plan#-limit) takes: names and globs split by `,` or `:`, `!` in front to leave hosts out, `&` to narrow, and `~` for a regular expression. Here it also matches group names, as Ansible's does, so `webservers:&eu` is the hosts in both groups, and `all` is every host.
 
 Since v0.17.0 a group takes a subscript too, to pick hosts by their place in it, counted as current Ansible counts them: from 0, the end left out, negative from the end, in the order the inventory lists them.
@@ -199,7 +217,8 @@ run "deploy" {
 
 | Option | Description |
 | --- | --- |
-| `-i`, `-inventory` | The inventory file. Required. |
+| `-i`, `-inventory` | The inventory file. This or `-circuits`. |
+| `-circuits` | A directory whose circuits to take hosts from, instead of an inventory. Since v0.20.0. |
 | `-m` | The module to run. Without it, `-a` is a command. |
 | `-task` | A task file to run, instead of `-m`. |
 | `-plan` | A plan file to run, instead of `-m` or `-task`. |
@@ -227,4 +246,6 @@ Each host is checked against known_hosts, as a plan checks it: an unknown host k
 
 ## Not yet
 
-Taking hosts from the circuits in a configuration, instead of from an inventory, is next. Arista EOS modules don't run here, since they commit through a config session per apply. In a task, network-device modules aren't there yet.
+Arista EOS modules don't run here: their lines wait in a config session for a circuit's commit, and `conn3x run` has no circuit.
+
+Junos and VyOS steps do run, with `-m` or in a task. Each step commits on its own, with the same confirm wait a circuit's commit has, so a task with five router steps commits five times. If you want them in one commit, put them in a circuit.

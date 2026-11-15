@@ -146,7 +146,7 @@ Conn3x doesn't print a line for each host it has nothing to do on. To see where 
 | --- | --- |
 | `-auto-approve` | Don't ask for confirmation. Applying a plan file never asks. |
 | `-input=false` | Don't prompt for variables. With no plan file, also use `-auto-approve`. |
-| `-parallelism=N` | How many resource operations run at once, host steps included. Defaults to `10`. |
+| `-parallelism=N` | How many resource operations run at once, host steps included. Defaults to `50` since v0.20.0, where OpenTofu's is `10`. |
 | `-lock=false` | Don't lock state. |
 | `-lock-timeout=DURATION` | How long to retry a state lock, such as `30s`. |
 | `-json` | Write machine-readable output as JSON lines. Needs `-auto-approve` or a plan file. |

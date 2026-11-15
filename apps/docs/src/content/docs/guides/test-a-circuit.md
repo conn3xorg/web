@@ -7,7 +7,7 @@ You changed a step, and you'd like to know what it does to every host before any
 
 Most of a circuit can be tested without a server at all. A plan already says which package goes on which host and what every file will contain, so asserting on the plan catches a wrong template, a `for_each` that drops a host or a variable that doesn't reach a step. When you need to know the host really ends up that way, a run can apply to a container.
 
-This guide uses Conn3x v0.19.0.
+This guide uses Conn3x v0.20.0.
 
 ## Where tests go
 
@@ -322,6 +322,200 @@ cosign verify ghcr.io/conn3xorg/test-rocky10 \
   --certificate-identity-regexp 'https://github.com/conn3xorg/conn3x/.github/workflows/test-images.yml@.*' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
+
+### Let the test start its own host
+
+Since v0.20.0, a test file can start the container itself and remove it at the end, so nobody has to remember to. Put a `conn3x_test_container` in a small setup module:
+
+```hcl
+# tests/setup/main.tf
+resource "conn3x_test_container" "web1" {
+  image = "ghcr.io/conn3xorg/test-rocky10"
+}
+
+output "port" { value = conn3x_test_container.web1.port }
+output "key" { value = conn3x_test_container.web1.private_key_file }
+output "known_hosts" { value = conn3x_test_container.web1.known_hosts_file }
+```
+
+Give the circuit's `ssh` block variables for the three, then load the setup module in the first run and pass its outputs on:
+
+```hcl
+run "host" {
+  module {
+    source = "./tests/setup"
+  }
+}
+
+run "converge" {
+  variables {
+    port        = run.host.port
+    key         = run.host.key
+    known_hosts = run.host.known_hosts
+  }
+  idempotent = true
+}
+```
+
+The setup run starts the image, waits for systemd to finish booting, makes a key for root and pins the container's host key. The circuit then logs in at `127.0.0.1` as `root`. When the file is done, `conn3x test` destroys the later runs first, so the circuit's steps go while the container is still up, and then the container goes too. It needs Podman or Docker on the machine running the test: `runtime` picks one, and it defaults to Podman when it's installed. Under Docker, the container shares the host's cgroup namespace, which systemd needs, but it doesn't run privileged. Each container carries the label `io.conn3x.test-container=true`, so if a run is killed halfway, `podman ps --filter label=io.conn3x.test-container=true` finds what it left.
+
+To test on more than one distribution in the same run, add a container per image. The circuit's `known_hosts_file` is one file, so give the others a host object with their own `port`, `private_key_file` and `host_key`, which `conn3x_test_container` outputs:
+
+```hcl
+resource "conn3x_test_container" "debian" {
+  image = "ghcr.io/conn3xorg/test-debian13"
+}
+
+output "debian" {
+  value = {
+    address          = conn3x_test_container.debian.address
+    port             = conn3x_test_container.debian.port
+    private_key_file = conn3x_test_container.debian.private_key_file
+    host_key         = conn3x_test_container.debian.host_key
+  }
+}
+```
+
+Then the circuit takes it as `hosts = { web1 = "127.0.0.1", debian = var.debian }`, and the converge run passes `debian = run.host.debian`.
+
+### Test on a cloud VM
+
+Some things only show up on a real machine: a cloud image's own packages, its kernel, its sshd. The setup module doesn't have to start a container. It can create a VM with any provider, and the circuit takes its address the same way. This one makes a small EC2 instance:
+
+```hcl
+# tests/setup-aws/main.tf
+terraform {
+  required_providers {
+    aws   = { source = "hashicorp/aws" }
+    tls   = { source = "hashicorp/tls" }
+    local = { source = "hashicorp/local" }
+  }
+}
+
+variable "allow_from" {
+  type        = string
+  description = "The CIDR allowed to reach port 22, such as your IP with /32."
+}
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "tls_private_key" "login" {
+  algorithm = "ED25519"
+}
+
+resource "tls_private_key" "host" {
+  algorithm = "ED25519"
+}
+
+resource "local_sensitive_file" "key" {
+  content         = tls_private_key.login.private_key_openssh
+  filename        = "${path.root}/.test-key"
+  file_permission = "0600"
+}
+
+resource "aws_key_pair" "login" {
+  key_name_prefix = "conn3x-test-"
+  public_key      = tls_private_key.login.public_key_openssh
+}
+
+resource "aws_security_group" "ssh" {
+  name_prefix = "conn3x-test-"
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.allow_from]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+data "aws_ssm_parameter" "ubuntu" {
+  name = "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id"
+}
+
+resource "aws_instance" "web1" {
+  ami                    = data.aws_ssm_parameter.ubuntu.value
+  instance_type          = "t3.micro"
+  key_name               = aws_key_pair.login.key_name
+  vpc_security_group_ids = [aws_security_group.ssh.id]
+  user_data = join("\n", ["#cloud-config", yamlencode({
+    ssh_deletekeys = true
+    ssh_genkeytypes = []
+    ssh_keys = {
+      ed25519_private = tls_private_key.host.private_key_openssh
+      ed25519_public  = tls_private_key.host.public_key_openssh
+    }
+  })])
+  tags = { Name = "conn3x-test", owner = "conn3x-ci" }
+}
+
+output "address" { value = aws_instance.web1.public_ip }
+output "key" { value = local_sensitive_file.key.filename }
+output "host_key" { value = trimspace(tls_private_key.host.public_key_openssh) }
+```
+
+The setup module makes the instance's host key itself and hands it to cloud-init, so the circuit pins it with `host_key` instead of trusting whatever key answers first. The private half travels in the instance's user data, where anything running on the instance can read it, which is fine for a VM that lives for one test.
+
+The circuit takes the three outputs as variables:
+
+```hcl
+circuit "web" {
+  hosts = {
+    web1 = { address = var.address, host_key = var.host_key }
+  }
+
+  ssh {
+    user             = "ubuntu"
+    private_key_file = var.key
+    become           = true
+  }
+
+  step "motd" {
+    file {
+      path    = "/etc/motd"
+      content = "Managed by Conn3x.\n"
+    }
+  }
+}
+```
+
+And the test file passes them on:
+
+```hcl
+run "host" {
+  module {
+    source = "./tests/setup-aws"
+  }
+  variables {
+    allow_from = "203.0.113.7/32" # your IP
+  }
+}
+
+run "converge" {
+  variables {
+    address  = run.host.address
+    key      = run.host.key
+    host_key = run.host.host_key
+  }
+  idempotent = true
+
+  assert {
+    condition     = conn3x_file.web__motd["web1"].sha256 == sha256("Managed by Conn3x.\n")
+    error_message = "/etc/motd doesn't match the circuit."
+  }
+}
+```
+
+Run `conn3x init` first, which installs the AWS, TLS and local providers, then `conn3x test` with AWS credentials in the environment. The first plan waits while the instance boots, since a dial keeps trying for the `ssh` block's `timeout`. In us-west-2 the whole file, from creating the instance to terminating it, took under 90 seconds. At the end the instance, its security group, the key pair and the local key file are all destroyed. If a run is killed halfway, look for instances tagged `Name = conn3x-test`.
+
+On Azure or Google Cloud, the setup module would create the VM and output the same three values. Only the AWS version above has been run so far.
 
 ### What the clean-up leaves on the host
 

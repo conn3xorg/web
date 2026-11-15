@@ -63,6 +63,13 @@ Also new in v0.14.0: an `authorized_key` task with `exclusive: true` becomes an 
 
 New in v0.17.0, `ansible.posix.synchronize` pushing a directory becomes a [directory_copy](/modules/directory_copy) step, and `delete: yes` carries over. rsync's trailing slash still decides where it lands: `src: site/` copies what's in `site` into `dest`, and `src: site` puts `site` itself under `dest`. Every file gets one mode and one owner, where rsync kept each file's own, so a note asks you to set them. Pull mode, `rsync_opts`, include and exclude rules, `dirs` and `copy_links` stay for review.
 
+Since v0.20.0, four more kinds of task convert:
+
+- **Waiting for an app.** A `uri` task that retries until it gets a status, such as `until: health.status == 200` with `retries: 30` and `delay: 2`, becomes a [wait_for](/modules/wait_for) step with `url` and a `timeout` of 60s. The registered result isn't kept, and any other `uri` task stays for review.
+- **ACL entries.** `ansible.posix.acl` becomes an [acl](/modules/acl) step for its one entry. Ansible's `state` defaults to `query`, which reads and changes nothing, so a task without `state: present` or `absent` stays for review. So do `recursive` and the `X` permission.
+- **Package holds.** `dpkg_selections` with `hold` or `install`, and `community.general.yum_versionlock`, become [package_hold](/modules/package_hold) steps. A versionlock name with a version or a wildcard, such as `httpd-0:2.4.57-2.el9`, stays for review: a hold keeps whatever version is installed.
+- **One key in a JSON file.** You probably edit JSON with two tasks: a `slurp` that reads the file, then a `copy` that writes it back with its content run through `community.general.json_patch`. That pair becomes one [json_value](/modules/json_value) step for each `add`, `replace` or `remove`. The step changes that key and leaves the rest of the file exactly as it was. `/upstreams/0/host` becomes the key `upstreams[0].host`, and the slurp becomes a comment. Appends with `/-`, an `add` at an array index (which inserts), `move`, `copy`, `test`, and values held in variables stay for review.
+
 A `cron` task still becomes a [cron](/modules/cron) step, which keeps the job in `/etc/cron.d`. If you'd rather the jobs stay in the user's own crontab, the one `crontab -e` edits, move them into one [crontab](/modules/crontab) step for that user, new in v0.14.0. It owns the whole file, so list every job the user should keep.
 
 New in v0.7.0, a `copy` task's `validate` carries over to the [file](/modules/file#from-ansible) step, minus any quotes around `%s`. Ansible runs `validate` without a shell, and Conn3x runs it through `sh`, so one with a pipe, a redirect, `$`, a glob or a second line stays for review.
@@ -106,7 +113,7 @@ Since v0.7.3, `ping` goes the same way. Conn3x connects to every host before it 
 
 `setup`, `service_facts` and `package_facts` are dropped too, since they only gather facts. If a later task in the play, or one of its handlers, reads those facts, the note says so, and that task stays for review. A step can't read Ansible's facts, so check what the task did with them. [Host facts](/reference/host-facts) are the Conn3x way to read a host's OS at plan time.
 
-A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each):
+A task with `loop:` over a plain list in the playbook, using `{{ item }}`, becomes a [repeated step](/reference/circuits/steps#for_each). Since v0.20.0, so does `with_items:` over one:
 
 ```hcl
 step "tools" {
@@ -117,6 +124,8 @@ step "tools" {
 }
 ```
 
+In a role, since v0.20.0, a `loop:` or `with_items:` over a default that's a list of plain values, such as `admins: [alice, bob]`, works the same way. The default becomes a `list(string)` variable, so a caller can set its own list, and the step gets `for_each = var.admins`. A step can't repeat an item, so the list can't hold the same value twice; Ansible would run it twice. Since the caller sets the items, `item` goes only where a role default could go itself, such as a user, group, service or package name, or a line of a file, but not a path. A package list also refuses an item with a comma, which Ansible would split into two packages. A list of maps works too, since v0.20.0: `item.name` becomes `item.value.name`, the step gets `for_each = { for i in var.admins : i.name => i }`, and the variable's type lists the fields the role reads, with `| default('x')` making one optional. That holds where the field goes into a name, as a user, group or service has, not yet into a path or a template.
+
 `blockinfile` keeps Ansible's `ANSIBLE MANAGED BLOCK` marker, so Conn3x takes over the blocks Ansible already wrote instead of adding second copies.
 
 ## What it leaves for you
@@ -125,7 +134,7 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 
 - **`locale_gen`.** A [locale](/modules/locale) step also sets the host's `LANG`, which `locale_gen` doesn't.
 - **Anything under `no_log`.** Its values would land in the file, so they're left out of the comment too. That includes a `no_log` set on the block or the play.
-- **Control flow:** `with_*`, `when`, `register`, `ignore_errors`, `until` and similar, and any `loop` other than a plain list. A `when` becomes a choice of which hosts the circuit covers, made at plan time, and a loop over a variable or over items with fields becomes a step with [`for_each`](/reference/circuits/steps#for_each) that you write. These need a person.
+- **Control flow:** `with_*`, `when`, `register`, `ignore_errors`, `until` and similar, and any loop other than over a plain list. A `when` becomes a choice of which hosts the circuit covers, made at plan time, and a loop over a variable or over items with fields becomes a step with [`for_each`](/reference/circuits/steps#for_each) that you write. These need a person.
 - **Jinja templates and filters.** Rewrite templates in `templatefile` syntax (`${var}`, `%{ if }`) and use a [template](/modules/template) step.
 - **`win_template`.** Rewrite it in `templatefile` syntax for a [windows_file](/modules/windows_file) step, which writes line endings as they are, where `win_template` defaults to CRLF.
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when. That includes every `win_reboot`: a [windows_reboot](/modules/windows_reboot) step reboots once, then again when its `triggers` change, or with `only_if_pending`.
@@ -195,6 +204,7 @@ roles/app/                  circuit-app/
 
 - `tasks/main.yml` becomes the steps, with any `import_tasks` read in where it sits. `handlers/main.yml` becomes the handlers.
 - Each default in `defaults/main.yml` becomes a variable with that default, so you set it where you call the circuit, as a play would.
+- A `when` that tests the OS family, turns a true-or-false default on or off (`fail2ban_enabled | bool`, `not repo_add`), or, since v0.20.0, compares a text default to text (`install_method == 'package'`), becomes the step's `when`. Since v0.20.0, a `when` list mixing the two converts too, joined with `&&` as Ansible ANDs a list: `local.os_family[each.key] == "debian" && var.fail2ban_enabled`.
 - `vars/main.yml` is filled in where it's used. In Ansible a role's vars beat anything the play sets, so the circuit doesn't let a caller change them either.
 - A template that only prints variables with `{{ name }}` becomes a `.tftpl` file and a [template](/modules/template) step. The files your tasks copy come along into `files/`.
 - `variables.tf` starts with the `hosts` and `ssh_` variables every circuit in the catalogue takes, so you call this one the same way.
@@ -316,8 +326,8 @@ The circuit takes the name after the dot. For a role inside a collection, point 
 Everything a playbook leaves, plus:
 
 - **A default where its value needs checking first,** such as a path or a mode. In a playbook the converter can check the value it sees; in a role, whoever calls the circuit can set anything. So a default stays a variable only where Conn3x uses it exactly as Ansible does: content, a `line` or `block`, a package, service, user or group name, an `owner` or `group`.
-- **Defaults that are true or false, lists, maps or Jinja.** Jinja prints `true` as `True`, and HCL prints it as `true`, so the two would disagree. These stay out of `variables.tf`, with a comment saying why.
-- **`include_tasks`,** which Ansible reads only when the play gets there. If it names one file and has no `loop` or `when`, change it to `import_tasks` and convert again. An `import_tasks` with its own `when` or `vars` stays too, since those apply to every task it brings in.
+- **Defaults that are maps or Jinja, and most lists.** These stay out of `variables.tf`, with a comment saying why. A true-or-false default becomes a `bool` variable, and a list of plain values a `list(string)` one where a loop runs over it. A task that prints either into text still stays for review: Jinja prints `true` as `True` and a list in Python's own syntax, and HCL would print them differently.
+- **`include_tasks` with a `loop`, a `when` or a file named by Jinja,** which Ansible works out only when the play gets there. One that names a fixed file and sets nothing else is read like `import_tasks` since v0.20.0, and so is one whose `when` only tests the OS family or turns on a role's true-or-false default, as `fail2ban_enabled | bool` does. An `import_tasks` with `vars` stays too. One with a `when` is read in, since v0.20.0, and Ansible's way of giving that `when` to every task it brings in is followed, so each task converts or stays on its own.
 - **`include_role`, `import_role` and dependencies in `meta/main.yml`.** `-role` writes one directory, so they have nowhere to go. Convert a playbook that runs the role with `-out` instead, such as `- hosts: all` with `roles: [app]`, and they come along, as [Roles a play runs](#roles-a-play-runs) describes.
 - **`become` on a task.** In a circuit the `ssh` block decides that for every step: log in as root, or set `ssh_become`.
 - **Templates with `{% %}`, `{# #}` or filters.** Rewrite those in `templatefile` syntax.
