@@ -149,6 +149,21 @@ Two modules could cut Conn3x off from the switch it's changing, so both refuse t
 
 Passwords and their hashes are masked in session diffs and errors, so a log never holds one.
 
+### Secrets in eos_config
+
+A TACACS key or a BGP password in `lines` would end up in state, written as you typed it. Put those lines in `lines_wo` instead, which is write-only:
+
+```hcl
+step "aaa" {
+  eos_config {
+    lines    = ["tacacs-server host 10.0.0.5"]
+    lines_wo = ["tacacs-server key use-an-ephemeral-variable-here"]
+  }
+}
+```
+
+State keeps an HMAC of the lines and where each one starts up to its secret, such as `tacacs-server key`. The switch prints most secrets hashed, so a refresh checks only that a line with that start is there. A changed secret changes the HMAC, and the next apply sends the lines again. SNMP communities are refused, because a community's name is its secret; use an SNMPv3 user. The [eos_config reference](/modules/eos_config#secrets-in-lines_wo) has the details. Rotation hasn't been tried on a real switch yet, so if your switch refuses it, tell us on [#859](https://github.com/conn3xorg/conn3x/issues/859).
+
 ## Juniper Junos
 
 New in v0.17.0, and experimental like the EOS modules. Conn3x talks to Junos the way it talks to EOS, over SSH and the device's own CLI, with no NETCONF to turn on and nothing to install.
@@ -271,7 +286,7 @@ Classic IOS, such as IOS 15.9, only offers SHA-1 SSH, which Conn3x refuses, so i
 
 ## What's coming
 
-- More EOS, Junos, VyOS and IOS XE modules, and lines kept out of state for secrets in their `_config` steps.
+- More EOS, Junos, VyOS and IOS XE modules, and `lines_wo` for secrets in `junos_config`, `vyos_config` and `ios_config`, as `eos_config` has.
 - Classic Cisco IOS, behind an opt-in for its SHA-1 SSH. See the [roadmap](/roadmap).
 
 Until then, the provider-backed circuits work today: [RouterOS baseline](/circuits/routeros-baseline), [OPNsense VLANs](/circuits/opnsense-vlans) and [Proxmox VE network](/circuits/proxmox-network).
