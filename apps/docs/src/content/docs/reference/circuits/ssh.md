@@ -37,6 +37,7 @@ Conn3x uses SSH and nothing else. By default, it installs nothing on the hosts. 
 | `timeout` | string | `"3m"` | How long to keep retrying while a host doesn't answer, as a duration such as `"90s"` or `"5m"`. |
 | `confirm_after` | string | `"30s"` | Arista EOS steps only, since v0.9.0. How long to wait after committing a change before logging in again to confirm it, from `"5s"` to under `"4m"`. See [Network devices](/network-devices#why-it-waits-before-confirming). |
 | `jump_hosts` | list of strings | None | Hosts to connect through first, in order, like `ssh -J`. See [Jump hosts](#jump-hosts). |
+| `proxy_command` | list of strings | None | A command whose stdin and stdout carry the SSH connection, like OpenSSH's `ProxyCommand`, given as a list of arguments. `%h` is the host, `%p` the port, `%r` the user and `%%` a percent sign. It runs directly, not through a shell, on the machine running Conn3x. A host or user that starts with `-` or holds whitespace is refused. It can't be combined with `jump_hosts`. See [Hosts behind SSM or IAP](#hosts-behind-ssm-or-iap). Since the release after v0.19.0. |
 | `legacy_algorithms` | bool | `false` | Also offers this host the SHA-1 algorithms an old device needs: `ssh-rsa` host key signatures, SHA-1 Diffie-Hellman key exchange and `hmac-sha1`. They go after the modern ones, and only to this host, never to a jump host. Classic Cisco IOS 15 needs it. SHA-1 is weaker, so set it only for devices that can't do better. Since the release after v0.19.0. |
 | `ssh_config_file` | string | None | An OpenSSH client config file to read settings from, such as `"~/.ssh/config"`. Conn3x reads no SSH config unless you set this. See [SSH config files](#ssh-config-files). |
 
@@ -301,3 +302,31 @@ A new `port`, or an `ssh_config_file` that gives the host a new port or `HostNam
 - **Either address has no recorded key.** Conn3x can't tell, so the steps stay as they are. Connecting still checks the new address's key.
 
 A plan refreshes each step with the settings in state, so it tries the old port first. If sshd no longer listens there, the refresh gives up after 10 seconds with a `Host not reachable during refresh` warning, the steps keep what the last apply recorded, and the plan moves them to the new port.
+
+## Hosts behind SSM or IAP
+
+When port 22 is closed to the network, `proxy_command` can reach a host through its cloud's own tunnel instead. The SSH session still runs end to end, so host keys are checked as usual, and the agent, tunnels and network devices work as they do over TCP. The command uses its own credentials, the AWS or gcloud profile on the machine running Conn3x, and Conn3x never sees them.
+
+AWS Session Manager, with the host's instance ID as its address (it needs the AWS CLI and its Session Manager plugin):
+
+```hcl
+ssh {
+  user          = "ec2-user"
+  proxy_command = ["aws", "ssm", "start-session", "--target", "%h",
+    "--document-name", "AWS-StartSSHSession", "--parameters", "portNumber=%p"]
+}
+```
+
+Google Cloud IAP, with the instance name as its address:
+
+```hcl
+ssh {
+  user          = "deploy"
+  proxy_command = ["gcloud", "compute", "start-iap-tunnel", "%h", "%p",
+    "--listen-on-stdin", "--zone", "us-central1-a"]
+}
+```
+
+`ssh_config_file` reads `ProxyCommand` too, split into plain words and quotes. A line that needs a shell, with a pipe, `$` or a redirection, is refused, and so is a host that sets both `ProxyCommand` and `ProxyJump`. Closing the connection ends the command and anything it started, such as the Session Manager plugin.
+
+These have been tested with a stand-in proxy, not yet against SSM or IAP themselves. If you run Conn3x through either, tell us how it goes.
