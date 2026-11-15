@@ -304,6 +304,25 @@ The plan after the apply isn't empty:
 
 `idempotent` needs a run that applies, so it's an error with `command = plan`. It also can't be combined with `replace` in `plan_options`.
 
+### Test services on a systemd container
+
+A circuit that starts services needs a host that boots systemd. Conn3x publishes three, built from the same files its own end-to-end tests use: `ghcr.io/conn3xorg/test-rocky10`, `test-debian13` and `test-ubuntu2404`, for amd64 and arm64, rebuilt every week and signed. Start one with Podman and give root your key:
+
+```sh
+podman run -d --name web1 --systemd=always -p 127.0.0.1:2222:22 ghcr.io/conn3xorg/test-rocky10
+podman exec -i web1 sh -c 'cat > /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys' < ~/.ssh/id_ed25519.pub
+```
+
+Point the circuit's `ssh` block at `127.0.0.1`, port `2222`, user `root`, and the run applies to a host where `service` steps and handlers work. Remove it with `podman rm -f web1` when the test is done, so the next one starts clean. These images are for throwaway containers only: root logs in with whatever key you add, and nothing else about them is hardened.
+
+To check an image before you use it:
+
+```sh
+cosign verify ghcr.io/conn3xorg/test-rocky10 \
+  --certificate-identity-regexp 'https://github.com/conn3xorg/conn3x/.github/workflows/test-images.yml@.*' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
 ### What the clean-up leaves on the host
 
 When the file finishes, `conn3x test` destroys what it applied, and destroying a step does what its [`on_remove`](/reference/circuits/removal) says. Most modules default to `"forget"`, so after the run above `tree`, the `deploy` user and `/etc/motd` are all still on the container. Conn3x only dropped them from the test's state.
@@ -314,4 +333,4 @@ That's what you want on a throwaway container: `./down.sh` removes the lot, and 
 
 - **Values from earlier runs in assertions.** A later run can use an earlier run's outputs as `run.<name>.<output>` in its `variables` block, but not in an `assert` condition, and it can't see the earlier run's steps at all. Add an `output` to the circuit for anything you want to carry from one run to the next.
 - **Made-up attributes under a mock.** The mock invents values for attributes the host would report, such as `revision`, `installed_version` and `uid`. Assert on what the circuit sets, and on host-reported attributes only in runs against a real host.
-- **Services on the tutorial container.** It runs `sshd` without systemd, so `service` steps and handlers fail there with `System has not been booted with systemd as init system`. Test those plan-only, or on a host that boots systemd.
+- **Services on the tutorial container.** It runs `sshd` without systemd, so `service` steps and handlers fail there with `System has not been booted with systemd as init system`. Use one of the [systemd test images](#test-services-on-a-systemd-container) instead.
