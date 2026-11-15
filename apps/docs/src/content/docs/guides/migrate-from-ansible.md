@@ -204,6 +204,7 @@ roles/app/                  circuit-app/
 
 - `tasks/main.yml` becomes the steps, with any `import_tasks` read in where it sits. `handlers/main.yml` becomes the handlers.
 - Each default in `defaults/main.yml` becomes a variable with that default, so you set it where you call the circuit, as a play would.
+- A `when` that tests the OS family, or turns a true-or-false default on or off (`fail2ban_enabled | bool`, `not repo_add`), becomes the step's `when`. Since the release after v0.19.0, a `when` list mixing the two converts too, joined with `&&` as Ansible ANDs a list: `local.os_family[each.key] == "debian" && var.fail2ban_enabled`.
 - `vars/main.yml` is filled in where it's used. In Ansible a role's vars beat anything the play sets, so the circuit doesn't let a caller change them either.
 - A template that only prints variables with `{{ name }}` becomes a `.tftpl` file and a [template](/modules/template) step. The files your tasks copy come along into `files/`.
 - `variables.tf` starts with the `hosts` and `ssh_` variables every circuit in the catalogue takes, so you call this one the same way.
@@ -325,7 +326,7 @@ The circuit takes the name after the dot. For a role inside a collection, point 
 Everything a playbook leaves, plus:
 
 - **A default where its value needs checking first,** such as a path or a mode. In a playbook the converter can check the value it sees; in a role, whoever calls the circuit can set anything. So a default stays a variable only where Conn3x uses it exactly as Ansible does: content, a `line` or `block`, a package, service, user or group name, an `owner` or `group`.
-- **Defaults that are true or false, lists, maps or Jinja.** Jinja prints `true` as `True`, and HCL prints it as `true`, so the two would disagree. These stay out of `variables.tf`, with a comment saying why.
+- **Defaults that are maps or Jinja, and most lists.** These stay out of `variables.tf`, with a comment saying why. A true-or-false default becomes a `bool` variable where a `when` reads it, and a list of plain values a `list(string)` one where a loop runs over it, but not where a task prints either into text: Jinja prints `true` as `True` and a list in Python's own syntax, and HCL would print them differently.
 - **`include_tasks` with a `loop`, a `when` or a file named by Jinja,** which Ansible works out only when the play gets there. One that names a fixed file and sets nothing else is read like `import_tasks` since the release after v0.19.0, and so is one whose `when` only tests the OS family or turns on a role's true-or-false default, as `fail2ban_enabled | bool` does. An `import_tasks` with `vars` stays too. One with a `when` is read in, since the release after v0.19.0, and Ansible's way of giving that `when` to every task it brings in is followed, so each task converts or stays on its own.
 - **`include_role`, `import_role` and dependencies in `meta/main.yml`.** `-role` writes one directory, so they have nowhere to go. Convert a playbook that runs the role with `-out` instead, such as `- hosts: all` with `roles: [app]`, and they come along, as [Roles a play runs](#roles-a-play-runs) describes.
 - **`become` on a task.** In a circuit the `ssh` block decides that for every step: log in as root, or set `ssh_become`.
