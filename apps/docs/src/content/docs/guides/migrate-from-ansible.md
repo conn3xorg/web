@@ -124,6 +124,8 @@ step "tools" {
 }
 ```
 
+In a role, since the release after v0.19.0, a `loop:` or `with_items:` over a default that's a list of plain values, such as `admins: [alice, bob]`, works the same way. The default becomes a `list(string)` variable, so a caller can set its own list, and the step gets `for_each = var.admins`. A step can't repeat an item, so the list can't hold the same value twice; Ansible would run it twice. A list of maps, such as vhosts with `item.name`, still stays for you.
+
 `blockinfile` keeps Ansible's `ANSIBLE MANAGED BLOCK` marker, so Conn3x takes over the blocks Ansible already wrote instead of adding second copies.
 
 ## What it leaves for you
@@ -132,7 +134,7 @@ Each of these stays as commented YAML under a `# TODO(convert)` line:
 
 - **`locale_gen`.** A [locale](/modules/locale) step also sets the host's `LANG`, which `locale_gen` doesn't.
 - **Anything under `no_log`.** Its values would land in the file, so they're left out of the comment too. That includes a `no_log` set on the block or the play.
-- **Control flow:** `with_*`, `when`, `register`, `ignore_errors`, `until` and similar, and any `loop` other than a plain list. A `when` becomes a choice of which hosts the circuit covers, made at plan time, and a loop over a variable or over items with fields becomes a step with [`for_each`](/reference/circuits/steps#for_each) that you write. These need a person.
+- **Control flow:** `with_*`, `when`, `register`, `ignore_errors`, `until` and similar, and any loop other than over a plain list. A `when` becomes a choice of which hosts the circuit covers, made at plan time, and a loop over a variable or over items with fields becomes a step with [`for_each`](/reference/circuits/steps#for_each) that you write. These need a person.
 - **Jinja templates and filters.** Rewrite templates in `templatefile` syntax (`${var}`, `%{ if }`) and use a [template](/modules/template) step.
 - **`win_template`.** Rewrite it in `templatefile` syntax for a [windows_file](/modules/windows_file) step, which writes line endings as they are, where `win_template` defaults to CRLF.
 - **Commands and reboots that ran on every play.** A Conn3x step runs when something is out of date, so it needs a `creates`, `removes` or `unless` guard, or `triggers`, to know when. That includes every `win_reboot`: a [windows_reboot](/modules/windows_reboot) step reboots once, then again when its `triggers` change, or with `only_if_pending`.
