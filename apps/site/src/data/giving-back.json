@@ -2,6 +2,62 @@
   "otherMinutes": 89,
   "items": [
     {
+      "date": "2026-11-16",
+      "repo": "tailscale/tailscale",
+      "summary": "The macOS installer wrote its launchd plist as 0700, so plain tools couldn't read it. We confirmed reinstalling always creates the file fresh, so the new 0644 mode reaches existing installs.",
+      "url": "https://github.com/tailscale/tailscale/pull/22436#issuecomment-6918236897",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Anonymizing quietly added a DEFAULT entry to the operators you passed in. We checked nothing else on that path writes to your config, so with this fix it comes back exactly as you sent it.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2498#pullrequestreview-5921034026",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "prometheus/alertmanager",
+      "summary": "Per-alert limits could reset early because the stale check read an arbitrary heap slot. We traced the new test by hand and pointed out that the red CI job is a one-word lint fix.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5746#pullrequestreview-5921046860",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "prometheus/prometheus",
+      "summary": "stripDomain cut bracketed IPv6 addresses at the first dot. We matched the fix against Go's address parsing and asked not to lock a truncated IPv4 result into the tests.",
+      "url": "https://github.com/prometheus/prometheus/pull/20463#pullrequestreview-5921056833",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "keycloak/keycloak",
+      "summary": "Creating an organization group logged an admin event without the group's ID. We checked the fix has exactly the same shape as realm groups, which already get it right.",
+      "url": "https://github.com/keycloak/keycloak/pull/55210#pullrequestreview-5921066106",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "osquery/osquery",
+      "summary": "A plist key with no UTF-8 form could crash osquery's macOS tables. We flagged that an older open PR makes the same change and covers a few more spots, so maintainers can pick one.",
+      "url": "https://github.com/osquery/osquery/pull/9314#pullrequestreview-5921088082",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "Infisical/infisical",
+      "summary": "A CSV import fix keeps the newline at the end of quoted values. We showed it also keeps the space in a row like KEY, \"abc\", which main trims, and suggested trimming only outside the quotes.",
+      "url": "https://github.com/Infisical/infisical/pull/9490#pullrequestreview-5921102147",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-16",
+      "repo": "prometheus/prometheus",
+      "summary": "The console template docs queried node exporter metrics that no longer exist. We checked every new name against node_exporter's source.",
+      "url": "https://github.com/prometheus/prometheus/pull/20462#pullrequestreview-5921114934",
+      "minutes": 1
+    },
+    {
       "date": "2026-11-15",
       "repo": "data-privacy-stack/presidio",
       "summary": "Two open PRs fix the same Italian VAT span bug with slightly different patterns. We showed the one input where they differ, a code followed by an underscore, which main and the other PR still match.",
