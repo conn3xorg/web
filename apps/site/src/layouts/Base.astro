@@ -12,9 +12,11 @@ interface Props {
   path: string;
   image?: string;
   imageAlt?: string;
+  // The page's largest image above the fold, fetched with the HTML.
+  lcpImage?: string;
 }
 
-const props = Astro.props;
+const { lcpImage, ...props } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -29,6 +31,7 @@ const props = Astro.props;
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <Font cssVariable="--font-schibsted" preload />
     <Font cssVariable="--font-jetbrains" preload />
+    {lcpImage && <link rel="preload" as="image" href={lcpImage} type={lcpImage.endsWith(".webp") ? "image/webp" : undefined} fetchpriority="high" />}
     <Seo {...props} />
     <!-- Cloudflare Web Analytics, only on the real hosts: the beacon may only report from them. -->
     <script is:inline>if(/(^|\.)conn3x\.org$/.test(location.hostname)){const s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.dataset.cfBeacon='{"token":"a6d1b39fdbab4414a50520fcbe318d8a"}';document.head.append(s)}</script>

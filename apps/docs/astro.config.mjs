@@ -41,6 +41,9 @@ export default defineConfig({
       },
       lastUpdated: false,
       head: [
+        // The body font is the text a page paints last; fetch it with the HTML,
+        // not after the CSS, so it lands before the first paint on most loads.
+        { tag: "link", attrs: { rel: "preload", href: "/fonts/schibsted-grotesk-latin-wght-normal.woff2", as: "font", type: "font/woff2", crossorigin: "" } },
         { tag: "meta", attrs: { property: "og:image", content: "https://docs.conn3x.org/og.png" } },
         { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
         { tag: "meta", attrs: { name: "twitter:image", content: "https://docs.conn3x.org/og.png" } },
@@ -48,7 +51,7 @@ export default defineConfig({
         { tag: "script", content: 'if(/(^|\\.)conn3x\\.org$/.test(location.hostname)){const s=document.createElement("script");s.defer=true;s.src="https://static.cloudflareinsights.com/beacon.min.js";s.dataset.cfBeacon=\'{"token":"a6d1b39fdbab4414a50520fcbe318d8a"}\';document.head.append(s)}' },
       ],
       sidebar: [
-        { label: "Start here", items: ["install", "get-started", "concepts", { slug: "network-devices", badge: { text: "Experimental", variant: "caution" } }] },
+        { label: "Start here", items: ["install", "get-started", "concepts", "troubleshooting", { slug: "network-devices", badge: { text: "Experimental", variant: "caution" } }] },
         {
           label: "Tutorials",
           items: [
@@ -58,7 +61,7 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/adopt-servers", "guides/database", "guides/paths-as-root", "guides/share-a-circuit", "guides/test-a-circuit", "guides/migrate-from-ansible", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/bastions", "guides/drift", "guides/adopt-servers", "guides/database", "guides/paths-as-root", "guides/share-a-circuit", "guides/test-a-circuit", "guides/migrate-from-ansible", "guides/ansible-convert-coverage", "guides/migrate-from-terraform"],
         },
         {
           label: "Compare",

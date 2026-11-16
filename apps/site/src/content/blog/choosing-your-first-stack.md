@@ -22,7 +22,7 @@ Everything in Conn3x follows the same four moves, whether you're creating a serv
 
 <figure>
   <a href="/media/blog/choosing-your-first-stack/loop.png">
-    <img src="/media/blog/choosing-your-first-stack/loop.png" width="1600" height="1294" loading="lazy" decoding="async" alt="The loop: write, plan, apply, plan again, with drift feeding back into plan when something changes by hand." />
+    <img src="/media/blog/choosing-your-first-stack/loop.webp" srcset="/media/blog/choosing-your-first-stack/loop-800.webp 800w, /media/blog/choosing-your-first-stack/loop.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1294" loading="lazy" decoding="async" alt="The loop: write, plan, apply, plan again, with drift feeding back into plan when something changes by hand." />
   </a>
   <figcaption>The loop you learn once. The same four moves cover cloud resources and the servers they create.</figcaption>
 </figure>
@@ -56,7 +56,7 @@ conn3x apply
 ```
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/choosing-your-first-stack/try.mp4" poster="/media/blog/choosing-your-first-stack/try.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="A terminal running the try-it-locally example: apply installs a package, adds a user and writes /etc/motd, the second plan reports no changes, a hand edit is made, and conn3x drift reports it."></video>
+  <video src="/media/blog/choosing-your-first-stack/try.mp4" data-poster="/media/blog/choosing-your-first-stack/try.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running the try-it-locally example: apply installs a package, adds a user and writes /etc/motd, the second plan reports no changes, a hand edit is made, and conn3x drift reports it."></video>
   <figcaption>The whole loop on the try-it-locally example, including a hand edit and <code>conn3x drift</code> catching it.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

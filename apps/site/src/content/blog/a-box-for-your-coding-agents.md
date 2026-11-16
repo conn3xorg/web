@@ -16,7 +16,7 @@ It's the fifth post in our series on [AI you can account for](/blog/ai-you-can-a
 
 <figure>
   <a href="/media/blog/a-box-for-your-coding-agents/agentbox.png">
-    <img src="/media/blog/a-box-for-your-coding-agents/agentbox.png" width="1600" height="1600" loading="lazy" decoding="async" alt="A box for your coding agents. Plain SSH and tmux, or Orca, reach the host over SSH with a key. The host has git, tmux, ripgrep, jq, a C toolchain and Node.js 26 from NodeSource. The user dev has no password and no sudo, with agents such as claude, codex and gemini in ~/.local/bin, and repos cloned once into ~/code. Conn3x never sees a key, never opens a port and never gives sudo." />
+    <img src="/media/blog/a-box-for-your-coding-agents/agentbox.webp" srcset="/media/blog/a-box-for-your-coding-agents/agentbox-800.webp 800w, /media/blog/a-box-for-your-coding-agents/agentbox.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1600" loading="lazy" decoding="async" alt="A box for your coding agents. Plain SSH and tmux, or Orca, reach the host over SSH with a key. The host has git, tmux, ripgrep, jq, a C toolchain and Node.js 26 from NodeSource. The user dev has no password and no sudo, with agents such as claude, codex and gemini in ~/.local/bin, and repos cloned once into ~/code. Conn3x never sees a key, never opens a port and never gives sudo." />
   </a>
   <figcaption>One user, the tools agents expect, and nothing listening on the network.</figcaption>
 </figure>

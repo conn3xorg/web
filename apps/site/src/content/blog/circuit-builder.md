@@ -14,7 +14,7 @@ So you open four READMEs. You copy four module blocks and pin four release tags.
 That's the job the [Circuit Builder](/build) does. You pick a distribution and the circuits you want, fill in the few values they can't guess, and it writes the config. It doesn't touch a server. It writes files you read, keep and run yourself.
 
 <figure>
-  <video src="/media/blog/circuit-builder/build.mp4" poster="/media/blog/circuit-builder/build.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="The Circuit Builder in a browser: Rocky Linux 10 is picked, then nginx, which greys out apache, caddy, haproxy and traefik with the reason. Docker, fail2ban and firewall are picked, which greys out keepalived. Two hosts, an SSH user and a key are typed in, Write my config is pressed, and the main.tf and README.md it wrote are shown."></video>
+  <video src="/media/blog/circuit-builder/build.mp4" data-poster="/media/blog/circuit-builder/build.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="The Circuit Builder in a browser: Rocky Linux 10 is picked, then nginx, which greys out apache, caddy, haproxy and traefik with the reason. Docker, fail2ban and firewall are picked, which greys out keepalived. Two hosts, an SSH user and a key are typed in, Write my config is pressed, and the main.tf and README.md it wrote are shown."></video>
   <figcaption>Rocky Linux 10, nginx, docker, fail2ban and firewall, from first click to main.tf.</figcaption>
 </figure>
 
@@ -22,7 +22,7 @@ That's the job the [Circuit Builder](/build) does. You pick a distribution and t
 
 <figure>
   <a href="/media/blog/circuit-builder/flow.png">
-    <img src="/media/blog/circuit-builder/flow.png" width="1600" height="1102" loading="lazy" decoding="async" alt="Three steps to a config. Step 1, distribution: Rocky Linux 10, Fedora 45, Ubuntu 24.04 or Debian 13. Step 2, circuits: 56 circuits in 14 categories, where picking one greys out whatever clashes with it. Step 3, settings: hosts, SSH user and key, and only the inputs each circuit needs. Out come main.tf, variables.tf for secrets, README.md with run steps, and a zip of all of it. Written in your browser; nothing you type leaves it." />
+    <img src="/media/blog/circuit-builder/flow.webp" srcset="/media/blog/circuit-builder/flow-800.webp 800w, /media/blog/circuit-builder/flow.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1102" loading="lazy" decoding="async" alt="Three steps to a config. Step 1, distribution: Rocky Linux 10, Fedora 45, Ubuntu 24.04 or Debian 13. Step 2, circuits: 56 circuits in 14 categories, where picking one greys out whatever clashes with it. Step 3, settings: hosts, SSH user and key, and only the inputs each circuit needs. Out come main.tf, variables.tf for secrets, README.md with run steps, and a zip of all of it. Written in your browser; nothing you type leaves it." />
   </a>
 </figure>
 
@@ -44,7 +44,7 @@ Then the circuits, and this is where the builder earns its keep.
 
 <figure>
   <a href="/media/blog/circuit-builder/safety.png">
-    <img src="/media/blog/circuit-builder/safety.png" width="1600" height="1391" loading="lazy" decoding="async" alt="What it won't let you do. Put two things on one port: 80 and 443, DNS on 53, 3000, 8080, 9090, 9100 and 3306. Use a circuit on an untested distro. Type a password into the page: secrets become variables set with TF_VAR_. Forget what a circuit needs: Infisical brings PostgreSQL and Valkey, wired. Open more than you use: the firewall opens only what your picks listen on. Run unpinned or unofficial code: only official circuits, each pinned to its release, with no raw HCL. Checked in CI: 56 circuits alone and 15 combinations run through conn3x validate." />
+    <img src="/media/blog/circuit-builder/safety.webp" srcset="/media/blog/circuit-builder/safety-800.webp 800w, /media/blog/circuit-builder/safety.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1391" loading="lazy" decoding="async" alt="What it won't let you do. Put two things on one port: 80 and 443, DNS on 53, 3000, 8080, 9090, 9100 and 3306. Use a circuit on an untested distro. Type a password into the page: secrets become variables set with TF_VAR_. Forget what a circuit needs: Infisical brings PostgreSQL and Valkey, wired. Open more than you use: the firewall opens only what your picks listen on. Run unpinned or unofficial code: only official circuits, each pinned to its release, with no raw HCL. Checked in CI: 56 circuits alone and 15 combinations run through conn3x validate." />
   </a>
 </figure>
 
@@ -64,7 +64,7 @@ Pick nginx and four chips fade: Apache, Caddy, HAProxy and Traefik. Under them, 
 
 <figure>
   <a href="/media/blog/circuit-builder/picks.png">
-    <img src="/media/blog/circuit-builder/picks.png" width="1280" height="900" loading="lazy" decoding="async" alt="The Circuits step on Rocky Linux 10 with nginx, docker, fail2ban and firewall picked. Apache, caddy, haproxy and traefik are greyed out, each with the line: Can't go with nginx: both want ports 80 and 443. Pi-hole is greyed out for the same reason. Keepalived is greyed out with: Can't go with firewall: circuit-firewall has no rule for VRRP, so every host would claim the floating address." />
+    <img src="/media/blog/circuit-builder/picks.webp" srcset="/media/blog/circuit-builder/picks-800.webp 800w, /media/blog/circuit-builder/picks.webp 1280w" sizes="(max-width: 52rem) 100vw, 52rem" width="1280" height="900" loading="lazy" decoding="async" alt="The Circuits step on Rocky Linux 10 with nginx, docker, fail2ban and firewall picked. Apache, caddy, haproxy and traefik are greyed out, each with the line: Can't go with nginx: both want ports 80 and 443. Pi-hole is greyed out for the same reason. Keepalived is greyed out with: Can't go with firewall: circuit-firewall has no rule for VRRP, so every host would claim the floating address." />
   </a>
   <figcaption>The real page, with nginx, docker, fail2ban and firewall picked.</figcaption>
 </figure>
@@ -135,7 +135,7 @@ Ports that belong on your own network get more care. Samba's 445, NFS's 2049, no
 
 <figure>
   <a href="/media/blog/circuit-builder/config.png">
-    <img src="/media/blog/circuit-builder/config.png" width="1280" height="838" loading="lazy" decoding="async" alt="The Your config section of the Circuit Builder: tabs for main.tf and README.md, the start of main.tf with the locals block and the nginx and docker modules, and buttons to copy the file or download all as a zip." />
+    <img src="/media/blog/circuit-builder/config.webp" srcset="/media/blog/circuit-builder/config-800.webp 800w, /media/blog/circuit-builder/config.webp 1280w" sizes="(max-width: 52rem) 100vw, 52rem" width="1280" height="838" loading="lazy" decoding="async" alt="The Your config section of the Circuit Builder: tabs for main.tf and README.md, the start of main.tf with the locals block and the nginx and docker modules, and buttons to copy the file or download all as a zip." />
   </a>
 </figure>
 
