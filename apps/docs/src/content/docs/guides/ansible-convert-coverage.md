@@ -1,0 +1,79 @@
+---
+title: How much of a role converts
+description: "What conn3x convert ansible turns into steps today, measured on fifteen popular Galaxy roles, what it leaves for you and why, and which gaps are being closed."
+---
+
+`conn3x convert ansible` converts a task only when it can show the step does what Ansible does. Everything else stays in the output, commented out, with the reason. This page says how much that is on real roles, so you can decide whether converting saves you time before you try it.
+
+The numbers are for Conn3x v0.20.0.
+
+## Fifteen Galaxy roles
+
+We run the converter on fifteen popular roles from Ansible Galaxy, all by geerlingguy, with `conn3x convert ansible -role`. Every circuit it writes passes `conn3x validate`.
+
+| Role | Converted | Left for you |
+| --- | --- | --- |
+| apache | 2 | 26 |
+| certbot | 3 | 15 |
+| docker | 3 | 30 |
+| firewall | 1 | 11 |
+| git | 1 | 12 |
+| haproxy | 3 | 3 |
+| java | 0 | 12 |
+| mysql | 1 | 49 |
+| nginx | 3 | 16 |
+| nodejs | 2 | 13 |
+| ntp | 1 | 14 |
+| php | 6 | 49 |
+| postgresql | 0 | 36 |
+| redis | 3 | 8 |
+| security | 4 | 18 |
+| **Total** | **33** | **312** |
+
+"Left for you" counts every task and handler that stayed for review, plus role-level items such as `meta/main.yml` dependencies. So on roles this size, expect the converter to write about one task in ten and to explain the other nine. The explanation is the useful part: each `TODO(convert)` says what stopped it, which is usually the thing you'd have to think about anyway.
+
+## What stops a task
+
+These are the reasons the fifteen roles hit most, in order:
+
+| Reason | Tasks |
+| --- | --- |
+| A `when` the converter can't translate | 111 |
+| `changed_when` | 16 |
+| `no_log` | 16 |
+| `register` | 14 |
+| A `with_items` loop it can't translate | 13 |
+| A variable that isn't a role default or a per-family value | 12 |
+| `set_fact` | 8 |
+| `ignore_errors` | 8 |
+
+A `when` on the host's OS family converts, as does a `when` on a true-or-false role default or on a role default compared to text. The 111 are everything else: distribution names and versions, a registered result's `rc` or `stat`, a list's `length`, and conditions that combine those.
+
+## Being worked on
+
+Each of these has an open issue or pull request:
+
+- Loops over a role's list of maps, and role defaults in paths ([#879](https://github.com/conn3xorg/conn3x/issues/879)).
+- Read-only probes with `register`, such as a `command` with `changed_when: false` ([#882](https://github.com/conn3xorg/conn3x/issues/882)).
+- Handlers whose state or service name comes from a default or from `vars/` ([#910](https://github.com/conn3xorg/conn3x/pull/910), [#911](https://github.com/conn3xorg/conn3x/pull/911)).
+- A `when` on whether a package is installed, through `ansible_facts.packages` ([#899](https://github.com/conn3xorg/conn3x/issues/899)).
+
+This page gets new numbers with each release.
+
+## Left for you on purpose
+
+Some tasks stay for review because the converted step would behave differently, not because nobody has got to them:
+
+- **`become` on a task.** In a circuit the `ssh` block decides who runs every step. Take it off the task, and log in as root or set `ssh_become`.
+- **`no_log`.** Converting the task would write its values into the circuit, where anyone reading the file sees them. Move the secret into a write-only argument.
+- **`force: no` on `copy` or `template`.** Ansible writes the file only when it's missing. A Conn3x step makes the file match on every apply.
+- **A task tagged `never`.** Ansible runs it only when you ask for its tag. A step runs on every apply.
+- **Templates with Jinja statements**, `{% %}` or `{# #}`. Rewrite them in `templatefile` syntax (`${var}`, `%{ if }`).
+
+## Try it on your own role
+
+```sh
+conn3x convert ansible -role ./roles/myrole -out ./circuits/myrole
+```
+
+The summary lists every task that needs you and why. If the reason you hit most isn't on this page, say so on [GitHub Discussions](https://github.com/conn3xorg/conn3x/discussions). It's how we pick what to convert next. The [migration guide](/guides/migrate-from-ansible) covers the modules that convert and how to finish what's left.
