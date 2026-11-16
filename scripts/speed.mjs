@@ -33,10 +33,18 @@ if (!PAGES[group] || !base) {
 
 const dir = mkdtempSync(join(tmpdir(), "speed-"));
 
+// lcp is one Lighthouse run's LCP for url. A run that fails, such as
+// Lighthouse's NO_NAVSTART, counts as over budget, so it's tried again
+// like a slow one rather than stopping the check.
 function lcp(url) {
   const out = join(dir, "report.json");
-  execFileSync("npx", ["--yes", LIGHTHOUSE, url, "--quiet", "--only-categories=performance", "--output=json", `--output-path=${out}`, "--chrome-flags=--headless=new --no-sandbox"], { stdio: ["ignore", "ignore", "inherit"] });
-  return JSON.parse(readFileSync(out, "utf8")).audits["largest-contentful-paint"].numericValue;
+  try {
+    execFileSync("npx", ["--yes", LIGHTHOUSE, url, "--quiet", "--only-categories=performance", "--output=json", `--output-path=${out}`, "--chrome-flags=--headless=new --no-sandbox"], { stdio: ["ignore", "ignore", "inherit"] });
+    return JSON.parse(readFileSync(out, "utf8")).audits["largest-contentful-paint"].numericValue;
+  } catch (err) {
+    console.error(`Lighthouse failed on ${url}: ${err.message.split("\n")[0]}`);
+    return Infinity;
+  }
 }
 
 let failed = 0;
