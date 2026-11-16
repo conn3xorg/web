@@ -130,6 +130,8 @@ In a role, since v0.20.0, a `loop:` or `with_items:` over a default that's a lis
 
 ## What it leaves for you
 
+How much that is on real roles, measured on fifteen from Ansible Galaxy, is on [How much of a role converts](/guides/ansible-convert-coverage).
+
 Each of these stays as commented YAML under a `# TODO(convert)` line:
 
 - **`locale_gen`.** A [locale](/modules/locale) step also sets the host's `LANG`, which `locale_gen` doesn't.
