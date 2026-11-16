@@ -86,6 +86,7 @@ export default defineConfig({
             "reference/host-packages-and-services",
             "reference/host-files-and-commands",
             "reference/eos-device",
+            "reference/security-model",
           ],
         },
         {
