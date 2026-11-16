@@ -98,7 +98,7 @@ Read it top to bottom and the hand-offs are gone. The addresses reach the circui
 Now take `app-3` out of the set. The next plan destroys that droplet, and first it deletes the deploy key from the server, because keys default to `on_remove = "delete"`. The account is forgotten rather than removed, which is the default for most steps. Either way, nothing is left pointing at a server that's gone.
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/why-conn3x/apply.mp4" poster="/media/blog/why-conn3x/apply.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="A terminal running conn3x apply against two local test hosts: it adds a deploy user and key to each, then a second plan reports no changes."></video>
+  <video src="/media/blog/why-conn3x/apply.mp4" data-poster="/media/blog/why-conn3x/apply.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x apply against two local test hosts: it adds a deploy user and key to each, then a second plan reports no changes."></video>
   <figcaption>The same two steps applied for real to two local test containers. The second plan has nothing to do.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>
@@ -111,7 +111,7 @@ It's also better, because one tool can see the whole picture. A plan is a diff a
 
 <figure>
   <a href="/media/blog/why-conn3x/infographic.png">
-    <img src="/media/blog/why-conn3x/infographic.png" width="1600" height="2534" loading="lazy" decoding="async" alt="Infographic: the same deploy done with Terraform plus Ansible, with four hand-off points marked, and done with one Conn3x plan." />
+    <img src="/media/blog/why-conn3x/infographic.webp" srcset="/media/blog/why-conn3x/infographic-800.webp 800w, /media/blog/why-conn3x/infographic.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="2534" loading="lazy" decoding="async" alt="Infographic: the same deploy done with Terraform plus Ansible, with four hand-off points marked, and done with one Conn3x plan." />
   </a>
   <figcaption>The same deploy, two ways. Every Conn3x detail comes from the v0.2.2 README and docs.</figcaption>
 </figure>

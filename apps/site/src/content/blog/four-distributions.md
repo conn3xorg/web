@@ -13,7 +13,7 @@ You shouldn't have to find that out on your servers. So before any change to Con
 
 <figure>
   <a href="/media/blog/four-distributions/gates.png">
-    <img src="/media/blog/four-distributions/gates.png" width="1600" height="1702" loading="lazy" decoding="async" alt="Three gates. Every pull request: circuits applied to Rocky 10, Fedora 45, Ubuntu 24.04 and Debian 13 hosts, with the agent off and required, plus example, upstream-edit and size checks. Every night: two DigitalOcean droplets created and set up in one plan, then checked. Every release: signed checksums, build provenance and SBOMs." />
+    <img src="/media/blog/four-distributions/gates.webp" srcset="/media/blog/four-distributions/gates-800.webp 800w, /media/blog/four-distributions/gates.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1702" loading="lazy" decoding="async" alt="Three gates. Every pull request: circuits applied to Rocky 10, Fedora 45, Ubuntu 24.04 and Debian 13 hosts, with the agent off and required, plus example, upstream-edit and size checks. Every night: two DigitalOcean droplets created and set up in one plan, then checked. Every release: signed checksums, build provenance and SBOMs." />
   </a>
   <figcaption>The three gates, as of v0.6.3.</figcaption>
 </figure>
@@ -69,7 +69,7 @@ Releases are built by a workflow in GitHub Actions, never on a laptop, and each 
 None of that helps unless you check it, and it takes about ten seconds:
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/four-distributions/verify.mp4" poster="/media/blog/four-distributions/verify.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="A terminal: downloading conn3x v0.6.3 with its checksums and signature, cosign verify-blob printing Verified OK, sha256sum reporting the archive OK, gh attestation verify confirming the release workflow on main built it, then conn3x version printing v0.6.3."></video>
+  <video src="/media/blog/four-distributions/verify.mp4" data-poster="/media/blog/four-distributions/verify.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: downloading conn3x v0.6.3 with its checksums and signature, cosign verify-blob printing Verified OK, sha256sum reporting the archive OK, gh attestation verify confirming the release workflow on main built it, then conn3x version printing v0.6.3."></video>
   <figcaption>Verifying the v0.6.3 download for real: the signature, the checksum, the provenance, then the binary.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

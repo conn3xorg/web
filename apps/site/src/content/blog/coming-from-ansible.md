@@ -43,7 +43,7 @@ Converted 5 tasks. 1 thing needs you; each is marked TODO(convert):
 ```
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/coming-from-ansible/convert.mp4" poster="/media/blog/coming-from-ansible/convert.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="A terminal running conn3x convert ansible on a playbook: five tasks convert, one Jinja template is marked TODO, and conn3x validate accepts the result."></video>
+  <video src="/media/blog/coming-from-ansible/convert.mp4" data-poster="/media/blog/coming-from-ansible/convert.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x convert ansible on a playbook: five tasks convert, one Jinja template is marked TODO, and conn3x validate accepts the result."></video>
   <figcaption>The converter on a real playbook, then <code>conn3x validate</code> on what it wrote.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>
@@ -92,7 +92,7 @@ The command exits 3 while anything is left, so you can run it in CI until the co
 
 <figure>
   <a href="/media/blog/coming-from-ansible/cheatsheet.png">
-    <img src="/media/blog/coming-from-ansible/cheatsheet.png" width="1600" height="3011" loading="lazy" decoding="async" alt="Cheat sheet: Ansible concepts on the left and their Conn3x equivalents on the right, with what the converter translates and what it leaves for you." />
+    <img src="/media/blog/coming-from-ansible/cheatsheet.webp" srcset="/media/blog/coming-from-ansible/cheatsheet-800.webp 800w, /media/blog/coming-from-ansible/cheatsheet.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="3011" loading="lazy" decoding="async" alt="Cheat sheet: Ansible concepts on the left and their Conn3x equivalents on the right, with what the converter translates and what it leaves for you." />
   </a>
   <figcaption>The cheat sheet, to keep next to your playbooks.</figcaption>
 </figure>
