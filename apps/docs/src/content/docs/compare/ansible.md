@@ -33,7 +33,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Removing something | Delete the task and the host keeps it, unrecorded. Write a `state: absent` task to remove it | Delete the step and the plan shows it; `on_remove` decides what the host keeps |
 | Cloud resources | Cloud collections such as `amazon.aws`, `azure.azcollection` and `google.cloud` | Any OpenTofu provider, in the same plan as the servers |
 | Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
-| Modules | A very large ecosystem of collections on Ansible Galaxy | 55 Linux modules, 25 Windows modules (all out of experimental), and [127 official circuits](/circuits) |
+| Modules | A very large ecosystem of collections on Ansible Galaxy | 55 Linux modules, 25 Windows modules (all out of experimental), and [128 official circuits](/circuits) |
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos and VyOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
@@ -229,7 +229,7 @@ There are plenty of jobs where Ansible is the right tool, and we'd rather say so
 - Ad-hoc work, at Ansible's breadth. `conn3x run` covers the one-off command or module across a group, from the same inventory, but Ansible has years of habits and modules behind its ad-hoc mode, and `-m` in Conn3x takes only the modules a step can run.
 - Network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their own CLI is only planned.
 - Windows at scale. Ansible's Windows support has years of production use behind it. Windows in Conn3x is a preview, and since v0.19.0 all 25 of its modules are out of experimental. It can build a forest, a child domain or a new tree, join servers, add domain controllers and keep the OUs, groups and users in the domain, and [azure-ad-lab](https://github.com/conn3xorg/conn3x/tree/main/examples/azure-ad-lab) builds a whole domain from one config.
-- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 55 Linux modules and 127 circuits, which cover a lot of ground and are still a much smaller set.
+- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 55 Linux modules and 128 circuits, which cover a lot of ground and are still a much smaller set.
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
 - A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x has none of that; you run it from CI.
 - Team familiarity. Ansible is widely known, widely taught and well documented. A team that's fluent in it gives up real speed by switching.

@@ -34,7 +34,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Ansible collections for many vendors' gear | [Arista EOS, Juniper Junos and VyOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
-| Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [127 official circuits](/circuits) |
+| Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [128 official circuits](/circuits) |
 | Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.10.0 |
 
 ## The same job, both ways
