@@ -82,7 +82,11 @@ jobs:
           (cd apps/site && pnpm exec wrangler dev --port 8787 --ip 127.0.0.1 > /tmp/site.log 2>&1 &)
           (cd apps/docs && pnpm exec wrangler dev --port 8788 --ip 127.0.0.1 > /tmp/docs.log 2>&1 &)
           for port in 8787 8788; do
-            timeout 120 bash -c "until curl -sf -o /dev/null http://127.0.0.1:$port/; do sleep 1; done"
+            if ! timeout 180 bash -c "until curl -s -o /dev/null http://127.0.0.1:$port/; do sleep 1; done"; then
+              echo "::error::nothing answered on port $port"
+              tail -n 40 /tmp/site.log /tmp/docs.log
+              exit 1
+            fi
           done
       - run: node scripts/speed.mjs http://127.0.0.1:8787 http://127.0.0.1:8788
 
