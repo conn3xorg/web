@@ -70,7 +70,20 @@ username ops ssh-key ssh-ed25519 AAAA...
 aaa authorization exec default local
 ```
 
-Without the `aaa` line, EOS starts every SSH login unprivileged, even for a privilege 15 user, and every step fails with a message that names the fix. Conn3x never types `enable` to get there instead. On a switch with an enable password, `enable` would take the next line Conn3x sends as the password.
+Without the `aaa` line, EOS starts every SSH login unprivileged, even for a privilege 15 user, and every step fails with a message that names the fix.
+
+If your site keeps `enable` behind a password and won't give a tool's login privilege 15, use `become` instead (since v0.21.0). On a switch it means `enable`, as Ansible's `become_method: enable` does:
+
+```hcl
+ssh {
+  user                 = "ops"
+  private_key_file     = "~/.ssh/id_ed25519"
+  become               = true
+  become_password_file = "~/.eos-enable"
+}
+```
+
+Every command then goes to the CLI after `enable` and the password from the file, which is read at run time and never goes into configuration, state or logs. Leave out `become_password_file` when the switch has no enable password. With a wrong password the switch takes the lines after it as more tries, so nothing runs, and the step fails with "the switch refused the enable password from become_password_file". `become` works on Arista EOS only; Junos, VyOS and IOS XE still need a login that starts privileged.
 
 Password logins aren't supported yet. Use a key, or the SSH agent.
 
