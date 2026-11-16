@@ -61,6 +61,31 @@ jobs:
           pnpm exec playwright install --with-deps chromium || pnpm exec playwright install chromium
           pnpm exec playwright test
 
+  # Every page has to show its largest content in under 2 seconds on
+  # Lighthouse's mobile run (James, 16 Nov 2026). scripts/speed.mjs lists the
+  # pages and fails over budget.
+  speed:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Serve both sites as Cloudflare would
+        run: |
+          (cd apps/site && pnpm exec wrangler dev --port 8787 --ip 127.0.0.1 > /tmp/site.log 2>&1 &)
+          (cd apps/docs && pnpm exec wrangler dev --port 8788 --ip 127.0.0.1 > /tmp/docs.log 2>&1 &)
+          for port in 8787 8788; do
+            timeout 120 bash -c "until curl -sf -o /dev/null http://127.0.0.1:$port/; do sleep 1; done"
+          done
+      - run: node scripts/speed.mjs http://127.0.0.1:8787 http://127.0.0.1:8788
+
   # Every config the Circuit Builder can write for the CI builds, made by the
   # same code as the page, has to pass conn3x validate, which also checks the
   # values against each circuit's own rules.
