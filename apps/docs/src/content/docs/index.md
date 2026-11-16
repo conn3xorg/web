@@ -11,12 +11,31 @@ Every plan shows the exact change headed for each host, line by line, before any
 
 ## Where to start
 
-- **New here?** [Install Conn3x](/install), then work through [Get started](/get-started). It takes about fifteen minutes and needs one Linux server you can reach over SSH.
-- **Want to learn by doing?** The [tutorials](/tutorials) start with a container on your own machine and build up to cloud servers, bastions and CI.
-- **Coming from Ansible?** [Convert a playbook](/guides/migrate-from-ansible) and see how much carries over, or read how the two [compare](/compare/ansible) first.
-- **Already using Terraform or OpenTofu?** Your configuration works as it is. [Add circuits to it](/guides/migrate-from-terraform), or see [the same server built both ways](/compare/terraform-and-ansible).
-- **Want nginx, PostgreSQL or WireGuard without writing it yourself?** Start from one of the [official circuits](/circuits).
-- **Looking something up?** The [circuit language](/reference/circuits) and every [module](/modules/file) are in the reference.
+Pick the path that sounds like you. Each step builds on the one before it.
+
+**New to Conn3x.**
+1. [Install Conn3x](/install).
+2. [Try it in a container](/tutorials/try-locally) on your own machine, no server needed.
+3. [Configure your first server](/tutorials/first-server) over SSH.
+4. [Get started](/get-started) and [Concepts](/concepts) fill in the why.
+
+**You use Terraform or OpenTofu.** Your configuration works as it is.
+1. [Add circuits to it](/guides/migrate-from-terraform).
+2. [Create a server and configure it in one plan](/guides/provision-and-configure).
+3. Pick your cloud: [AWS](/tutorials/aws), [Azure](/tutorials/azure), [Google Cloud](/tutorials/google-cloud) or [DigitalOcean](/tutorials/digitalocean).
+
+**You use Ansible.**
+1. Read how the two [compare](/compare/ansible).
+2. [Convert a playbook](/tutorials/migrate-ansible) in the tutorial, then the [migration guide](/guides/migrate-from-ansible) for the rest.
+3. See [how much of a role converts](/guides/ansible-convert-coverage) before you start on yours.
+
+**You're taking it to production.**
+1. Reach private hosts [through a bastion](/guides/bastions), and keep [secrets](/tutorials/secrets) out of state.
+2. [Test a circuit](/guides/test-a-circuit) before it runs anywhere real.
+3. [Check for drift](/guides/drift), and [run that check in CI](/tutorials/drift-in-ci).
+4. [Bring servers you already run](/guides/adopt-servers) under Conn3x without rebuilding them.
+
+Want nginx, PostgreSQL or WireGuard without writing it yourself? Start from one of the [official circuits](/circuits). Looking something up? The [circuit language](/reference/circuits) and every [module](/modules/file) are in the reference, and [Troubleshooting](/troubleshooting) goes by the error you got.
 
 ## What it runs on
 
