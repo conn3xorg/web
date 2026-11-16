@@ -1,6 +1,6 @@
 ---
 title: Handlers
-description: The handler block, notify, when handlers run and on which hosts, and the revision attribute they watch.
+description: The handler block, notify, a handler's when, when handlers run and on which hosts, and the revision attribute they watch.
 ---
 
 A handler restarts or reloads a systemd service on the hosts where a step that notifies it changed something.
@@ -38,6 +38,7 @@ circuit "web" {
 
 ```text
 handler "NAME" {
+  when = EXPRESSION                 # optional
   service {
     name   = EXPRESSION
     action = "restart" | "reload"   # optional
@@ -46,7 +47,7 @@ handler "NAME" {
 }
 ```
 
-A handler block takes one label, the handler's name, and contains exactly one `service` block:
+A handler block takes one label, the handler's name, an optional [`when`](#when), and exactly one `service` block:
 
 | Argument | Required | Description |
 | --- | --- | --- |
@@ -55,6 +56,25 @@ A handler block takes one label, the handler's name, and contains exactly one `s
 | `serial` | No | `true` to act on one host at a time. Defaults to `false`. See [One host at a time](#one-host-at-a-time). |
 
 A handler takes no other arguments or blocks.
+
+## when
+
+Set `when` and the handler runs only on the hosts where it's true, as a [step's `when`](/reference/circuits/steps#when) picks a step's hosts. A role that restarts the web server only when it manages one, say:
+
+```hcl
+handler "restart_webserver" {
+  when = var.manage_webserver
+  service {
+    name = "apache2"
+  }
+}
+```
+
+It's evaluated once for each host, with `each.key` and `each.value` for that host, and has to be known when Conn3x plans. Handlers don't loop, so `item` isn't there.
+
+Where it's false, the steps that notify the handler still run, and nothing restarts. If a host changes from true to false, the handler's instance on that host is removed, which changes nothing there. If it changes back, the handler runs there on the next apply, as it does on a host just added.
+
+`when` on a handler is in Conn3x since v0.22.0.
 
 ## notify
 
@@ -111,7 +131,7 @@ circuit "web" {
 A handler runs on a host when, during this apply, a step that notifies it changed something on that host:
 
 - It runs only on the hosts that changed. If a notifying step changed `web1` but not `web2`, the handler runs on `web1` only.
-- A step whose [`when`](/reference/circuits/steps#when) is false on a host doesn't run there, so it never notifies there. Handlers take no `when` of their own.
+- A step whose [`when`](/reference/circuits/steps#when) is false on a host doesn't run there, so it never notifies there. A handler's own [`when`](#when) can keep it from running on a host too.
 - A step with [`run_once`](/reference/circuits/steps#run_once) notifies only the host it ran on, as in Ansible. To restart every host after it, use a step that runs everywhere.
 - It runs after every step in the circuit has finished on every host, not straight after the step that notified it. In a circuit with [`strategy = "per_host"`](/reference/circuits/steps#per-host), it runs on a host once every step has finished on that host, so a slow host doesn't hold up the restarts on the others. That setting is in Conn3x since v0.9.0.
 - It runs at most once on each host in an apply, however many of its steps changed.
