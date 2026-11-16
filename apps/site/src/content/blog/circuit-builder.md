@@ -14,7 +14,7 @@ So you open four READMEs. You copy four module blocks and pin four release tags.
 That's the job the [Circuit Builder](/build) does. You pick a distribution and the circuits you want, fill in the few values they can't guess, and it writes the config. It doesn't touch a server. It writes files you read, keep and run yourself.
 
 <figure>
-  <video src="/media/blog/circuit-builder/build.mp4" poster="/media/blog/circuit-builder/build.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="The Circuit Builder in a browser: Rocky Linux 10 is picked, then nginx, which greys out apache, caddy, haproxy and traefik with the reason. Docker, fail2ban and firewall are picked, which greys out keepalived. Two hosts, an SSH user and a key are typed in, Write my config is pressed, and the main.tf and README.md it wrote are shown."></video>
+  <video src="/media/blog/circuit-builder/build.mp4" data-poster="/media/blog/circuit-builder/build.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="The Circuit Builder in a browser: Rocky Linux 10 is picked, then nginx, which greys out apache, caddy, haproxy and traefik with the reason. Docker, fail2ban and firewall are picked, which greys out keepalived. Two hosts, an SSH user and a key are typed in, Write my config is pressed, and the main.tf and README.md it wrote are shown."></video>
   <figcaption>Rocky Linux 10, nginx, docker, fail2ban and firewall, from first click to main.tf.</figcaption>
 </figure>
 

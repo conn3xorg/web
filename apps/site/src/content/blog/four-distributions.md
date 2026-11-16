@@ -69,7 +69,7 @@ Releases are built by a workflow in GitHub Actions, never on a laptop, and each 
 None of that helps unless you check it, and it takes about ten seconds:
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/four-distributions/verify.mp4" poster="/media/blog/four-distributions/verify.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: downloading conn3x v0.6.3 with its checksums and signature, cosign verify-blob printing Verified OK, sha256sum reporting the archive OK, gh attestation verify confirming the release workflow on main built it, then conn3x version printing v0.6.3."></video>
+  <video src="/media/blog/four-distributions/verify.mp4" data-poster="/media/blog/four-distributions/verify.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: downloading conn3x v0.6.3 with its checksums and signature, cosign verify-blob printing Verified OK, sha256sum reporting the archive OK, gh attestation verify confirming the release workflow on main built it, then conn3x version printing v0.6.3."></video>
   <figcaption>Verifying the v0.6.3 download for real: the signature, the checksum, the provenance, then the binary.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

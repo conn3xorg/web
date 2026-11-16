@@ -33,7 +33,7 @@ Run conn3x plan to see what Conn3x would change to put them back.
 Resize a droplet in the console and it lands in the same report, under `Cloud`. A file someone deleted shows as `gone` instead of `changed`.
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/catch-the-3am-fix/drift.mp4" poster="/media/blog/catch-the-3am-fix/drift.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: conn3x drift reports no drift and exits 0. A hand edit rewrites /etc/motd and removes the tree package. conn3x drift then lists the file and the package under Hosts and exits 2, and conn3x plan shows the line it would put back."></video>
+  <video src="/media/blog/catch-the-3am-fix/drift.mp4" data-poster="/media/blog/catch-the-3am-fix/drift.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: conn3x drift reports no drift and exits 0. A hand edit rewrites /etc/motd and removes the tree package. conn3x drift then lists the file and the package under Hosts and exits 2, and conn3x plan shows the line it would put back."></video>
   <figcaption>The <a href="https://github.com/conn3xorg/conn3x/tree/main/examples/try-it-locally">try-it-locally example</a>, run for real: a clean check, a hand edit at 03:12, drift exiting 2, and the line the next apply would have quietly undone.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

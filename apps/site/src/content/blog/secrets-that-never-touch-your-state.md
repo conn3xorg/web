@@ -41,7 +41,7 @@ conn3x apply
 The password goes to the server over SSH and lands in the file with mode `0600`, the default for write-only files. It doesn't appear in the plan, in `conn3x show -json` of a saved plan, or in state. A `template` step does the same with `write_only = true`, for config files that hold a secret among other settings.
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/secrets-that-never-touch-your-state/secrets.mp4" poster="/media/blog/secrets-that-never-touch-your-state/secrets.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: conn3x apply writes a password to a host, the file on the host holds it, grep counts zero copies of it in terraform.tfstate, the state holds HMACs, and after the file is edited on the host conn3x plan shows content_hmac changing."></video>
+  <video src="/media/blog/secrets-that-never-touch-your-state/secrets.mp4" data-poster="/media/blog/secrets-that-never-touch-your-state/secrets.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: conn3x apply writes a password to a host, the file on the host holds it, grep counts zero copies of it in terraform.tfstate, the state holds HMACs, and after the file is edited on the host conn3x plan shows content_hmac changing."></video>
   <figcaption>The <a href="https://github.com/conn3xorg/conn3x/tree/main/examples/secrets">secrets example</a>, run for real. The long HMACs at the end are shortened with <code>sed</code> to fit.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

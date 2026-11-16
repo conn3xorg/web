@@ -56,7 +56,7 @@ conn3x apply
 ```
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/choosing-your-first-stack/try.mp4" poster="/media/blog/choosing-your-first-stack/try.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running the try-it-locally example: apply installs a package, adds a user and writes /etc/motd, the second plan reports no changes, a hand edit is made, and conn3x drift reports it."></video>
+  <video src="/media/blog/choosing-your-first-stack/try.mp4" data-poster="/media/blog/choosing-your-first-stack/try.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running the try-it-locally example: apply installs a package, adds a user and writes /etc/motd, the second plan reports no changes, a hand edit is made, and conn3x drift reports it."></video>
   <figcaption>The whole loop on the try-it-locally example, including a hand edit and <code>conn3x drift</code> catching it.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

@@ -43,7 +43,7 @@ Converted 5 tasks. 1 thing needs you; each is marked TODO(convert):
 ```
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/coming-from-ansible/convert.mp4" poster="/media/blog/coming-from-ansible/convert.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x convert ansible on a playbook: five tasks convert, one Jinja template is marked TODO, and conn3x validate accepts the result."></video>
+  <video src="/media/blog/coming-from-ansible/convert.mp4" data-poster="/media/blog/coming-from-ansible/convert.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x convert ansible on a playbook: five tasks convert, one Jinja template is marked TODO, and conn3x validate accepts the result."></video>
   <figcaption>The converter on a real playbook, then <code>conn3x validate</code> on what it wrote.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

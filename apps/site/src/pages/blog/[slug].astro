@@ -77,6 +77,15 @@ const webp = webpFor(post.data.image);
     video.controls = false;
     toggle.hidden = false;
     label();
+    // The still frame comes in as the clip nears the screen, not with the
+    // page: it isn't what a reader sees first, and it slowed the first paint.
+    if (video.dataset.poster) {
+      new IntersectionObserver((entries, seen) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        seen.disconnect();
+        video.poster = video.dataset.poster!;
+      }, { rootMargin: "200px" }).observe(video);
+    }
     // Start a clip only once it scrolls into view: playing it on load would
     // fetch the whole video ahead of the page's own content.
     if (still) continue;

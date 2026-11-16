@@ -68,7 +68,7 @@ Plan: 12 to add, 0 to change, 0 to destroy.
 ```
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/coming-from-terraform/plan.mp4" poster="/media/blog/coming-from-terraform/plan.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x plan on the DigitalOcean example: three host keys, three droplets, and a user and a key for each droplet, twelve changes in one plan."></video>
+  <video src="/media/blog/coming-from-terraform/plan.mp4" data-poster="/media/blog/coming-from-terraform/plan.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x plan on the DigitalOcean example: three host keys, three droplets, and a user and a key for each droplet, twelve changes in one plan."></video>
   <figcaption>A real <code>conn3x plan</code> of the DigitalOcean example, with the resource lines picked out.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>

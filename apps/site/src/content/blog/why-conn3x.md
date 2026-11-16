@@ -98,7 +98,7 @@ Read it top to bottom and the hand-offs are gone. The addresses reach the circui
 Now take `app-3` out of the set. The next plan destroys that droplet, and first it deletes the deploy key from the server, because keys default to `on_remove = "delete"`. The account is forgotten rather than removed, which is the default for most steps. Either way, nothing is left pointing at a server that's gone.
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/why-conn3x/apply.mp4" poster="/media/blog/why-conn3x/apply.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x apply against two local test hosts: it adds a deploy user and key to each, then a second plan reports no changes."></video>
+  <video src="/media/blog/why-conn3x/apply.mp4" data-poster="/media/blog/why-conn3x/apply.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal running conn3x apply against two local test hosts: it adds a deploy user and key to each, then a second plan reports no changes."></video>
   <figcaption>The same two steps applied for real to two local test containers. The second plan has nothing to do.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>
