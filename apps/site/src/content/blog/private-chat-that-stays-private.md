@@ -16,7 +16,7 @@ What makes it worth a post is the starting position. A chat app you're about to 
 
 <figure>
   <a href="/media/blog/private-chat-that-stays-private/access.png">
-    <img src="/media/blog/private-chat-that-stays-private/access.png" width="1600" height="1635" loading="lazy" decoding="async" alt="Who can do what. A browser reaches Open WebUI on 127.0.0.1:8080 through Caddy or an SSH tunnel, and Open WebUI talks to Ollama on port 11434, or to LiteLLM if you add it. Who can sign up: nobody. Which models people see: none until an admin grants them. Where the chats are: on your host. What leaves the box: only prompts you route out." />
+    <img src="/media/blog/private-chat-that-stays-private/access.webp" srcset="/media/blog/private-chat-that-stays-private/access-800.webp 800w, /media/blog/private-chat-that-stays-private/access.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1635" loading="lazy" decoding="async" alt="Who can do what. A browser reaches Open WebUI on 127.0.0.1:8080 through Caddy or an SSH tunnel, and Open WebUI talks to Ollama on port 11434, or to LiteLLM if you add it. Who can sign up: nobody. Which models people see: none until an admin grants them. Where the chats are: on your host. What leaves the box: only prompts you route out." />
   </a>
   <figcaption>Four questions, four closed doors, and the input that opens each one.</figcaption>
 </figure>

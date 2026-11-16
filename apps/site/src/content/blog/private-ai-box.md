@@ -16,7 +16,7 @@ Conn3x has circuits for both halves now, [Ollama](https://github.com/conn3xorg/c
 
 <figure>
   <a href="/media/blog/private-ai-box/box.png">
-    <img src="/media/blog/private-ai-box/box.png" width="1600" height="1268" loading="lazy" decoding="async" alt="What one apply builds. Your laptop opens an SSH tunnel to a DigitalOcean droplet. A cloud firewall lets in SSH from your addresses and nothing else. On the Ubuntu 24.04 droplet, baseline, hardening and firewall circuits lock it down, and Ollama on port 11434 and Qdrant on port 6333 listen on 127.0.0.1 only." />
+    <img src="/media/blog/private-ai-box/box.webp" srcset="/media/blog/private-ai-box/box-800.webp 800w, /media/blog/private-ai-box/box.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1268" loading="lazy" decoding="async" alt="What one apply builds. Your laptop opens an SSH tunnel to a DigitalOcean droplet. A cloud firewall lets in SSH from your addresses and nothing else. On the Ubuntu 24.04 droplet, baseline, hardening and firewall circuits lock it down, and Ollama on port 11434 and Qdrant on port 6333 listen on 127.0.0.1 only." />
   </a>
   <figcaption>One state file holds the droplet and everything on it.</figcaption>
 </figure>
