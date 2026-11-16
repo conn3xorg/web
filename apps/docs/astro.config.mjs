@@ -19,8 +19,10 @@ export default defineConfig({
   trailingSlash: "never",
   build: {
     format: "file",
-    // Stylesheets ship as files so the CSP needs no style hashes.
-    inlineStylesheets: "never",
+    // Inline, so a page's first paint doesn't wait on a stylesheet round
+    // trip; scripts/csp.mjs hashes each <style> into the CSP (one hash, as
+    // every page shares the same CSS).
+    inlineStylesheets: "always",
   },
   integrations: [
     starlight({

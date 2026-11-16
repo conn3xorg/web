@@ -26,7 +26,7 @@ export default defineConfig({
       cssVariable: "--font-schibsted",
       fallbacks: ["system-ui", "sans-serif"],
       options: {
-        variants: [{ src: ["./src/fonts/schibsted-grotesk-latin-wght-normal.woff2"], weight: "400 900", style: "normal" }],
+        variants: [{ src: ["./src/fonts/schibsted-grotesk-latin-wght-normal.woff2"], weight: "400 800", style: "normal" }],
       },
     },
     {
@@ -35,7 +35,7 @@ export default defineConfig({
       cssVariable: "--font-jetbrains",
       fallbacks: ["ui-monospace", "monospace"],
       options: {
-        variants: [{ src: ["./src/fonts/jetbrains-mono-latin-wght-normal.woff2"], weight: "100 800", style: "normal" }],
+        variants: [{ src: ["./src/fonts/jetbrains-mono-latin-wght-normal.woff2"], weight: "400 700", style: "normal" }],
       },
     },
   ],
