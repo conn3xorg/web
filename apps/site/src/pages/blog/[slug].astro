@@ -2,6 +2,7 @@
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
 import { isPublished } from "../../lib/published.js";
+import { webpFor } from "../../lib/webp.js";
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
@@ -21,8 +22,9 @@ const series = post.data.series
   ? (await getCollection("blog", (p) => p.data.series === post.data.series && isPublished(p))).sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
   : [];
 const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+const webp = webpFor(post.data.image);
 ---
-<Base title={post.data.title} description={post.data.description} path={`/blog/${post.id}`} image={post.data.image} imageAlt={post.data.imageAlt}>
+<Base title={post.data.title} description={post.data.description} path={`/blog/${post.id}`} image={post.data.image} imageAlt={post.data.imageAlt} lcpImage={webp ?? post.data.image}>
   <a class="skip" href="#main">Skip to content</a>
   <SiteHeader />
   <main id="main" class="wrap">
@@ -34,7 +36,10 @@ const date = post.data.date.toLocaleDateString("en-GB", { day: "numeric", month:
         <p class="meta"><time datetime={post.data.date.toISOString().slice(0, 10)}>{date}</time><span aria-hidden="true">·</span>{post.data.author}<span aria-hidden="true">·</span>{minutes} min read</p>
       </header>
       {post.data.image && (
-        <img class="cover" src={post.data.image} alt={post.data.imageAlt ?? ""} width="1200" height="630" decoding="async" fetchpriority="high" />
+        <picture>
+          {webp && <source srcset={webp} type="image/webp" />}
+          <img class="cover" src={post.data.image} alt={post.data.imageAlt ?? ""} width="1200" height="630" fetchpriority="high" />
+        </picture>
       )}
       <div class="layout">
         <div class="body">

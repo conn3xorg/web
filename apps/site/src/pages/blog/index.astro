@@ -2,6 +2,7 @@
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
 import { isPublished } from "../../lib/published.js";
+import { webpFor } from "../../lib/webp.js";
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
@@ -28,7 +29,10 @@ const date = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month:
               <h2>{p.data.title}</h2>
               <span class="d">{p.data.description}</span>
             </span>
-            <img src={p.data.image ?? "/og.png"} alt="" width="1200" height="630" loading={i < 2 ? "eager" : "lazy"} decoding="async" />
+            <picture>
+              {webpFor(p.data.image) && <source srcset={webpFor(p.data.image)} type="image/webp" />}
+              <img src={p.data.image ?? "/og.png"} alt="" width="1200" height="630" loading={i < 2 ? "eager" : "lazy"} decoding="async" />
+            </picture>
           </a>
         </li>
       ))}
