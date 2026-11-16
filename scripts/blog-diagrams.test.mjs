@@ -16,7 +16,9 @@ function attribute(tag, name) {
   return new RegExp(`\\b${name}\\s*=\\s*([\"'])(.*?)\\1`, "i").exec(tag)?.[2];
 }
 
-test("1600-pixel PNGs in blog figures link to their full-size image", () => {
+// A figure shows the WebP beside its PNG, for half the bytes, and links
+// the PNG at full size.
+test("1600-pixel blog figures link to their full-size PNG", () => {
   let checked = 0;
   for (const filename of readdirSync(blogRoot).filter((name) => name.endsWith(".md"))) {
     const markdown = readFileSync(join(blogRoot, filename), "utf8")
@@ -27,15 +29,16 @@ test("1600-pixel PNGs in blog figures link to their full-size image", () => {
       const images = [...figure.matchAll(/<img\b[^>]*>/gi)];
       for (const [imageTag] of images) {
         const src = attribute(imageTag, "src");
-        if (attribute(imageTag, "width") !== "1600" || !/\.png(?:[?#].*)?$/i.test(src ?? "")) continue;
+        if (attribute(imageTag, "width") !== "1600" || !/\.(?:png|webp)(?:[?#].*)?$/i.test(src ?? "")) continue;
         checked++;
+        const png = src.replace(/\.webp(?=[?#]|$)/i, ".png");
         const linkedToSelf = [...figure.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)].some(([, attrs, anchor]) =>
-          attribute(`<a ${attrs}>`, "href") === src
+          attribute(`<a ${attrs}>`, "href") === png
           && [...anchor.matchAll(/<img\b[^>]*>/gi)].some(([linkedImage]) => attribute(linkedImage, "src") === src),
         );
-        assert.ok(linkedToSelf, `${filename}: ${src} should link to itself inside its figure`);
+        assert.ok(linkedToSelf, `${filename}: ${src} should link to ${png} inside its figure`);
       }
     }
   }
-  assert.ok(checked > 0, "expected at least one 1600-pixel PNG in a blog figure");
+  assert.ok(checked > 0, "expected at least one 1600-pixel image in a blog figure");
 });

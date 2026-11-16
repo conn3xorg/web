@@ -41,7 +41,7 @@ conn3x apply
 The password goes to the server over SSH and lands in the file with mode `0600`, the default for write-only files. It doesn't appear in the plan, in `conn3x show -json` of a saved plan, or in state. A `template` step does the same with `write_only = true`, for config files that hold a secret among other settings.
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/secrets-that-never-touch-your-state/secrets.mp4" poster="/media/blog/secrets-that-never-touch-your-state/secrets.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="A terminal: conn3x apply writes a password to a host, the file on the host holds it, grep counts zero copies of it in terraform.tfstate, the state holds HMACs, and after the file is edited on the host conn3x plan shows content_hmac changing."></video>
+  <video src="/media/blog/secrets-that-never-touch-your-state/secrets.mp4" data-poster="/media/blog/secrets-that-never-touch-your-state/secrets.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: conn3x apply writes a password to a host, the file on the host holds it, grep counts zero copies of it in terraform.tfstate, the state holds HMACs, and after the file is edited on the host conn3x plan shows content_hmac changing."></video>
   <figcaption>The <a href="https://github.com/conn3xorg/conn3x/tree/main/examples/secrets">secrets example</a>, run for real. The long HMACs at the end are shortened with <code>sed</code> to fit.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>
@@ -52,7 +52,7 @@ If state doesn't hold the content, how does Conn3x know when someone changes the
 
 <figure>
   <a href="/media/blog/secrets-that-never-touch-your-state/flow.png">
-    <img src="/media/blog/secrets-that-never-touch-your-state/flow.png" width="1600" height="1243" loading="lazy" decoding="async" alt="Where the secret goes: from the ephemeral variable to the file on the host over SSH, never into the plan or state. State holds content_hmac, made with a key that lives outside state." />
+    <img src="/media/blog/secrets-that-never-touch-your-state/flow.webp" srcset="/media/blog/secrets-that-never-touch-your-state/flow-800.webp 800w, /media/blog/secrets-that-never-touch-your-state/flow.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1243" loading="lazy" decoding="async" alt="Where the secret goes: from the ephemeral variable to the file on the host over SSH, never into the plan or state. State holds content_hmac, made with a key that lives outside state." />
   </a>
   <figcaption>Where the value goes, and where it doesn't.</figcaption>
 </figure>

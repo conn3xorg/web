@@ -33,7 +33,7 @@ Run conn3x plan to see what Conn3x would change to put them back.
 Resize a droplet in the console and it lands in the same report, under `Cloud`. A file someone deleted shows as `gone` instead of `changed`.
 
 <figure class="clip" data-clip>
-  <video src="/media/blog/catch-the-3am-fix/drift.mp4" poster="/media/blog/catch-the-3am-fix/drift.webp" width="1280" height="720" controls muted loop playsinline preload="metadata" aria-label="A terminal: conn3x drift reports no drift and exits 0. A hand edit rewrites /etc/motd and removes the tree package. conn3x drift then lists the file and the package under Hosts and exits 2, and conn3x plan shows the line it would put back."></video>
+  <video src="/media/blog/catch-the-3am-fix/drift.mp4" data-poster="/media/blog/catch-the-3am-fix/drift.webp" width="1280" height="720" controls muted loop playsinline preload="none" aria-label="A terminal: conn3x drift reports no drift and exits 0. A hand edit rewrites /etc/motd and removes the tree package. conn3x drift then lists the file and the package under Hosts and exits 2, and conn3x plan shows the line it would put back."></video>
   <figcaption>The <a href="https://github.com/conn3xorg/conn3x/tree/main/examples/try-it-locally">try-it-locally example</a>, run for real: a clean check, a hand edit at 03:12, drift exiting 2, and the line the next apply would have quietly undone.</figcaption>
   <button type="button" data-clip-toggle hidden>Pause</button>
 </figure>
@@ -148,7 +148,7 @@ Configuration in a subdirectory? Give both `conn3x` commands a `-chdir`, as in `
 
 <figure>
   <a href="/media/blog/catch-the-3am-fix/loop.png">
-    <img src="/media/blog/catch-the-3am-fix/loop.png" width="1600" height="1531" loading="lazy" decoding="async" alt="The nightly loop: a schedule runs conn3x drift. Exit 0 means nothing to do. Exit 2 opens an issue; you run conn3x plan, then either apply to put the server back or copy the change into the circuit to keep it. Either way the next morning's drift is clean." />
+    <img src="/media/blog/catch-the-3am-fix/loop.webp" srcset="/media/blog/catch-the-3am-fix/loop-800.webp 800w, /media/blog/catch-the-3am-fix/loop.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1531" loading="lazy" decoding="async" alt="The nightly loop: a schedule runs conn3x drift. Exit 0 means nothing to do. Exit 2 opens an issue; you run conn3x plan, then either apply to put the server back or copy the change into the circuit to keep it. Either way the next morning's drift is clean." />
   </a>
   <figcaption>The nightly loop, and the two ways out of it.</figcaption>
 </figure>
