@@ -2,15 +2,17 @@
 // Copyright (c) The Conn3x Authors
 // SPDX-License-Identifier: MPL-2.0
 
-// The official circuits as cards, each with a small dot mark drawn from its
-// name, so every card looks different but the same family.
+// A few official circuits as cards, each with a small dot mark drawn from
+// its name, so every card looks different but the same family. The rest
+// are on /circuits: drawing all of them made the homepage slow to load.
 
 type Circuit = { name: string; repo: string; description: string; version: string; official: boolean };
 const files = import.meta.glob<{ default: Circuit }>("../../data/circuits/*.json", { eager: true });
-const circuits = Object.values(files)
+const featured = ["nginx", "postgres", "docker", "monitoring", "hardening", "wireguard", "tailscale", "ollama"];
+const official = Object.values(files)
   .map((f) => f.default)
-  .filter((c) => c.official)
-  .sort((a, b) => a.name.localeCompare(b.name));
+  .filter((c) => c.official);
+const circuits = featured.map((n) => official.find((c) => c.name === n)).filter((c): c is Circuit => !!c);
 
 // A 5x5 mirrored pattern from the name: the same name always draws the same mark.
 function mark(name: string) {
