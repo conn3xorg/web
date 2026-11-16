@@ -3,6 +3,48 @@
   "items": [
     {
       "date": "2026-11-15",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Two open PRs fix the same Italian VAT span bug with slightly different patterns. We showed the one input where they differ, a code followed by an underscore, which main and the other PR still match.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2453#pullrequestreview-5914053630",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Thirteen countries' IBANs were never detected because they were missing from the format table. We checked every new pattern against the IBAN registry, and confirmed nothing with its own prefix is left out.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2460#pullrequestreview-5914053828",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "keycloak/keycloak",
+      "summary": "A fix stops debug logs printing credential offers with their pre-authorized codes. We showed the offer nonce still logged next to it fetches the same offer, code included, so it should go too.",
+      "url": "https://github.com/keycloak/keycloak/pull/55191#pullrequestreview-5914054024",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "keycloak/keycloak",
+      "summary": "The Java admin client can now ask for brief realm listings. We checked the endpoint and the brief fields match the javadoc, and noted one case that returns only the realm name.",
+      "url": "https://github.com/keycloak/keycloak/pull/55209#pullrequestreview-5914054136",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "prometheus/prometheus",
+      "summary": "Relative times in the UI no longer show NaN for a bad timestamp. We linked the sister fix for the query page's copy of the same parser, so one copy can go.",
+      "url": "https://github.com/prometheus/prometheus/pull/20452#pullrequestreview-5914054214",
+      "minutes": 1
+    },
+    {
+      "date": "2026-11-15",
+      "repo": "prometheus/prometheus",
+      "summary": "Duration expressions stop losing a millisecond to float rounding. We showed the new rounding can overflow at the very top of the allowed range, and the one-line check that covers it.",
+      "url": "https://github.com/prometheus/prometheus/pull/20458#pullrequestreview-5914054349",
+      "minutes": 2
+    },
+    {
+      "date": "2026-11-15",
       "repo": "prometheus/prometheus",
       "summary": "A check that remote-written labels arrive sorted sat in the remote read path instead, the only caller of the function it changed. We pointed to where write ingestion validates labels, so the issue it meant to close gets fixed.",
       "url": "https://github.com/prometheus/prometheus/pull/20454#issuecomment-6890782237",
