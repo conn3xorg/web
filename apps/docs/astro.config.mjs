@@ -87,6 +87,7 @@ export default defineConfig({
             "reference/host-files-and-commands",
             "reference/eos-device",
             "reference/security-model",
+            "reference/assurance-case",
           ],
         },
         {
