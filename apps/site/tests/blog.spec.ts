@@ -33,6 +33,7 @@ test.describe("with reduced motion", () => {
   test("a clip doesn't play", async ({ page }) => {
     await page.goto(POST);
     const video = page.locator("[data-clip] video").first();
+    await video.scrollIntoViewIfNeeded();
     await expect(video).toHaveAttribute("poster", /\.webp$/);
     await page.waitForTimeout(500);
     expect(await video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
@@ -42,6 +43,8 @@ test.describe("with reduced motion", () => {
 test("a clip can be paused", async ({ page }) => {
   await page.goto(POST);
   const video = page.locator("[data-clip] video").first();
+  // Clips start when they scroll into view, not with the page.
+  await video.scrollIntoViewIfNeeded();
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
   const toggle = page.locator("[data-clip-toggle]").first();
   await toggle.click();
@@ -60,7 +63,8 @@ test.describe("without JavaScript", () => {
   test("the infographic opens its full-size image", async ({ page }) => {
     await page.goto(POST);
     const imageLink = page.locator('figure a[href="/media/blog/why-conn3x/infographic.png"]');
-    await expect(imageLink.locator("img")).toHaveAttribute("src", "/media/blog/why-conn3x/infographic.png");
+    // It shows the WebP and opens the PNG at full size.
+    await expect(imageLink.locator("img")).toHaveAttribute("src", "/media/blog/why-conn3x/infographic.webp");
     await imageLink.click();
     await expect(page).toHaveURL(/\/media\/blog\/why-conn3x\/infographic\.png$/);
   });

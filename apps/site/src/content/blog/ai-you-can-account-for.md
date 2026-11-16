@@ -24,7 +24,7 @@ None of them tells you to install anything. They're about risk, roles, policies 
 
 <figure>
   <a href="/media/blog/ai-you-can-account-for/map.png">
-    <img src="/media/blog/ai-you-can-account-for/map.png" width="1600" height="1868" loading="lazy" decoding="async" alt="Six questions, and what answers them. Data residency: circuit-ollama and circuit-openwebui. Access and budgets: circuit-litellm and circuit-openwebui. Audit trail: circuit-litellm and circuit-langfuse. Personal data: circuit-presidio, also as a LiteLLM guardrail. Change evidence: conn3x plan, conn3x drift, pinned images and state encryption. Host hardening: baseline, hardening and firewall circuits, and circuit-caddy." />
+    <img src="/media/blog/ai-you-can-account-for/map.webp" srcset="/media/blog/ai-you-can-account-for/map-800.webp 800w, /media/blog/ai-you-can-account-for/map.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1868" loading="lazy" decoding="async" alt="Six questions, and what answers them. Data residency: circuit-ollama and circuit-openwebui. Access and budgets: circuit-litellm and circuit-openwebui. Audit trail: circuit-litellm and circuit-langfuse. Personal data: circuit-presidio, also as a LiteLLM guardrail. Change evidence: conn3x plan, conn3x drift, pinned images and state encryption. Host hardening: baseline, hardening and firewall circuits, and circuit-caddy." />
   </a>
   <figcaption>Green means the circuit's README says how it was tested. Orange means it isn't shipped yet.</figcaption>
 </figure>
@@ -61,7 +61,7 @@ Put together, it looks like this. One door, one gateway every request goes throu
 
 <figure>
   <a href="/media/blog/ai-you-can-account-for/stack.png">
-    <img src="/media/blog/ai-you-can-account-for/stack.png" width="1600" height="1965" loading="lazy" decoding="async" alt="A private AI stack you can account for. People, apps and admins reach one hardened host over HTTPS through Caddy. Behind it, on 127.0.0.1 only, Open WebUI talks to LiteLLM, which talks to Ollama. Presidio masks personal data as LiteLLM's guardrail before the model, and LiteLLM sends a trace of every call to Langfuse. PostgreSQL keeps LiteLLM's keys and spend logs. Baseline, hardening and firewall circuits lock down the host. Hosted models sit behind the same gateway only if you add them." />
+    <img src="/media/blog/ai-you-can-account-for/stack.webp" srcset="/media/blog/ai-you-can-account-for/stack-800.webp 800w, /media/blog/ai-you-can-account-for/stack.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1965" loading="lazy" decoding="async" alt="A private AI stack you can account for. People, apps and admins reach one hardened host over HTTPS through Caddy. Behind it, on 127.0.0.1 only, Open WebUI talks to LiteLLM, which talks to Ollama. Presidio masks personal data as LiteLLM's guardrail before the model, and LiteLLM sends a trace of every call to Langfuse. PostgreSQL keeps LiteLLM's keys and spend logs. Baseline, hardening and firewall circuits lock down the host. Hosted models sit behind the same gateway only if you add them." />
   </a>
   <figcaption>Every box is a circuit you can apply today.</figcaption>
 </figure>

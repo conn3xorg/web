@@ -15,7 +15,7 @@ Conn3x asks for it once, in the form you already type.
 
 <figure>
   <a href="/media/blog/through-the-bastion/routes.png">
-    <img src="/media/blog/through-the-bastion/routes.png" width="1600" height="1240" loading="lazy" decoding="async" alt="Three ways to write the route. One: jump_hosts in the ssh block, written like ssh -J. Two: a host object that overrides the route for one host, such as jump_hosts = [] for the bastion itself. Three: ssh_config_file, which reads the aliases you already have. Every hop's host key is checked." />
+    <img src="/media/blog/through-the-bastion/routes.webp" srcset="/media/blog/through-the-bastion/routes-800.webp 800w, /media/blog/through-the-bastion/routes.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1240" loading="lazy" decoding="async" alt="Three ways to write the route. One: jump_hosts in the ssh block, written like ssh -J. Two: a host object that overrides the route for one host, such as jump_hosts = [] for the bastion itself. Three: ssh_config_file, which reads the aliases you already have. Every hop's host key is checked." />
   </a>
   <figcaption>Three ways to write the route. Settings in the circuit win over the file.</figcaption>
 </figure>

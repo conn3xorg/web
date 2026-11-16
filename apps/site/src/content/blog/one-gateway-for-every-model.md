@@ -16,7 +16,7 @@ This is the second post in a series on [running AI you can account for](/blog/ai
 
 <figure>
   <a href="/media/blog/one-gateway-for-every-model/gateway.png">
-    <img src="/media/blog/one-gateway-for-every-model/gateway.png" width="1600" height="1760" loading="lazy" decoding="async" alt="One gateway, every model. Team, personal and app keys go to LiteLLM on 127.0.0.1:4000, which checks the key, the model list and the budget, masks personal data through Presidio if you set guardrails, sends the request on with the provider key from a root-only file, and writes a spend-log row and, with langfuse_url, a Langfuse trace. Behind it sit gpt-4o, claude-sonnet and a local Ollama model. A spend-log table shows a successful claude-sonnet request and a gpt-4o request refused with 403, neither with the prompt stored." />
+    <img src="/media/blog/one-gateway-for-every-model/gateway.webp" srcset="/media/blog/one-gateway-for-every-model/gateway-800.webp 800w, /media/blog/one-gateway-for-every-model/gateway.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1760" loading="lazy" decoding="async" alt="One gateway, every model. Team, personal and app keys go to LiteLLM on 127.0.0.1:4000, which checks the key, the model list and the budget, masks personal data through Presidio if you set guardrails, sends the request on with the provider key from a root-only file, and writes a spend-log row and, with langfuse_url, a Langfuse trace. Behind it sit gpt-4o, claude-sonnet and a local Ollama model. A spend-log table shows a successful claude-sonnet request and a gpt-4o request refused with 403, neither with the prompt stored." />
   </a>
   <figcaption>Every request takes the same path, and leaves the same kind of row behind.</figcaption>
 </figure>

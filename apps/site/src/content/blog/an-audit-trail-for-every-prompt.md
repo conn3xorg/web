@@ -16,7 +16,7 @@ That's tracing, and [Langfuse](https://langfuse.com) is the open-source platform
 
 <figure>
   <a href="/media/blog/an-audit-trail-for-every-prompt/trace.png">
-    <img src="/media/blog/an-audit-trail-for-every-prompt/trace.png" width="1600" height="1939" loading="lazy" decoding="async" alt="An audit trail for every prompt. The LiteLLM gateway sends a trace of every call, your apps send traces with Langfuse's SDKs over OpenTelemetry, and your people use the web UI through Caddy. On one 4 GB host, on loopback only, langfuse-web on port 3000, langfuse-worker, ClickHouse and MinIO run as systemd services, with PostgreSQL and Valkey beside them. Keys are made on the host by the first apply. A trace holds the prompt, response, tokens, cost and latency." />
+    <img src="/media/blog/an-audit-trail-for-every-prompt/trace.webp" srcset="/media/blog/an-audit-trail-for-every-prompt/trace-800.webp 800w, /media/blog/an-audit-trail-for-every-prompt/trace.webp 1600w" sizes="(max-width: 52rem) 100vw, 52rem" width="1600" height="1939" loading="lazy" decoding="async" alt="An audit trail for every prompt. The LiteLLM gateway sends a trace of every call, your apps send traces with Langfuse's SDKs over OpenTelemetry, and your people use the web UI through Caddy. On one 4 GB host, on loopback only, langfuse-web on port 3000, langfuse-worker, ClickHouse and MinIO run as systemd services, with PostgreSQL and Valkey beside them. Keys are made on the host by the first apply. A trace holds the prompt, response, tokens, cost and latency." />
   </a>
   <figcaption>Four services from the circuit, two you bring, and every key made on the host.</figcaption>
 </figure>
