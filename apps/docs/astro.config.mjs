@@ -41,6 +41,9 @@ export default defineConfig({
       },
       lastUpdated: false,
       head: [
+        // The body font is the text a page paints last; fetch it with the HTML,
+        // not after the CSS, so it lands before the first paint on most loads.
+        { tag: "link", attrs: { rel: "preload", href: "/fonts/schibsted-grotesk-latin-wght-normal.woff2", as: "font", type: "font/woff2", crossorigin: "" } },
         { tag: "meta", attrs: { property: "og:image", content: "https://docs.conn3x.org/og.png" } },
         { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
         { tag: "meta", attrs: { name: "twitter:image", content: "https://docs.conn3x.org/og.png" } },
