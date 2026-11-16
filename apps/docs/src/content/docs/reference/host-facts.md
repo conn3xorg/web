@@ -29,6 +29,31 @@ It takes the same `ssh` block as a circuit, with `host` set to the server's addr
 | `memory_mb` | number | Total memory in MiB. |
 | `ipv4` | string | Source address of the default IPv4 route, or empty. |
 | `windows` | object | Windows Server only: see below. Null on Linux. |
+| `local_facts` | object | With `read_local_facts = true`, the facts the host keeps about itself: see below. Null otherwise, and on Windows. Since v0.21.0. |
+
+## Facts a host keeps about itself
+
+Some hosts carry their own tags: a role, a rack, an owner. Ansible reads those from `/etc/ansible/facts.d/*.fact`, and since v0.21.0 `conn3x_host` can too. Set `read_local_facts`:
+
+```hcl
+data "conn3x_host" "web1" {
+  read_local_facts = true
+
+  ssh {
+    host = "192.0.2.10"
+    user = "admin"
+  }
+}
+```
+
+Then `data.conn3x_host.web1.local_facts.rack.row` is the `row` from `/etc/conn3x/facts.d/rack.json`. Each file is one fact, named after the file without its extension.
+
+- **Where:** `/etc/conn3x/facts.d/*.json`, then `/etc/ansible/facts.d/*.fact`, so a host set up for Ansible needs no change. When both have the same name, the `/etc/conn3x/facts.d` one wins.
+- **What's in them:** JSON. A `.fact` file may also be INI, read as Ansible reads it: each section is an object of strings, with its keys in lower case.
+- **Executable files** run, and their output is read instead, as JSON (or INI for a `.fact`). Each gets 10 seconds.
+- **Errors stop the plan.** A script that fails, a file that isn't JSON or INI, or a name a circuit can't read (start with a letter; letters, digits, `_` and `-` only) is an error naming the file. Ansible would store an error message as the fact's value and carry on.
+
+It's off by default because an executable fact file runs on the host at every plan, as the SSH user, or as root with `become`. Turn it on where you know what's in those directories.
 
 ## Windows Server
 
