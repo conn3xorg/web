@@ -66,7 +66,11 @@ sshd's `MaxStartups` starts refusing new logins once ten are in progress and not
 
 **`this login isn't privileged`** (Arista EOS)
 
-The SSH login landed in unprivileged mode. Give the user privilege 15 and add `aaa authorization exec default local`, so a login starts in privileged mode. Conn3x never sends `enable`.
+The SSH login landed in unprivileged mode. Give the user privilege 15 and add `aaa authorization exec default local`, so a login starts in privileged mode. Or, since v0.21.0, set `become = true` in the ssh block, with `become_password_file` if the switch has an enable password, and Conn3x goes through `enable`; see [Network devices](/network-devices).
+
+**`the switch refused the enable password from become_password_file`** (Arista EOS)
+
+The file has the wrong enable password. The switch took the lines after it as more tries, so nothing ran.
 
 ## Converted Ansible
 
