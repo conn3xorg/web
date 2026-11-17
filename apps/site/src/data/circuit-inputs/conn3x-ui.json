@@ -1,6 +1,6 @@
 {
   "name": "conn3x-ui",
-  "version": "v0.1.2",
+  "version": "v0.1.3",
   "hostObjects": true,
   "inputs": [
     {
@@ -27,7 +27,7 @@
     {
       "name": "conn3x_version",
       "type": "string",
-      "default": "0.22.0",
+      "default": "0.23.0",
       "description": "Conn3x release the UI runs plans and applies with, without the leading v. A project can name another binary. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
@@ -37,8 +37,8 @@
       "name": "conn3x_checksums",
       "type": "map(string)",
       "default": {
-        "amd64": "96068a1e9204cf709956cd7dca77610c09c47ef974f733a32b78b734666c7a9e",
-        "arm64": "8890d2274965440df0f177ee5e8d4f2f99e805619eeea4f4c1e4e4336ddbbdda"
+        "amd64": "18d46dc53677136829c1fb1d307b0d30dbb3ded502df09237a9a4d37b417ed0d",
+        "arm64": "37e755430ed449a683d3647529fee085548dc77a86a4d9299404bacdb7a75abb"
       },
       "description": "SHA-256 of the conn3x release archive for each architecture, from the release's checksums.txt. Change these with conn3x_version. Null means the default.",
       "sensitive": false,

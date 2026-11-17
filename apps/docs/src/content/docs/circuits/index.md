@@ -176,7 +176,7 @@ These configure a network device through its OpenTofu provider instead of a host
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.2 |
+| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.3 |
 | [Proxmox VE](/circuits/proxmox) | Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included. | v0.1.2 |
 | [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.1.2 |
 | [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.3 |

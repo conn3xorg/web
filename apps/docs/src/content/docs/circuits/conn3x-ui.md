@@ -3,7 +3,7 @@ title: Conn3x web UI
 description: "Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-conn3x-ui at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-conn3x-ui at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/conn3x-ui/grade.svg)](https://conn3x.org/circuits/conn3x-ui/grade)
 
@@ -13,7 +13,7 @@ A Conn3x circuit that installs [conn3x-ui](https://github.com/conn3xorg/conn3x-u
 
 ```hcl
 module "conn3x_ui" {
-  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.3"
 
   hosts                = { ops1 = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -36,7 +36,7 @@ journalctl -u conn3x-ui | grep -i password
 
 To serve it to your team, put a TLS proxy in front, such as [circuit-caddy](/circuits/caddy), and keep the UI on loopback. Off localhost, the session cookie needs https, so plain http to another machine won't sign anyone in.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.3/examples/local).
 
 ## Before you run it for others
 
@@ -71,7 +71,7 @@ Set a version and its checksums together, from the release's `checksums.txt`:
 
 ```hcl
 module "conn3x_ui" {
-  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.3"
 
   hosts             = { ops1 = "203.0.113.20" }
   conn3x_ui_version = "0.2.0"
@@ -111,8 +111,8 @@ Put the secret in `/etc/conn3x-ui/oidc-secret`, readable by the `conn3x-ui` grou
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
 | `conn3x_ui_version` | string | `"0.2.0"` | conn3x-ui release to install, without the leading `v`. |
 | `conn3x_ui_checksums` | map(string) | The 0.2.0 checksums | SHA-256 of the conn3x-ui archive for `amd64` and `arm64`. |
-| `conn3x_version` | string | `"0.22.0"` | Conn3x release the UI runs, without the leading `v`. A project can name another binary. |
-| `conn3x_checksums` | map(string) | The 0.22.0 checksums | SHA-256 of the conn3x archive for `amd64` and `arm64`. |
+| `conn3x_version` | string | `"0.23.0"` | Conn3x release the UI runs, without the leading `v`. A project can name another binary. |
+| `conn3x_checksums` | map(string) | The 0.23.0 checksums | SHA-256 of the conn3x archive for `amd64` and `arm64`. |
 | `listen` | string | `"127.0.0.1:8080"` | Address the UI listens on. Keep it on loopback behind a TLS proxy. |
 | `extra_args` | list(string) | `[]` | More flags for `conn3x-ui serve`, such as the `-oidc-*` ones. Each one is passed as a single argument, as written. |
 
@@ -129,14 +129,14 @@ Requires Conn3x v0.21.0 or later, systemd on each host, and outbound HTTPS to gi
 
 ## Tested on
 
-CI applies [examples/local](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.2/examples/local) to Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13 on amd64. It checks that the second plan has no changes, that the sign-in page answers from outside the host, that the first admin password is in the log, that the key is `0640`, and that the UI's user runs the pinned `conn3x`. Then it restarts the UI and checks the sign-in page again. On a fresh host it then installs conn3x-ui 0.1.0, applies the circuit's pin over it, and checks that the plan has no changes, the running UI is the pinned release, and the key is the one it started with.
+CI applies [examples/local](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.3/examples/local) to Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13 on amd64. It checks that the second plan has no changes, that the sign-in page answers from outside the host, that the first admin password is in the log, that the key is `0640`, and that the UI's user runs the pinned `conn3x`. Then it restarts the UI and checks the sign-in page again. On a fresh host it then installs conn3x-ui 0.1.0, applies the circuit's pin over it, and checks that the plan has no changes, the running UI is the pinned release, and the key is the one it started with.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-conn3x-ui/blob/v0.1.2/LICENSE). conn3x-ui and Conn3x are MPL-2.0 too.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-conn3x-ui/blob/v0.1.3/LICENSE). conn3x-ui and Conn3x are MPL-2.0 too.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-conn3x-ui](https://github.com/conn3xorg/circuit-conn3x-ui). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-conn3x-ui/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-conn3x-ui](https://github.com/conn3xorg/circuit-conn3x-ui). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-conn3x-ui/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-conn3x-ui/tree/v0.1.3/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab), [Mini homelab](/circuits/mini-homelab).
