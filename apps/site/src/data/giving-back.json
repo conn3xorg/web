@@ -3,6 +3,13 @@
   "items": [
     {
       "date": "2026-11-17",
+      "repo": "prometheus/prometheus",
+      "summary": "A length check that no longer wraps on 32-bit platforms. We confirmed the subtraction can't go negative, and that only the project's 386 CI job exercises the bug.",
+      "url": "https://github.com/prometheus/prometheus/pull/20476#pullrequestreview-5942998175",
+      "minutes": 4
+    },
+    {
+      "date": "2026-11-17",
       "repo": "osquery/osquery",
       "summary": "A stricter ~/.ssh walk that skips symlinked directories. We showed why the check works (the listing drops the trailing slash) and suggested skipping a directory whose status can't be read.",
       "url": "https://github.com/osquery/osquery/pull/9318#pullrequestreview-5942985586",
