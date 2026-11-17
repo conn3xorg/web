@@ -2,6 +2,27 @@
   "otherMinutes": 94,
   "items": [
     {
+      "date": "2026-11-17",
+      "repo": "osquery/osquery",
+      "summary": "A stricter ~/.ssh walk that skips symlinked directories. We showed why the check works (the listing drops the trailing slash) and suggested skipping a directory whose status can't be read.",
+      "url": "https://github.com/osquery/osquery/pull/9318#pullrequestreview-5942985586",
+      "minutes": 8
+    },
+    {
+      "date": "2026-11-17",
+      "repo": "prometheus/prometheus",
+      "summary": "Rejecting chunk data shorter than its header. We checked each encoding's header size against how its chunks are built, and found they match.",
+      "url": "https://github.com/prometheus/prometheus/pull/20472#pullrequestreview-5942974133",
+      "minutes": 5
+    },
+    {
+      "date": "2026-11-17",
+      "repo": "prometheus/alertmanager",
+      "summary": "Saturating huge Retry-After values instead of overflowing. We ran Go's parser on the edge cases and showed why the extra digit check is needed for values past uint64.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5751#pullrequestreview-5942965791",
+      "minutes": 6
+    },
+    {
       "date": "2026-11-16",
       "repo": "tailscale/tailscale",
       "summary": "The macOS installer wrote its launchd plist as 0700, so plain tools couldn't read it. We confirmed reinstalling always creates the file fresh, so the new 0644 mode reaches existing installs.",
