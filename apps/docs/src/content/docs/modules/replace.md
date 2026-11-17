@@ -52,10 +52,14 @@ step "no_comments" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `regexp` | string | Yes | What to look for. ^ and $ match at each line, and . doesn't match a line break. |
 | `replace` | string | Yes | What to put in its place, which can use $1, ${1} and ${name}. Write $$ for a dollar sign. An empty string deletes each match. |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 
 ## Read-only attributes
 

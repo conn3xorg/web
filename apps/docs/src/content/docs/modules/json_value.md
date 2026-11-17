@@ -64,10 +64,14 @@ step "no_debug" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `key` | string | Yes | Where the value is: object keys joined by dots, with [n] for an array element, such as server.port or upstreams[0].host. Missing objects on the way are made. |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `state` | string | No | "present" (default) or "absent", which takes the key out. |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 | `value` | string | No | The value, as JSON: write it with jsonencode, such as jsonencode(8080), jsonencode("info") or jsonencode({ enabled = true }). Required unless state is "absent". A value that's equal already, however it's written, is left alone. |
 
 ## Read-only attributes

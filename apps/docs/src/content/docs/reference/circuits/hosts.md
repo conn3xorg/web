@@ -192,8 +192,9 @@ Not read yet: `group_vars/` beside the playbook rather than the inventory, and d
 | `host_key` | string | Overrides the `ssh` block's `host_key`. Use it to pin each host's own key. |
 | `jump_hosts` | list of strings | Overrides the `ssh` block's `jump_hosts`. An empty list connects to this host directly. |
 | `legacy_algorithms` | bool | Overrides the `ssh` block's `legacy_algorithms`, so only the old devices get SHA-1. |
+| `container` | string | Reaches this host as the named container instead of over SSH. See [Containers instead of SSH](/reference/circuits/ssh#containers-instead-of-ssh). Since v0.23.0. |
 
-Only these five settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host.
+Only these settings can be overridden per host. The others, such as `become`, `known_hosts_file` and `timeout`, come from the `ssh` block for every host.
 
 A host object can hold fields of your own as well. Conn3x doesn't use them to connect, and steps can read them as `each.value.FIELD`:
 
@@ -223,8 +224,9 @@ What a host object can't hold is an ssh setting that only the `ssh` block takes:
 Error: Unsupported field in host object
 
 Host "web1" sets "become", which only the circuit's ssh block takes. A host
-object can set address, user, port, private_key_file, host_key, jump_hosts
-and legacy_algorithms, plus any fields of your own to read with each.value.
+object can set address, user, port, private_key_file, host_key, jump_hosts,
+legacy_algorithms and container, plus any fields of your own to read with
+each.value.
 ```
 
 See [The ssh block](/reference/circuits/ssh#precedence) for how host objects, the `ssh` block and an SSH config file combine.

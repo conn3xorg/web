@@ -53,13 +53,17 @@ step "no_legacy_mirror" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `insert_after` | string | No | When adding, insert after the last line matching this regexp, or "EOF" (default). |
 | `insert_before` | string | No | When adding, insert before the first line matching this regexp, or "BOF". |
 | `line` | string | No | The line. Required unless state is "absent" with a regexp. |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `regexp` | string | No | Replace the last line matching this; with state "absent", remove every match. |
 | `state` | string | No | "present" (default) or "absent". |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 
 ## Read-only attributes
 
@@ -86,10 +90,27 @@ A step lowers to the `conn3x_line` resource, one instance per host, and connects
 
 **Conflicts.** If another step in the same circuit writes the whole file with `file` or `template`, `conn3x validate` warns you, because each apply would undo the other. Put the line into that file's content instead.
 
+## Checking the file first
+
+For a file a mistake could lock you out of, such as `sshd_config` or `sudoers`, set `validate` to a command that checks the edited file. Conn3x writes the edit to a temporary file, runs the command with `%s` as its path, and swaps the file in only if the command exits 0. Otherwise the file is left as it was, and the step fails with the command's output:
+
+```hcl
+step "root_login" {
+  line {
+    path     = "/etc/ssh/sshd_config"
+    regexp   = "^PermitRootLogin"
+    line     = "PermitRootLogin no"
+    validate = "/usr/sbin/sshd -t -f %s"
+  }
+}
+```
+
+It runs only when the edit changes the file, and isn't kept in state. Removing the step with `on_remove = "delete"` doesn't run it, since the step's configuration is gone by then.
+
 ## Removal
 
 When you delete a `line` step, `on_remove` decides what happens on the host. The default, `"forget"`, leaves the file as it is. `"delete"` removes lines equal to `line`. It doesn't restore a line that `regexp` replaced.
 
 ## From Ansible
 
-`conn3x convert ansible` turns `lineinfile` tasks into `line` steps, with `insertafter`, `insertbefore`, `create` and `state` carried across. A task that uses `backrefs` stays a TODO.
+`conn3x convert ansible` turns `lineinfile` tasks into `line` steps, with `insertafter`, `insertbefore`, `create`, `state` and `validate` carried across. A task that uses `backrefs` stays a TODO.

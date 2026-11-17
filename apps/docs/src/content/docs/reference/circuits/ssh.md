@@ -40,6 +40,10 @@ Conn3x uses SSH and nothing else. By default, it installs nothing on the hosts. 
 | `proxy_command` | list of strings | None | A command whose stdin and stdout carry the SSH connection, like OpenSSH's `ProxyCommand`, given as a list of arguments. `%h` is the host, `%p` the port, `%r` the user and `%%` a percent sign. It runs directly, not through a shell, on the machine running Conn3x. A host or user that starts with `-` or holds whitespace is refused. It can't be combined with `jump_hosts`. See [Hosts behind SSM or IAP](#hosts-behind-ssm-or-iap). Since v0.20.0. |
 | `legacy_algorithms` | bool | `false` | Also offers this host the SHA-1 algorithms an old device needs: `ssh-rsa` host key signatures, SHA-1 Diffie-Hellman key exchange and `hmac-sha1`. They go after the modern ones, and only to this host, never to a jump host. Classic Cisco IOS 15 needs it. SHA-1 is weaker, so set it only for devices that can't do better. Since v0.20.0. |
 | `ssh_config_file` | string | None | An OpenSSH client config file to read settings from, such as `"~/.ssh/config"`. Conn3x reads no SSH config unless you set this. See [SSH config files](#ssh-config-files). |
+| `container` | string | None | Reach the host as this container, with `container_engine`'s exec, instead of SSH. Usually set per host in a host object. See [Containers instead of SSH](#containers-instead-of-ssh). Experimental, since v0.23.0. |
+| `container_engine` | string | `"podman"` | With `container`: `"podman"`, `"docker"` or `"kubectl"`. Since v0.23.0. |
+| `kube_namespace` | string | The context's | With `container_engine = "kubectl"`: the pod's namespace. Since v0.23.0. |
+| `kube_context` | string | The current one | With `container_engine = "kubectl"`: the kubeconfig context. Since v0.23.0. |
 
 Paths that start with `~/` are relative to your home directory. Other relative paths are relative to the working directory, which `-chdir` sets.
 
@@ -332,3 +336,36 @@ ssh {
 Both have been tested end to end: Amazon Linux 2023 behind Session Manager with no inbound rules, and Debian 12 behind IAP with no external IP. Record the host key first, as you would for any host: `ssh -o ProxyCommand="..." user@i-0abc123 true` with the same command adds it to your known_hosts under the instance ID or name.
 
 [`conn3x run`](/reference/cli/run#hosts) reaches these hosts too, from `-circuits` or from `ansible_ssh_common_args` in an inventory.
+
+## Containers instead of SSH
+
+A host that's a container doesn't need sshd. Name the container, and Conn3x runs each command with `podman exec -i`, `docker exec -i` or `kubectl exec -i` on the machine Conn3x runs on, so there are no keys and no known_hosts file to set up. It suits testing a circuit against throwaway containers, and configuring containers you already run. Experimental, since v0.23.0.
+
+```hcl
+circuit "web" {
+  hosts = {
+    web1 = { address = "web1", container = "web1" }
+    web2 = { address = "web2", container = "web2" }
+  }
+
+  ssh {
+    container_engine = "podman"
+  }
+
+  step "motd" {
+    file {
+      path    = "/etc/motd"
+      content = "Hello from ${each.key}\n"
+    }
+  }
+}
+```
+
+`address` names the host in plans and messages; Conn3x doesn't connect to it.
+
+- **User.** With podman and docker, `user` runs commands as that user (`--user`), and `become = true` runs them as root. Otherwise they run as the container's default user. `kubectl exec` can't choose a user, so setting either one with `kubectl` is an error.
+- **kubectl.** `container` is the pod's name, and the command runs in the pod's default container. Set `kube_namespace` and `kube_context` as needed. Conn3x uses whatever kubeconfig `kubectl` finds.
+- **What needs SSH.** Windows and network device steps, `ssh_tunnel`, `confirm_after` and the [agent](/reference/glossary#agent) need an SSH connection, and say so when the host is a container. Everything else, packages, files, users and services included, works the same.
+- **Failures.** A container that isn't running, a user it doesn't have, or a pod that isn't there is an error naming the container, never read as a command's exit status.
+
+The other SSH settings, such as `port`, `private_key_file` and `jump_hosts`, aren't read for a container.

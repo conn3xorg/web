@@ -60,11 +60,15 @@ step "no_app_procs" {
 | --- | --- | --- | --- |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
 | `domain` | string | Yes | Who the limit applies to: a user, @group, * or a range, as in limits.conf(5). |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `item` | string | Yes | What is limited, such as nofile or nproc. |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `state` | string | No | "present" (default) or "absent". |
 | `type` | string | Yes | "soft", "hard" or "-" for both. |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 | `value` | string | No | The limit: a number, or "unlimited", "infinity" or "-1". Required unless state is "absent". |
 
 ## Read-only attributes

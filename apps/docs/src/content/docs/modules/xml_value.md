@@ -52,9 +52,13 @@ step "access_log" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `state` | string | No | "present" (default) or "absent", which takes the attribute or the element out. |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 | `value` | string | No | The element's text or the attribute's value, unescaped. Required unless state is "absent". |
 | `xpath` | string | Yes | Which element or attribute, from the root: element names with [@attr='value'] or [n] to pick one, ending in /@name for an attribute, such as /Server/Service/Connector[@port='8080']/@protocol. A missing last element is added. |
 

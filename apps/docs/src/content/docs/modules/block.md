@@ -58,12 +58,16 @@ step "old_hosts" {
 | --- | --- | --- | --- |
 | `content` | string | No | Lines of the block. |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `insert_after` | string | No | Where a new block goes: after the last match of this regexp, or "EOF" (default). |
 | `insert_before` | string | No | Where a new block goes: before the first match of this regexp, or "BOF". |
 | `marker` | string | No | Marker line with {mark}, which becomes BEGIN and END. Defaults to "# {mark} CONN3X MANAGED BLOCK". |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `state` | string | No | "present" (default) or "absent". |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 
 ## Read-only attributes
 
@@ -96,4 +100,4 @@ When you delete a `block` step, `on_remove` decides what happens on the host. Th
 
 ## From Ansible
 
-`conn3x convert ansible` turns `blockinfile` tasks into `block` steps. It keeps Ansible's marker, `# {mark} ANSIBLE MANAGED BLOCK` by default, so the block Ansible already wrote is the one Conn3x manages. A task that sets `marker_begin` or `marker_end` stays a TODO.
+`conn3x convert ansible` turns `blockinfile` tasks into `block` steps. It keeps Ansible's marker, `# {mark} ANSIBLE MANAGED BLOCK` by default, so the block Ansible already wrote is the one Conn3x manages. `validate` is carried across. A task that sets `marker_begin` or `marker_end` stays a TODO.

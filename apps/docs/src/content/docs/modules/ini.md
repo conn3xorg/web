@@ -70,13 +70,17 @@ step "workers" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
+| `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
+| `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `no_extra_spaces` | bool | No | Write option=value rather than option = value. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
 | `option` | string | Yes | The option's name. |
+| `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
 | `path` | string | Yes | Absolute path of the file. |
 | `section` | string | No | The section, added when it's missing. Without it, the option goes before the first section. |
 | `state` | string | No | "present" (default) or "absent". |
 | `uncomment` | bool | No | Put the value on a commented-out line for this option, rather than keeping every comment. |
+| `validate` | string | No | A command that checks the edited file before it replaces the old one, such as "sshd -t -f %s". %s stands for the temporary file. Runs only when the edit changes the file, and is kept out of state. |
 | `value` | string | No | The option's value. Required unless state is "absent". |
 
 ## Read-only attributes
