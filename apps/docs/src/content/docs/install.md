@@ -17,10 +17,10 @@ Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up n
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.23.0` with the version you want.
+Pick the archive for your system. Replace `0.24.0` with the version you want.
 
 ```sh
-VERSION=0.23.0
+VERSION=0.24.0
 OS=linux        # or darwin
 ARCH=amd64      # or arm64
 curl -fsSLO "https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}/conn3x_${VERSION}_${OS}_${ARCH}.tar.gz"
@@ -63,7 +63,7 @@ dnf asks you to accept the key the first time; `gpgcheck` and `repo_gpgcheck` ar
 Each release since v0.14.0 also has a `.deb` and an `.rpm` for amd64 and arm64 on its release page. To install one by hand, check it against `checksums.txt`:
 
 ```sh
-VERSION=0.23.0
+VERSION=0.24.0
 BASE="https://github.com/conn3xorg/conn3x/releases/download/v${VERSION}"
 
 # Debian and Ubuntu (arm64: conn3x_${VERSION}_arm64.deb)
@@ -86,7 +86,7 @@ Since v0.10.0, each release has a zip for Windows on amd64 and arm64, holding `c
 In PowerShell:
 
 ```powershell
-$Version = "0.23.0"
+$Version = "0.24.0"
 $Arch = "amd64"   # or arm64
 $Base = "https://github.com/conn3xorg/conn3x/releases/download/v$Version"
 Invoke-WebRequest "$Base/conn3x_${Version}_windows_$Arch.zip" -OutFile conn3x.zip
@@ -117,7 +117,7 @@ In a workflow, [setup-conn3x](https://github.com/conn3xorg/setup-conn3x) does th
 ```yaml
 - uses: conn3xorg/setup-conn3x@v1
   with:
-    version: 0.23.0
+    version: 0.24.0
 - run: conn3x init && conn3x plan
 ```
 
@@ -128,7 +128,7 @@ Leave out `version` and you get the latest release, which means a new one can ch
 Every release is also published as a container image, tagged with its version and with `latest`:
 
 ```sh
-docker run --rm ghcr.io/conn3xorg/conn3x:v0.23.0 version
+docker run --rm ghcr.io/conn3xorg/conn3x:v0.24.0 version
 ```
 
 The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root user. Podman takes the same command.
@@ -136,7 +136,7 @@ The image is distroless, with `conn3x` as its entrypoint, and runs as a non-root
 Since v0.12.0 the release workflow signs the image with cosign, and the signature sits in the registry beside it. To check it:
 
 ```sh
-cosign verify ghcr.io/conn3xorg/conn3x:v0.23.0 \
+cosign verify ghcr.io/conn3xorg/conn3x:v0.24.0 \
   --certificate-identity 'https://github.com/conn3xorg/conn3x/.github/workflows/release.yml@refs/heads/main' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
@@ -183,8 +183,8 @@ gh attestation verify "conn3x_${VERSION}_${OS}_${ARCH}.tar.gz" --repo conn3xorg/
 Since v0.22.0 the release workflow signs each tag through Sigstore with [gitsign](https://docs.sigstore.dev/cosign/signing/gitsign/), so you can check that a tag in your clone is the one the workflow made:
 
 ```sh
-git fetch origin tag v0.23.0
-gitsign verify-tag v0.23.0 \
+git fetch origin tag v0.24.0
+gitsign verify-tag v0.24.0 \
   --certificate-identity 'https://github.com/conn3xorg/conn3x/.github/workflows/release.yml@refs/heads/main' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
