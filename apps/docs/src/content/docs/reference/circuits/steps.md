@@ -52,7 +52,7 @@ A step block takes one label, the step's name, and contains:
 | Name | Required | Description |
 | --- | --- | --- |
 | Module block | Yes | Exactly one module block, such as `package`, `file` or `service`. The [module reference](/modules/file) lists every module and its arguments. |
-| `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host. See [for_each](#for_each). |
+| `for_each` | No | Repeat the step for each item of a map, or of a list or set of strings, on every host, or with `each`, a host's own items. See [for_each](#for_each). |
 | `when` | No | A condition, true or false for each host, that picks the hosts the step runs on. See [when](#when). |
 | `run_once` | No | `true` to run the step on one host only, such as for a database migration. See [run_once](#run_once). |
 | `on` | No | The host to run on. With `run_once`, it picks the one host. Without it, every host's step runs on this host instead, as Ansible's `delegate_to` does. See [on](#on). |
@@ -298,7 +298,18 @@ Inside a step with `for_each`:
 
 `item` is only available in a step with `for_each`. Using it in another step is an error. `item.key` and `item.value` are the only attributes of `item`.
 
-The `for_each` expression itself can't use `each`, so every host gets the same items. Choose a different set of items per host by putting them in separate circuits, or by making the step's arguments depend on `each`.
+Since v0.23.0 the `for_each` expression can use `each`, the host, so each host gets its own items. A list per OS family, say:
+
+```hcl
+step "tools" {
+  for_each = { rocky = ["jq", "tar"], ubuntu = ["jq", "apt-utils"] }[each.value.os]
+  package {
+    name = item.value
+  }
+}
+```
+
+Each host's items are checked on their own: a list that names one package twice is an error on the host where it does. Without `each`, every host gets the same items, as before.
 
 Inside a step with `for_each`, a `for` expression can't name its variables `each` or `item`.
 
