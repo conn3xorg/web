@@ -24,6 +24,7 @@
   "excluded": {
     "authentik": "authentik needs a database wired to it and a public URL. Its README shows how to set them up.",
     "ciso-assistant": "CISO Assistant needs a database wired to it and a public URL. Its README shows how to set them up.",
+    "conn3x-ui": "The Conn3x web UI runs every project's circuits on its own host, so it belongs on a server of its own, not beside other services. Its README shows how to set it up.",
     "fleet": "Fleet needs MySQL, Valkey and a setup step after the first apply. Its README shows how to set them up.",
     "flux": "Flux installs onto a k3s cluster and syncs from your Git repository, so it needs both first. Its README shows how.",
     "helm": "Helm's releases go onto a Kubernetes cluster, so it needs one first. Its README shows how.",
