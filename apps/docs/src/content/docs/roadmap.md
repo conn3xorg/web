@@ -49,7 +49,7 @@ Since v0.16.0, [`conn3x run`](/reference/cli/run) runs one command or module on 
 
 ## Then: a web UI
 
-A self-hosted, open-source web app for teams: run plans and applies from a browser, see each run's output and history, approve a plan before it applies, schedule drift checks, and keep credentials and access per project. Think [Semaphore UI](https://github.com/semaphoreui/semaphore) or AWX, built for one plan that covers the cloud and the servers in it.
+A self-hosted, open-source web app for teams, built for one plan that covers the cloud and the servers in it. Think [Semaphore UI](https://github.com/semaphoreui/semaphore) or AWX. It's here, and experimental: [conn3x-ui](https://github.com/conn3xorg/conn3x-ui) runs plans and applies from a browser with an approval in between, keeps each run's output and history, and holds credentials and roles per project. Since v0.2.0 of the UI it also checks drift on a schedule and can correct it unattended, takes roles from your OIDC groups, and keeps a fleet store of each host's facts and step results behind a query API. [Run the web UI](/guides/web-ui) shows how. Still to come: running each run in its own sandbox, more than one sign-in provider, and apt, dnf, Homebrew and Scoop packages.
 
 ## Toward full IaCC
 
