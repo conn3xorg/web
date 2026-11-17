@@ -19,7 +19,7 @@ The quickest way onto a Linux server is [circuit-conn3x-ui](/circuits/conn3x-ui)
 
 ```hcl
 module "conn3x_ui" {
-  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.4"
 
   hosts                = { ops1 = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
