@@ -84,7 +84,7 @@ Conn3x always checks host keys, so a VM it hasn't met stops the plan until its k
 ssh-keyscan 203.0.113.10 203.0.113.11 >> ~/.ssh/known_hosts
 ```
 
-Wait until the VM has finished its first boot. cloud-init makes new host keys then, so a key scanned in the first minute can be replaced a moment later, and Conn3x will rightly say it changed. See [the ssh block](/reference/circuits/ssh/) for `host_key` and `known_hosts_file`.
+Wait until the VM has finished its first boot. On many cloud images cloud-init writes the host keys during first boot, so a key scanned too early can be replaced, and Conn3x will then say it changed. See [the ssh block](/reference/circuits/ssh/) for `host_key` and `known_hosts_file`.
 
 ## When the list changes
 
