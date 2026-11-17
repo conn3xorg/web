@@ -2434,9 +2434,9 @@
   "conn3x-ui": {
     "name": "conn3x-ui",
     "repo": "conn3xorg/circuit-conn3x-ui",
-    "tag": "v0.1.1",
-    "checkedAt": "2026-11-17T00:50:02.954Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-conn3x-ui/actions/runs/43990286896",
+    "tag": "v0.1.2",
+    "checkedAt": "2026-11-17T02:30:15.247Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-conn3x-ui/actions/runs/44003137971",
     "grade": "A",
     "score": 95,
     "passing": true,
@@ -2541,7 +2541,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.1."
+        "detail": "GitHub verified the signature on v0.1.2."
       },
       {
         "id": "branch-protection",
@@ -2555,7 +2555,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.1 is 0 days old."
+        "detail": "v0.1.2 is 0 days old."
       }
     ]
   },
