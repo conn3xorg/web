@@ -2434,11 +2434,11 @@
   "conn3x-ui": {
     "name": "conn3x-ui",
     "repo": "conn3xorg/circuit-conn3x-ui",
-    "tag": "v0.1.0",
-    "checkedAt": "2026-11-16T23:49:26.014Z",
-    "ciRun": "https://github.com/conn3xorg/circuit-conn3x-ui/actions/runs/43981178096",
+    "tag": "v0.1.1",
+    "checkedAt": "2026-11-17T00:50:02.954Z",
+    "ciRun": "https://github.com/conn3xorg/circuit-conn3x-ui/actions/runs/43990286896",
     "grade": "A",
-    "score": 90,
+    "score": 95,
     "passing": true,
     "gateFailed": [],
     "checks": [
@@ -2448,7 +2448,7 @@
         "gate": true,
         "state": "pass",
         "points": 15,
-        "detail": "Run of 2026-11-16 passed."
+        "detail": "Run of 2026-11-17 passed."
       },
       {
         "id": "matrix",
@@ -2490,9 +2490,9 @@
       {
         "id": "upgrade",
         "max": 5,
-        "state": "fail",
-        "points": 0,
-        "detail": "No CI step upgrades an existing install."
+        "state": "pass",
+        "points": 5,
+        "detail": "A CI step upgrades it with a second apply."
       },
       {
         "id": "real-host",
@@ -2541,7 +2541,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "GitHub verified the signature on v0.1.0."
+        "detail": "GitHub verified the signature on v0.1.1."
       },
       {
         "id": "branch-protection",
@@ -2555,7 +2555,7 @@
         "max": 5,
         "state": "pass",
         "points": 5,
-        "detail": "v0.1.0 is 0 days old."
+        "detail": "v0.1.1 is 0 days old."
       }
     ]
   },
