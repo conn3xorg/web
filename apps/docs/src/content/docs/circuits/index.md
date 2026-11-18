@@ -22,6 +22,20 @@ module "postgres" {
 
 `conn3x init` fetches it, and `conn3x plan` shows every step it will take on every host, the same as for a circuit you wrote yourself. Pin `ref` to a tag, and move it on when you're ready for the next release. A circuit runs commands as root on your servers, so read it before you run it, as you would any other dependency.
 
+### By name, with a version constraint
+
+Every official circuit is also in a module registry at conn3x.org, so you can name it and let `conn3x init` pick the release:
+
+```hcl
+module "postgres" {
+  source  = "conn3x.org/conn3xorg/postgres/conn3x"
+  version = "~> 0.3.0"
+  hosts   = { db1 = "203.0.113.20" }
+}
+```
+
+The address is `conn3x.org/conn3xorg/<circuit>/conn3x`, with the circuit's name as it is on its page. `version` takes OpenTofu's [version constraints](https://opentofu.org/docs/language/expressions/version-constraints/): `~> 0.3.0` takes 0.3.x patches but not 0.4.0. `conn3x init` records the release it chose in `.terraform/modules/modules.json`, and `conn3x init -upgrade` moves to a newer one the constraint allows. The registry lists every tagged release of each circuit, and each one is fetched from its repository at that tag, exactly as a `github.com` source with `ref` is.
+
 ## Share your own
 
 Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) covers making one others can use: hosts and SSH settings as variables, versions as tags, and a test on a container. List it on the [circuit directory](https://conn3x.org/circuits) alongside these.
