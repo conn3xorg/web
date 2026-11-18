@@ -5,7 +5,7 @@ description: Read a password from OpenBao, Vault, AWS Secrets Manager or Azure K
 
 Your database password already lives in a secret manager. You want it on the app servers, in a file only root can read, and nowhere else: not in Git, not in a saved plan, not in state where anyone with read access to the bucket can see it.
 
-Two pieces do that. An **ephemeral resource** reads the secret when Conn3x plans and applies, and forgets it after. A **write-only argument**, such as a `file` step's `content_wo`, sends it to the host without recording it. State keeps only an HMAC of the content, so drift on the host still shows up. [Secrets](/reference/circuits/secrets/) covers both in full; this page is the recipe for each manager.
+Two pieces do that. An **ephemeral resource** reads the secret when Conn3x plans and applies, and forgets it after. A **write-only argument**, such as a `file` step's `content_wo`, sends it to the host without recording it. State keeps only an HMAC of the content, so drift on the host still shows up. [Secrets](/reference/circuits/secrets) covers both in full; this page is the recipe for each manager.
 
 Each recipe below was run for real: the secret was read from the manager, written to a host, and then searched for in the saved plan file and in state. It wasn't in either.
 

@@ -91,4 +91,4 @@ locals {
 
 The data sources are read on every plan. A machine that gains the tag, or gets a primary address, is added, and its steps are created. One that loses either drops out of `hosts`, and its steps are removed from state. In the test, taking app1's primary address away removed its `motd` step on the next apply. Conn3x doesn't log in to undo a removed step unless the step sets `on_remove`. If an apply should never shrink the fleet by surprise, check the plan for steps it removes before you apply.
 
-Host keys are checked as for any host, so a machine Conn3x hasn't met stops the plan until its key is known. See [Find hosts by cloud tag](/guides/hosts-from-cloud-tags/#host-keys) for the ways to record it.
+Host keys are checked as for any host, so a machine Conn3x hasn't met stops the plan until its key is known. See [Find hosts by cloud tag](/guides/hosts-from-cloud-tags#host-keys) for the ways to record it.

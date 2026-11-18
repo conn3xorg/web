@@ -9,7 +9,7 @@ The Conn3x host agent is an [experimental](/reference/maturity) component whose 
 
 ## Circuit
 
-A circuit configures a group of hosts, specifying how to connect to them and which steps to run. See [Circuits](/reference/circuits/).
+A circuit configures a group of hosts, specifying how to connect to them and which steps to run. See [Circuits](/reference/circuits).
 
 ## Drift
 

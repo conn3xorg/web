@@ -42,7 +42,7 @@ The same goes for a hand change to something your config doesn't set, such as a 
 
 `drift` exits 0 when nothing drifted, 2 when something did, and 1 on errors, so a scheduled job can alert on it. Run it where your applies run: the same configuration, checked out from Git, the same remote backend and the same credentials. `drift` only reads, but it takes the state lock while it plans, so give it `-lock-timeout` and it waits out an apply instead of failing.
 
-The [web UI](/guides/web-ui/) can schedule drift checks for you, and correct what it finds. The rest of this section is for a server or a CI system without it.
+The [web UI](/guides/web-ui) can schedule drift checks for you, and correct what it finds. The rest of this section is for a server or a CI system without it.
 
 ### GitHub Actions
 
