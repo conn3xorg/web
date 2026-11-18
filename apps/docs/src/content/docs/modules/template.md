@@ -29,6 +29,7 @@ step "config" {
 | `write_only` | bool | No | `true` keeps the rendered file out of the plan and state, which record only an HMAC. Use it when `vars` hold secrets. A literal `true` or `false`. See [secrets in files](/concepts#secrets-in-files). |
 | `validate` | string | No | A command that checks the rendered file before it replaces the old one, such as `"nginx -t -c %s"`. `%s` stands for the temporary file; write it bare, not quoted. See [Validating](/modules/file#how-it-works). |
 | `backup` | bool | No | `true` copies the file, before a change replaces it, beside itself as `NAME.conn3x-<UTC time>.<n>~`, keeping its mode and owner. The `~` keeps `cron.d`, `logrotate.d` and the like from loading the copy. Old copies stay until you remove them. Can't go with `write_only`, since each copy would keep the secret it replaced. New in v0.26.0. |
+| `backup_keep` | number | No | With `backup`, keeps only this many of the newest copies, removing older ones each time a new one is made. Unset keeps them all. New in v0.27.0. |
 | `confirm_after` | string | No | For a change that could lock Conn3x out, such as `"60s"`: the host puts the old file back by itself unless Conn3x logs in again over a new connection in time. See [Confirming](/modules/file#how-it-works). |
 | `reload` | string | No | With `confirm_after`: a command that makes the new file take effect, such as `"systemctl reload sshd"`, run after writing and again after a revert. |
 
