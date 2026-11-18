@@ -90,6 +90,7 @@ step "old_config" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `backup` | bool | No | true copies the file, before a change replaces it, beside itself with .conn3x-, the time in UTC, a number and a ~ after its name, such as nginx.conf.conn3x-20261118T130501Z.4127~, keeping its mode and owner. The ~ keeps cron.d, logrotate.d and the like from loading the copy. Old copies stay until you remove them. Can't be used with content_wo, since each copy would keep the secret it replaced. |
 | `confirm_after` | string | No | For a change that could lock Conn3x out, such as sshd_config: before writing, the host keeps a copy and schedules its own revert after this long, such as "60s"; after writing and running reload, Conn3x logs in again over a new connection and cancels it. If that login doesn't come, the host puts the old file back by itself, even if Conn3x has gone away. Needs systemd. |
 | `content` | string | One of | Exact content of the file. Set this or content_wo, unless state is "absent". |
 | `content_wo` | string | One of | Exact content of the file, kept out of state: state records only content_hmac. Use it for secrets. Set this or content, unless state is "absent". |

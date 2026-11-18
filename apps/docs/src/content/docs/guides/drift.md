@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: conn3xorg/setup-conn3x@v1
         with:
-          version: 0.25.0
+          version: 0.26.0
       - run: conn3x init -input=false
       - name: Check for drift
         run: conn3x drift -no-color -input=false -lock-timeout=5m

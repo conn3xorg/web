@@ -42,6 +42,7 @@ Experimental is about each module inside it. An experimental module is new, and 
 | [Juniper Junos modules](/network-devices#juniper-junos) (`junos_config`, `junos_hostname`, `junos_vlan`, `junos_interface`, `junos_user` since v0.17.0) | Experimental | Tested against vJunos-switch 26.2R1.7 on a lab VM, not in CI and not on hardware. |
 | [`conn3x lint`](/reference/cli/lint), [`conn3x mcp`](/reference/cli/mcp) and [run reports](/reference/cli/apply#-report) | Experimental | New in v0.10.0. Their output and flags may change between releases. |
 | [`conn3x lsp`](/reference/cli/lsp) | Experimental | New in v0.25.0. What it offers may change between releases. |
+| The [`script` step](/modules/script), for modules you write yourself | Experimental | New in v0.26.0. The JSON protocol between Conn3x and your program may change between releases. |
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |
 | The [Circuit Builder](https://conn3x.org/build), for hosts you already have | Stable | CI validates every circuit it offers, alone and in a set of realistic builds. |
 | The Builder creating the servers on AWS, Azure, Google Cloud or DigitalOcean | Preview | We've applied its configs on real servers on all four, by hand rather than on every change. On Azure it creates Linux hosts only. |
