@@ -46,8 +46,11 @@ export function merge(lists) {
 const QUERY = `org:${ORG} is:pr is:merged -author:jamesconwaydev -author:app/dependabot`;
 
 export async function fetchContributors() {
+  // No token: the workflow's GITHUB_TOKEN is scoped to this repository, and
+  // search with it only finds PRs here, so a circuit's contributors were
+  // missed. The org's repositories are public, and three pages fit well
+  // inside the unauthenticated search limit.
   const headers = { accept: "application/vnd.github+json" };
-  if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
   const found = [];
   for (let page = 1; ; page++) {
     const url = `https://api.github.com/search/issues?q=${encodeURIComponent(QUERY)}&per_page=100&page=${page}`;
