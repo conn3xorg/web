@@ -95,7 +95,7 @@ A step lowers to the `conn3x_json_value` resource, one instance per host, and co
 
 **Taking out.** `state = "absent"` removes the key with its comma and line, and does nothing when the key isn't there. The object it was in stays, even when that leaves it empty. Array elements can't be taken out.
 
-**The file.** It's read and written as [`line`](line.md) reads and writes, with the file's owner and mode kept, and it must be valid JSON before Conn3x touches it. Comments, as in JSONC, make it invalid. Every plan reads the file again, so a value changed by hand shows the step out of sync, and the next apply puts it back.
+**The file.** It's read and written as [`line`](/modules/line) reads and writes, with the file's owner and mode kept, and it must be valid JSON before Conn3x touches it. Comments, as in JSONC, make it invalid. Every plan reads the file again, so a value changed by hand shows the step out of sync, and the next apply puts it back.
 
 ## Removal
 

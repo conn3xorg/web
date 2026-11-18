@@ -85,11 +85,11 @@ A step lowers to the `conn3x_windows_file` resource, one instance per host, and 
 
 **Links.** It never writes through a symbolic link, a junction or a mount point, at the path or on the way to it, and it refuses a file with other hard links. Use the real path.
 
-**Folders others can change.** While it writes, every folder on the way is held open, so none can be renamed or removed. With `content_wo` or `acl` it also refuses a folder that belongs to, or lets delete from, rename or re-permission, anyone but SYSTEM, Administrators, TrustedInstaller or the login itself, since that account could replace the file afterwards. The right to add new entries is fine. On a stock Azure image, every signed-in user can modify a new folder under `C:\`, so give that folder its own rules with [`windows_directory`](windows_directory.md)'s `acl` before putting a secret below it.
+**Folders others can change.** While it writes, every folder on the way is held open, so none can be renamed or removed. With `content_wo` or `acl` it also refuses a folder that belongs to, or lets delete from, rename or re-permission, anyone but SYSTEM, Administrators, TrustedInstaller or the login itself, since that account could replace the file afterwards. The right to add new entries is fine. On a stock Azure image, every signed-in user can modify a new folder under `C:\`, so give that folder its own rules with [`windows_directory`](/modules/windows_directory)'s `acl` before putting a secret below it.
 
-**The folder must already exist.** Make it with [`windows_directory`](windows_directory.md) first.
+**The folder must already exist.** Make it with [`windows_directory`](/modules/windows_directory) first.
 
-**Rules on an existing file.** With no `acl` and no `content_wo`, a rewrite keeps the rules already on the file, unless another account owns it. Use `acl`, or [`windows_acl`](windows_acl.md) for a few added rules, but not both on one path.
+**Rules on an existing file.** With no `acl` and no `content_wo`, a rewrite keeps the rules already on the file, unless another account owns it. Use `acl`, or [`windows_acl`](/modules/windows_acl) for a few added rules, but not both on one path.
 
 **Secrets.** `content_wo` travels on stdin. Refresh compares a keyed hash of the file's SHA-256 with state, so drift still shows and the content never leaves the host again. Errors have the value blanked.
 

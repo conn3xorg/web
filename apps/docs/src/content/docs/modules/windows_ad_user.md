@@ -7,7 +7,7 @@ description: "A user in Active Directory, run on a domain controller. Settings l
 
 A user in Active Directory, run on a domain controller. Settings left unset are left as they are. Groups are set with windows_ad_group.
 
-Use `windows_ad_user` to keep a user in Active Directory. Run it on a domain controller. Groups aren't set here: list the user in a [`windows_ad_group`](windows_ad_group.md) step's `members`.
+Use `windows_ad_user` to keep a user in Active Directory. Run it on a domain controller. Groups aren't set here: list the user in a [`windows_ad_group`](/modules/windows_ad_group) step's `members`.
 
 ## Example usage
 

@@ -55,7 +55,7 @@ A step lowers to the `conn3x_windows_directory` resource, one instance per host,
 
 ## How it works
 
-It holds each folder on the way open, so none can be renamed or removed while it works, and it won't pass through a symbolic link, junction or mount point. With `acl`, it also refuses a folder on the way that another account could change, and the folder itself if another account owns it. See [`windows_file`](windows_file.md) for exactly what counts.
+It holds each folder on the way open, so none can be renamed or removed while it works, and it won't pass through a symbolic link, junction or mount point. With `acl`, it also refuses a folder on the way that another account could change, and the folder itself if another account owns it. See [`windows_file`](/modules/windows_file) for exactly what counts.
 
 ## Removal
 

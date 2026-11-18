@@ -7,7 +7,7 @@ description: "This Windows host as another domain controller, and DNS server, in
 
 This Windows host as another domain controller, and DNS server, in an Active Directory domain that exists. It never reboots: reboot_required says Windows wants one, and windows_reboot does it. Removing the step leaves the domain controller; nothing is demoted.
 
-Use `windows_ad_domain_controller` to add a domain controller to a domain that already exists. Two DCs mean the domain keeps answering when one is down. It never reboots the host, and promotion always needs a reboot, so follow it with a [`windows_reboot`](windows_reboot.md) step, then wait for AD to answer.
+Use `windows_ad_domain_controller` to add a domain controller to a domain that already exists. Two DCs mean the domain keeps answering when one is down. It never reboots the host, and promotion always needs a reboot, so follow it with a [`windows_reboot`](/modules/windows_reboot) step, then wait for AD to answer.
 
 ## Example usage
 
@@ -78,7 +78,7 @@ A step lowers to the `conn3x_windows_ad_domain_controller` resource, one instanc
 
 ## How it works
 
-**Promotion.** Conn3x runs `Install-ADDSDomainController` with `-InstallDns` and `-NoRebootOnCompletion`, so the new DC is a DNS server and a global catalog, as Windows makes one by default. Two paths have been tested on Azure, each with a clean second plan: joining the host to the domain first with [`windows_domain_membership`](windows_domain_membership.md), then promoting it, and promoting a Windows Server 2025 host straight from a workgroup, with its DNS pointed at a domain controller by [`windows_dns_client`](windows_dns_client.md). On a 2-vCPU VM promotion takes about a minute.
+**Promotion.** Conn3x runs `Install-ADDSDomainController` with `-InstallDns` and `-NoRebootOnCompletion`, so the new DC is a DNS server and a global catalog, as Windows makes one by default. Two paths have been tested on Azure, each with a clean second plan: joining the host to the domain first with [`windows_domain_membership`](/modules/windows_domain_membership), then promoting it, and promoting a Windows Server 2025 host straight from a workgroup, with its DNS pointed at a domain controller by [`windows_dns_client`](/modules/windows_dns_client). On a 2-vCPU VM promotion takes about a minute.
 
 **Why it needs a password.** A key login has no password to show the domain, so promotion uses the account in `username` and `password_wo`. It has to be able to add domain controllers: a member of Domain Admins can.
 
@@ -88,7 +88,7 @@ A step lowers to the `conn3x_windows_ad_domain_controller` resource, one instanc
 
 **Reads change nothing.** A refresh reads the host's domain role, its domain and NTDS's root domain from the registry, and loads no AD tools. A host promoted but not yet rebooted counts as a DC while the reboot marker is there.
 
-**Folders.** `database_path`, `log_path` and `sysvol_path` are checked as [`windows_ad_forest`](windows_ad_forest.md) checks them: a folder that exists must be empty, owned by an administrator, not a link, and writable by nobody else. A missing one is made with SYSTEM and Administrators only.
+**Folders.** `database_path`, `log_path` and `sysvol_path` are checked as [`windows_ad_forest`](/modules/windows_ad_forest) checks them: a folder that exists must be empty, owned by an administrator, not a link, and writable by nobody else. A missing one is made with SYSTEM and Administrators only.
 
 **Settings used once.** `username` and the folders apply only at promotion. Changing `domain_name` plans a new promotion, which fails: Conn3x won't demote the host.
 

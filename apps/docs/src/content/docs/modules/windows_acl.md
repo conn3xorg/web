@@ -77,7 +77,7 @@ A step lowers to the `conn3x_windows_acl` resource, one instance per host, and c
 
 **Links.** It won't change rules through a symbolic link, junction or mount point, at the path or on the way to it, and refuses a file with other hard links, since rules belong to the file and not the name. Rules on a folder reach what's inside it, but stop at a link inside it.
 
-**Folders others can change.** It holds every folder on the way open while it works, and refuses one that another account could change. See [`windows_file`](windows_file.md) for exactly what counts.
+**Folders others can change.** It holds every folder on the way open while it works, and refuses one that another account could change. See [`windows_file`](/modules/windows_file) for exactly what counts.
 
 **Inherited rules.** `authoritative` removes rules set directly on the path. Rules it inherits stay until `inherit = false`.
 

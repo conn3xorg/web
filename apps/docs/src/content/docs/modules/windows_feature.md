@@ -7,7 +7,7 @@ description: "A Windows Server role or feature. It never reboots: reboot_require
 
 A Windows Server role or feature. It never reboots: reboot_required says whether Windows wants one, and windows_reboot does it.
 
-Use `windows_feature` to install or remove a Windows Server role or feature. It never reboots a host. When Windows wants one, `reboot_required` says so, and a [`windows_reboot`](windows_reboot.md) step does it, so the reboot shows in the plan.
+Use `windows_feature` to install or remove a Windows Server role or feature. It never reboots a host. When Windows wants one, `reboot_required` says so, and a [`windows_reboot`](/modules/windows_reboot) step does it, so the reboot shows in the plan.
 
 ## Example usage
 

@@ -7,7 +7,7 @@ description: "Holds a package back from updates, or releases it: apt-mark hold o
 
 Holds a package back from updates, or releases it: apt-mark hold on Debian and Ubuntu, dnf versionlock on the Red Hat family. It doesn't install the package.
 
-Use `package_hold` to keep a package at the version it has while the rest of the host updates, such as the kernel on a host with a driver built for it, or a database you upgrade by hand. It's `apt-mark hold` on Debian and Ubuntu and `dnf versionlock` on the Red Hat family. It doesn't install anything: put a [`package`](package.md) step first if the package isn't there yet.
+Use `package_hold` to keep a package at the version it has while the rest of the host updates, such as the kernel on a host with a driver built for it, or a database you upgrade by hand. It's `apt-mark hold` on Debian and Ubuntu and `dnf versionlock` on the Red Hat family. It doesn't install anything: put a [`package`](/modules/package) step first if the package isn't there yet.
 
 ## Example usage
 

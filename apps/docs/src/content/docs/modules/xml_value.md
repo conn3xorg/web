@@ -83,7 +83,7 @@ A step lowers to the `conn3x_xml_value` resource, one instance per host, and con
 
 **Taking out.** `state = "absent"` removes the attribute, or the element with the line it was alone on. It does nothing when the path isn't there. The root element can't be taken out.
 
-**The file.** It's read and written as [`line`](line.md) reads and writes, with the file's owner and mode kept, and it must be well-formed XML before Conn3x touches it. Every plan reads the file again, so a value changed by hand shows the step out of sync, and the next apply puts it back.
+**The file.** It's read and written as [`line`](/modules/line) reads and writes, with the file's owner and mode kept, and it must be well-formed XML before Conn3x touches it. Every plan reads the file again, so a value changed by hand shows the step out of sync, and the next apply puts it back.
 
 ## Removal
 

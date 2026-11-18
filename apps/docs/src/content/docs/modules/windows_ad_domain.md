@@ -7,11 +7,11 @@ description: "A new domain in an Active Directory forest that exists, a child or
 
 A new domain in an Active Directory forest that exists, a child or a new tree, with this Windows host as its first domain controller and DNS server. It never reboots: reboot_required says Windows wants one, and windows_reboot does it. Removing the step leaves the domain; nothing is demoted.
 
-Use `windows_ad_domain` to add a domain to a forest that exists, with this host as the new domain's first domain controller and DNS server. Shops that split by region or business unit add a child, such as `emea.lab.example.com` under `lab.example.com`. After a merger, a company with its own name often gets a new tree instead, such as `apac.example.net` beside `lab.example.com`, in the same forest. It never reboots the host. Promotion always needs a reboot, so follow it with a [`windows_reboot`](windows_reboot.md) step, then wait for AD to answer.
+Use `windows_ad_domain` to add a domain to a forest that exists, with this host as the new domain's first domain controller and DNS server. Shops that split by region or business unit add a child, such as `emea.lab.example.com` under `lab.example.com`. After a merger, a company with its own name often gets a new tree instead, such as `apac.example.net` beside `lab.example.com`, in the same forest. It never reboots the host. Promotion always needs a reboot, so follow it with a [`windows_reboot`](/modules/windows_reboot) step, then wait for AD to answer.
 
 ## Example usage
 
-The host needs the AD DS role, and DNS that finds the parent domain. Point it at a domain controller of the parent with [`windows_dns_client`](windows_dns_client.md), with loopback second, which promotion adds anyway.
+The host needs the AD DS role, and DNS that finds the parent domain. Point it at a domain controller of the parent with [`windows_dns_client`](/modules/windows_dns_client), with loopback second, which promotion adds anyway.
 
 ```hcl
 step "ad_ds" {
@@ -117,7 +117,7 @@ A step lowers to the `conn3x_windows_ad_domain` resource, one instance per host,
 
 **Reads change nothing.** A refresh reads the host's domain role, its domain and NTDS's root domain from the registry, and loads no AD tools. Until the reboot, Windows still says the host is in a workgroup, so promotion records the new domain's name in the reboot marker, which goes with the reboot. While it's there, a promoted host counts as a domain controller in that domain.
 
-**Folders.** `database_path`, `log_path` and `sysvol_path` are checked as [`windows_ad_forest`](windows_ad_forest.md) checks them: a folder that exists must be empty, owned by an administrator, not a link, and writable by nobody else. A missing one is made with SYSTEM and Administrators only.
+**Folders.** `database_path`, `log_path` and `sysvol_path` are checked as [`windows_ad_forest`](/modules/windows_ad_forest) checks them: a folder that exists must be empty, owned by an administrator, not a link, and writable by nobody else. A missing one is made with SYSTEM and Administrators only.
 
 **Settings used once.** `netbios_name`, `username` and the folders apply only at promotion. Changing `domain_name` plans a new promotion, which fails: Conn3x won't demote the host.
 

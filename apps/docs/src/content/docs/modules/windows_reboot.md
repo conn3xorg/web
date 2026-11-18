@@ -61,7 +61,7 @@ A step lowers to the `conn3x_windows_reboot` resource, one instance per host, an
 
 **Other circuits wait.** Circuits run side by side, and a reboot would cut a session another circuit has open on the same host. So while a `windows_reboot` runs, from the moment it starts to the moment the host is back, no other Windows step reaches that host in the same run; they wait their turn, and the reboot waits for any already running. Hosts are told apart by address and port, so the same host reached by two different names isn't covered.
 
-**Up is not ready.** sshd answers before everything else has started. Follow a reboot with [`windows_wait_for`](windows_wait_for.md) on whatever the next step needs.
+**Up is not ready.** sshd answers before everything else has started. Follow a reboot with [`windows_wait_for`](/modules/windows_wait_for) on whatever the next step needs.
 
 ## Removal
 

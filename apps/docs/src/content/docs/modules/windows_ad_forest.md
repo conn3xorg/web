@@ -7,7 +7,7 @@ description: "A new Active Directory forest, with this Windows host as its first
 
 A new Active Directory forest, with this Windows host as its first domain controller and DNS server. It never reboots: reboot_required says Windows wants one, and windows_reboot does it. Removing the step leaves the forest; nothing is demoted.
 
-Use `windows_ad_forest` to make a new Active Directory forest, with this host as its first domain controller and DNS server. It never reboots the host. Promotion always needs a reboot, so follow it with a [`windows_reboot`](windows_reboot.md) step, then wait for AD to answer before anything uses it.
+Use `windows_ad_forest` to make a new Active Directory forest, with this host as its first domain controller and DNS server. It never reboots the host. Promotion always needs a reboot, so follow it with a [`windows_reboot`](/modules/windows_reboot) step, then wait for AD to answer before anything uses it.
 
 ## Example usage
 
