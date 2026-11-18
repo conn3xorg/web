@@ -72,6 +72,7 @@ Errors are printed after the drift list, each starting with `Error:`. A host tha
 | `-parallelism=N` | How many resources are read at once. Defaults to `50` since v0.20.0. |
 | `-lock=false` | Don't lock state while reading it. |
 | `-lock-timeout=DURATION` | How long to retry a state lock. |
+| `-limit=hosts` | Check only the hosts that match, with the same patterns as [`plan -limit`](/reference/cli/plan), so `-limit==web3` checks web3 and no other host. Cloud resources are still read. New in v0.27.0. |
 | `-report=FILE` | Write a JSON report of what drifted to `FILE`. See [-report](#-report). |
 
 `-json` is an error. For the same reads as JSON lines, run `conn3x plan -refresh-only -json`, which is what `drift` runs underneath. `-destroy` is an error too, because a refresh-only plan can't also destroy.
