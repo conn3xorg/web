@@ -56,7 +56,7 @@ sudo curl -fsSL -o /etc/yum.repos.d/conn3x.repo https://conn3xorg.github.io/pack
 sudo dnf install conn3x
 ```
 
-dnf asks you to accept the key the first time; `gpgcheck` and `repo_gpgcheck` are both on. The packages put `conn3x` in `/usr/bin` and need nothing else, so `apt remove conn3x` or `dnf remove conn3x` takes it away cleanly.
+dnf asks you to accept the key the first time; `gpgcheck` and `repo_gpgcheck` are both on. On Fedora 41 and later, dnf5 first prints `repomd.xml GPG signature verification error: Signing key not found`, then offers the key. That's expected: it hasn't imported the key yet. Check the fingerprint is `ED70 61F9 0974 92DD D401 E9A8 1068 8DF8 2AD9 7368` and accept. The packages put `conn3x` in `/usr/bin` and need nothing else, so `apt remove conn3x` or `dnf remove conn3x` takes it away cleanly.
 
 ### Without the repository
 
