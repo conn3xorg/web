@@ -1,6 +1,6 @@
 ---
 title: Secrets from a secret manager
-description: Read a password from OpenBao, Vault or AWS Secrets Manager at run time and write it to your hosts, without it reaching the plan or state.
+description: Read a password from OpenBao, Vault, AWS Secrets Manager or Azure Key Vault at run time and write it to your hosts, without it reaching the plan or state.
 ---
 
 Your database password already lives in a secret manager. You want it on the app servers, in a file only root can read, and nowhere else: not in Git, not in a saved plan, not in state where anyone with read access to the bucket can see it.
@@ -78,6 +78,49 @@ circuit "app" {
 ```
 
 A local built from an ephemeral value is ephemeral too, so `local.app` stays out of the plan as well. The identity Conn3x runs as needs `secretsmanager:GetSecretValue` on the secret, and `kms:Decrypt` if it's encrypted with your own KMS key.
+
+## Azure Key Vault
+
+The `azurerm` provider's `azurerm_key_vault_secret` ephemeral resource reads a secret's current version. It needs the vault's ID, which the data source finds by name:
+
+```hcl
+terraform {
+  required_providers {
+    azurerm = { source = "hashicorp/azurerm" }
+  }
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = "00000000-0000-0000-0000-000000000000"
+}
+
+data "azurerm_key_vault" "app" {
+  name                = "app-vault"
+  resource_group_name = "app"
+}
+
+ephemeral "azurerm_key_vault_secret" "db_password" {
+  name         = "app-db-password"
+  key_vault_id = data.azurerm_key_vault.app.id
+}
+
+circuit "app" {
+  # hosts and ssh as above
+
+  step "db_password" {
+    file {
+      path       = "/etc/app/db-password"
+      content_wo = ephemeral.azurerm_key_vault_secret.db_password.value
+      owner      = "app"
+    }
+  }
+}
+```
+
+The vault has to be in the provider's subscription; for one in another, give that subscription an aliased provider. With Azure RBAC on the vault, the identity Conn3x runs as needs **Key Vault Secrets User** on it, which reads secret values and nothing else. With access policies, it needs the Get permission on secrets. Key Vault strips newlines from a secret, so store a multi-line one base64-encoded and write it with `base64decode()`.
+
+This one was run with `azurerm` 4.x against a vault in West US 2.
 
 ## What the plan shows
 
