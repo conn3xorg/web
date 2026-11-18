@@ -585,6 +585,7 @@ export function latestTag(names) {
 async function read(repo) {
   const tags = await get(`/repos/${repo}/tags?per_page=100`);
   const tag = latestTag(tags.map((t) => t.name));
+  const versions = tags.map((t) => t.name).filter((t) => /^v\d+\.\d+\.\d+$/.test(t)).map((t) => t.slice(1));
   if (!tag) throw new Error(`${repo} has no release tag`);
   const files = tarFiles(await get(`/repos/${repo}/tarball/${tag}`, { raw: true }));
   const ref = await get(`/repos/${repo}/git/ref/tags/${tag}`);
@@ -600,7 +601,7 @@ async function read(repo) {
     if (hosts?.workflow_runs?.[0]) realHost = { date: hosts.workflow_runs[0].updated_at };
   }
   return {
-    tag, files,
+    tag, versions, files,
     tagVerified: Boolean(signed.verification?.verified),
     tagDate: signed.tagger?.date ?? signed.committer?.date,
     run: run && { conclusion: run.conclusion, date: run.updated_at, url: run.html_url, attempt: run.run_attempt, previous: previous?.conclusion },
@@ -632,6 +633,7 @@ async function pool(items, size, fn) {
 /** One circuit's published entry. */
 export const entry = (c, ev, opts) => ({
   name: c.name, repo: c.repo, tag: ev.tag, checkedAt: new Date(ev.now).toISOString(),
+  ...(ev.versions?.length && { versions: ev.versions }),
   ...(ev.run?.url && { ciRun: ev.run.url }),
   ...evaluate(ev, opts),
 });
