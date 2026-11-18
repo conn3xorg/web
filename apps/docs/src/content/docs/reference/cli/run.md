@@ -59,6 +59,8 @@ web2 | ok
 
 `-i` names an Ansible inventory, INI or YAML. Conn3x reads it as [`provider::conn3x::inventory`](/reference/circuits/hosts#from-an-ansible-inventory) does: each host's address from `ansible_host`, and `ansible_port`, `ansible_user` and `ansible_ssh_private_key_file` where they're set, with the `group_vars/` and `host_vars/` directories beside it.
 
+Since v0.27.0, `ansible_become` runs that host's commands as root, as `-become` does for every host. It takes Ansible's true values, such as `true`, `yes` and `1`. Become goes to root only, so an `ansible_become_user` other than `root` stops the run before anything runs.
+
 A host behind AWS Session Manager or Google Cloud IAP takes its proxy the way Ansible's do, since v0.20.0: `-o ProxyCommand=...` in `ansible_ssh_common_args` or `ansible_ssh_extra_args`. It runs without a shell, so a pipe or a `$` in it is refused.
 
 ```ini
