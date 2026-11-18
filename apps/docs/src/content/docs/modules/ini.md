@@ -69,6 +69,7 @@ step "workers" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `backup` | bool | No | true copies the file, before an edit changes it, beside itself with .conn3x-, the time in UTC, a number and a ~ after its name, such as job.conn3x-20261118T130501Z.4127~, keeping its mode and owner. The ~ keeps cron.d, logrotate.d and the like from loading the copy. An apply that changes nothing makes no copy. Old copies stay until you remove them. |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
 | `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
