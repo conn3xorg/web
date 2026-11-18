@@ -6,7 +6,7 @@ import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import PageHero from "../components/PageHero.astro";
 import contributors from "../data/contributors.json";
-import { hoursGiven } from "../lib/giving-back.js";
+import { given } from "../lib/giving-back.js";
 import givingBack from "../data/giving-back.json";
 
 const repo = "https://github.com/conn3xorg/conn3x";
@@ -120,13 +120,13 @@ const categories = [
       <section aria-labelledby="giving">
         <h2 class="sub" id="giving">Giving back</h2>
         <p class="intro">
-          Every circuit stands on someone else's project. So we give time back to those projects, a little
+          Every circuit stands on someone else's project. So we give back to those projects, a little
           every day: answering a maintainer's question with a reproduction, reviewing a small pull request
           nobody has got to yet, reporting what we find while we build. AI, security and compliance projects
           come first. We work inside each project's own contribution rules, and where a project's rules say
           no, we leave it be.
         </p>
-        <p class="given"><strong>About {hoursGiven(givingBack)}</strong> given to other projects so far. <a href="/community/giving-back">See what we've done</a>.</p>
+        <p class="given">So far: <strong>{given(givingBack)}</strong>. <a href="/community/giving-back">See each one</a>.</p>
         <p class="fine">
           Know a project one of our circuits uses that could do with a hand? Tell us in{" "}
           <a href={discuss}>Discussions</a>.

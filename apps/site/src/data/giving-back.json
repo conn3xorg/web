@@ -1,712 +1,610 @@
 {
-  "otherMinutes": 94,
   "items": [
     {
       "date": "2026-11-17",
       "repo": "prometheus/prometheus",
       "summary": "A length check that no longer wraps on 32-bit platforms. We confirmed the subtraction can't go negative, and that only the project's 386 CI job exercises the bug.",
-      "url": "https://github.com/prometheus/prometheus/pull/20476#pullrequestreview-5942998175",
-      "minutes": 4
+      "url": "https://github.com/prometheus/prometheus/pull/20476#pullrequestreview-5942998175"
     },
     {
       "date": "2026-11-17",
       "repo": "osquery/osquery",
       "summary": "A stricter ~/.ssh walk that skips symlinked directories. We showed why the check works (the listing drops the trailing slash) and suggested skipping a directory whose status can't be read.",
-      "url": "https://github.com/osquery/osquery/pull/9318#pullrequestreview-5942985586",
-      "minutes": 8
+      "url": "https://github.com/osquery/osquery/pull/9318#pullrequestreview-5942985586"
     },
     {
       "date": "2026-11-17",
       "repo": "prometheus/prometheus",
       "summary": "Rejecting chunk data shorter than its header. We checked each encoding's header size against how its chunks are built, and found they match.",
-      "url": "https://github.com/prometheus/prometheus/pull/20472#pullrequestreview-5942974133",
-      "minutes": 5
+      "url": "https://github.com/prometheus/prometheus/pull/20472#pullrequestreview-5942974133"
     },
     {
       "date": "2026-11-17",
       "repo": "prometheus/alertmanager",
       "summary": "Saturating huge Retry-After values instead of overflowing. We ran Go's parser on the edge cases and showed why the extra digit check is needed for values past uint64.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5751#pullrequestreview-5942965791",
-      "minutes": 6
+      "url": "https://github.com/prometheus/alertmanager/pull/5751#pullrequestreview-5942965791"
     },
     {
       "date": "2026-11-16",
       "repo": "tailscale/tailscale",
       "summary": "The macOS installer wrote its launchd plist as 0700, so plain tools couldn't read it. We confirmed reinstalling always creates the file fresh, so the new 0644 mode reaches existing installs.",
-      "url": "https://github.com/tailscale/tailscale/pull/22436#issuecomment-6918236897",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/pull/22436#issuecomment-6918236897"
     },
     {
       "date": "2026-11-16",
       "repo": "data-privacy-stack/presidio",
       "summary": "Anonymizing quietly added a DEFAULT entry to the operators you passed in. We checked nothing else on that path writes to your config, so with this fix it comes back exactly as you sent it.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2498#pullrequestreview-5921034026",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2498#pullrequestreview-5921034026"
     },
     {
       "date": "2026-11-16",
       "repo": "prometheus/alertmanager",
       "summary": "Per-alert limits could reset early because the stale check read an arbitrary heap slot. We traced the new test by hand and pointed out that the red CI job is a one-word lint fix.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5746#pullrequestreview-5921046860",
-      "minutes": 1
+      "url": "https://github.com/prometheus/alertmanager/pull/5746#pullrequestreview-5921046860"
     },
     {
       "date": "2026-11-16",
       "repo": "prometheus/prometheus",
       "summary": "stripDomain cut bracketed IPv6 addresses at the first dot. We matched the fix against Go's address parsing and asked not to lock a truncated IPv4 result into the tests.",
-      "url": "https://github.com/prometheus/prometheus/pull/20463#pullrequestreview-5921056833",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20463#pullrequestreview-5921056833"
     },
     {
       "date": "2026-11-16",
       "repo": "keycloak/keycloak",
       "summary": "Creating an organization group logged an admin event without the group's ID. We checked the fix has exactly the same shape as realm groups, which already get it right.",
-      "url": "https://github.com/keycloak/keycloak/pull/55210#pullrequestreview-5921066106",
-      "minutes": 1
+      "url": "https://github.com/keycloak/keycloak/pull/55210#pullrequestreview-5921066106"
     },
     {
       "date": "2026-11-16",
       "repo": "osquery/osquery",
       "summary": "A plist key with no UTF-8 form could crash osquery's macOS tables. We flagged that an older open PR makes the same change and covers a few more spots, so maintainers can pick one.",
-      "url": "https://github.com/osquery/osquery/pull/9314#pullrequestreview-5921088082",
-      "minutes": 1
+      "url": "https://github.com/osquery/osquery/pull/9314#pullrequestreview-5921088082"
     },
     {
       "date": "2026-11-16",
       "repo": "Infisical/infisical",
       "summary": "A CSV import fix keeps the newline at the end of quoted values. We showed it also keeps the space in a row like KEY, \"abc\", which main trims, and suggested trimming only outside the quotes.",
-      "url": "https://github.com/Infisical/infisical/pull/9490#pullrequestreview-5921102147",
-      "minutes": 1
+      "url": "https://github.com/Infisical/infisical/pull/9490#pullrequestreview-5921102147"
     },
     {
       "date": "2026-11-16",
       "repo": "prometheus/prometheus",
       "summary": "The console template docs queried node exporter metrics that no longer exist. We checked every new name against node_exporter's source.",
-      "url": "https://github.com/prometheus/prometheus/pull/20462#pullrequestreview-5921114934",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20462#pullrequestreview-5921114934"
     },
     {
       "date": "2026-11-15",
       "repo": "data-privacy-stack/presidio",
       "summary": "Two open PRs fix the same Italian VAT span bug with slightly different patterns. We showed the one input where they differ, a code followed by an underscore, which main and the other PR still match.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2453#pullrequestreview-5914053630",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2453#pullrequestreview-5914053630"
     },
     {
       "date": "2026-11-15",
       "repo": "data-privacy-stack/presidio",
       "summary": "Thirteen countries' IBANs were never detected because they were missing from the format table. We checked every new pattern against the IBAN registry, and confirmed nothing with its own prefix is left out.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2460#pullrequestreview-5914053828",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2460#pullrequestreview-5914053828"
     },
     {
       "date": "2026-11-15",
       "repo": "keycloak/keycloak",
       "summary": "A fix stops debug logs printing credential offers with their pre-authorized codes. We showed the offer nonce still logged next to it fetches the same offer, code included, so it should go too.",
-      "url": "https://github.com/keycloak/keycloak/pull/55191#pullrequestreview-5914054024",
-      "minutes": 2
+      "url": "https://github.com/keycloak/keycloak/pull/55191#pullrequestreview-5914054024"
     },
     {
       "date": "2026-11-15",
       "repo": "keycloak/keycloak",
       "summary": "The Java admin client can now ask for brief realm listings. We checked the endpoint and the brief fields match the javadoc, and noted one case that returns only the realm name.",
-      "url": "https://github.com/keycloak/keycloak/pull/55209#pullrequestreview-5914054136",
-      "minutes": 1
+      "url": "https://github.com/keycloak/keycloak/pull/55209#pullrequestreview-5914054136"
     },
     {
       "date": "2026-11-15",
       "repo": "prometheus/prometheus",
       "summary": "Relative times in the UI no longer show NaN for a bad timestamp. We linked the sister fix for the query page's copy of the same parser, so one copy can go.",
-      "url": "https://github.com/prometheus/prometheus/pull/20452#pullrequestreview-5914054214",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20452#pullrequestreview-5914054214"
     },
     {
       "date": "2026-11-15",
       "repo": "prometheus/prometheus",
       "summary": "Duration expressions stop losing a millisecond to float rounding. We showed the new rounding can overflow at the very top of the allowed range, and the one-line check that covers it.",
-      "url": "https://github.com/prometheus/prometheus/pull/20458#pullrequestreview-5914054349",
-      "minutes": 2
+      "url": "https://github.com/prometheus/prometheus/pull/20458#pullrequestreview-5914054349"
     },
     {
       "date": "2026-11-15",
       "repo": "prometheus/prometheus",
       "summary": "A check that remote-written labels arrive sorted sat in the remote read path instead, the only caller of the function it changed. We pointed to where write ingestion validates labels, so the issue it meant to close gets fixed.",
-      "url": "https://github.com/prometheus/prometheus/pull/20454#issuecomment-6890782237",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20454#issuecomment-6890782237"
     },
     {
       "date": "2026-11-15",
       "repo": "prometheus/alertmanager",
       "summary": "Alertmanager's idle timeout goes past the Prometheus client's, so alert posts stop racing a closing connection. We checked the client's five-minute default and why a POST can't be retried.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5744#issuecomment-6890782580",
-      "minutes": 1
+      "url": "https://github.com/prometheus/alertmanager/pull/5744#issuecomment-6890782580"
     },
     {
       "date": "2026-11-15",
       "repo": "tailscale/tailscale",
       "summary": "A tray fix asks for the daemon's state on every subscribe, but that first message can also carry the login URL, which would reopen the browser each time. We suggested skipping it on that message.",
-      "url": "https://github.com/tailscale/tailscale/pull/22409#issuecomment-6890782886",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/pull/22409#issuecomment-6890782886"
     },
     {
       "date": "2026-11-15",
       "repo": "tailscale/tailscale",
       "summary": "Bianbu Linux joins the installer. We checked that Tailscale's Ubuntu repository has RISC-V packages for the releases it's based on.",
-      "url": "https://github.com/tailscale/tailscale/pull/22404#issuecomment-6890783174",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/pull/22404#issuecomment-6890783174"
     },
     {
       "date": "2026-11-15",
       "repo": "data-privacy-stack/presidio",
       "summary": "Directory redaction now finds DICOM files by their header as well as their name, and warns about any file it leaves alone. We noted which files the header check still misses, and that they now show in the warning.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2493#issuecomment-6890783476",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2493#issuecomment-6890783476"
     },
     {
       "date": "2026-11-15",
       "repo": "prometheus/prometheus",
       "summary": "New docs on when timestamp() returns a sample's own time. We added that parentheses don't change it, and that start_timestamp() works the same way.",
-      "url": "https://github.com/prometheus/prometheus/pull/20457#issuecomment-6890783761",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20457#issuecomment-6890783761"
     },
     {
       "date": "2026-11-15",
       "repo": "BerriAI/litellm",
       "summary": "File downloads stop forwarding stale compression headers. We pointed to the helper plugin routes already use, which also sandboxes provider-supplied pages served from the proxy's origin.",
-      "url": "https://github.com/BerriAI/litellm/pull/51915#issuecomment-6890784069",
-      "minutes": 1
+      "url": "https://github.com/BerriAI/litellm/pull/51915#issuecomment-6890784069"
     },
     {
       "date": "2026-11-14",
       "repo": "tailscale/tailscale",
       "summary": "A loong64 fix makes a raw statx call so a file-descriptor count stops allocating. We suggested keeping it to loong64, so the other platforms keep the plain fstat and don't pick up unsafe.",
-      "url": "https://github.com/tailscale/tailscale/pull/22386#issuecomment-6874441837",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/pull/22386#issuecomment-6874441837"
     },
     {
       "date": "2026-11-14",
       "repo": "keycloak/keycloak",
       "summary": "A fix turns an import crash on incomplete old-format credentials into an error. We asked for the missing field to be named, and confirmed that refusing a null algorithm is right, since on main that fails at the first login instead.",
-      "url": "https://github.com/keycloak/keycloak/pull/55181#issuecomment-6874427841",
-      "minutes": 1
+      "url": "https://github.com/keycloak/keycloak/pull/55181#issuecomment-6874427841"
     },
     {
       "date": "2026-11-14",
       "repo": "BerriAI/litellm",
       "summary": "A fix returns a 400 for streaming across comma-separated models. We showed it would also refuse string \"true\" requests, which the proxy treats as non-streaming and which work today.",
-      "url": "https://github.com/BerriAI/litellm/pull/51782#issuecomment-6874421767",
-      "minutes": 1
+      "url": "https://github.com/BerriAI/litellm/pull/51782#issuecomment-6874421767"
     },
     {
       "date": "2026-11-14",
       "repo": "prometheus/prometheus",
       "summary": "A UI fix ignores invalid timestamps in query URLs. We found a second parseTime with the same NaN problem, which slips past the \"never\" check in the duration formatter.",
-      "url": "https://github.com/prometheus/prometheus/pull/20447#pullrequestreview-5903080012",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20447#pullrequestreview-5903080012"
     },
     {
       "date": "2026-11-14",
       "repo": "prometheus/prometheus",
       "summary": "A docs fix adds the remote read chunked_read_limit. We checked the default and the error text, and noted that it covers only streamed responses, while sampled ones are read without a limit.",
-      "url": "https://github.com/prometheus/prometheus/pull/20445#pullrequestreview-5903074997",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20445#pullrequestreview-5903074997"
     },
     {
       "date": "2026-11-14",
       "repo": "data-privacy-stack/presidio",
       "summary": "An equality fix for anonymizer results. We confirmed it, and pointed out that comparing a result with anything that isn't one raises instead of returning False.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2489#pullrequestreview-5903067000",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2489#pullrequestreview-5903067000"
     },
     {
       "date": "2026-11-13",
       "repo": "tailscale/tailscale",
       "summary": "A fix stops a second tailscaled from stripping a running daemon's tun addresses. We found that the netfilter cleanup just before it still removes the running daemon's firewall chains, and suggested moving the check above it.",
-      "url": "https://github.com/tailscale/tailscale/pull/22387#issuecomment-6873395624",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/pull/22387#issuecomment-6873395624"
     },
     {
       "date": "2026-11-13",
       "repo": "prometheus/prometheus",
       "summary": "A fix for agent mode logging an out-of-order window of 0. We traced where the real value comes from to confirm it, and suggested a shorter test.",
-      "url": "https://github.com/prometheus/prometheus/pull/20444#pullrequestreview-5902429631",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20444#pullrequestreview-5902429631"
     },
     {
       "date": "2026-11-13",
       "repo": "prometheus/prometheus",
       "summary": "A benchmark mixed b.Loop with RunParallel, so it measured the wrong thing. We checked the three other benchmarks that use both and confirmed they keep them apart.",
-      "url": "https://github.com/prometheus/prometheus/pull/20446#pullrequestreview-5902424577",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20446#pullrequestreview-5902424577"
     },
     {
       "date": "2026-11-13",
       "repo": "data-privacy-stack/presidio",
       "summary": "A mask operator fix refuses an empty masking character. We showed that it used to delete the characters, so the output's offsets no longer matched the results.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2487#pullrequestreview-5902420173",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2487#pullrequestreview-5902420173"
     },
     {
       "date": "2026-11-13",
       "repo": "data-privacy-stack/presidio",
       "summary": "A fix sorts results before merging neighbours separated by spaces, which had left text in clear. We confirmed that overlapping results can't be merged by that step, and pointed at the root cause in conflict resolution.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2490#pullrequestreview-5902418403",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2490#pullrequestreview-5902418403"
     },
     {
       "date": "2026-11-13",
       "repo": "data-privacy-stack/presidio",
       "summary": "A fix compiles each regex allow-list term on its own, so backreferences keep their numbering. We noted that the regex timeout now applies once per term, and how to keep the old bound.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2491#pullrequestreview-5902415342",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2491#pullrequestreview-5902415342"
     },
     {
       "date": "2026-11-13",
       "repo": "github/advisory-database",
       "summary": "An imgproxy advisory listed three module paths that have no 4.x versions, so it matched nothing. We moved it to /v4, as imgproxy's own advisory says, and checked that against go.mod and the Go module proxy.",
-      "url": "https://github.com/github/advisory-database/pull/11254",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11254"
     },
     {
       "date": "2026-11-13",
       "repo": "data-privacy-stack/presidio",
       "summary": "A change folds Arabic-Indic and other digits to ASCII inside every pattern recognizer, always on. We pointed out that the project's opt-in text normalizers already do this kind of folding, with offset mapping, and what choosing always-on changes.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2480#pullrequestreview-5884035008",
-      "minutes": 1
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2480#pullrequestreview-5884035008"
     },
     {
       "date": "2026-11-13",
       "repo": "prometheus/alertmanager",
       "summary": "A fix for a flaky test against a full systemd socket. We confirmed why a reused sender could block before the receiver's queue filled, and flagged that the new fill loop has no bound.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5741#pullrequestreview-5884026202",
-      "minutes": 1
+      "url": "https://github.com/prometheus/alertmanager/pull/5741#pullrequestreview-5884026202"
     },
     {
       "date": "2026-11-13",
       "repo": "prometheus/prometheus",
       "summary": "A docs fix added Vultr to the scrape config list. We compared every registered service discovery against the docs and found five AWS ones that are registered as their own keys but documented only as aws_sd_config roles.",
-      "url": "https://github.com/prometheus/prometheus/pull/20428#pullrequestreview-5884010782",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20428#pullrequestreview-5884010782"
     },
     {
       "date": "2026-11-13",
       "repo": "data-privacy-stack/presidio",
       "summary": "A fix stopped \"business\" counting as context for a Canadian SIN. We confirmed the cause and found the same substring trap in other recognizers, from \"pan\" in \"company\" to \"us\" in \"status\".",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2484#pullrequestreview-5884001014",
-      "minutes": 2
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2484#pullrequestreview-5884001014"
     },
     {
       "date": "2026-11-12",
       "repo": "tailscale/tailscale",
       "summary": "Two pull requests fixing the same DNS bug arrived 90 seconds apart. We showed their code changes were identical and said what else differed, so maintainers can pick one.",
-      "url": "https://github.com/tailscale/tailscale/pull/22367#issuecomment-6839542602",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/pull/22367#issuecomment-6839542602"
     },
     {
       "date": "2026-11-12",
       "repo": "prometheus/alertmanager",
       "summary": "A change would refuse any silence whose matchers all match the empty string. We showed it also refuses the everyday maintenance silence alertname!=\"Watchdog\", and that existing silences of that shape can't be extended after upgrading.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5739#pullrequestreview-5868462618",
-      "minutes": 3
+      "url": "https://github.com/prometheus/alertmanager/pull/5739#pullrequestreview-5868462618"
     },
     {
       "date": "2026-11-12",
       "repo": "data-privacy-stack/presidio",
       "summary": "A malformed recognizer span could be clipped into a valid one and reported as PII over unrelated text. We ran the fix's tests against the old code, reproduced the bad result, and flagged a small change for anyone calling the exported API directly.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2473#pullrequestreview-5868448679",
-      "minutes": 3
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2473#pullrequestreview-5868448679"
     },
     {
       "date": "2026-11-12",
       "repo": "github/advisory-database",
       "summary": "A Kuma advisory named the v1 module for all of its 2.x ranges, so scanners matched none of them. We moved them to /v2 and kept 1.x covered, checked against go.mod, the Go module proxy, the Go vulnerability database and Kuma's 1.8.1 defaults.",
-      "url": "https://github.com/github/advisory-database/pull/11168",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11168"
     },
     {
       "date": "2026-11-12",
       "repo": "github/advisory-database",
       "summary": "A GoBGP advisory named the unversioned module for a 4.x fix, so no 4.x module matched. We changed it to /v4, matching the Go vulnerability database, and noted that v3 has the same unchecked code.",
-      "url": "https://github.com/github/advisory-database/pull/11167",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11167"
     },
     {
       "date": "2026-11-12",
       "repo": "github/advisory-database",
       "summary": "A Telepresence advisory named a module path with no Go versions at all. We changed it to /v2 and confirmed the fix commits landed in 2.31.0, not 2.30.0.",
-      "url": "https://github.com/github/advisory-database/pull/11166",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11166"
     },
     {
       "date": "2026-11-11",
       "repo": "prometheus/prometheus",
       "summary": "promtool's OpenMetrics dump printed staleness markers as NaN and dropped floats that came after a native histogram. We ran the new test against the old loop to show both, and pointed out what dropping the markers means for a backfilled series.",
-      "url": "https://github.com/prometheus/prometheus/pull/20393#pullrequestreview-5854789963",
-      "minutes": 2
+      "url": "https://github.com/prometheus/prometheus/pull/20393#pullrequestreview-5854789963"
     },
     {
       "date": "2026-11-11",
       "repo": "tailscale/tailscale",
       "summary": "A failed logout used to forget the node key, so it couldn't be retried. We confirmed the fix and its test, and spelled out that a failed logout now leaves the node fully logged in rather than half logged out.",
-      "url": "https://github.com/tailscale/tailscale/pull/22249#pullrequestreview-5854776950",
-      "minutes": 2
+      "url": "https://github.com/tailscale/tailscale/pull/22249#pullrequestreview-5854776950"
     },
     {
       "date": "2026-11-11",
       "repo": "data-privacy-stack/presidio",
       "summary": "Deanonymizing with no operator for one of the entities crashed with a 500. We ran the fix's test against the old code and asked whether refusing the request, rather than leaving that entity alone, is what the maintainers want.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2464#pullrequestreview-5854764394",
-      "minutes": 2
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2464#pullrequestreview-5854764394"
     },
     {
       "date": "2026-11-11",
       "repo": "prometheus/prometheus",
       "summary": "OVHcloud discovery dropped any VPS with a keyboard layout set. We checked the fix against OVH's API schema and ran the test both ways.",
-      "url": "https://github.com/prometheus/prometheus/pull/20394#pullrequestreview-5854752077",
-      "minutes": 2
+      "url": "https://github.com/prometheus/prometheus/pull/20394#pullrequestreview-5854752077"
     },
     {
       "date": "2026-11-11",
       "repo": "github/advisory-database",
       "summary": "The cosign advisory named a module path that doesn't exist at v2 or v3, so scanners missed it. We named /v3 and /v2, checked against the module proxy and the Go vulnerability database, and added the fix commit.",
-      "url": "https://github.com/github/advisory-database/pull/11082",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11082"
     },
     {
       "date": "2026-11-10",
       "repo": "prometheus/alertmanager",
       "summary": "A fix let Alertmanager reload its own redacted config when a Slack receiver posts updates. We reproduced the bug on main, then found the same break in the global Slack settings, which the fix didn't cover yet.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5736#pullrequestreview-5844182183",
-      "minutes": 3
+      "url": "https://github.com/prometheus/alertmanager/pull/5736#pullrequestreview-5844182183"
     },
     {
       "date": "2026-11-10",
       "repo": "cockpit-project/cockpit",
       "summary": "Cockpit's bridge was running out of file descriptors because it never closed its pipes to finished processes. We traced every path that closes a process to show the fix can't close a pipe the event loop is still reading, or close the same one twice.",
-      "url": "https://github.com/cockpit-project/cockpit/pull/23917#pullrequestreview-5844211399",
-      "minutes": 2
+      "url": "https://github.com/cockpit-project/cockpit/pull/23917#pullrequestreview-5844211399"
     },
     {
       "date": "2026-11-10",
       "repo": "jenkins-infra/jenkins.io",
       "summary": "Checked a sitemap fix against the whole site and found no page it would drop yet, so we asked which page prompted it.",
-      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9575#pullrequestreview-5844140678",
-      "minutes": 3
+      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9575#pullrequestreview-5844140678"
     },
     {
       "date": "2026-11-10",
       "repo": "tailscale/tailscale",
       "summary": "A fix lifting the WebSocket message limit for browser DERP clients said every peer was an authenticated server, which isn't true on the relay side. We traced the reads end to end and showed it's still safe there, because the DERP and Noise frame limits do the bounding.",
-      "url": "https://github.com/tailscale/tailscale/pull/22293#pullrequestreview-5841281406",
-      "minutes": 2
+      "url": "https://github.com/tailscale/tailscale/pull/22293#pullrequestreview-5841281406"
     },
     {
       "date": "2026-11-10",
       "repo": "prometheus/prometheus",
       "summary": "Checked a fix for dead Marathon links in the config docs, and found two more links to the same retired site in the Marathon discovery code, with archived copies to point them at.",
-      "url": "https://github.com/prometheus/prometheus/pull/20405#pullrequestreview-5841299686",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20405#pullrequestreview-5841299686"
     },
     {
       "date": "2026-11-10",
       "repo": "prometheus/prometheus",
       "summary": "Confirmed against the live docs site that a fix for broken query-docs anchors points at headings that really exist.",
-      "url": "https://github.com/prometheus/prometheus/pull/20399#pullrequestreview-5841299908",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20399#pullrequestreview-5841299908"
     },
     {
       "date": "2026-11-09",
       "repo": "github/advisory-database",
       "summary": "Fiber's HSTS advisory named a Go module path that doesn't exist at v3, so scanners checking fiber/v3 missed it. We proved the right path from the module proxy, showed v2 isn't affected, and proposed the fix.",
-      "url": "https://github.com/github/advisory-database/pull/11036",
-      "minutes": 3
+      "url": "https://github.com/github/advisory-database/pull/11036"
     },
     {
       "date": "2026-11-09",
       "repo": "github/advisory-database",
       "summary": "Caddy's advisory for the CVE-2026-30852 fix bypass listed no patched version. We traced the fix to 2.11.3 and sent a correction with the fix PR, so scanners can stop flagging upgraded servers.",
-      "url": "https://github.com/github/advisory-database/pull/11018",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11018"
     },
     {
       "date": "2026-11-09",
       "repo": "github/advisory-database",
       "summary": "Vitess's advisory marked the already-patched 0.23.6 as vulnerable. We checked each fix commit against its release tag and proposed both ranges to match Vitess's own advisory.",
-      "url": "https://github.com/github/advisory-database/pull/11017",
-      "minutes": 2
+      "url": "https://github.com/github/advisory-database/pull/11017"
     },
     {
       "date": "2026-11-06",
       "repo": "n8n-io/n8n-docs",
       "summary": "Timed the HTTP Request node's batching against a test server and found a docs example promising one request per second actually sends 50 at once unless you change one more setting.",
-      "url": "https://github.com/n8n-io/n8n-docs/pull/5636#pullrequestreview-5806398272",
-      "minutes": 5
+      "url": "https://github.com/n8n-io/n8n-docs/pull/5636#pullrequestreview-5806398272"
     },
     {
       "date": "2026-11-06",
       "repo": "prometheus/alertmanager",
       "summary": "Showed the email notifier can still hang on a mail server that accepts the connection but never replies, and tested a two-line fix that stops it on time.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5690#pullrequestreview-5806359505",
-      "minutes": 3
+      "url": "https://github.com/prometheus/alertmanager/pull/5690#pullrequestreview-5806359505"
     },
     {
       "date": "2026-11-06",
       "repo": "jenkins-infra/jenkins.io",
       "summary": "Started Jenkins with JKS, PKCS12 and JCEKS keystores to confirm the new HTTPS docs say which formats work and from which version.",
-      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9515#pullrequestreview-5806323239",
-      "minutes": 4
+      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9515#pullrequestreview-5806323239"
     },
     {
       "date": "2026-11-06",
       "repo": "tailscale/tailscale",
       "summary": "Built the Linux packages before and after a fix under two build setups and confirmed every file now installs with the same permissions wherever it was built.",
-      "url": "https://github.com/tailscale/tailscale/pull/22203#pullrequestreview-5806319427",
-      "minutes": 3
+      "url": "https://github.com/tailscale/tailscale/pull/22203#pullrequestreview-5806319427"
     },
     {
       "date": "2026-11-06",
       "repo": "cockpit-project/cockpit",
       "summary": "Found a reliable way to trigger a race the maintainers couldn't pin down, where pausing the logs page left a journalctl running, and sent a fix.",
-      "url": "https://github.com/cockpit-project/cockpit/pull/23896#issuecomment-6691557181",
-      "minutes": 34
+      "url": "https://github.com/cockpit-project/cockpit/pull/23896#issuecomment-6691557181"
     },
     {
       "date": "2026-11-06",
       "repo": "cockpit-project/cockpit",
       "summary": "Reworked the Ubuntu logo fix after review so Ubuntu 22.04 keeps its logo, and tested it on 22.04 and 24.04.",
-      "url": "https://github.com/cockpit-project/cockpit/pull/23900#discussion_r4493454229",
-      "minutes": 4
+      "url": "https://github.com/cockpit-project/cockpit/pull/23900#discussion_r4493454229"
     },
     {
       "date": "2026-11-05",
       "repo": "tailscale/tailscale",
       "summary": "Checked that every other DNS manager call is safe in builds without DNS, after a fix for a crash on queries to 100.100.100.100.",
-      "url": "https://github.com/tailscale/tailscale/pull/22153#pullrequestreview-5780888053",
-      "minutes": 2
+      "url": "https://github.com/tailscale/tailscale/pull/22153#pullrequestreview-5780888053"
     },
     {
       "date": "2026-11-05",
       "repo": "prometheus/prometheus",
       "summary": "Confirmed from Go's source why the API left multipart temp files on disk, and showed the test checks the helper but not the fix.",
-      "url": "https://github.com/prometheus/prometheus/pull/20314#pullrequestreview-5780878949",
-      "minutes": 1
+      "url": "https://github.com/prometheus/prometheus/pull/20314#pullrequestreview-5780878949"
     },
     {
       "date": "2026-11-05",
       "repo": "prometheus/alertmanager",
       "summary": "Checked all five replaced docs links: every old one is a 404 and every new one loads.",
-      "url": "https://github.com/prometheus/alertmanager/pull/5717#pullrequestreview-5780873968",
-      "minutes": 1
+      "url": "https://github.com/prometheus/alertmanager/pull/5717#pullrequestreview-5780873968"
     },
     {
       "date": "2026-11-05",
       "repo": "jenkins-infra/jenkins.io",
       "summary": "Checked the TLS chain of every host the site build downloads from, so turning certificate checks back on won't break it.",
-      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9555#pullrequestreview-5780866518",
-      "minutes": 1
+      "url": "https://github.com/jenkins-infra/jenkins.io/pull/9555#pullrequestreview-5780866518"
     },
     {
       "date": "2026-11-05",
       "repo": "tailscale/tailscale",
       "summary": "Found that a fix for serve redirects would let a request starting with two slashes redirect to another host, and suggested a one-line guard.",
-      "url": "https://github.com/tailscale/tailscale/pull/22118#pullrequestreview-5780858488",
-      "minutes": 2
+      "url": "https://github.com/tailscale/tailscale/pull/22118#pullrequestreview-5780858488"
     },
     {
       "date": "2026-11-05",
       "repo": "cockpit-project/cockpit",
       "summary": "Traced why the new journal test fails on every CentOS Stream run but passes on Fedora, and suggested a way that doesn't depend on PATH.",
-      "url": "https://github.com/cockpit-project/cockpit/pull/23896#issuecomment-6651557841",
-      "minutes": 3
+      "url": "https://github.com/cockpit-project/cockpit/pull/23896#issuecomment-6651557841"
     },
     {
       "date": "2026-11-04",
       "repo": "tailscale/tailscale",
       "summary": "Showed a second pass of the serve hostname fix still failed for mixed-case SNI at the certificate lookup, then approved the third.",
-      "url": "https://github.com/tailscale/tailscale/pull/22141#pullrequestreview-5772753817",
-      "minutes": 6
+      "url": "https://github.com/tailscale/tailscale/pull/22141#pullrequestreview-5772753817"
     },
     {
       "date": "2026-11-04",
       "repo": "tailscale/tailscale",
       "summary": "Tested the plain-HTTP serve Host fix against odd Host headers, and found its comment's claim about Go's TLS doesn't hold.",
-      "url": "https://github.com/tailscale/tailscale/pull/22141#pullrequestreview-5766921295",
-      "minutes": 4
+      "url": "https://github.com/tailscale/tailscale/pull/22141#pullrequestreview-5766921295"
     },
     {
       "date": "2026-11-04",
       "repo": "n8n-io/n8n-docs",
       "summary": "Checked the new storage lifecycle advice against n8n's code, and found a rule that would expire chat attachments still in use.",
-      "url": "https://github.com/n8n-io/n8n-docs/pull/5542#pullrequestreview-5766916380",
-      "minutes": 3
+      "url": "https://github.com/n8n-io/n8n-docs/pull/5542#pullrequestreview-5766916380"
     },
     {
       "date": "2026-11-04",
       "repo": "prometheus/prometheus",
       "summary": "Checked every meta label in the service discovery docs fix against the labels the code actually sets.",
-      "url": "https://github.com/prometheus/prometheus/pull/20272#pullrequestreview-5766910940",
-      "minutes": 3
+      "url": "https://github.com/prometheus/prometheus/pull/20272#pullrequestreview-5766910940"
     },
     {
       "date": "2026-11-04",
       "repo": "tailscale/tailscale",
       "summary": "Traced why TS_EXTRA_ARGS stops applying after the first boot with TS_AUTH_ONCE, and gave three workarounds.",
-      "url": "https://github.com/tailscale/tailscale/issues/20728#issuecomment-6628387424",
-      "minutes": 3
+      "url": "https://github.com/tailscale/tailscale/issues/20728#issuecomment-6628387424"
     },
     {
       "date": "2026-11-04",
       "repo": "cockpit-project/cockpit",
       "summary": "Sent the fix for the broken Ubuntu logos in the ws container, after the reporter confirmed it on Ubuntu 26.04.",
-      "url": "https://github.com/cockpit-project/cockpit/pull/23900",
-      "minutes": 3
+      "url": "https://github.com/cockpit-project/cockpit/pull/23900"
     },
     {
       "date": "2026-11-04",
       "repo": "prometheus/prometheus",
       "summary": "Built the CORS default-origin fix and its base, and checked every origin setting against the API with curl.",
-      "url": "https://github.com/prometheus/prometheus/pull/20252#pullrequestreview-5764459292",
-      "minutes": 5
+      "url": "https://github.com/prometheus/prometheus/pull/20252#pullrequestreview-5764459292"
     },
     {
       "date": "2026-11-04",
       "repo": "jenkinsci/packaging",
       "summary": "Tested the new deb822 apt setup on four distros, and found the page's indent breaks it when copied.",
-      "url": "https://github.com/jenkinsci/packaging/pull/748#pullrequestreview-5764423466",
-      "minutes": 5
+      "url": "https://github.com/jenkinsci/packaging/pull/748#pullrequestreview-5764423466"
     },
     {
       "date": "2026-11-04",
       "repo": "jenkins-infra/jenkins.io",
       "summary": "Checked what's left of a security-group docs issue after an earlier fix, and asked the claimant if they're still on it.",
-      "url": "https://github.com/jenkins-infra/jenkins.io/issues/5376#issuecomment-6624638054",
-      "minutes": 2
+      "url": "https://github.com/jenkins-infra/jenkins.io/issues/5376#issuecomment-6624638054"
     },
     {
       "date": "2026-11-04",
       "repo": "n8n-io/n8n-docs",
       "summary": "Checked the queue-mode upgrade steps against the source, and found db:revert exits 0 even when it refuses.",
-      "url": "https://github.com/n8n-io/n8n-docs/pull/5540#pullrequestreview-5764407198",
-      "minutes": 4
+      "url": "https://github.com/n8n-io/n8n-docs/pull/5540#pullrequestreview-5764407198"
     },
     {
       "date": "2026-11-04",
       "repo": "tailscale/tailscale",
       "summary": "Confirmed an old fork issue is already resolved upstream, and suggested closing it.",
-      "url": "https://github.com/tailscale/tailscale/issues/7436#issuecomment-6624588839",
-      "minutes": 1
+      "url": "https://github.com/tailscale/tailscale/issues/7436#issuecomment-6624588839"
     },
     {
       "date": "2026-11-04",
       "repo": "tailscale/tailscale",
       "summary": "Checked a DNS name fix against every short string, with no mismatches where the base had 100.",
-      "url": "https://github.com/tailscale/tailscale/pull/22107#pullrequestreview-5764383792",
-      "minutes": 4
+      "url": "https://github.com/tailscale/tailscale/pull/22107#pullrequestreview-5764383792"
     },
     {
       "date": "2026-11-04",
       "repo": "n8n-io/n8n",
       "summary": "Showed the planned fix for an npm install error would drop bindings from the Docker image again.",
-      "url": "https://github.com/n8n-io/n8n/issues/43006#issuecomment-6624573924",
-      "minutes": 2
+      "url": "https://github.com/n8n-io/n8n/issues/43006#issuecomment-6624573924"
     },
     {
       "date": "2026-11-04",
       "repo": "cockpit-project/cockpit",
       "summary": "Found a journal query leaves its pipeline running after close, and tested a fix.",
-      "url": "https://github.com/cockpit-project/cockpit/pull/23896#pullrequestreview-5764366931",
-      "minutes": 5
+      "url": "https://github.com/cockpit-project/cockpit/pull/23896#pullrequestreview-5764366931"
     },
     {
       "date": "2026-11-04",
       "repo": "prometheus/node_exporter",
       "summary": "Checked the EPEL package rename in Rocky 8, 9 and 10, and found EPEL 8 has no package at all.",
-      "url": "https://github.com/prometheus/node_exporter/pull/3822#pullrequestreview-5764354506",
-      "minutes": 6
+      "url": "https://github.com/prometheus/node_exporter/pull/3822#pullrequestreview-5764354506"
     },
     {
       "date": "2026-11-04",
       "repo": "cockpit-project/cockpit",
       "summary": "Reproduced broken Ubuntu logos in the ws container, and tested a fix for both themes.",
-      "url": "https://github.com/cockpit-project/cockpit/issues/23848#issuecomment-6624482290",
-      "minutes": 3
+      "url": "https://github.com/cockpit-project/cockpit/issues/23848#issuecomment-6624482290"
     },
     {
       "date": "2026-10-31",
       "repo": "aquasecurity/trivy",
       "summary": "Retested the checksum work at the author's request, and confirmed the dropped pin now shows in the log.",
-      "url": "https://github.com/aquasecurity/trivy/pull/11494#issuecomment-6539262151",
-      "minutes": 3
+      "url": "https://github.com/aquasecurity/trivy/pull/11494#issuecomment-6539262151"
     },
     {
       "date": "2026-10-30",
       "repo": "data-privacy-stack/presidio",
       "summary": "Reproduced an allow list bug through analyze(), and found terms the planned fix can't compile, before it was sent.",
-      "url": "https://github.com/data-privacy-stack/presidio/issues/2433#issuecomment-6538079617",
-      "minutes": 4
+      "url": "https://github.com/data-privacy-stack/presidio/issues/2433#issuecomment-6538079617"
     },
     {
       "date": "2026-10-30",
       "repo": "aquasecurity/trivy",
       "summary": "Tested a new install checksum against a real release, and found the pin silently drops when set before sudo.",
-      "url": "https://github.com/aquasecurity/trivy/pull/11494#issuecomment-6538079463",
-      "minutes": 5
+      "url": "https://github.com/aquasecurity/trivy/pull/11494#issuecomment-6538079463"
     },
     {
       "date": "2026-10-30",
       "repo": "Velocidex/velociraptor",
       "summary": "Confirmed a spilled query's len() is fixed on master, by building before and after, so a maintainer can close the issue.",
-      "url": "https://github.com/Velocidex/velociraptor/issues/5109#issuecomment-6526269264",
-      "minutes": 4
+      "url": "https://github.com/Velocidex/velociraptor/issues/5109#issuecomment-6526269264"
     },
     {
       "date": "2026-10-30",
       "repo": "OpenSCAP/openscap",
       "summary": "Reproduced a false \"does not exist\" on hosts without /etc/mtab through a real OVAL scan, and confirmed the fix.",
-      "url": "https://github.com/OpenSCAP/openscap/pull/2474#issuecomment-6526268907",
-      "minutes": 3
+      "url": "https://github.com/OpenSCAP/openscap/pull/2474#issuecomment-6526268907"
     },
     {
       "date": "2026-10-30",
       "repo": "OpenSCAP/openscap",
       "summary": "Ran a real scan to show invalid results on main and valid ones with the fix, for addresses ending in ::.",
-      "url": "https://github.com/OpenSCAP/openscap/pull/2473#issuecomment-6526268518",
-      "minutes": 3
+      "url": "https://github.com/OpenSCAP/openscap/pull/2473#issuecomment-6526268518"
     },
     {
       "date": "2026-10-30",
       "repo": "k3s-io/k3s",
       "summary": "Two small things found by re-running the install script on a fapolicyd host.",
-      "url": "https://github.com/k3s-io/k3s/pull/14483#issuecomment-6515270444",
-      "minutes": 5
+      "url": "https://github.com/k3s-io/k3s/pull/14483#issuecomment-6515270444"
     },
     {
       "date": "2026-10-30",
       "repo": "k3s-io/k3s",
       "summary": "Why a kernel config check didn't fire on Linux 6.18, and the symbol that makes it work.",
-      "url": "https://github.com/k3s-io/k3s/pull/14074#issuecomment-6515270209",
-      "minutes": 5
+      "url": "https://github.com/k3s-io/k3s/pull/14074#issuecomment-6515270209"
     },
     {
       "date": "2026-10-29",
       "repo": "data-privacy-stack/presidio",
       "summary": "A review confirming the fix for an allow list that dropped real findings, email addresses included.",
-      "url": "https://github.com/data-privacy-stack/presidio/pull/2417#pullrequestreview-5708080373",
-      "minutes": 3
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2417#pullrequestreview-5708080373"
     },
     {
       "date": "2026-10-29",
       "repo": "linux-audit/audit-userspace",
       "summary": "The reproduction a maintainer asked for: a denial that aureport silently left out.",
-      "url": "https://github.com/linux-audit/audit-userspace/pull/546#issuecomment-6514983651",
-      "minutes": 5
+      "url": "https://github.com/linux-audit/audit-userspace/pull/546#issuecomment-6514983651"
     },
     {
       "date": "2026-10-29",
       "repo": "BerriAI/litellm",
       "summary": "Tracing a reported Langfuse 404 back through the code to a likely cause.",
-      "url": "https://github.com/BerriAI/litellm/issues/43032#issuecomment-6514983923",
-      "minutes": 4
+      "url": "https://github.com/BerriAI/litellm/issues/43032#issuecomment-6514983923"
     }
   ]
 }
