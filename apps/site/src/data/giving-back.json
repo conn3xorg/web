@@ -1,6 +1,36 @@
 {
   "items": [
     {
+      "date": "2026-11-18",
+      "repo": "tailscale/tailscale",
+      "summary": "Confirming the userspace-networking TUN check matches how tsd already spots a fake TUN.",
+      "url": "https://github.com/tailscale/tailscale/pull/22478#pullrequestreview-5952048133"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "prometheus/prometheus",
+      "summary": "Suggesting the promtool mTLS example also trust the server's private CA, so it works when copied.",
+      "url": "https://github.com/prometheus/prometheus/pull/20486#pullrequestreview-5952044248"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Checking a deny-list fix round-trips through to_dict and from_dict without breaking subclasses.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2496#pullrequestreview-5952041954"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "osquery/osquery",
+      "summary": "Reviewing a fix that stops YAML aliases in a skill file blowing up a table column.",
+      "url": "https://github.com/osquery/osquery/pull/9327#pullrequestreview-5952038172"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "prometheus/alertmanager",
+      "summary": "A Slack receiver with a webhook file kept getting the global app token: checking the fix step by step.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5748#pullrequestreview-5952035263"
+    },
+    {
       "date": "2026-11-17",
       "repo": "prometheus/prometheus",
       "summary": "A length check that no longer wraps on 32-bit platforms. We confirmed the subtraction can't go negative, and that only the project's 386 CI job exercises the bug.",
