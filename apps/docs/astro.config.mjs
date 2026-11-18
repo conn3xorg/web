@@ -42,6 +42,7 @@ export default defineConfig({
         ThemeSelect: "./src/components/ThemeSelect.astro",
       },
       lastUpdated: false,
+      routeMiddleware: "./src/routeData.ts",
       head: [
         // The body font is the text a page paints last; fetch it with the HTML,
         // not after the CSS, so it lands before the first paint on most loads.
