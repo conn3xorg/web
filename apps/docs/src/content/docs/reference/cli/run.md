@@ -77,7 +77,7 @@ conn3x run -circuits . 'web,db' -m package -a 'name=htop'
 
 It reads the values as written. A circuit whose `hosts` or `ssh` settings need a variable, a local or a function to work out, such as `hosts = var.hosts`, is an error that says so; keep an inventory with `-i` for those for now. So is a host that two circuits reach in different ways. `ssh` settings past `user`, `port`, `private_key_file`, `known_hosts_file`, `host_key`, `become`, `timeout` and `proxy_command`, such as `jump_hosts`, aren't carried over yet, and naming one is an error.
 
-The pattern is the one [`-limit`](/reference/cli/plan#-limit) takes: names and globs split by `,` or `:`, `!` in front to leave hosts out, `&` to narrow, and `~` for a regular expression. Here it also matches group names, as Ansible's does, so `webservers:&eu` is the hosts in both groups, and `all` is every host.
+The pattern is the one [`-limit`](/reference/cli/plan#-limit) takes: names and globs split by `,` or `:`, `!` in front to leave hosts out, `&` to narrow, and `~` for a regular expression. Here it also matches group names, as Ansible's does, so `webservers:&eu` is the hosts in both groups, and `all` is every host. A term with `=` in front, such as `=web1`, matches only the host with that name, never a group. New in v0.25.0.
 
 Since v0.17.0 a group takes a subscript too, to pick hosts by their place in it, counted as current Ansible counts them: from 0, the end left out, negative from the end, in the order the inventory lists them.
 

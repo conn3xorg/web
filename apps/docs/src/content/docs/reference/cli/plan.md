@@ -149,8 +149,9 @@ A pattern matches host names, the keys of each circuit's [`hosts`](/reference/ci
 | `web*:!web3` | `!` in front of a term leaves out the hosts it matches. `!web3` on its own means every host but `web3`. |
 | `web*:&*-eu` | `&` in front of a term narrows to the hosts that match it as well. |
 | `~^db[0-9]$` | `~` in front of a term makes it a regular expression, in [Go's syntax](https://pkg.go.dev/regexp/syntax). It matches anywhere in the name unless you anchor it with `^` and `$`. |
+| `=web1` | `=` in front of a term matches the host with exactly that name and nothing else: not a glob, not `all`, and in `conn3x run` not a group. Use it when the name comes from somewhere you don't control, such as an alert. New in v0.25.0. |
 
-Quote the pattern in your shell, since `*`, `!`, `&` and `~` mean something there too.
+Quote the pattern in your shell, since `*`, `!`, `&` and `~` mean something there too. On the command line the flag's own `=` comes first, so an exact name is `-limit==web1`.
 
 A host matches when it matches any plain term, every `&` term, and no `!` term. A pattern with an empty term, a glob or regular expression that doesn't parse, or no hosts at all, is an error before Conn3x plans anything.
 

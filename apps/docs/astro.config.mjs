@@ -96,7 +96,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { slug: "reference/cli", label: "Overview" },
-            ...["init", "validate", "plan", "apply", "destroy", "drift", "json-output", "convert-ansible", "generate-step", "lint", "mcp", "show", "state", "output", "fmt", "providers", "version"].map(
+            ...["init", "validate", "plan", "apply", "destroy", "drift", "run", "json-output", "convert-ansible", "generate-step", "lint", "lsp", "mcp", "show", "state", "output", "fmt", "providers", "version"].map(
               (cmd) => `reference/cli/${cmd}`,
             ),
           ],
