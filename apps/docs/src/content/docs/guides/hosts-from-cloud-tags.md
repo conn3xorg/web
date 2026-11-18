@@ -1,6 +1,6 @@
 ---
 title: Find hosts by cloud tag
-description: Build a circuit's hosts from the VMs that carry a tag in AWS or Azure, so a new VM is configured on the next apply.
+description: Build a circuit's hosts from the VMs that carry a tag in AWS, Azure or Google Cloud, so a new VM is configured on the next apply.
 ---
 
 Ansible finds hosts by tag with a dynamic inventory plugin, such as `amazon.aws.aws_ec2`. In Conn3x there's nothing extra to install. The cloud provider's data sources look the VMs up when you plan, and a `for` expression turns them into the circuit's `hosts`. Tag a new VM `role = web`, run `conn3x apply`, and it's configured with the rest.
@@ -25,7 +25,7 @@ circuit "web" {
 }
 ```
 
-Both recipes were run against real accounts: two VMs tagged `role = web`, found by the tag alone and configured over SSH.
+Each recipe was run against a real account: two VMs tagged `role = web`, found by the tag alone and configured over SSH.
 
 ## AWS
 
@@ -72,9 +72,33 @@ locals {
 
 Azure VM names are unique within a resource group, not a subscription. If two groups each have a `web1`, key by `"${r.resource_group_name}/${r.name}"` instead.
 
+## Google Cloud
+
+Google Cloud calls them labels. `google_cloud_asset_search_all_resources` finds the running instances with one, through Cloud Asset Inventory, and `google_compute_instance` reads each one's address:
+
+```hcl
+data "google_cloud_asset_search_all_resources" "web" {
+  scope       = "projects/my-project"
+  asset_types = ["compute.googleapis.com/Instance"]
+  query       = "labels.role=web AND state=RUNNING"
+}
+
+data "google_compute_instance" "web" {
+  for_each = { for r in data.google_cloud_asset_search_all_resources.web.results : r.display_name => r }
+  name     = each.value.display_name
+  zone     = each.value.location
+}
+
+locals {
+  web_hosts = { for name, vm in data.google_compute_instance.web : name => vm.network_interface[0].access_config[0].nat_ip }
+}
+```
+
+The search needs the Cloud Asset API turned on in the project, and the identity Conn3x runs as needs `roles/cloudasset.viewer` and `roles/compute.viewer`. `scope` can be a folder or an organization too, to find VMs across projects; then give `google_compute_instance` each result's `project` as well. The asset index trails changes by a minute or two, so a VM labelled just now may not show up until the next plan. Instance names are unique within a zone; if two zones each have a `web1`, key by `"${r.location}/${r.display_name}"`.
+
 ## Private addresses
 
-Over a VPN, or through a [bastion](/guides/bastions/), use the private address: `i.private_ip` in AWS, `vm.private_ip_address` in Azure. Host names and keys stay the same.
+Over a VPN, or through a [bastion](/guides/bastions/), use the private address: `i.private_ip` in AWS, `vm.private_ip_address` in Azure, `vm.network_interface[0].network_ip` in Google Cloud. Host names and keys stay the same.
 
 ## Host keys
 
