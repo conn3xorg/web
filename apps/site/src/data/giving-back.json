@@ -635,6 +635,12 @@
       "repo": "BerriAI/litellm",
       "summary": "Tracing a reported Langfuse 404 back through the code to a likely cause.",
       "url": "https://github.com/BerriAI/litellm/issues/43032#issuecomment-6514983923"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "prometheus/node_exporter",
+      "summary": "Reviewed a fix that closes the ZFS collector's probe directory on every scrape, and its descriptor-count test.",
+      "url": "https://github.com/prometheus/node_exporter/pull/3904#pullrequestreview-5964770594"
     }
   ]
 }
