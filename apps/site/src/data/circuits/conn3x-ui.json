@@ -2,7 +2,7 @@
   "name": "conn3x-ui",
   "repo": "conn3xorg/circuit-conn3x-ui",
   "description": "Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host.",
-  "version": "v0.1.4",
+  "version": "v0.1.5",
   "tags": [
     "conn3x",
     "web-ui"

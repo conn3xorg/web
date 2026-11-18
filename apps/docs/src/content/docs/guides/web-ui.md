@@ -19,7 +19,7 @@ The quickest way onto a Linux server is [circuit-conn3x-ui](/circuits/conn3x-ui)
 
 ```hcl
 module "conn3x_ui" {
-  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.4"
+  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.5"
 
   hosts                = { ops1 = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -30,7 +30,7 @@ Or run the container image, which carries `conn3x`, `git` and an ssh client:
 
 ```sh
 docker run -d --name conn3x-ui -v ui-data:/data -p 127.0.0.1:8080:8080 \
-  ghcr.io/conn3xorg/conn3x-ui:v0.2.0 serve -listen 0.0.0.0:8080 -data /data
+  ghcr.io/conn3xorg/conn3x-ui:v0.3.0 serve -listen 0.0.0.0:8080 -data /data
 ```
 
 Either way, the first start creates an `admin` account and prints its password to the log once. Sign in with it, then make accounts for everyone else, or turn on single sign-on.
