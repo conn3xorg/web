@@ -64,7 +64,7 @@ export default defineConfig({
         },
         {
           label: "Guides",
-          items: ["guides/provision-and-configure", "guides/hosts-from-cloud-tags", "guides/hosts-from-netbox", "guides/bastions", "guides/drift", "guides/compliance-checks", "guides/adopt-servers", "guides/database", "guides/secrets-from-managers", "guides/paths-as-root", "guides/share-a-circuit", "guides/test-a-circuit", "guides/policy-checks", "guides/web-ui", "guides/migrate-from-ansible", "guides/ansible-convert-coverage", "guides/migrate-from-terraform"],
+          items: ["guides/provision-and-configure", "guides/hosts-from-cloud-tags", "guides/hosts-from-netbox", "guides/bastions", "guides/drift", "guides/undo-a-change", "guides/compliance-checks", "guides/adopt-servers", "guides/database", "guides/secrets-from-managers", "guides/paths-as-root", "guides/share-a-circuit", "guides/test-a-circuit", "guides/policy-checks", "guides/web-ui", "guides/migrate-from-ansible", "guides/ansible-convert-coverage", "guides/migrate-from-terraform"],
         },
         {
           label: "Compare",
@@ -96,7 +96,7 @@ export default defineConfig({
           collapsed: true,
           items: [
             { slug: "reference/cli", label: "Overview" },
-            ...["init", "validate", "plan", "apply", "destroy", "drift", "run", "json-output", "convert-ansible", "generate-step", "lint", "lsp", "mcp", "show", "state", "output", "fmt", "providers", "version"].map(
+            ...["init", "validate", "plan", "apply", "destroy", "drift", "run", "json-output", "convert-ansible", "generate-step", "each", "lint", "lsp", "mcp", "show", "state", "output", "fmt", "providers", "version"].map(
               (cmd) => `reference/cli/${cmd}`,
             ),
           ],

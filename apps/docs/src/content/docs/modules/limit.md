@@ -59,6 +59,7 @@ step "no_app_procs" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `backup` | bool | No | true copies the file, before an edit changes it, beside itself with .conn3x-, the time in UTC, a number and a ~ after its name, such as job.conn3x-20261118T130501Z.4127~, keeping its mode and owner. The ~ keeps cron.d, logrotate.d and the like from loading the copy. An apply that changes nothing makes no copy. Old copies stay until you remove them. |
+| `backup_keep` | number | No | With backup, keeps only this many of the newest copies, removing older ones each time a new one is made. Unset keeps them all. |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
 | `domain` | string | Yes | Who the limit applies to: a user, @group, * or a range, as in limits.conf(5). |
 | `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
@@ -78,6 +79,7 @@ Conn3x sets these; reference them as `conn3x_limit.<circuit>__<step>["<host>"].<
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `backup_file` | string | With backup, the path of the newest copy this step made, such as /etc/app.conf.conn3x-20261118T130501Z.4127~. Null until it makes one, and when backup is off. |
 | `in_sync` | bool | Whether the file already matches. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 

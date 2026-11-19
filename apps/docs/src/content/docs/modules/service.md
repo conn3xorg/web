@@ -46,12 +46,24 @@ step "fstrim" {
   }
 }
 ```
+Keep a unit from ever starting, as hardening baselines do for `rpcbind` or `avahi-daemon`, even before its package is installed:
+
+```hcl
+step "no_rpcbind" {
+  service {
+    name   = "rpcbind"
+    state  = "stopped"
+    masked = true
+  }
+}
+```
 
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `enabled` | bool | No | Start at boot. Left as is when unset. |
+| `masked` | bool | No | true masks the unit, linking it to /dev/null so nothing can start it, not even a unit that depends on it; false unmasks it. Masking works on a unit that isn't installed yet. Can't go with state = "started" or enabled = true. Left as is when unset. |
 | `name` | string | Yes | Unit name. ".service" is added when there is no suffix. |
 | `on_remove` | string | No | What happens on the host when this resource is removed: "forget" (default) leaves the unit, "delete" stops and disables it. |
 | `state` | string | No | "started" or "stopped". Left as is when unset. |
@@ -63,6 +75,7 @@ Conn3x sets these; reference them as `conn3x_service.<circuit>__<step>["<host>"]
 | Name | Type | Description |
 | --- | --- | --- |
 | `is_enabled` | bool | Whether the unit starts at boot. |
+| `is_masked` | bool | Whether the unit is masked. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 | `running` | bool | Whether the unit is running. |
 
@@ -78,7 +91,9 @@ A step lowers to the `conn3x_service` resource, one instance per host, and conne
 
 **What's left alone.** Leave out `state` and the step doesn't start or stop the unit. Leave out `enabled` and it doesn't change what happens at boot. With both left out, the step only checks that the unit exists.
 
-**Missing units.** The unit has to exist on the host. Install its package in an earlier step; steps run in the order written.
+**Masking.** `masked = true` runs `systemctl mask`, which links the unit to `/dev/null` in `/etc/systemd/system`, so nothing can start it, not even a unit that wants it. It works on a unit that isn't installed, and runs before `state`, so `state = "stopped"` stops a masked unit that was running. `masked = false` runs `systemctl unmask`. A mask leaves an enabled unit's boot links in place, so unmasking brings it back enabled. To keep it off when it's unmasked later, set `enabled = false` with the mask: the step disables the unit first, while systemd still reports it enabled. A masked unit can't be started or enabled, so `masked = true` with `state = "started"` or `enabled = true` fails when you validate. systemd refuses to mask a unit that has its own file in `/etc/systemd/system`, rather than in `/usr/lib/systemd/system` where packages put theirs, and the step fails with systemd's message. A unit reads as masked when systemd says it's masked, so `is_masked` shows it.
+
+**Missing units.** The unit has to exist on the host, unless the step masks it. Install its package in an earlier step; steps run in the order written.
 
 **Restarts.** A `service` step never restarts a unit that is already running. When a configuration file changes, notify a handler, which runs `systemctl restart`, or `systemctl reload` with `action = "reload"`, after the circuit's steps.
 
@@ -88,4 +103,4 @@ When you delete a `service` step, `on_remove` decides what happens on the host. 
 
 ## From Ansible
 
-`conn3x convert ansible` turns `service`, `systemd` and `systemd_service` tasks with `state: started` or `stopped`, or with `enabled`, into `service` steps. `daemon_reload` is dropped, since Conn3x reloads systemd when a unit file changed. A task with `state: restarted` or `reloaded` stays a TODO. A handler that does nothing but restart or reload a service becomes a Conn3x handler, and `notify` carries over.
+`conn3x convert ansible` turns `service`, `systemd` and `systemd_service` tasks with `state: started` or `stopped`, or with `enabled`, into `service` steps, and `masked` carries over. `daemon_reload` is dropped, since Conn3x reloads systemd when a unit file changed. A task with `state: restarted` or `reloaded` stays a TODO. A handler that does nothing but restart or reload a service becomes a Conn3x handler, and `notify` carries over.
