@@ -2,6 +2,12 @@
   "items": [
     {
       "date": "2026-11-19",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Checking that Spanish NIF and NIE numbers written with dots, hyphens or spaces still pass their checksums, and that the new patterns stay clear of plain numbers and the word y.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2504#pullrequestreview-5970743006"
+    },
+    {
+      "date": "2026-11-19",
       "repo": "tailscale/tailscale",
       "summary": "Checking which clients read a 403 as a permissions problem before Taildrive and Tailnet Lock refusals move to 412.",
       "url": "https://github.com/tailscale/tailscale/pull/22504#pullrequestreview-5970703043"
