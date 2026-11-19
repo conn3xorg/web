@@ -2,6 +2,12 @@
   "items": [
     {
       "date": "2026-11-18",
+      "repo": "tailscale/tailscale",
+      "summary": "Checking the operator's RBAC and the CRDs' scope behind a new Tailnet watch, and why the stuck Recorder never retried.",
+      "url": "https://github.com/tailscale/tailscale/pull/22507#pullrequestreview-5969639253"
+    },
+    {
+      "date": "2026-11-18",
       "repo": "data-privacy-stack/presidio",
       "summary": "Checking that multi-valued person-name elements reach the DICOM deny list, and flagging names nested in sequences as a follow-up.",
       "url": "https://github.com/data-privacy-stack/presidio/pull/2500#pullrequestreview-5969618713"
