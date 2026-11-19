@@ -3,6 +3,42 @@
     {
       "date": "2026-11-18",
       "repo": "tailscale/tailscale",
+      "summary": "Checking the operator's RBAC and the CRDs' scope behind a new Tailnet watch, and why the stuck Recorder never retried.",
+      "url": "https://github.com/tailscale/tailscale/pull/22507#pullrequestreview-5969639253"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Checking that multi-valued person-name elements reach the DICOM deny list, and flagging names nested in sequences as a follow-up.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2500#pullrequestreview-5969618713"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "cockpit-project/cockpit",
+      "summary": "Two more inputs that crash the bridge the same way: an override path that's a directory, and a file that isn't valid UTF-8.",
+      "url": "https://github.com/cockpit-project/cockpit/pull/23937#pullrequestreview-5969611260"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "Infisical/infisical",
+      "summary": "Checking the KMS key insert against the migration order, so a self-hosted upgrade's PAM backfill can't hit another missing column.",
+      "url": "https://github.com/Infisical/infisical/pull/9674#pullrequestreview-5969604209"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "tailscale/tailscale",
+      "summary": "Confirming the auto-update guard is safe, and noting that CI never runs its tagged test.",
+      "url": "https://github.com/tailscale/tailscale/pull/22497#pullrequestreview-5969593481"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "prometheus/prometheus",
+      "summary": "Tracing every caller to confirm only ranges and steps reject a duration that rounds to zero, and offsets don't.",
+      "url": "https://github.com/prometheus/prometheus/pull/20489#pullrequestreview-5969584719"
+    },
+    {
+      "date": "2026-11-18",
+      "repo": "tailscale/tailscale",
       "summary": "Confirming the userspace-networking TUN check matches how tsd already spots a fake TUN.",
       "url": "https://github.com/tailscale/tailscale/pull/22478#pullrequestreview-5952048133"
     },
