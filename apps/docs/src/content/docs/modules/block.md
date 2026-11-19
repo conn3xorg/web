@@ -57,12 +57,15 @@ step "old_hosts" {
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `backup` | bool | No | true copies the file, before an edit changes it, beside itself with .conn3x-, the time in UTC, a number and a ~ after its name, such as job.conn3x-20261118T130501Z.4127~, keeping its mode and owner. The ~ keeps cron.d, logrotate.d and the like from loading the copy. An apply that changes nothing makes no copy. Old copies stay until you remove them. |
+| `backup_keep` | number | No | With backup, keeps only this many of the newest copies, removing older ones each time a new one is made. Unset keeps them all. |
 | `content` | string | No | Lines of the block. |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
 | `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `insert_after` | string | No | Where a new block goes: after the last match of this regexp, or "EOF" (default). |
 | `insert_before` | string | No | Where a new block goes: before the first match of this regexp, or "BOF". |
-| `marker` | string | No | Marker line with {mark}, which becomes BEGIN and END. Defaults to "# {mark} CONN3X MANAGED BLOCK". |
+| `marker` | string | No | Marker line with {mark}, which becomes marker_begin and marker_end. Defaults to "# {mark} CONN3X MANAGED BLOCK". |
+| `marker_begin` | string | No | What {mark} becomes on the block's first line. Defaults to "BEGIN". |
+| `marker_end` | string | No | What {mark} becomes on the block's last line. Defaults to "END". Must differ from marker_begin. |
 | `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
 | `on_remove` | string | No | "forget" (default) leaves the file as it is, "delete" takes the edit back out. |
 | `owner` | string | No | The file's owner, set with the edit. Unset keeps the owner the file has. |
@@ -76,6 +79,7 @@ Conn3x sets these; reference them as `conn3x_block.<circuit>__<step>["<host>"].<
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `backup_file` | string | With backup, the path of the newest copy this step made, such as /etc/app.conf.conn3x-20261118T130501Z.4127~. Null until it makes one, and when backup is off. |
 | `in_sync` | bool | Whether the file already matches. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
@@ -83,7 +87,7 @@ A step lowers to the `conn3x_block` resource, one instance per host, and connect
 
 ## How it works
 
-**Markers.** Conn3x finds the block by its marker lines: `marker` with `{mark}` replaced by `BEGIN` and `END`. The default marker gives `# BEGIN CONN3X MANAGED BLOCK` and `# END CONN3X MANAGED BLOCK`. Each step in the same file needs its own marker. If the file has a `BEGIN` line with no matching `END`, Conn3x stops with an error, so you can fix the file by hand.
+**Markers.** Conn3x finds the block by its marker lines: `marker` with `{mark}` replaced by `marker_begin` and `marker_end`, `BEGIN` and `END` unless you set them. The default marker gives `# BEGIN CONN3X MANAGED BLOCK` and `# END CONN3X MANAGED BLOCK`. Set the words for a file where those don't fit, such as `marker_begin = "start"` and `marker_end = "stop"`. They must differ, or the block's end couldn't be found. Each step in the same file needs its own marker. If the file has a begin line with no matching end line, Conn3x stops with an error, so you can fix the file by hand.
 
 **Reading.** Every plan reads the file on the host and applies the edit to a copy of its content. If the result is the same as the file, the step is in sync and nothing is planned. Otherwise the plan shows an update.
 
@@ -101,4 +105,4 @@ When you delete a `block` step, `on_remove` decides what happens on the host. Th
 
 ## From Ansible
 
-`conn3x convert ansible` turns `blockinfile` tasks into `block` steps. It keeps Ansible's marker, `# {mark} ANSIBLE MANAGED BLOCK` by default, so the block Ansible already wrote is the one Conn3x manages. `validate` is carried across. A task that sets `marker_begin` or `marker_end` stays a TODO.
+`conn3x convert ansible` turns `blockinfile` tasks into `block` steps. It keeps Ansible's marker, `# {mark} ANSIBLE MANAGED BLOCK` by default, so the block Ansible already wrote is the one Conn3x manages. `validate` is carried across. `marker_begin` and `marker_end` carry over too.
