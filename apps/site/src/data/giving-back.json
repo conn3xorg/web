@@ -2,6 +2,12 @@
   "items": [
     {
       "date": "2026-11-19",
+      "repo": "prometheus/prometheus",
+      "summary": "Checking why a WAL histogram benchmark always reported zero bytes, and that its subtests no longer share one name across both storage modes.",
+      "url": "https://github.com/prometheus/prometheus/pull/20504#pullrequestreview-5976732949"
+    },
+    {
+      "date": "2026-11-19",
       "repo": "data-privacy-stack/presidio",
       "summary": "Checking that Spanish NIF and NIE numbers written with dots, hyphens or spaces still pass their checksums, and that the new patterns stay clear of plain numbers and the word y.",
       "url": "https://github.com/data-privacy-stack/presidio/pull/2504#pullrequestreview-5970743006"
