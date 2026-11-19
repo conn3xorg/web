@@ -19,7 +19,7 @@ The quickest way onto a Linux server is [circuit-conn3x-ui](/circuits/conn3x-ui)
 
 ```hcl
 module "conn3x_ui" {
-  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.6"
+  source = "github.com/conn3xorg/circuit-conn3x-ui?ref=v0.1.8"
 
   hosts                = { ops1 = "203.0.113.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -30,8 +30,10 @@ Or run the container image, which carries `conn3x`, `git` and an ssh client:
 
 ```sh
 docker run -d --name conn3x-ui -v ui-data:/data -p 127.0.0.1:8080:8080 \
-  ghcr.io/conn3xorg/conn3x-ui:v0.3.0 serve -listen 0.0.0.0:8080 -data /data
+  ghcr.io/conn3xorg/conn3x-ui:v0.4.0 serve -listen 0.0.0.0:8080 -data /data
 ```
+
+Or install the package, from the same apt and dnf repositories, Homebrew tap and Scoop bucket as [Conn3x](/install), and run it however you run services: `apt install conn3x-ui`, `dnf install conn3x-ui`, `brew install --cask conn3xorg/tap/conn3x-ui` or `scoop install conn3x/conn3x-ui`. It needs `git` and `conn3x` beside it. The [README](https://github.com/conn3xorg/conn3x-ui#install) has the full commands.
 
 Either way, the first start creates an `admin` account and prints its password to the log once. Sign in with it, then make accounts for everyone else, or turn on single sign-on.
 
