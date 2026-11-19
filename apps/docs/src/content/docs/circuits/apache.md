@@ -3,7 +3,7 @@ title: Apache httpd
 description: "Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-apache at v0.2.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-apache at v0.3.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/apache/grade.svg)](https://conn3x.org/circuits/apache/grade)
 
@@ -17,7 +17,7 @@ Apache is the same server on Debian and on Rocky Linux, but it doesn't look it. 
 
 ```hcl
 module "apache" {
-  source = "github.com/conn3xorg/circuit-apache?ref=v0.2.1"
+  source = "github.com/conn3xorg/circuit-apache?ref=v0.3.0"
 
   hosts                = { web1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -64,7 +64,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.2.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.3.0/examples/local).
 
 ### TLS certificates
 
@@ -78,7 +78,7 @@ On each host, in order:
 2. Turns on the modules in `modules`, plus `proxy` and `proxy_http` when a virtual host has `proxy_pass` and `ssl` when one has a certificate or proxies to `https://`. On Debian and Ubuntu that's `a2enmod`, which also turns on what each module depends on. On the Red Hat family, where `conf.modules.d` loads most modules already, dnf installs the package that has a module's `.so` when it's missing, such as `mod_ssl`, and the config loads any module that isn't loaded yet.
 3. Creates each `document_root` that's missing.
 4. Hands the Listen lines to the circuit's config, since Apache refuses to start when two files listen on the same port. On Debian and Ubuntu, `/etc/apache2/ports.conf` becomes a comment, and the `000-default` site is turned off. On the Red Hat family, the `Listen 80` line in `/etc/httpd/conf/httpd.conf` becomes a comment, and when a virtual host uses TLS, `/etc/httpd/conf.d/ssl.conf` keeps mod_ssl's server-wide settings but loses its own Listen line and default virtual host, whose certificate doesn't exist until Apache first starts.
-5. On the Red Hat family with SELinux on: lets Apache listen on each port outside SELinux's web ports with `semanage port`, labels each `document_root` that isn't already web content as `httpd_sys_content_t`, and turns on `httpd_can_network_connect` when a virtual host proxies, so Apache can reach a backend on any port.
+5. On the Red Hat family with SELinux on: lets Apache listen on each port outside SELinux's web ports with a `selinux_port` step, labels each `document_root` that isn't already web content as `httpd_sys_content_t`, and turns on `httpd_can_network_connect` when a virtual host proxies, so Apache can reach a backend on any port.
 6. Renders the config to `conn3x.conf.candidate` in `/etc/apache2` or `/etc/httpd`, and adds an include file that loads after the distribution's own config files: `conf-enabled/zz-conn3x.conf` on Debian and Ubuntu, `conf.d/zz-conn3x.conf` on the Red Hat family.
 7. Runs Apache's config test with the candidate in place of the live config. If it passes, copies the candidate to `conn3x.conf`. If someone edits the live file by hand, the next apply puts it back.
 8. Starts Apache now and at boot, and reloads it gracefully after the config or the modules change, so requests in flight finish on the old config.
@@ -121,11 +121,11 @@ Before the circuit runs, the `conn3x_host` data source reads each host's distrib
 
 ## Requirements
 
-Requires Conn3x v0.6.9 or later and systemd on each host, with a package mirror the host can reach.
+Requires Conn3x v0.27.0 or later and systemd on each host, with a package mirror the host can reach.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.2.1/examples/local) to each on amd64, checks that the second plan has no changes, fetches a page by its name and by its alias, fetches a second page through a reverse proxy and checks the header the proxy adds, and checks `extra_config` overrides the distribution's `ServerTokens`. The CI containers run with SELinux off.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.3.0/examples/local) to each on amd64, checks that the second plan has no changes, fetches a page by its name and by its alias, fetches a second page through a reverse proxy and checks the header the proxy adds, and checks `extra_config` overrides the distribution's `ServerTokens`. The CI containers run with SELinux off.
 
 By hand, on Debian 13 and Rocky Linux 10 containers: a TLS virtual host on 8443 proxying to a second TLS virtual host over `https://` served its page; a misspelled directive in `extra_config` stopped the apply with Apache's error and left the live config and the running server as they were; on Rocky Linux, so did a certificate path that didn't exist; and a hand edit to the live config showed in the next plan and was put back by the apply.
 
@@ -133,10 +133,10 @@ On Ubuntu 24.04 and Rocky Linux 10 droplets (1 vCPU, 1 GB), the example's virtua
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-apache/blob/v0.2.1/LICENSE). The Apache HTTP Server itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-apache/blob/v0.3.0/LICENSE). The Apache HTTP Server itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-apache](https://github.com/conn3xorg/circuit-apache). This page covers [v0.2.1](https://github.com/conn3xorg/circuit-apache/tree/v0.2.1); the repository's [tags](https://github.com/conn3xorg/circuit-apache/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.2.1/examples/local).
+- Repository: [conn3xorg/circuit-apache](https://github.com/conn3xorg/circuit-apache). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-apache/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-apache/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-apache/tree/v0.3.0/examples/local).
 - Related circuits: [certbot](/circuits/certbot), [Firewall](/circuits/firewall), [nginx](/circuits/nginx), [Caddy](/circuits/caddy), [HAProxy](/circuits/haproxy), [Traefik](/circuits/traefik), [IIS](/circuits/iis).

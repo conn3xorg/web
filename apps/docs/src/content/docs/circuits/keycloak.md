@@ -51,7 +51,7 @@ The database and role must exist; [circuit-postgres](/circuits/postgres) can mak
 
 ```hcl
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.4.0"
 
   hosts          = { auth1 = "203.0.113.10" }
   users          = ["keycloak"]
