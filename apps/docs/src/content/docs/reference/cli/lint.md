@@ -25,11 +25,14 @@ With no directory, `lint` checks the current one. It reads the `.hcl`, `.tf` and
 | `C3X004` | `privileged-shell` | error | Shell that's wrong wherever it runs as root, such as `curl \| sh`. |
 | `C3X101` | `command-guard` | warning | A `command` step with no `creates`, `removes`, `unless` or `triggers`. |
 | `C3X102` | `module-connection` | warning | A module you call that names its own hosts, or sets a host, key or password file in an `ssh` block, instead of taking them from you. New in v0.12.0. |
+| `C3X103` | `command-systemctl` | warning | A `command` step that runs `systemctl restart`, `reload`, `start`, `stop` or `daemon-reload`. New in v0.28.0. |
 | `C3X900` | `ignore` | error | An ignore with no reason, or one that matches nothing. |
 
 `C3X001` to `C3X004` are the grader's checks of a circuit's own code, with the same patterns, so a circuit that lints clean passes them. `lint` agrees with the grader on every official circuit.
 
 `C3X102` is about trust. A module that brings its own connection settings connects with them when you plan, so read it before you run it. A module whose hosts are a `local` that only filters the hosts you passed in doesn't get the warning.
+
+`C3X103` is about systemd re-executing itself, which an upgrade of libc6 or systemd makes it do in the middle of an apply. A `systemctl` waiting on a job then fails with `D-Bus connection terminated`. `service` and `service_action` steps try again, because every call they make is safe to repeat. A `command` can't know that about itself, so use one of those steps instead, or keep the command with a `conn3x-lint:ignore C3X103` that says why.
 
 ## Output
 
