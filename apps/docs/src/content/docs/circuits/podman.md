@@ -65,7 +65,7 @@ To try it on a throwaway container first, see [examples/local](https://github.co
 On each host, in order:
 
 1. Installs the `podman` package from the distribution's repositories.
-2. When `registries` is set, writes `/etc/containers/registries.conf.d/50-conn3x.conf` with `unqualified-search-registries`, so short names like `nginx:1.29-alpine` resolve against it. Emptying `registries` deletes the file again.
+2. When `registries` is set, writes `/etc/containers/registries.conf.d/50-conn3x.conf` with `unqualified-search-registries`, so short names like `nginx:1.30-alpine` resolve against it. Emptying `registries` deletes the file again.
 3. For each container, writes its secrets to `/etc/containers/env/NAME.env` with mode `0600`. A container without secrets gets an empty file.
 4. Writes `/etc/containers/systemd/NAME.container`, a Quadlet unit with the image, ports, volumes, environment and any `extra` lines, plus `Restart=always` and `WantedBy=default.target`.
 5. When a container's unit or env file changed, runs `systemctl daemon-reload` and restarts `NAME.service`. The first apply starts it.
@@ -78,9 +78,9 @@ Every container gets `ContainerName=NAME`, so `podman ps`, `podman logs NAME` an
 
 ### Images and auto-update
 
-Use fully qualified images, such as `docker.io/library/nginx:1.29-alpine`, and you won't need `registries` at all. Every image needs a tag or a digest. The plan fails on a bare `nginx` or `docker.io/library/nginx`, so an image never drifts as `:latest` without you choosing it.
+Use fully qualified images, such as `docker.io/library/nginx:1.30-alpine`, and you won't need `registries` at all. Every image needs a tag or a digest. The plan fails on a bare `nginx` or `docker.io/library/nginx`, so an image never drifts as `:latest` without you choosing it.
 
-With `auto_update = true`, the unit gets `AutoUpdate=registry`. Podman then checks the registry for a newer image under the same tag when `podman auto-update` runs, and restarts the container if it pulled one. That only makes sense with a moving tag such as `1.29-alpine`. Auto-update needs a fully qualified image, such as `docker.io/library/nginx:1.29-alpine`, so the plan fails on a short name with `auto_update`. Set `auto_update_timer = true` to have the timer run it daily, or run `podman auto-update` yourself.
+With `auto_update = true`, the unit gets `AutoUpdate=registry`. Podman then checks the registry for a newer image under the same tag when `podman auto-update` runs, and restarts the container if it pulled one. That only makes sense with a moving tag such as `1.29-alpine`. Auto-update needs a fully qualified image, such as `docker.io/library/nginx:1.30-alpine`, so the plan fails on a short name with `auto_update`. Set `auto_update_timer = true` to have the timer run it daily, or run `podman auto-update` yourself.
 
 ### Secrets
 
