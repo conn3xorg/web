@@ -1,6 +1,36 @@
 {
   "items": [
     {
+      "date": "2026-11-20",
+      "repo": "prometheus/prometheus",
+      "summary": "Comparing two fixes for the same bug, the rule backfiller importing alerting rules as series, and linking each to the other so the maintainers can pick one.",
+      "url": "https://github.com/prometheus/prometheus/pull/20518"
+    },
+    {
+      "date": "2026-11-20",
+      "repo": "OpenSCAP/openscap",
+      "summary": "Tracing why an empty entry in OSCAP_PROBE_IGNORE_PATHS made the probes ignore every path, and checking that the fix covers both places paths are blocked.",
+      "url": "https://github.com/OpenSCAP/openscap/pull/2487#pullrequestreview-5987539304"
+    },
+    {
+      "date": "2026-11-20",
+      "repo": "tailscale/tailscale",
+      "summary": "Checking that the CLI's new /run socket fallback matches where the packaged daemon listens, and that a daemon started by hand still creates the directory.",
+      "url": "https://github.com/tailscale/tailscale/pull/22522#pullrequestreview-5987529461"
+    },
+    {
+      "date": "2026-11-20",
+      "repo": "prometheus/prometheus",
+      "summary": "Checking that a new PromQL nesting limit walks every node type the parser builds without hitting a panic, and that it leaves plenty of stack on 32-bit systems.",
+      "url": "https://github.com/prometheus/prometheus/pull/20493#pullrequestreview-5987520287"
+    },
+    {
+      "date": "2026-11-20",
+      "repo": "BerriAI/litellm",
+      "summary": "Checking that fractional LangSmith sampling rates now apply at startup as they already did per request, and that a rate of 0 traces nothing.",
+      "url": "https://github.com/BerriAI/litellm/pull/52992#pullrequestreview-5987512877"
+    },
+    {
       "date": "2026-11-19",
       "repo": "prometheus/prometheus",
       "summary": "Checking why a WAL histogram benchmark always reported zero bytes, and that its subtests no longer share one name across both storage modes.",
