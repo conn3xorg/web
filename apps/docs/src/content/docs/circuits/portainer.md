@@ -3,7 +3,7 @@ title: Portainer CE
 description: "Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-portainer at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-portainer at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/portainer/grade.svg)](https://conn3x.org/circuits/portainer/grade)
 
@@ -29,7 +29,7 @@ variable "portainer_password" {
 }
 
 module "portainer" {
-  source = "github.com/conn3xorg/circuit-portainer?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-portainer?ref=v0.1.1"
 
   hosts                = { apps = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -49,7 +49,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the password too, sin
 
 Reach the UI over SSH: `ssh -L 9443:127.0.0.1:9443 root@192.168.1.50`, then open `https://localhost:9443` and sign in as `admin`. Your browser warns about the certificate the first time. Portainer made it for itself on its first start, and it's in `/var/lib/portainer/data/certs` if you'd like to check its fingerprint.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.1/examples/local).
 
 ### Behind a reverse proxy
 
@@ -84,7 +84,7 @@ variable "agent_secret" {
 }
 
 module "portainer_server" {
-  source = "github.com/conn3xorg/circuit-portainer?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-portainer?ref=v0.1.1"
 
   hosts                = { apps = "10.0.0.5" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -94,7 +94,7 @@ module "portainer_server" {
 }
 
 module "portainer_agent_web1" {
-  source = "github.com/conn3xorg/circuit-portainer?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-portainer?ref=v0.1.1"
 
   hosts                = { web1 = "10.0.0.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -181,18 +181,18 @@ Requires Conn3x v0.7.0 or later and systemd on each host. The images are built f
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.0/examples/local), a server and an agent on one host, to each on amd64. It applies Portainer 2.45.3 first and checks it, then upgrades to 2.45.4 and checks that the next plan has no changes. Through an SSH tunnel, trusting only Portainer's own certificate, the check signs in as admin and sees a wrong password refused, lists the host's containers through Podman's socket, adds the agent as a second environment and reads the engine's details through it. The passwords aren't in state. Then CI restarts the host, runs the check again and plans clean.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.1/examples/local), a server and an agent on one host, to each on amd64. It applies Portainer 2.45.3 first and checks it, then upgrades to 2.45.4 and checks that the next plan has no changes. Through an SSH tunnel, trusting only Portainer's own certificate, the check signs in as admin and sees a wrong password refused, lists the host's containers through Podman's socket, adds the agent as a second environment and reads the engine's details through it. The passwords aren't in state. Then CI restarts the host, runs the check again and plans clean.
 
 By hand, on two DigitalOcean droplets with 2 GB of memory, Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each running this circuit next to circuit-passbolt and circuit-semaphore: the same upgrade from 2.45.2, the same checks with `agent_secret` set, a reboot after which everything came back on its own, checked again and planned clean. The Rocky audit log had no SELinux denials, and no password or secret was in state.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-portainer/blob/v0.1.0/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-portainer/blob/v0.1.1/LICENSE).
 
 Portainer Community Edition is under the [zlib licence](https://github.com/portainer/portainer/blob/develop/LICENSE). Portainer is a trademark of Portainer.io; this circuit isn't affiliated with Portainer.io.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-portainer](https://github.com/conn3xorg/circuit-portainer). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-portainer/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-portainer](https://github.com/conn3xorg/circuit-portainer). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-portainer/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.1/examples/local).
 - Related circuits: [Docker](/circuits/docker), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge).

@@ -77,7 +77,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [node_exporter](/circuits/node-exporter) | Runs Prometheus node_exporter at a pinned, checksummed version as its own system user. | v0.1.5 |
 | [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.1.2 |
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.0 |
-| [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.4 |
+| [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.5 |
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.2 |
 | [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.2.1 |
 | [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.1.5 |
@@ -89,18 +89,18 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Docker](/circuits/docker) | Installs Docker Engine from Docker's repository and runs your Compose stacks from files in your configuration. | v0.2.1 |
-| [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.1.2 |
+| [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.1.3 |
 | [k3s](/circuits/k3s) | A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support. | v0.1.8 |
 | [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.2.4 |
-| [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.2.0 |
+| [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.2.1 |
 | [Rancher](/circuits/rancher) | Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state. | v0.1.4 |
-| [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.2 |
+| [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.3 |
 | [Nomad](/circuits/nomad) | A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state. | v0.1.2 |
 | [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.5 |
 | [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.3 |
 | [Flux](/circuits/flux) | Flux CD on a k3s cluster at a pinned version, synced from a Git repository you name, with credentials kept out of state. | v0.1.2 |
 | [Dockge](/circuits/dockge) | Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine. | v0.1.0 |
-| [Portainer CE](/circuits/portainer) | Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it. | v0.1.0 |
+| [Portainer CE](/circuits/portainer) | Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it. | v0.1.1 |
 
 ### DNS
 
@@ -181,7 +181,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Ollama](/circuits/ollama) | Runs local LLMs with Ollama from the official release, with the models you name pulled and kept. | v0.1.4 |
 | [Qdrant](/circuits/qdrant) | Runs the Qdrant vector database from its official release under systemd, on loopback until you open it, with an optional API key. | v0.1.2 |
 | [Open WebUI](/circuits/openwebui) | Open WebUI in Podman: private chat for Ollama or a gateway, first admin from code, sign-up closed, per-user model access, no telemetry | v0.1.1 |
-| [LiteLLM](/circuits/litellm) | Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-team keys, budgets, Presidio guardrails and Langfuse tracing. | v0.2.1 |
+| [LiteLLM](/circuits/litellm) | Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-team keys, budgets, Presidio guardrails and Langfuse tracing. | v0.2.2 |
 | [Presidio](/circuits/presidio) | Presidio's PII analyzer and anonymizer on loopback in Podman, to scrub prompts and documents before a model sees them. | v0.1.1 |
 | [Langfuse](/circuits/langfuse) | Langfuse LLM observability on one host: prompts, costs and evals traced into ClickHouse, keys generated on the host, sign-up off. | v0.1.1 |
 | [Agent box](/circuits/agentbox) | Remote dev box for coding agents: key-only user, git, tmux, ripgrep, Node.js LTS, agent CLIs via npm. Works with Orca or plain SSH. | v0.2.0 |
@@ -200,7 +200,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
 | [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.0 |
-| [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.2 |
+| [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.3 |
 | [Mini homelab](/circuits/mini-homelab) | Homepage and Uptime Kuma on one server, on loopback behind an SSH tunnel: the small circuit the private AI box tutorial builds. | v0.1.1 |
 
 ### Build and runtimes
@@ -215,7 +215,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.1.2 |
 | [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.2 |
 | [Perl](/circuits/perl) | Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm. | v0.2.0 |
-| [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.1 |
+| [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.2 |
 | [Selenium Grid](/circuits/selenium) | Selenium Grid under Podman, official images pinned by digest, on loopback by default. | v0.1.1 |
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
 | [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.1.2 |
