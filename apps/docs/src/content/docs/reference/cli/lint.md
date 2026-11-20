@@ -25,7 +25,7 @@ With no directory, `lint` checks the current one. It reads the `.hcl`, `.tf` and
 | `C3X004` | `privileged-shell` | error | Shell that's wrong wherever it runs as root, such as `curl \| sh`. |
 | `C3X101` | `command-guard` | warning | A `command` step with no `creates`, `removes`, `unless` or `triggers`. |
 | `C3X102` | `module-connection` | warning | A module you call that names its own hosts, or sets a host, key or password file in an `ssh` block, instead of taking them from you. New in v0.12.0. |
-| `C3X103` | `command-systemctl` | warning | A `command` step that runs `systemctl restart`, `reload`, `start`, `stop` or `daemon-reload`. New in v0.28.0. |
+| `C3X103` | `command-systemctl` | warning | A `command` step that runs `systemctl restart`, `reload`, `start`, `stop` or `daemon-reload`, or `enable`, `disable` or `mask` with `--now`. New in v0.28.0. |
 | `C3X900` | `ignore` | error | An ignore with no reason, or one that matches nothing. |
 
 `C3X001` to `C3X004` are the grader's checks of a circuit's own code, with the same patterns, so a circuit that lints clean passes them. `lint` agrees with the grader on every official circuit.
