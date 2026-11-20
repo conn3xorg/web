@@ -132,7 +132,7 @@ The containers run with SELinux separation off (`SecurityLabelDisable=true`), si
 
 ### Upgrades
 
-Change `portainer_version`, `image_digest` and `agent_image_digest` together. `conn3x plan` shows the new images in the units, and the apply restarts Portainer on them; Portainer migrates its database as it starts. CI applies 2.45.2 first and then upgrades to 2.45.3. Keep the server and agents on the same version.
+Change `portainer_version`, `image_digest` and `agent_image_digest` together. `conn3x plan` shows the new images in the units, and the apply restarts Portainer on them; Portainer migrates its database as it starts. CI applies 2.45.3 first and then upgrades to 2.45.4. Keep the server and agents on the same version.
 
 ### What it doesn't do
 
@@ -162,9 +162,9 @@ Change `portainer_version`, `image_digest` and `agent_image_digest` together. `c
 | `tunnel_port` | number | `8000` | Port of the server's Edge tunnel. |
 | `agent_listen_address` | string | `"127.0.0.1"` | Address the agent listens on. Set an address the server can reach. |
 | `agent_port` | number | `9001` | Port the agent listens on. |
-| `portainer_version` | string | `"2.45.3"` | Tag of both images. Change both digests with it. |
-| `image_digest` | string | `"sha256:3609c307..."` | Digest of `docker.io/portainer/portainer-ce` for `portainer_version`. Find it on [Docker Hub](https://hub.docker.com/r/portainer/portainer-ce/tags) or with `skopeo inspect docker://docker.io/portainer/portainer-ce:TAG`. |
-| `agent_image_digest` | string | `"sha256:6e6d2d5d..."` | Digest of `docker.io/portainer/agent` for `portainer_version`. |
+| `portainer_version` | string | `"2.45.4"` | Tag of both images. Change both digests with it. |
+| `image_digest` | string | `"sha256:18616fff..."` | Digest of `docker.io/portainer/portainer-ce` for `portainer_version`. Find it on [Docker Hub](https://hub.docker.com/r/portainer/portainer-ce/tags) or with `skopeo inspect docker://docker.io/portainer/portainer-ce:TAG`. |
+| `agent_image_digest` | string | `"sha256:481254e8..."` | Digest of `docker.io/portainer/agent` for `portainer_version`. |
 
 ## Outputs
 
@@ -181,7 +181,7 @@ Requires Conn3x v0.7.0 or later and systemd on each host. The images are built f
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.0/examples/local), a server and an agent on one host, to each on amd64. It applies Portainer 2.45.2 first and checks it, then upgrades to 2.45.3 and checks that the next plan has no changes. Through an SSH tunnel, trusting only Portainer's own certificate, the check signs in as admin and sees a wrong password refused, lists the host's containers through Podman's socket, adds the agent as a second environment and reads the engine's details through it. The passwords aren't in state. Then CI restarts the host, runs the check again and plans clean.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-portainer/tree/v0.1.0/examples/local), a server and an agent on one host, to each on amd64. It applies Portainer 2.45.3 first and checks it, then upgrades to 2.45.4 and checks that the next plan has no changes. Through an SSH tunnel, trusting only Portainer's own certificate, the check signs in as admin and sees a wrong password refused, lists the host's containers through Podman's socket, adds the agent as a second environment and reads the engine's details through it. The passwords aren't in state. Then CI restarts the host, runs the check again and plans clean.
 
 By hand, on two DigitalOcean droplets with 2 GB of memory, Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each running this circuit next to circuit-passbolt and circuit-semaphore: the same upgrade from 2.45.2, the same checks with `agent_secret` set, a reboot after which everything came back on its own, checked again and planned clean. The Rocky audit log had no SELinux denials, and no password or secret was in state.
 

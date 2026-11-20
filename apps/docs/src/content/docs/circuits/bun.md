@@ -37,10 +37,10 @@ To try it on a throwaway container first, see [examples/local](https://github.co
 
 ### Changing the release
 
-`bun_version` and `checksums` move together. Take both zips' lines from the release's `SHASUMS256.txt`, such as https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/SHASUMS256.txt:
+`bun_version` and `checksums` move together. Take both zips' lines from the release's `SHASUMS256.txt`, such as https://github.com/oven-sh/bun/releases/download/bun-v1.4.5/SHASUMS256.txt:
 
 ```hcl
-bun_version = "1.4.3"
+bun_version = "1.4.5"
 checksums = {
   x64     = "<SHA-256 of bun-linux-x64.zip>"
   aarch64 = "<SHA-256 of bun-linux-aarch64.zip>"
@@ -85,14 +85,14 @@ Before the circuit runs, the `conn3x_host` data source reads each host's archite
 | `ssh_private_key_file` | string | `null` | Path to a private key. When null, Conn3x uses the SSH agent. |
 | `ssh_known_hosts_file` | string | `null` | known_hosts file to check host keys against. When null, `~/.ssh/known_hosts`. Not used for a host object with `host_key`. |
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
-| `bun_version` | string | `"1.4.4"` | Bun release to install. Change `checksums` with it. |
-| `checksums` | map(string) | The zips of 1.4.4 | SHA-256 of the `x64` and `aarch64` zips, from the release's `SHASUMS256.txt`. |
+| `bun_version` | string | `"1.4.5"` | Bun release to install. Change `checksums` with it. |
+| `checksums` | map(string) | The zips of 1.4.5 | SHA-256 of the `x64` and `aarch64` zips, from the release's `SHASUMS256.txt`. |
 
 ## Outputs
 
 | Name | Description |
 | --- | --- |
-| `bun_home` | Directory of the installed release on each host, by host name, such as `{ app1 = "/opt/bun/1.4.4/bun-linux-x64" }`. |
+| `bun_home` | Directory of the installed release on each host, by host name, such as `{ app1 = "/opt/bun/1.4.5/bun-linux-x64" }`. |
 
 ## Requirements
 
