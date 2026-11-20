@@ -17,7 +17,7 @@ Run nginx with a published port and a read-only site directory:
 step "web" {
   container {
     name    = "web"
-    image   = "docker.io/library/nginx:1.27"
+    image   = "docker.io/library/nginx:1.30"
     ports   = ["8080:80"]
     volumes = ["/srv/site:/usr/share/nginx/html:ro"]
     restart = "unless-stopped"
@@ -48,7 +48,7 @@ step "worker" {
 | `command` | list of string | No | The command to run instead of the image's own, one argument per entry. |
 | `engine` | string | No | "docker" or "podman". Unset, Conn3x uses Docker if it's installed, and Podman otherwise. |
 | `env` | map of string | No | Environment variables. Passed on standard input, not the command line, so they don't show in the host's process list. Only the ones you set are compared. |
-| `image` | string | Yes | The image, such as docker.io/library/nginx:1.27. Write it in full: a new tag recreates the container, and a new digest behind the same tag doesn't. |
+| `image` | string | Yes | The image, such as docker.io/library/nginx:1.30. Write it in full: a new tag recreates the container, and a new digest behind the same tag doesn't. |
 | `name` | string | Yes | The container's name. |
 | `on_remove` | string | No | "forget" (default) leaves the container running, "delete" removes it. Its volumes stay either way. |
 | `ports` | list of string | No | Published ports, each host:container, such as 8080:80, optionally with an address in front and /tcp, /udp or /sctp after. |
@@ -70,7 +70,7 @@ A step lowers to the `conn3x_container` resource, one instance per host, and con
 
 **Reading.** On every plan, Conn3x runs `docker container inspect`, or Podman's, and compares the container with the step: its image, published ports, mounts, restart policy, the `command` if you set one, and the `env` you set. `inspect` also lists variables the image sets itself, so only the keys in `env` are compared. `in_sync` is true when all of those match and the container is running.
 
-**Images.** Write the image in full, such as `docker.io/library/nginx:1.27`. Docker keeps a short name as written, Podman stores the full reference, and Conn3x compares the two as the same when the short name means Docker Hub. A short name that Podman resolves to another registry shows as a difference on every plan. A tag that now points at a newer image doesn't change anything: the image as written is what's compared. To roll forward, change the tag.
+**Images.** Write the image in full, such as `docker.io/library/nginx:1.30`. Docker keeps a short name as written, Podman stores the full reference, and Conn3x compares the two as the same when the short name means Docker Hub. A short name that Podman resolves to another registry shows as a difference on every plan. A tag that now points at a newer image doesn't change anything: the image as written is what's compared. To roll forward, change the tag.
 
 **Applying.** A container's settings can't change while it exists, so any difference means Conn3x removes the container and runs it again under the same name. Named volumes and host directories keep their data. If the image isn't on the host yet, Conn3x pulls it first. A container that's only stopped is started, not recreated.
 
