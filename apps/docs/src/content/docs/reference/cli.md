@@ -3,7 +3,7 @@ title: CLI overview
 description: How to run conn3x commands, the global options, the environment variables Conn3x reads, and its exit codes.
 ---
 
-The `conn3x` binary has every command OpenTofu 1.13.2 has, and eight of its own: [`drift`](/reference/cli/drift), [`run`](/reference/cli/run), [`convert ansible`](/reference/cli/convert-ansible), [`generate step`](/reference/cli/generate-step), [`each`](/reference/cli/each), [`lint`](/reference/cli/lint), [`lsp`](/reference/cli/lsp) and [`mcp`](/reference/cli/mcp). This section documents Conn3x v0.10.0.
+The `conn3x` binary has every command OpenTofu has, from the version it's built on (`conn3x version` names it), and eight of its own: [`drift`](/reference/cli/drift), [`run`](/reference/cli/run), [`convert ansible`](/reference/cli/convert-ansible), [`generate step`](/reference/cli/generate-step), [`each`](/reference/cli/each), [`lint`](/reference/cli/lint), [`lsp`](/reference/cli/lsp) and [`mcp`](/reference/cli/mcp). It also adds to OpenTofu's [`test`](/reference/cli/test). This section documents the current release.
 
 ## Usage
 
@@ -56,7 +56,7 @@ These are the commands most people use. Each has its own page.
 | [`providers`](/reference/cli/providers) | Show the providers the configuration needs. |
 | [`version`](/reference/cli/version) | Print the Conn3x version. |
 
-The other OpenTofu commands are there too and behave as OpenTofu documents them: [`console`](https://opentofu.org/docs/cli/commands/console/), [`force-unlock`](https://opentofu.org/docs/cli/commands/force-unlock/), [`get`](https://opentofu.org/docs/cli/commands/get/), [`graph`](https://opentofu.org/docs/cli/commands/graph/), [`import`](https://opentofu.org/docs/cli/commands/import/), [`login`](https://opentofu.org/docs/cli/commands/login/), [`logout`](https://opentofu.org/docs/cli/commands/logout/), [`refresh`](https://opentofu.org/docs/cli/commands/refresh/), [`taint`](https://opentofu.org/docs/cli/commands/taint/), [`test`](https://opentofu.org/docs/cli/commands/test/), [`untaint`](https://opentofu.org/docs/cli/commands/untaint/) and [`workspace`](https://opentofu.org/docs/cli/commands/workspace/). `conn3x metadata functions -json` prints the signatures of the functions available in configuration.
+The other OpenTofu commands are there too and behave as OpenTofu documents them: [`console`](https://opentofu.org/docs/cli/commands/console/), [`force-unlock`](https://opentofu.org/docs/cli/commands/force-unlock/), [`get`](https://opentofu.org/docs/cli/commands/get/), [`graph`](https://opentofu.org/docs/cli/commands/graph/), [`import`](https://opentofu.org/docs/cli/commands/import/), [`login`](https://opentofu.org/docs/cli/commands/login/), [`logout`](https://opentofu.org/docs/cli/commands/logout/), [`refresh`](https://opentofu.org/docs/cli/commands/refresh/), [`taint`](https://opentofu.org/docs/cli/commands/taint/), [`untaint`](https://opentofu.org/docs/cli/commands/untaint/) and [`workspace`](https://opentofu.org/docs/cli/commands/workspace/). `conn3x metadata functions -json` prints the signatures of the functions available in configuration.
 
 ## What differs from OpenTofu
 
