@@ -1,6 +1,24 @@
 {
   "items": [
     {
+      "date": "2026-11-21",
+      "repo": "microsoft/presidio",
+      "summary": "Checking that a context word glued to an entity with a colon, as in Phone:617-555-0134, now counts in both context enhancers without one window growing past the other.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2520#pullrequestreview-6002830798"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "Infisical/infisical",
+      "summary": "Confirming the UUID checks on every group route match the schema, and pointing out the project-scoped group routes that still take any string.",
+      "url": "https://github.com/Infisical/infisical/pull/9775#pullrequestreview-6002825390"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "osquery/osquery",
+      "summary": "Finding that the new size cap on YARA scans can miss files of 2 GB or more on Windows, where stat holds a 32-bit size, and suggesting a check on the open file instead.",
+      "url": "https://github.com/osquery/osquery/pull/9342#pullrequestreview-6002820043"
+    },
+    {
       "date": "2026-11-20",
       "repo": "prometheus/prometheus",
       "summary": "Comparing two fixes for the same bug, the rule backfiller importing alerting rules as series, and linking each to the other so the maintainers can pick one.",
