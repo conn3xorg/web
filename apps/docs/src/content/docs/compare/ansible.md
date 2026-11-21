@@ -35,7 +35,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
 | Modules | A very large ecosystem of collections on Ansible Galaxy | 55 Linux modules, 25 Windows modules (all out of experimental), and [128 official circuits](/circuits) |
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
-| Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos and VyOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
+| Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos, VyOS and Cisco IOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
 | Maturity | In production use for more than a decade | Before 1.0, at v0.10.0 |
 
@@ -227,7 +227,7 @@ So the preview is close. Where the two part ways is everything around it: Conn3x
 There are plenty of jobs where Ansible is the right tool, and we'd rather say so:
 
 - Ad-hoc work, at Ansible's breadth. `conn3x run` covers the one-off command or module across a group, from the same inventory, but Ansible has years of habits and modules behind its ad-hoc mode, and `-m` in Conn3x takes only the modules a step can run.
-- Network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their own CLI is only planned.
+- Network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their CLIs and APIs. Conn3x has three experimental network circuits and seventeen experimental modules that talk to Arista EOS, Juniper Junos, VyOS and Cisco IOS over their own CLI, so it covers far fewer devices.
 - Windows at scale. Ansible's Windows support has years of production use behind it. Windows in Conn3x is a preview, and since v0.19.0 all 25 of its modules are out of experimental. It can build a forest, a child domain or a new tree, join servers, add domain controllers and keep the OUs, groups and users in the domain, and [azure-ad-lab](https://github.com/conn3xorg/conn3x/tree/main/examples/azure-ad-lab) builds a whole domain from one config.
 - The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 55 Linux modules and 128 circuits, which cover a lot of ground and are still a much smaller set.
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
@@ -254,7 +254,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 ## What Conn3x can't do yet
 
 - Windows Server is in preview, though since v0.19.0 none of its modules is experimental. A domain can be built, joined, given more controllers and filled with OUs, groups and users. That includes child domains and new trees, and group members from other domains in the forest and across a forest trust, all tested on Azure.
-- Network devices means Arista EOS, Juniper Junos and VyOS for now: thirteen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch and a VyOS container, and not yet on hardware. Classic Cisco IOS is next.
+- Network devices means Arista EOS, Juniper Junos, VyOS and Cisco IOS for now: seventeen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch, a VyOS container, and IOS XE 17.18 and classic IOS 15.9 in Cisco Modeling Labs, and not yet on hardware.
 - macOS hosts are planned, not shipped.
 - There's no web UI and no built-in credential store.
 - Adopting a running server works for 29 Linux modules, the database, storage and container steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them.
