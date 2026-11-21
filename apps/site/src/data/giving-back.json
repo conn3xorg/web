@@ -2,6 +2,18 @@
   "items": [
     {
       "date": "2026-11-21",
+      "repo": "BerriAI/litellm",
+      "summary": "Showing that a missing MCP credential already passed tool listing, so the fix really admits a bare \"Bearer\" header, and asking whether that header should go upstream at all.",
+      "url": "https://github.com/BerriAI/litellm/pull/53310#pullrequestreview-6003079906"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "osquery/osquery",
+      "summary": "Confirming the fix for a file descriptor closed twice under BPF events, which could cut an extension's socket, and noting that the duplicate shares its read position.",
+      "url": "https://github.com/osquery/osquery/pull/9344#pullrequestreview-6002863909"
+    },
+    {
+      "date": "2026-11-21",
       "repo": "microsoft/presidio",
       "summary": "Checking that a context word glued to an entity with a colon, as in Phone:617-555-0134, now counts in both context enhancers without one window growing past the other.",
       "url": "https://github.com/data-privacy-stack/presidio/pull/2520#pullrequestreview-6002830798"
