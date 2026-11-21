@@ -2,6 +2,18 @@
   "items": [
     {
       "date": "2026-11-21",
+      "repo": "withastro/roadmap",
+      "summary": "Proposing that the Fonts API's optimized sans-serif fallback also match Arimo and Roboto: it matches only Arial, so Android phones and Linux get no size-matched fallback.",
+      "url": "https://github.com/withastro/roadmap/discussions/1471"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "BerriAI/litellm",
+      "summary": "Following up on the MCP credential fix: asking whether clearing the credential on the client could strip it from a later tool call if the client is reused.",
+      "url": "https://github.com/BerriAI/litellm/pull/53310#issuecomment-7064200696"
+    },
+    {
+      "date": "2026-11-21",
       "repo": "BerriAI/litellm",
       "summary": "Showing that a missing MCP credential already passed tool listing, so the fix really admits a bare \"Bearer\" header, and asking whether that header should go upstream at all.",
       "url": "https://github.com/BerriAI/litellm/pull/53310#pullrequestreview-6003079906"
