@@ -2,6 +2,12 @@
   "items": [
     {
       "date": "2026-11-22",
+      "repo": "withastro/astro",
+      "summary": "Showing that a cache test's final HIT holds only because its mocked clock never moves, and suggesting one that checks the stale-while-revalidate refresh itself.",
+      "url": "https://github.com/withastro/astro/pull/18799#pullrequestreview-6011802485"
+    },
+    {
+      "date": "2026-11-22",
       "repo": "BerriAI/litellm",
       "summary": "Checking that the Gemini schema fix's test really fails without it, though the function it calls edits its input in place.",
       "url": "https://github.com/BerriAI/litellm/pull/53523#pullrequestreview-6010970180"
