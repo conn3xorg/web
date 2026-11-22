@@ -1,6 +1,36 @@
 {
   "items": [
     {
+      "date": "2026-11-22",
+      "repo": "BerriAI/litellm",
+      "summary": "Checking that the Gemini schema fix's test really fails without it, though the function it calls edits its input in place.",
+      "url": "https://github.com/BerriAI/litellm/pull/53523#pullrequestreview-6010970180"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "osquery/osquery",
+      "summary": "Pointing out that a DMG trailer's checksum size looks like a count of bits, so osquery reads 32 bytes for a 4-byte CRC32.",
+      "url": "https://github.com/osquery/osquery/pull/9337#pullrequestreview-6010956892"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "osquery/osquery",
+      "summary": "Showing that the fix keeping a stale file hash from being served still misses rewrites inside one second, and doesn't protect Windows, where st_ctime is the creation time.",
+      "url": "https://github.com/osquery/osquery/pull/9345#pullrequestreview-6010717734"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "Infisical/infisical",
+      "summary": "Noting that skipping SUPABASE_ secrets turns a loud sync failure into a silent skip, and suggesting the sync say which it skipped.",
+      "url": "https://github.com/Infisical/infisical/pull/9794#pullrequestreview-6010560595"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "withastro/astro",
+      "summary": "Confirming the Node adapter fix stops pages getting another page's security policy, and asking whether non-ASCII paths still get none.",
+      "url": "https://github.com/withastro/astro/pull/18790#pullrequestreview-6010557895"
+    },
+    {
       "date": "2026-11-21",
       "repo": "withastro/roadmap",
       "summary": "Proposing that the Fonts API's optimized sans-serif fallback also match Arimo and Roboto: it matches only Arial, so Android phones and Linux get no size-matched fallback.",
