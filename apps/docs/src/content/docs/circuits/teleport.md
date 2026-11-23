@@ -3,7 +3,7 @@ title: Teleport
 description: "A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-teleport at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-teleport at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/teleport/grade.svg)](https://conn3x.org/circuits/teleport/grade)
 
@@ -17,7 +17,7 @@ Apply the server first, then the nodes, with the same token:
 
 ```hcl
 module "teleport_server" {
-  source = "github.com/conn3xorg/circuit-teleport?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-teleport?ref=v0.2.0"
 
   hosts                = { bastion = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -32,7 +32,7 @@ module "teleport_server" {
 }
 
 module "teleport_nodes" {
-  source = "github.com/conn3xorg/circuit-teleport?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-teleport?ref=v0.2.0"
 
   hosts                = { nas = "192.168.1.20", pve = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -74,7 +74,7 @@ tsh ls
 tsh ssh root@nas
 ```
 
-To try it on two throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0/examples/local).
+To try it on two throwaway containers first, see [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.2.0/examples/local).
 
 ### The proxy's certificate
 
@@ -101,7 +101,7 @@ To add a node later, set `join = true` with a fresh token for that apply, on the
 Before the circuit runs, the `conn3x_host` data source reads each host's distribution over SSH. Then, on each host:
 
 1. Installs `curl` and `ca-certificates`. With `proxy_ca`, adds it to the trust store with `update-ca-certificates` or `update-ca-trust`.
-2. Adds Teleport's repository for the channel of `teleport_version`'s major release, `stable/v18` today: `apt.releases.teleport.dev` on Debian and Ubuntu, and the RHEL repository on `yum.releases.teleport.dev` for Rocky Linux, AlmaLinux and RHEL, as Teleport's own installer picks. The signing key is in [files](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0/files).
+2. Adds Teleport's repository for the channel of `teleport_version`'s major release, `stable/v18` today: `apt.releases.teleport.dev` on Debian and Ubuntu, and the RHEL repository on `yum.releases.teleport.dev` for Rocky Linux, AlmaLinux and RHEL, as Teleport's own installer picks. The signing key is in [files](https://github.com/conn3xorg/circuit-teleport/tree/v0.2.0/files).
 3. Installs `teleport` at `teleport_version`.
 4. With `join`, writes the token to `/etc/teleport`, mode `0600`.
 5. Writes `/etc/teleport.yaml`, mode `0600`, after checking it with `teleport configure --test`. A file Teleport would refuse never replaces the old one. A change restarts Teleport.
@@ -167,18 +167,18 @@ The `os` in a host object, one of `debian`, `ubuntu`, `rocky`, `almalinux` or `r
 
 ## Requirements
 
-Requires Conn3x v0.7.0 or later and systemd on each host, with outbound HTTPS to apt.releases.teleport.dev or yum.releases.teleport.dev. Nodes need to reach the server's `public_addr`. Teleport builds packages for x86_64 and aarch64.
+Requires Conn3x v0.28.0 or later and systemd on each host, with outbound HTTPS to apt.releases.teleport.dev or yum.releases.teleport.dev. Nodes need to reach the server's `public_addr`. Teleport builds packages for x86_64 and aarch64.
 
 ## Tested on
 
-Rocky Linux 10, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0/examples/local), a server and a node in two containers with a throwaway CA, first at Teleport 18.11.7, then upgrades both to 18.11.8. After each apply it checks that the second plan has no changes. It makes a user on the server and runs a command on the node through the proxy with `tsh ssh`, checks the node's labels reach the cluster, checks the token stayed out of state, restarts both hosts and reaches the node again, then switches `join` off, checks both token files are gone, and reaches the node once more. The CI containers run with SELinux off. The same steps also passed by hand on two droplets, an Ubuntu 24.04 server and a Rocky Linux 10 node with SELinux enforcing and no denials in the audit log, including a reboot of both followed by a clean plan. There the token showed in `tctl tokens ls` with an expiry 24 hours out.
+Rocky Linux 10, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.2.0/examples/local), a server and a node in two containers with a throwaway CA, first at Teleport 18.11.7, then upgrades both to 18.11.8. After each apply it checks that the second plan has no changes. It makes a user on the server and runs a command on the node through the proxy with `tsh ssh`, checks the node's labels reach the cluster, checks the token stayed out of state, restarts both hosts and reaches the node again, then switches `join` off, checks both token files are gone, and reaches the node once more. The CI containers run with SELinux off. The same steps also passed by hand on two droplets, an Ubuntu 24.04 server and a Rocky Linux 10 node with SELinux enforcing and no denials in the audit log, including a reboot of both followed by a clean plan. There the token showed in `tctl tokens ls` with an expiry 24 hours out.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-teleport/blob/v0.1.0/LICENSE). Teleport's source is AGPL-3.0, and the packages this circuit installs are under the Teleport Community Edition license: free for personal use and for companies with fewer than 100 employees and less than $10 million in annual revenue. Check it fits before you deploy it at work.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-teleport/blob/v0.2.0/LICENSE). Teleport's source is AGPL-3.0, and the packages this circuit installs are under the Teleport Community Edition license: free for personal use and for companies with fewer than 100 employees and less than $10 million in annual revenue. Check it fits before you deploy it at work.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-teleport](https://github.com/conn3xorg/circuit-teleport). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-teleport/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-teleport](https://github.com/conn3xorg/circuit-teleport). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-teleport/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-teleport/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-teleport/tree/v0.2.0/examples/local).
 - Related circuits: [certbot](/circuits/certbot), [Users](/circuits/users), [Active Directory](/circuits/active-directory), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [authentik](/circuits/authentik), [Passbolt CE](/circuits/passbolt).

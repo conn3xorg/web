@@ -2,7 +2,7 @@
   "name": "influxdb",
   "repo": "conn3xorg/circuit-influxdb",
   "description": "InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start.",
-  "version": "v0.1.0",
+  "version": "v0.2.0",
   "tags": [
     "influxdb",
     "time-series",

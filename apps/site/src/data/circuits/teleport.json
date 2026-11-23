@@ -2,7 +2,7 @@
   "name": "teleport",
   "repo": "conn3xorg/circuit-teleport",
   "description": "A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel.",
-  "version": "v0.1.0",
+  "version": "v0.2.0",
   "tags": [
     "teleport",
     "ssh",
