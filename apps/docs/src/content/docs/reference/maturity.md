@@ -47,6 +47,8 @@ Experimental is about each module inside it. An experimental module is new, and 
 | The [`selinux_port` step](/modules/selinux_port) | Experimental | New in v0.27.0. Every change tests it on hosts without SELinux; with SELinux on, only the nightly runs on real Rocky Linux servers do. |
 | The [`container_image`](/modules/container_image), [`container_network`](/modules/container_network) and [`container_volume`](/modules/container_volume) steps | Experimental | New in v0.28.0. Tested on every change with Podman 4 and later; Docker's output is read from unit fixtures only. |
 | The [`supervisor_program` step](/modules/supervisor_program) | Experimental | New in v0.28.0. Tested on every change on Ubuntu 24.04; groups and `server_url` are unit-tested only. |
+| The [`patch`](/modules/patch) and [`pack`](/modules/pack) steps | Experimental | New in v0.29.0. Tested on every change on Rocky Linux 10 and Debian 13. |
+| The [`compose_project` step](/modules/compose_project) | Experimental | New in v0.29.0. Tested on every change with Podman and podman-compose on Rocky Linux 10; Docker's output is read from unit fixtures only. |
 | [`repository`](/modules/repository) and [`package_sources`](/modules/package_sources) on SUSE | Experimental | New in v0.28.0. Tested on every change on openSUSE Leap 15.6, not on SUSE Linux Enterprise. |
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |
 | The [Circuit Builder](https://conn3x.org/build), for hosts you already have | Stable | CI validates every circuit it offers, alone and in a set of realistic builds. |
