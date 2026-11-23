@@ -37,7 +37,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos, VyOS and Cisco IOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
-| Maturity | In production use for more than a decade | Before 1.0, at v0.10.0 |
+| Maturity | In production use for more than a decade | Before 1.0, at v0.29.0 |
 
 ## The same playbook, both ways
 
@@ -229,11 +229,11 @@ There are plenty of jobs where Ansible is the right tool, and we'd rather say so
 - Ad-hoc work, at Ansible's breadth. `conn3x run` covers the one-off command or module across a group, from the same inventory, but Ansible has years of habits and modules behind its ad-hoc mode, and `-m` in Conn3x takes only the modules a step can run.
 - Network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their CLIs and APIs. Conn3x has three experimental network circuits and seventeen experimental modules that talk to Arista EOS, Juniper Junos, VyOS and Cisco IOS over their own CLI, so it covers far fewer devices.
 - Windows at scale. Ansible's Windows support has years of production use behind it. Windows in Conn3x is a preview, and since v0.19.0 all 25 of its modules are out of experimental. It can build a forest, a child domain or a new tree, join servers, add domain controllers and keep the OUs, groups and users in the domain, and [azure-ad-lab](https://github.com/conn3xorg/conn3x/tree/main/examples/azure-ad-lab) builds a whole domain from one config.
-- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x has 55 Linux modules and 128 circuits, which cover a lot of ground and are still a much smaller set.
+- The ecosystem. Galaxy has roles and collections for almost anything you'd want to configure. Conn3x's modules and [circuits](/circuits) cover a lot of ground and are still a much smaller set.
 - No state to look after. If you don't want a state file anywhere, Ansible's stateless model is a real advantage, not a gap.
-- A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x has none of that; you run it from CI.
+- A UI, credentials and access control. AWX and Red Hat Ansible Automation Platform give a team job templates, a credential store, RBAC and a web UI. Conn3x's [web UI](/guides/web-ui) does some of that, with approvals, per-project credentials and roles from your OIDC groups, but it's experimental and much younger than AWX. Most teams run Conn3x from CI.
 - Team familiarity. Ansible is widely known, widely taught and well documented. A team that's fluent in it gives up real speed by switching.
-- Maturity. Conn3x is at v0.10.0. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
+- Maturity. Conn3x is at v0.29.0. Stable parts are tested on every change, but before 1.0 a release can still change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
 You don't have to choose for every server at once. Converting one playbook and running Conn3x for that group, while Ansible keeps the rest, is a fair way to find out.
 
@@ -256,7 +256,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 - Windows Server is in preview, though since v0.19.0 none of its modules is experimental. A domain can be built, joined, given more controllers and filled with OUs, groups and users. That includes child domains and new trees, and group members from other domains in the forest and across a forest trust, all tested on Azure.
 - Network devices means Arista EOS, Juniper Junos, VyOS and Cisco IOS for now: seventeen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch, a VyOS container, and IOS XE 17.18 and classic IOS 15.9 in Cisco Modeling Labs, and not yet on hardware.
 - macOS hosts are planned, not shipped.
-- There's no web UI and no built-in credential store.
+- The [web UI](/guides/web-ui) and its credential store are experimental.
 - Adopting a running server works for 29 Linux modules, the database, storage and container steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them.
 
 The [roadmap](/roadmap) has the order we're building things in.
