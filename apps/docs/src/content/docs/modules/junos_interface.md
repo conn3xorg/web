@@ -9,9 +9,11 @@ Experimental. The settings Conn3x owns on one interface of a Juniper Junos devic
 
 **Experimental.** Network devices are new, and this module may change between releases. It's tested against vJunos-switch 26.2R1.7 on a lab VM, not yet in CI.
 
-Use `junos_interface` to own a few settings on one interface of a Juniper Junos device: its description, whether it's enabled, its MTU, and on an ELS switch port, whether it's an access port or a trunk and which VLANs it carries. Every setting you leave unset is left alone, and so is everything else under the interface, its addresses included. The change goes in like every Junos step does, once per device per circuit; see [`junos_config`](/modules/junos_config).
+Use `junos_interface` to own a few settings on one interface of a Juniper Junos device: its description, whether it's enabled, its MTU, and on an ELS switch port, whether it's an access port or a trunk and which VLANs it carries. On an irb, a loopback or a routed port it can also own the addresses of one unit. Every setting you leave unset is left alone, and so is everything else under the interface. The change goes in like every Junos step does, once per device per circuit; see [`junos_config`](/modules/junos_config).
 
 `enabled = false` is refused on a management interface (`fxp0`, `em0`, `me0`, `vme`), and on the interface whose address Conn3x connects to, since that would cut Conn3x off. `commit confirmed` would undo it, but only after five minutes.
+
+`addresses` is one unit's whole set, IPv4 under `family inet` and IPv6 under `family inet6`. `unit` picks the unit, 0 when unset, so `irb.10` is `name = "irb"` with `unit = 10`. Addresses are compared as addresses, so case and zero compression don't matter, and new ones are set before old ones are deleted. Taking off the address Conn3x connects to is refused. `addresses` can't be combined with `mode`, `access_vlan` or `allowed_vlans`, and those need unit 0. Addresses are tested against parsed configurations only so far, not yet on vJunos-switch.
 
 ## Example usage
 
@@ -42,11 +44,30 @@ step "uplink" {
 }
 ```
 
+A gateway on `irb.10`:
+
+```hcl
+step "gateway" {
+  junos_interface {
+    name      = "irb"
+    unit      = 10
+    addresses = ["192.0.2.1/24", "2001:db8:10::1/64"]
+  }
+}
+```
+
+## From Ansible
+
+`conn3x convert ansible` turns `junipernetworks.junos.junos_interfaces` tasks into a `junos_interface` step per interface in `config`, with `name`, `description`, `mtu` and `enabled`. Ansible defaults `enabled` to true, so a task without it converts with `enabled = true`. Only `state: merged`, the default, converts, and any other setting stays a TODO.
+
+`junipernetworks.junos.junos_l3_interfaces` tasks become `junos_interface` steps with `unit` and `addresses`, IPv4 and IPv6 together. Only `state: replaced` converts, since `merged` adds to a set the step owns whole, so that task stays a TODO asking for every address. A `dhcp` address stays a TODO too.
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `access_vlan` | string | No | The VLAN of an access port, by name or ID, as vlan members. |
+| `addresses` | list of string | No | The unit's whole set of addresses, each with its prefix length, such as 192.0.2.1/24 or 2001:db8::1/64, under family inet or inet6. Taking off the address Conn3x connects to is refused. |
 | `allowed_vlans` | list of string | No | The VLANs a trunk carries, by name, ID or range such as 20-22. Members not listed are deleted. |
 | `description` | string | No | Its description. No double quotes or backslashes. |
 | `enabled` | bool | No | false disables it, true deletes the disable. Disabling a management interface (fxp0, em0, me0, vme), or the one whose address Conn3x connects to, is refused. |
@@ -54,6 +75,7 @@ step "uplink" {
 | `mtu` | number | No | MTU, 256 to 9216. |
 | `name` | string | Yes | The interface, such as ge-0/0/1, xe-0/0/48, ae0, irb or lo0. |
 | `on_remove` | string | No | What happens when this resource is removed: "forget" (default) leaves the interface as it is, "delete" deletes the statements it owns. The interface itself stays. |
+| `unit` | number | No | The logical unit addresses go on, 0 to 16385, as in irb.10. Unset is unit 0. |
 
 ## Read-only attributes
 

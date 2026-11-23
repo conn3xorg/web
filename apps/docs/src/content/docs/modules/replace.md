@@ -51,8 +51,10 @@ step "no_comments" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `after` | string | No | A regexp marking where the section to edit starts, such as "^<VirtualHost". Only the text after its first match is edited, up to before if that's set. . matches a line break here. If it doesn't match, the file is left alone. |
 | `backup` | bool | No | true copies the file, before an edit changes it, beside itself with .conn3x-, the time in UTC, a number and a ~ after its name, such as job.conn3x-20261118T130501Z.4127~, keeping its mode and owner. The ~ keeps cron.d, logrotate.d and the like from loading the copy. An apply that changes nothing makes no copy. Old copies stay until you remove them. |
 | `backup_keep` | number | No | With backup, keeps only this many of the newest copies, removing older ones each time a new one is made. Unset keeps them all. |
+| `before` | string | No | A regexp marking where the section to edit ends. With after, the section ends at its first match after after's; alone, at its last match in the file. . matches a line break here. If it doesn't match, the file is left alone. |
 | `create` | bool | No | Create the file when it is missing. Otherwise a missing file is an error. |
 | `group` | string | No | The file's group, set with the edit. Unset keeps the group the file has. |
 | `mode` | string | No | The file's mode, such as "0644", set with the edit. Unset keeps the mode the file has, or 0644 for a file it creates. |
@@ -92,6 +94,7 @@ A step lowers to the `conn3x_replace` resource, one instance per host, and conne
 **Secrets.** `regexp` and `replace` are stored in state and shown in plans, like the text of a [`line`](/modules/line) step. The file's content isn't stored.
 
 **Conflicts.** If another step in the same circuit writes the whole file with `file` or `template`, `conn3x validate` warns you, because each apply would undo the other.
+**Sections.** `after` and `before` limit the edit to one part of the file, such as one `<VirtualHost>` block. With both, the section runs from the first match of `after` to the nearest match of `before` after it. With `after` alone it runs to the end of the file, and with `before` alone from the start of the file to the last match of `before`. The markers themselves aren't edited, and `.` matches a line break in them. If they don't match, the file is left as it is and the step is in sync. `^` and `$` in `regexp` also match where the section starts and ends.
 
 ## Removal
 
@@ -99,7 +102,7 @@ When you delete a `replace` step, the file stays as it is. `on_remove = "delete"
 
 ## From Ansible
 
-`conn3x convert ansible` turns `ansible.builtin.replace` tasks into `replace` steps when it can prove the pattern means the same in Go as in Python, and rewrites backreferences: `\1` and `\g<1>` become `${1}`, `\g<name>` becomes `${name}`, and a `$` becomes `$$`. A reference to a group that doesn't exist stays a TODO, as Ansible would fail on it.
+`conn3x convert ansible` turns `ansible.builtin.replace` tasks into `replace` steps when it can prove the pattern means the same in Go as in Python, and rewrites backreferences: `\1` and `\g<1>` become `${1}`, `\g<name>` becomes `${name}`, and a `$` becomes `$$`. `after` and `before` carry over, checked the same way. A reference to a group that doesn't exist stays a TODO, as Ansible would fail on it.
 
 These stay a TODO with the reason:
 
@@ -108,6 +111,7 @@ These stay a TODO with the reason:
 - `[[:alpha:]]`, which is a class in Go and plain characters in Python, and `a{,3}`, which is a repeat in Python and plain text in Go.
 - A pattern that can match nothing, like `x*` or `^.*$`, because Python and Go replace different empty matches.
 - A replacement the pattern would match again, which never settles.
-- `after`, `before`, `backup`, `validate`, `mode`, `owner`, `group`, an `encoding` other than UTF-8, tasks written as `key=value` text, loops, and unquoted values that YAML could read as something else, such as `yes` or `1.5`.
+- An `after` or `before` with a `|` in it. Ansible pastes the two around the section's own pattern, so a `|` reaches across the whole thing, and Conn3x keeps each marker whole instead.
+- `backup`, `validate`, `mode`, `owner`, `group`, an `encoding` other than UTF-8, tasks written as `key=value` text, loops, and unquoted values that YAML could read as something else, such as `yes` or `1.5`.
 
 Ansible leaves a growing replacement to you: it would append again on every play. A step with a group that grows, like `(foo)` and `\1\1`, converts, then fails at plan or apply with the reason instead.

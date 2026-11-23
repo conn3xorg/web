@@ -45,11 +45,14 @@ Experimental is about each module inside it. An experimental module is new, and 
 | [`conn3x each plan`](/reference/cli/each) | Experimental | New in v0.27.0. Plans only; `each apply` isn't here yet. |
 | The [`script` step](/modules/script), for modules you write yourself | Experimental | New in v0.26.0. The JSON protocol between Conn3x and your program may change between releases. |
 | The [`selinux_port` step](/modules/selinux_port) | Experimental | New in v0.27.0. Every change tests it on hosts without SELinux; with SELinux on, only the nightly runs on real Rocky Linux servers do. |
+| The [`container_image`](/modules/container_image), [`container_network`](/modules/container_network) and [`container_volume`](/modules/container_volume) steps | Experimental | New in v0.28.0. Tested on every change with Podman 4 and later; Docker's output is read from unit fixtures only. |
+| The [`supervisor_program` step](/modules/supervisor_program) | Experimental | New in v0.28.0. Tested on every change on Ubuntu 24.04; groups and `server_url` are unit-tested only. |
+| [`repository`](/modules/repository) and [`package_sources`](/modules/package_sources) on SUSE | Experimental | New in v0.28.0. Tested on every change on openSUSE Leap 15.6, not on SUSE Linux Enterprise. |
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |
 | The [Circuit Builder](https://conn3x.org/build), for hosts you already have | Stable | CI validates every circuit it offers, alone and in a set of realistic builds. |
 | The Builder creating the servers on AWS, Azure, Google Cloud or DigitalOcean | Preview | We've applied its configs on real servers on all four, by hand rather than on every change. On Azure it creates Linux hosts only. |
 | [VyOS modules](/network-devices#vyos) (`vyos_config`, `vyos_hostname`, `vyos_interface` since v0.18.0; `vyos_static_route` and `vyos_user` since v0.20.0) | Experimental | Tested against VyOS 2026.11.13-0016-rolling in a container on a lab VM, not in CI and not on hardware. |
-| [Cisco IOS module](/network-devices#cisco-ios-xe) (`ios_config` since v0.20.0) | Experimental | Tested against IOS XE 17.18 (IOL-XE) and classic IOS 15.9 (IOSv) in Cisco Modeling Labs on a lab VM, not in CI and not on hardware. Classic IOS needs `legacy_algorithms` on the device's host. |
+| [Cisco IOS modules](/network-devices#cisco-ios-xe) (`ios_config` since v0.20.0; `ios_hostname`, `ios_interface`, `ios_vlan`, `ios_static_route` and the `conn3x_ios_device` data source since v0.28.0) | Experimental | `ios_config` is tested against IOS XE 17.18 (IOL-XE) and classic IOS 15.9 (IOSv) in Cisco Modeling Labs on a lab VM, not in CI and not on hardware. Classic IOS needs `legacy_algorithms` on the device's host. The v0.28.0 steps are tested against parsed running configurations only; their lab run is tracked in [#1174](https://github.com/conn3xorg/conn3x/issues/1174). |
 | Windows hosts in the Builder, macOS hosts | Planned | See the [roadmap](/roadmap). |
 
 ## Now, Next and After that
