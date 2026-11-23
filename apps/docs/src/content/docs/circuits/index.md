@@ -106,9 +106,9 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Pi-hole](/circuits/pihole) | Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists. | v0.1.5 |
-| [AdGuard Home](/circuits/adguardhome) | AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard. | v0.2.3 |
-| [Unbound](/circuits/unbound) | A validating, caching DNS resolver with Unbound: DNSSEC on, optional DNS over TLS upstreams and local records for your network. | v0.2.2 |
+| [Pi-hole](/circuits/pihole) | Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists. | v0.2.0 |
+| [AdGuard Home](/circuits/adguardhome) | AdGuard Home blocking ads and trackers for every device on your network, configured without the setup wizard. | v0.3.0 |
+| [Unbound](/circuits/unbound) | A validating, caching DNS resolver with Unbound: DNSSEC on, optional DNS over TLS upstreams and local records for your network. | v0.3.0 |
 | [BIND](/circuits/bind) | BIND 9 serving your zones, written as HCL, with serials that go up when records change and TSIG-signed secondaries. | v0.2.2 |
 
 ### Networking and VPN
