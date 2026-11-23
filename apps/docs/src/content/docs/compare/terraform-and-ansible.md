@@ -35,7 +35,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Ansible collections for many vendors' gear | [Arista EOS, Juniper Junos, VyOS and Cisco IOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [128 official circuits](/circuits) |
-| Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.29.0 |
+| Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.30.0 |
 
 ## The same job, both ways
 
@@ -430,7 +430,7 @@ We'd rather you pick the right tool than ours. Stay with the pair, or keep part 
 - You configure network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their own CLIs and APIs. Conn3x has three experimental network circuits and seventeen experimental modules that talk to Arista EOS, Juniper Junos, VyOS and Cisco IOS over their own CLI, so it covers far fewer devices.
 - You manage Windows at scale. Ansible's Windows support has been in use for years. Windows in Conn3x is a preview, though since v0.19.0 all 25 of its modules are out of experimental, so their arguments hold between releases.
 - You need a UI, RBAC and scheduling built in. AWX and Red Hat Ansible Automation Platform give you job templates, credentials, access control and a web UI. HCP Terraform and other platforms do the same for Terraform runs. Conn3x is a CLI first. Its [web UI](/guides/web-ui) plans and applies from a browser with an approval in between and keeps credentials and roles per project, but it's experimental and much younger than AWX.
-- You can't take on a pre-1.0 tool. Conn3x is at v0.29.0. Stable parts are tested on every change, but "stable" before 1.0 means tested, not frozen, and a release can change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
+- You can't take on a pre-1.0 tool. Conn3x is at v0.30.0. Stable parts are tested on every change, but "stable" before 1.0 means tested, not frozen, and a release can change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
 
 None of that has to be all or nothing. Because Conn3x runs your existing configuration unchanged, you can move one group of servers into a circuit and keep running Ansible for the rest.
 
