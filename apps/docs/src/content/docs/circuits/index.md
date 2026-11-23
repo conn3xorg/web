@@ -48,7 +48,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | --- | --- | --- |
 | [nginx](/circuits/nginx) | Installs nginx, writes your site, keeps it running, opens the firewall, and can serve HTTPS with a self-signed certificate. | v0.3.0 |
 | [Apache httpd](/circuits/apache) | Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload. | v0.3.0 |
-| [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.3.0 |
+| [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.4.0 |
 | [HAProxy](/circuits/haproxy) | HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live. | v0.2.0 |
 | [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.2.0 |
 | [certbot](/circuits/certbot) | Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer. | v0.2.1 |
@@ -60,14 +60,14 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | --- | --- | --- |
 | [PostgreSQL](/circuits/postgres) | Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state. | v0.5.0 |
 | [MariaDB](/circuits/mariadb) | MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would. | v0.5.0 |
-| [MySQL](/circuits/mysql) | MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state. | v0.5.0 |
+| [MySQL](/circuits/mysql) | MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state. | v0.5.2 |
 | [SQL Server](/circuits/mssql) | SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state. | v0.2.1 |
 | [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.2.0 |
 | [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.4.0 |
 | [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.3.0 |
 | [SQLite](/circuits/sqlite) | The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode. | v0.1.4 |
 | [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.3.0 |
-| [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.1 |
+| [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.2.0 |
 | [InfluxDB 3 Core](/circuits/influxdb) | InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start. | v0.2.0 |
 
 ### Monitoring
@@ -79,7 +79,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.0 |
 | [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.5 |
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.2 |
-| [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.2.1 |
+| [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.3.0 |
 | [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.2.0 |
 | [Nagios Core](/circuits/nagios) | Nagios Core with plugins, hosts and services from inputs, nagios -v before every reload, and a login-protected web interface on loopback. | v0.2.1 |
 | [Uptime Kuma](/circuits/uptimekuma) | Uptime Kuma under Podman: it watches your sites, ports and services and tells you the moment one stops answering. | v0.1.0 |
@@ -139,16 +139,16 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Hardening](/circuits/hardening) | SSH and kernel hardening for a fresh server: modern SSH crypto, hardening sysctls, no core dumps, every control switchable. | v0.3.0 |
 | [Firewall](/circuits/firewall) | A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on. | v0.3.0 |
 | [fail2ban](/circuits/fail2ban) | Bans addresses that keep failing SSH logins, through nftables, with room for jails of your own. | v0.3.1 |
-| [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.3.0 |
+| [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.4.0 |
 | [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.3 |
 | [auditd](/circuits/auditd) | Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability | v0.2.1 |
-| [Trivy](/circuits/trivy) | Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host. | v0.1.2 |
+| [Trivy](/circuits/trivy) | Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host. | v0.2.0 |
 | [CISO Assistant](/circuits/ciso-assistant) | Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL. | v0.1.1 |
 | [ZAP](/circuits/zap) | OWASP ZAP baseline scans of URLs you list, on a systemd timer, reports on the host. | v0.1.3 |
 | [checkov](/circuits/checkov) | A pinned checkov in its own venv, installed from a hash-checked lock, for scanning infrastructure code. | v0.2.1 |
 | [cosign](/circuits/cosign) | A pinned, checksum-verified cosign on your hosts, for checking signatures on images and files. | v0.1.0 |
 | [in-toto](/circuits/in-toto) | in-toto in its own venv, from hash-locked requirements, for verifying how software was built. | v0.1.1 |
-| [TruffleHog](/circuits/trufflehog) | A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer. | v0.1.0 |
+| [TruffleHog](/circuits/trufflehog) | A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer. | v0.2.0 |
 
 ### Storage and backup
 
@@ -156,7 +156,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | --- | --- | --- |
 | [Samba](/circuits/samba) | Samba file shares with per-user passwords kept out of state, SMB2 minimum, NetBIOS off and SELinux labels. | v0.4.0 |
 | [NFS](/circuits/nfs) | Share folders over NFSv4 from the kernel NFS server, with each export checked by exportfs and v3 off unless you want it. | v0.3.0 |
-| [restic](/circuits/restic) | Scheduled, encrypted backups with restic to SFTP, S3, rest-server or a local path, with retention and repository checks. | v0.1.2 |
+| [restic](/circuits/restic) | Scheduled, encrypted backups with restic to SFTP, S3, rest-server or a local path, with retention and repository checks. | v0.2.0 |
 
 ### Identity and secrets
 
@@ -190,11 +190,11 @@ These configure a network device through its OpenTofu provider instead of a host
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.11 |
+| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.12 |
 | [Proxmox VE](/circuits/proxmox) | Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included. | v0.1.2 |
 | [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.2.0 |
 | [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.3 |
-| [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.3.0 |
+| [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.4.0 |
 | [n8n](/circuits/n8n) | Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply. | v0.1.3 |
 | [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.3.0 |
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
@@ -212,13 +212,13 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.2.0 |
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.3 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.3 |
-| [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.1.2 |
+| [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.2.0 |
 | [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.2 |
 | [Perl](/circuits/perl) | Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm. | v0.2.0 |
 | [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.2 |
 | [Selenium Grid](/circuits/selenium) | Selenium Grid under Podman, official images pinned by digest, on loopback by default. | v0.1.1 |
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
-| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.1.2 |
+| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.2.0 |
 | [Rust](/circuits/rust) | One exact Rust toolchain from static.rust-lang.org on every distribution, checksum-verified and system-wide, without rustup. | v0.1.1 |
 | [Go](/circuits/go) | One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions. | v0.1.1 |
 | [Python](/circuits/python) | Your distribution's Python with working venvs, and optional environments holding pinned packages. | v0.1.4 |
@@ -240,7 +240,7 @@ These configure a network device through its OpenTofu provider instead of a host
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Suricata](/circuits/suricata) | Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json | v0.2.1 |
+| [Suricata](/circuits/suricata) | Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json | v0.3.0 |
 | [Zeek](/circuits/zeek) | Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change. | v0.1.4 |
 | [osquery](/circuits/osquery) | osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment. | v0.3.0 |
 | [Velociraptor](/circuits/velociraptor) | Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state. | v0.1.3 |

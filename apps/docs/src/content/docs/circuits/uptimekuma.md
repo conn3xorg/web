@@ -36,7 +36,7 @@ Uptime Kuma speaks plain HTTP and WebSockets on `127.0.0.1:3001`. Put a proxy in
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.0"
 
   hosts                = { monitor = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

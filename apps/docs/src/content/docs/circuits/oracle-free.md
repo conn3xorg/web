@@ -3,7 +3,7 @@ title: Oracle AI Database Free
 description: "Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-oracle-free at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-oracle-free at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/oracle-free/grade.svg)](https://conn3x.org/circuits/oracle-free/grade)
 
@@ -23,7 +23,7 @@ variable "oracle_password" {
 }
 
 module "oracle_free" {
-  source = "github.com/conn3xorg/circuit-oracle-free?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-oracle-free?ref=v0.2.0"
 
   hosts                = { db = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +46,7 @@ The first apply downloads about 1.5 GB from Oracle and takes a few minutes to cr
 
 Connect from the host with the `connect_strings` output, such as `sqlplus system@//127.0.0.1:1521/FREEPDB1`, with `sqlplus` from the `oracle_home` output's `bin`.
 
-The circuit reads each host's release and architecture before it plans, so the hosts must exist already. To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1/examples/local).
+The circuit reads each host's release and architecture before it plans, so the hosts must exist already. To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.2.0/examples/local).
 
 ## What it does
 
@@ -103,20 +103,20 @@ Oracle builds Database Free for these, and the circuit stops at the plan on any 
 
 ## Requirements
 
-Requires Conn3x v0.7.0 or later, Rocky Linux 9 or 10 with systemd, outbound HTTPS to download.oracle.com, yum.oracle.com and Rocky Linux's mirrors, at least 1 GB of free memory when the database is created, and about 10 GB of disk.
+Requires Conn3x v0.29.0 or later, Rocky Linux 9 or 10 with systemd, outbound HTTPS to download.oracle.com, yum.oracle.com and Rocky Linux's mirrors, at least 1 GB of free memory when the database is created, and about 10 GB of disk.
 
 ## Tested on
 
-Rocky Linux 9 and 10, with Oracle AI Database Free 23.26.4. CI applies [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1/examples/local) to a Rocky Linux 10 container and a Rocky Linux 9 one on amd64, checks that the second plan has no changes and that the password isn't in the state, logs in to `FREEPDB1` as `SYSTEM` over the listener, writes a row and reads it back, checks a wrong password is refused, restarts the host, reads the row again and plans again with no changes. CI also checks that a plan with `accept_oracle_license = false` stops with the licence message. The same checks passed by hand in an arm64 Rocky Linux 9 container, along with a change to `admin_password`, after which `SYS`, `SYSTEM` and `PDBADMIN` all logged in with the new one.
+Rocky Linux 9 and 10, with Oracle AI Database Free 23.26.4. CI applies [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.2.0/examples/local) to a Rocky Linux 10 container and a Rocky Linux 9 one on amd64, checks that the second plan has no changes and that the password isn't in the state, logs in to `FREEPDB1` as `SYSTEM` over the listener, writes a row and reads it back, checks a wrong password is refused, restarts the host, reads the row again and plans again with no changes. CI also checks that a plan with `accept_oracle_license = false` stops with the licence message. The same checks passed by hand in an arm64 Rocky Linux 9 container, along with a change to `admin_password`, after which `SYS`, `SYSTEM` and `PDBADMIN` all logged in with the new one.
 
 On a Rocky Linux 9 droplet and a Rocky Linux 10 droplet, each with 2 vCPUs, 4 GB of memory and SELinux enforcing, the apply passed, the second plan had no changes, a row written as `SYSTEM` read back and a wrong password was refused. Both came back after a reboot with the database open and the row there, the plan had no changes, and the audit log had no denials. The database took about 8 GB of disk.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-oracle-free/blob/v0.1.1/LICENSE). Oracle AI Database Free itself is under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html), and this circuit doesn't include any of it: each host downloads it from Oracle.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-oracle-free/blob/v0.2.0/LICENSE). Oracle AI Database Free itself is under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html), and this circuit doesn't include any of it: each host downloads it from Oracle.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-oracle-free](https://github.com/conn3xorg/circuit-oracle-free). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-oracle-free/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-oracle-free](https://github.com/conn3xorg/circuit-oracle-free). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-oracle-free/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.2.0/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [InfluxDB 3 Core](/circuits/influxdb).

@@ -36,7 +36,7 @@ Dockge speaks plain HTTP and WebSockets on `127.0.0.1:5001`. Put a proxy in fron
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.0"
 
   hosts                = { apps = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

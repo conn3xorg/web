@@ -67,7 +67,7 @@ With [circuit-caddy](/circuits/caddy) on the same host, that's:
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.0"
 
   hosts                = { chat = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
