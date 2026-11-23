@@ -3,7 +3,7 @@ title: InfluxDB 3 Core
 description: "InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-influxdb at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-influxdb at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/influxdb/grade.svg)](https://conn3x.org/circuits/influxdb/grade)
 
@@ -21,7 +21,7 @@ Core is a different database from InfluxDB 2, not an upgrade of it. It speaks SQ
 
 ```hcl
 module "influxdb" {
-  source = "github.com/conn3xorg/circuit-influxdb?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-influxdb?ref=v0.2.0"
 
   hosts                = { metrics = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -53,7 +53,7 @@ curl -H "Authorization: Bearer $TF_VAR_influxdb_admin_token" \
   'http://192.168.1.30:8181/api/v3/query_sql?db=home&q=SELECT+*+FROM+temp'
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-influxdb/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-influxdb/tree/v0.2.0/examples/local).
 
 ### The admin token, and set_admin_token
 
@@ -72,7 +72,7 @@ By default the API listens on `127.0.0.1:8181`, so only the host itself can reac
 Before the circuit runs, the `conn3x_host` data source reads each host's distribution over SSH. Then, on each host:
 
 1. Installs `curl`, which the ready check uses.
-2. Adds InfluxData's repository, `repos.influxdata.com/debian` on Debian and Ubuntu, `repos.influxdata.com/stable/$basearch/main` on the Red Hat family, with the signing key in [files](https://github.com/conn3xorg/circuit-influxdb/tree/v0.1.0/files).
+2. Adds InfluxData's repository, `repos.influxdata.com/debian` on Debian and Ubuntu, `repos.influxdata.com/stable/$basearch/main` on the Red Hat family, with the signing key in [files](https://github.com/conn3xorg/circuit-influxdb/tree/v0.2.0/files).
 3. Installs `influxdb3-core` at `influxdb_version`. The package brings the `influxdb3` user, a sandboxed systemd unit and the Python the processing engine runs plugins with.
 4. With `set_admin_token`, writes `admin_token` to `/etc/influxdb3/admin-token.json`, mode `0640`, root and the `influxdb3` group.
 5. Writes `/etc/influxdb3/influxdb3-core.conf` with `http_bind`, `node_id`, the telemetry setting and your `settings`. Data goes in `/var/lib/influxdb3/data` and plugins in `/var/lib/influxdb3/plugins`, the package's own paths. Before the new file replaces the old one, the apply reads it with the package's launcher, the same code that reads it when InfluxDB starts, so a file the launcher would refuse never goes live.
@@ -132,18 +132,18 @@ The `os` in a host object, one of `debian`, `ubuntu`, `rocky`, `almalinux`, `rhe
 
 ## Requirements
 
-Requires Conn3x v0.7.0 or later and systemd on each host, with outbound HTTPS to repos.influxdata.com. InfluxData builds packages for x86_64 and aarch64.
+Requires Conn3x v0.28.0 or later and systemd on each host, with outbound HTTPS to repos.influxdata.com. InfluxData builds packages for x86_64 and aarch64.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-influxdb/tree/v0.1.0/examples/local) to each on amd64, first at InfluxDB 3.12.1, then upgrades it to 3.12.2. After each apply it checks that the second plan has no changes. It writes a point with the admin token and queries it back over SQL, checks a request without the token is refused, reads the point again after the upgrade and after restarting the host, and checks the token stayed out of state. The CI containers run with SELinux off. The same steps also passed by hand on Ubuntu 24.04 and Rocky Linux 10 droplets, the Rocky one with SELinux enforcing and no denials in the audit log, including a reboot followed by a clean plan. Switching `set_admin_token` to false there deleted the token file, and the token kept working.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-influxdb/tree/v0.2.0/examples/local) to each on amd64, first at InfluxDB 3.12.1, then upgrades it to 3.12.2. After each apply it checks that the second plan has no changes. It writes a point with the admin token and queries it back over SQL, checks a request without the token is refused, reads the point again after the upgrade and after restarting the host, and checks the token stayed out of state. The CI containers run with SELinux off. The same steps also passed by hand on Ubuntu 24.04 and Rocky Linux 10 droplets, the Rocky one with SELinux enforcing and no denials in the audit log, including a reboot followed by a clean plan. Switching `set_admin_token` to false there deleted the token file, and the token kept working.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-influxdb/blob/v0.1.0/LICENSE). InfluxDB 3 Core is MIT or Apache-2.0, at your choice.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-influxdb/blob/v0.2.0/LICENSE). InfluxDB 3 Core is MIT or Apache-2.0, at your choice.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-influxdb](https://github.com/conn3xorg/circuit-influxdb). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-influxdb/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-influxdb/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-influxdb/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-influxdb](https://github.com/conn3xorg/circuit-influxdb). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-influxdb/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-influxdb/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-influxdb/tree/v0.2.0/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [restic](/circuits/restic), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [Oracle AI Database Free](/circuits/oracle-free).

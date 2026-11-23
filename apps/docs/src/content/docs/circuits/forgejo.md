@@ -3,7 +3,7 @@ title: Forgejo
 description: "Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-forgejo at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-forgejo at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/forgejo/grade.svg)](https://conn3x.org/circuits/forgejo/grade)
 
@@ -22,7 +22,7 @@ variable "forgejo_admin_password" {
 }
 
 module "forgejo" {
-  source = "github.com/conn3xorg/circuit-forgejo?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-forgejo?ref=v0.2.0"
 
   hosts                = { git1 = "203.0.113.10" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +46,7 @@ SQLite is fine for a person or a small team. For more, point Forgejo at PostgreS
 
 ```hcl
 module "postgres" {
-  source = "github.com/conn3xorg/circuit-postgres?ref=v0.4.0"
+  source = "github.com/conn3xorg/circuit-postgres?ref=v0.5.0"
 
   hosts          = { git1 = "203.0.113.10" }
   users          = ["forgejo"]
@@ -55,7 +55,7 @@ module "postgres" {
 }
 
 module "forgejo" {
-  source     = "github.com/conn3xorg/circuit-forgejo?ref=v0.1.2"
+  source     = "github.com/conn3xorg/circuit-forgejo?ref=v0.2.0"
   depends_on = [module.postgres]
 
   hosts             = { git1 = "203.0.113.10" }
@@ -70,7 +70,7 @@ module "forgejo" {
 
 `postgres = {}` means `127.0.0.1:5432`, database `forgejo`, user `forgejo`. Set `host`, `name`, `user` or `ssl_mode` for anything else.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-forgejo/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-forgejo/tree/v0.2.0/examples/local).
 
 ## What it does
 
@@ -116,7 +116,7 @@ done
 
 ```hcl
 module "forgejo" {
-  source = "github.com/conn3xorg/circuit-forgejo?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-forgejo?ref=v0.2.0"
 
   # ...
   forgejo_version = "17.0.1"
@@ -164,11 +164,11 @@ The new binary replaces the old one and Forgejo restarts, migrating its database
 
 ## Requirements
 
-Requires Conn3x v0.6.6 or later, systemd on each host, and outbound HTTPS to codeberg.org and your distribution's mirrors.
+Requires Conn3x v0.28.0 or later, systemd on each host, and outbound HTTPS to codeberg.org and your distribution's mirrors.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-forgejo/tree/v0.1.2/examples/local) to each on amd64, checks that the second plan has no changes, then checks `/api/healthz`, signs in to `/api/v1/user` as the admin, checks that a wrong password gets `401`, creates a repository over the API and clones it over HTTP. The same checks passed on arm64 containers of all four by hand.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-forgejo/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, then checks `/api/healthz`, signs in to `/api/v1/user` as the admin, checks that a wrong password gets `401`, creates a repository over the API and clones it over HTTP. The same checks passed on arm64 containers of all four by hand.
 
 By hand, on Debian 13 in a container, the admin password was changed with a second apply and the new one worked; and with circuit-postgres on the same host and `postgres = {}`, Forgejo kept its data in PostgreSQL, the second plan had no changes, and the password was in neither the state nor the plan output.
 
@@ -178,10 +178,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-forgejo/blob/v0.1.2/LICENSE). Forgejo itself is GPL-3.0-or-later.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-forgejo/blob/v0.2.0/LICENSE). Forgejo itself is GPL-3.0-or-later.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-forgejo](https://github.com/conn3xorg/circuit-forgejo). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-forgejo/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-forgejo/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-forgejo/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-forgejo](https://github.com/conn3xorg/circuit-forgejo). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-forgejo/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-forgejo/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-forgejo/tree/v0.2.0/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [PostgreSQL](/circuits/postgres), [Firewall](/circuits/firewall), [Conn3x web UI](/circuits/conn3x-ui), [Proxmox VE](/circuits/proxmox), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab), [Mini homelab](/circuits/mini-homelab).

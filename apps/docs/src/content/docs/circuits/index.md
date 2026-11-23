@@ -50,7 +50,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Apache httpd](/circuits/apache) | Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload. | v0.3.0 |
 | [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.3.0 |
 | [HAProxy](/circuits/haproxy) | HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live. | v0.2.0 |
-| [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.1.3 |
+| [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.2.0 |
 | [certbot](/circuits/certbot) | Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer. | v0.2.1 |
 | [IIS](/circuits/iis) | Experimental. Turns Windows Server 2022 or 2025 into an IIS web server: a site, its own app pool and the firewall port open. | v0.1.0 |
 
@@ -58,29 +58,29 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [PostgreSQL](/circuits/postgres) | Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state. | v0.4.0 |
-| [MariaDB](/circuits/mariadb) | MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would. | v0.4.0 |
-| [MySQL](/circuits/mysql) | MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state. | v0.4.0 |
+| [PostgreSQL](/circuits/postgres) | Installs PostgreSQL with your settings, access rules, users and databases, and keeps passwords out of state. | v0.5.0 |
+| [MariaDB](/circuits/mariadb) | MariaDB from your distribution with users, databases and grants, locked down the way mysql_secure_installation would. | v0.5.0 |
+| [MySQL](/circuits/mysql) | MySQL 9.7 or 8.4 LTS from repo.mysql.com, with my.cnf settings, databases, users and grants. Passwords never reach state. | v0.5.0 |
 | [SQL Server](/circuits/mssql) | SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state. | v0.2.1 |
-| [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.1.4 |
-| [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.3.0 |
-| [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.2.2 |
+| [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.2.0 |
+| [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.4.0 |
+| [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.3.0 |
 | [SQLite](/circuits/sqlite) | The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode. | v0.1.4 |
-| [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.2.1 |
+| [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.3.0 |
 | [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.1 |
-| [InfluxDB 3 Core](/circuits/influxdb) | InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start. | v0.1.0 |
+| [InfluxDB 3 Core](/circuits/influxdb) | InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start. | v0.2.0 |
 
 ### Monitoring
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [node_exporter](/circuits/node-exporter) | Runs Prometheus node_exporter at a pinned, checksummed version as its own system user. | v0.1.5 |
-| [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.1.2 |
+| [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.2.0 |
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.0 |
 | [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.5 |
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.2 |
 | [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.2.1 |
-| [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.1.5 |
+| [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.2.0 |
 | [Nagios Core](/circuits/nagios) | Nagios Core with plugins, hosts and services from inputs, nagios -v before every reload, and a login-protected web interface on loopback. | v0.2.1 |
 | [Uptime Kuma](/circuits/uptimekuma) | Uptime Kuma under Podman: it watches your sites, ports and services and tells you the moment one stops answering. | v0.1.0 |
 
@@ -88,11 +88,11 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Docker](/circuits/docker) | Installs Docker Engine from Docker's repository and runs your Compose stacks from files in your configuration. | v0.2.1 |
+| [Docker](/circuits/docker) | Installs Docker Engine from Docker's repository and runs your Compose stacks from files in your configuration. | v0.3.0 |
 | [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.1.3 |
 | [k3s](/circuits/k3s) | A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support. | v0.1.8 |
 | [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.2.4 |
-| [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.2.1 |
+| [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.3.0 |
 | [Rancher](/circuits/rancher) | Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state. | v0.1.4 |
 | [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.3 |
 | [Nomad](/circuits/nomad) | A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state. | v0.1.2 |
@@ -154,8 +154,8 @@ These configure a network device through its OpenTofu provider instead of a host
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Samba](/circuits/samba) | Samba file shares with per-user passwords kept out of state, SMB2 minimum, NetBIOS off and SELinux labels. | v0.3.1 |
-| [NFS](/circuits/nfs) | Share folders over NFSv4 from the kernel NFS server, with each export checked by exportfs and v3 off unless you want it. | v0.2.1 |
+| [Samba](/circuits/samba) | Samba file shares with per-user passwords kept out of state, SMB2 minimum, NetBIOS off and SELinux labels. | v0.4.0 |
+| [NFS](/circuits/nfs) | Share folders over NFSv4 from the kernel NFS server, with each export checked by exportfs and v3 off unless you want it. | v0.3.0 |
 | [restic](/circuits/restic) | Scheduled, encrypted backups with restic to SFTP, S3, rest-server or a local path, with retention and repository checks. | v0.1.2 |
 
 ### Identity and secrets
@@ -164,15 +164,15 @@ These configure a network device through its OpenTofu provider instead of a host
 | --- | --- | --- |
 | [Users](/circuits/users) | Creates users, groups and their SSH keys from one map, with optional passwordless sudo. | v0.1.4 |
 | [Active Directory](/circuits/active-directory) | Experimental. An Active Directory domain from roles: a new forest, more DCs, joined members, and OUs, users and groups. | v0.1.1 |
-| [LLDAP](/circuits/lldap) | LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state. | v0.1.2 |
-| [OpenLDAP](/circuits/openldap) | OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds. | v0.2.1 |
+| [LLDAP](/circuits/lldap) | LLDAP, one small directory every service signs people in against, with the admin password kept out of plan and state. | v0.2.0 |
+| [OpenLDAP](/circuits/openldap) | OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds. | v0.3.0 |
 | [FreeIPA](/circuits/freeipa) | FreeIPA server on Rocky or Fedora, with clients on Debian, Ubuntu, Fedora and Rocky. Sets FQDNs, installs unattended, enrols over SSSD. | v0.2.1 |
-| [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.2.1 |
-| [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.2.3 |
+| [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.3.0 |
+| [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.3.0 |
 | [Infisical](/circuits/infisical) | Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host. | v0.1.1 |
 | [authentik](/circuits/authentik) | Self-host authentik: single sign-on over OIDC and SAML, with users, sessions and audit trail on your own hosts. | v0.1.2 |
 | [Passbolt CE](/circuits/passbolt) | Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host. | v0.1.0 |
-| [Teleport](/circuits/teleport) | A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel. | v0.1.0 |
+| [Teleport](/circuits/teleport) | A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel. | v0.2.0 |
 
 ### AI
 
@@ -190,13 +190,13 @@ These configure a network device through its OpenTofu provider instead of a host
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.10 |
+| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.11 |
 | [Proxmox VE](/circuits/proxmox) | Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included. | v0.1.2 |
-| [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.1.2 |
+| [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.2.0 |
 | [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.3 |
 | [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.3.0 |
 | [n8n](/circuits/n8n) | Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply. | v0.1.3 |
-| [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.2.2 |
+| [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.3.0 |
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
 | [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.0 |
@@ -242,7 +242,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | --- | --- | --- |
 | [Suricata](/circuits/suricata) | Suricata IDS on AF_PACKET, ET Open rules updated daily, your own rules tested before reload, alerts in eve.json | v0.2.1 |
 | [Zeek](/circuits/zeek) | Zeek from its official packages under systemd on one interface, with JSON logs, retention, and a check before each change. | v0.1.4 |
-| [osquery](/circuits/osquery) | osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment. | v0.2.1 |
+| [osquery](/circuits/osquery) | osqueryd from osquery's own repos: scheduled queries, packs, file integrity monitoring, rotated JSON logs, optional Fleet enrollment. | v0.3.0 |
 | [Velociraptor](/circuits/velociraptor) | Velociraptor server with its GUI, plus Linux clients that enroll to it. Keys are made on the server; nonce and password stay out of state. | v0.1.3 |
-| [Wazuh](/circuits/wazuh) | Wazuh manager, indexer and dashboard on one host, agents on the rest: vulnerability detection, file integrity and alerts. | v0.2.0 |
+| [Wazuh](/circuits/wazuh) | Wazuh manager, indexer and dashboard on one host, agents on the rest: vulnerability detection, file integrity and alerts. | v0.3.0 |
 | [Falco](/circuits/falco) | Falco from its official repository on the modern eBPF probe, with your own rules validated before they load. | v0.1.0 |
