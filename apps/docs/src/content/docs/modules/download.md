@@ -49,6 +49,8 @@ step "node_exporter" {
 | --- | --- | --- | --- |
 | `dest` | string | Yes | Absolute path to save it to. |
 | `group` | string | No | Group. |
+| `headers` | map of string | No | Request headers, such as { Accept = "application/octet-stream" }. Sent only to the URL's origin: a redirect to another host goes on without them. Needs curl on the host. |
+| `headers_wo` | map of string | No | Headers kept out of plan and state, such as { Authorization = "Bearer ..." } or { PRIVATE-TOKEN = ... }. They reach curl on stdin, never its command line, and only the URL's origin gets them. A change to them alone downloads nothing: sha256 decides whether the file is right. Needs curl on the host. |
 | `mode` | string | No | Octal permissions. Defaults to "0644". |
 | `netrc_file` | string | No | Absolute path of a netrc file on the host with the login for the URL's server. Needs curl on the host. |
 | `on_remove` | string | No | "forget" (default) leaves the file, "delete" removes it. |
@@ -75,6 +77,8 @@ A step lowers to the `conn3x_download` resource, one instance per host, and conn
 
 **Logging in.** `url` can't hold a user name or password: it's in the plan, the state, the errors and the host's process list. For a server that needs a login, put a netrc file on the host with a [`file`](/modules/file) step, using `content_wo` and mode `"0600"`, and name it in `netrc_file`. That needs `curl` on the host. Changing `netrc_file` alone doesn't plan a new download.
 
+**Headers.** `headers` sends request headers, such as `{ Accept = "application/octet-stream" }`, and `headers_wo` sends ones kept out of plan and state, such as a private GitHub repository's `{ Authorization = "Bearer ..." }` or GitLab's `{ PRIVATE-TOKEN = ... }`. They reach `curl` on its standard input, never its command line, so they don't show in the host's process list. Only the URL's origin gets them: Conn3x follows redirects itself, and once one leads to another scheme, host or port, the rest of the way goes without them. curl on its own drops only `Authorization` and `Cookie` there. A redirect from https to plain http is refused. Headers need `curl` on the host. Changing `headers_wo` alone doesn't plan a new download, since `sha256` decides whether the file is right.
+
 **Mode.** The default mode is `"0644"`. `owner` and `group` are set only when you give them.
 
 **Requirements.** The host needs `curl` or `wget`. If it has neither, add a [`package`](/modules/package) step for one before this step.
@@ -85,4 +89,4 @@ When you delete a `download` step, `on_remove` decides what happens on the host.
 
 ## From Ansible
 
-`conn3x convert ansible` turns `get_url` tasks with a `sha256:` checksum into `download` steps, with `mode`, `owner` and `group`. A task without a SHA-256 checksum stays a TODO, since Conn3x downloads only what it can verify.
+`conn3x convert ansible` turns `get_url` tasks with a `sha256:` checksum into `download` steps, with `mode`, `owner` and `group`. A task without a SHA-256 checksum stays a TODO, since Conn3x downloads only what it can verify. `headers` carry over, except a credential such as `Authorization`, `Cookie` or a header named like a token or key: that gets a TODO to set it in `headers_wo` from a secret, and its value isn't copied. `unredirected_headers` is dropped with a note, since a download step never sends its headers to another origin.

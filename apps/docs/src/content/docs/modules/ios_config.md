@@ -79,11 +79,24 @@ step "mgmt_acl" {
 }
 ```
 
+Lines that hold a secret go in `lines_wo`, which state never keeps:
+
+```hcl
+step "aaa" {
+  ios_config {
+    parents  = ["tacacs server ise1"]
+    lines    = ["address ipv4 192.0.2.5"]
+    lines_wo = ["key use-an-ephemeral-variable-here"]
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `lines` | list of string | No | The lines, exactly as show running-config prints them without their indent, such as "description uplink". A line the device prints differently never shows as in sync. |
+| `lines` | list of string | No | The lines, exactly as show running-config prints them without their indent, such as "description uplink". A line the device prints differently never shows as in sync. State keeps them, so put lines holding a secret in lines_wo. |
+| `lines_wo` | list of string | No | Write-only: lines that hold a secret, such as "tacacs-server key MyKey", "key MyKey" under a tacacs server, or "ntp authentication-key 1 md5 MyKey", never kept in state. The device shows these encrypted or hashed, so each is matched by its start, the line up to its secret ("tacacs-server key", "ntp authentication-key 1"): it owns every line under the parents that starts that way, and is in sync when one is there. A change to any of them sends them all again, and IOS replaces each in place. snmp-server community lines are refused, since the community is its own name. |
 | `match` | string | No | "lines" (default): these lines must be there, and others are left alone. "block": the block under parents must be exactly these lines, so others are removed. Needs parents. |
 | `on_remove` | string | No | What happens on the device when this resource is removed: "forget" (default) leaves the lines, "delete" removes them with their "no" form. |
 | `parents` | list of string | No | The blocks the lines sit in, outermost first, as show running-config prints them, such as ["interface GigabitEthernet1"]. Unset is the top level. |
@@ -95,6 +108,8 @@ Conn3x sets these; reference them as `conn3x_ios_config.<circuit>__<step>["<host
 | Name | Type | Description |
 | --- | --- | --- |
 | `in_sync` | bool | Whether the device had these lines at the last refresh. |
+| `lines_hmac` | string | An HMAC of lines_wo, keyed outside state, so a change plans an update. |
+| `lines_wo_prefixes` | list of string | How each lines_wo line starts, up to its secret, such as "tacacs-server key". A refresh checks these are there, and a removal takes them out. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_ios_config` resource, one instance per host, and connects with its circuit's `ssh` block.
@@ -107,8 +122,24 @@ A step lowers to the `conn3x_ios_config` resource, one instance per host, and co
 
 **Changes.** Changing `lines` or `match` updates the device in place. Changing `parents` is a different block, so it replaces the step.
 
-**What's refused.** A line that would leave configuration mode or act outside it, such as `end`, `exit`, `do`, `write`, `copy` or a short form of them, or one with a leading space, a newline or a control character. Conn3x enters configuration mode, confirms and saves on its own.
+**What's refused.** A line that would leave configuration mode or act outside it, such as `end`, `exit`, `do`, `write`, `copy` or a short form of them, or one with a leading space, a newline, a control character or a `?`, which the IOS command line takes as a request for help instead of typing it. Conn3x enters configuration mode, confirms and saves on its own.
+
+## Secrets in lines_wo
+
+`lines_wo` is write-only, so a secret line never lands in state or in the plan. State keeps two things instead: `lines_hmac`, an HMAC of the lines keyed outside state, and `lines_wo_prefixes`, where each line starts up to its secret, such as `tacacs-server key`.
+
+IOS prints most secrets encrypted or hashed, as `key 7 <hash>` with `service password-encryption` on, so Conn3x can't compare them with yours. A refresh checks something smaller: that a line starting with each prefix is there. If you change a secret, the HMAC changes and the plan shows an update, and the apply sends your lines again. IOS replaces a key or secret in place when its command is typed again, and applies each line as it arrives. So Conn3x never removes the old line first: that would leave the device without the secret for a moment, and removing it afterwards would take off the new one. If you remove the line by hand, the step shows as out of sync. But a secret changed by hand on the device still looks in sync, because the device can't show which secret it holds.
+
+A prefix owns every line under the parents that starts with it. A number before an algorithm counts as part of the line's name, so `ntp authentication-key 1 md5 MyKey` has the prefix `ntp authentication-key 1`, and the `7` IOS prints at the end of that line doesn't change it. An encryption type such as the `7` in `tacacs-server key 7 <hash>` doesn't count either. Each line in `lines_wo` needs its own prefix, and no line in `lines` can start with one.
+
+`snmp-server community` lines are refused, since the community is both its name and its secret. Use an SNMPv3 user instead. A line in `lines_wo` must hold a secret Conn3x knows, a key, secret or password; other lines belong in `lines`. Planning `lines_wo` needs the HMAC key, `CONN3X_HMAC_KEY` or `~/.config/conn3x/hmac.key`. Pass the secret through a variable file or `TF_VAR_`, not `-var`, since OpenTofu logs its command line.
+
+Secrets have been tested against parsed configurations only so far, not yet on a lab device with and without `service password-encryption`.
 
 ## Removal
 
-`on_remove = "forget"`, the default, leaves the lines. `on_remove = "delete"` removes each line with its `no` form, and leaves the parent blocks.
+`on_remove = "forget"`, the default, leaves the lines. `on_remove = "delete"` removes each line with its `no` form, and leaves the parent blocks. A `lines_wo` line is removed as the device prints it, such as `no tacacs-server key 7 <hash>`.
+
+## From Ansible
+
+`conn3x convert ansible` turns `cisco.ios.ios_config` tasks into `ios_config` steps: `lines` (or its alias `commands`) and `parents` carry over. Ansible's defaults, `match: line` and `replace: line`, are what this step does, so they need nothing. `save_when` becomes a note, since Conn3x saves the running configuration after every change; `confirm` becomes one too, since every change goes in under a revert timer; and `backup` becomes a note to set `device_backup_dir` on the circuit. `src`, any other `match` or `replace`, and a line with `prompt` and `answer` stay TODOs. `become` stays a TODO too, since IOS refuses it: log in as a user whose session starts at `#`. A play whose tasks are all network modules takes `connection: network_cli` without a TODO.

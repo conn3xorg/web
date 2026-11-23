@@ -21,6 +21,10 @@ step "name" {
 }
 ```
 
+## From Ansible
+
+`conn3x convert ansible` turns `junipernetworks.junos.junos_hostname` tasks into `junos_hostname` steps, with `config.hostname` as `name`. `state: merged` and `replaced` convert; `deleted`, `overridden`, `gathered`, `rendered` and `parsed` stay TODOs. So does a name the step would refuse, with the step's own message, so it shows in the convert output instead of failing `conn3x validate` later.
+
 ## Arguments
 
 | Name | Type | Required | Description |
