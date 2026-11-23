@@ -1,6 +1,6 @@
 {
   "name": "microshift",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -20,8 +20,8 @@
       "type": "map(object({\n    url    = string\n    sha256 = string\n  }))",
       "default": {
         "cri-o": {
-          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-o-1.33.13-9.rhaos4.20.gitd6a41c4.el9.x86_64.rpm",
-          "sha256": "c048088d6e9c8c6f7a5672a891600e7e9732c5c0d427ab9c531288c470bd6e77"
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-o-1.33.13-10.rhaos4.20.gitbc1a8cc.el9.x86_64.rpm",
+          "sha256": "282775f501846540ad868531dff634d186baaf02cc170aac4d92302620b7baad"
         },
         "cri-tools": {
           "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-tools-1.33.0-7.el9.x86_64.rpm",

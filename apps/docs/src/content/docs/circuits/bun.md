@@ -3,7 +3,7 @@ title: Bun
 description: "Install one pinned Bun release, checksum-verified, on every Linux host."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-bun at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-bun at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/bun/grade.svg)](https://conn3x.org/circuits/bun/grade)
 
@@ -13,7 +13,7 @@ A Conn3x circuit that puts one exact Bun release on all your hosts. Distribution
 
 ```hcl
 module "bun" {
-  source = "github.com/conn3xorg/circuit-bun?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-bun?ref=v0.1.2"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -33,14 +33,14 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.2/examples/local).
 
 ### Changing the release
 
-`bun_version` and `checksums` move together. Take both zips' lines from the release's `SHASUMS256.txt`, such as https://github.com/oven-sh/bun/releases/download/bun-v1.4.3/SHASUMS256.txt:
+`bun_version` and `checksums` move together. Take both zips' lines from the release's `SHASUMS256.txt`, such as https://github.com/oven-sh/bun/releases/download/bun-v1.4.5/SHASUMS256.txt:
 
 ```hcl
-bun_version = "1.4.3"
+bun_version = "1.4.5"
 checksums = {
   x64     = "<SHA-256 of bun-linux-x64.zip>"
   aarch64 = "<SHA-256 of bun-linux-aarch64.zip>"
@@ -85,22 +85,22 @@ Before the circuit runs, the `conn3x_host` data source reads each host's archite
 | `ssh_private_key_file` | string | `null` | Path to a private key. When null, Conn3x uses the SSH agent. |
 | `ssh_known_hosts_file` | string | `null` | known_hosts file to check host keys against. When null, `~/.ssh/known_hosts`. Not used for a host object with `host_key`. |
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
-| `bun_version` | string | `"1.4.4"` | Bun release to install. Change `checksums` with it. |
-| `checksums` | map(string) | The zips of 1.4.4 | SHA-256 of the `x64` and `aarch64` zips, from the release's `SHASUMS256.txt`. |
+| `bun_version` | string | `"1.4.5"` | Bun release to install. Change `checksums` with it. |
+| `checksums` | map(string) | The zips of 1.4.5 | SHA-256 of the `x64` and `aarch64` zips, from the release's `SHASUMS256.txt`. |
 
 ## Outputs
 
 | Name | Description |
 | --- | --- |
-| `bun_home` | Directory of the installed release on each host, by host name, such as `{ app1 = "/opt/bun/1.4.4/bun-linux-x64" }`. |
+| `bun_home` | Directory of the installed release on each host, by host name, such as `{ app1 = "/opt/bun/1.4.5/bun-linux-x64" }`. |
 
 ## Requirements
 
-Requires Conn3x v0.6.10 or later, and hosts with outbound HTTPS to github.com. amd64 and arm64.
+Requires Conn3x v0.7.1 or later, and hosts with outbound HTTPS to github.com. amd64 and arm64.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. In a login shell, `bun` and `bunx` both reported 1.4.4, `bun add --exact semver@7.8.5` pinned that version in `package.json`, and a TypeScript script importing it ran and gave the right answers. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. In a login shell, `bun` and `bunx` both reported 1.4.4, `bun add --exact semver@7.8.5` pinned that version in `package.json`, and a TypeScript script importing it ran and gave the right answers. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64: the same checks passed. A wrong checksum failed the apply and left `bun` on 1.4.4, with an empty `/opt/bun/1.4.3` behind it. Moving to 1.4.3 repointed `bun` and `bunx`, and moving back was clean. After a reboot the plan had no changes and `bun` still ran.
 
@@ -108,10 +108,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-bun/blob/v0.1.1/LICENSE). Bun is under the MIT license, with the bundled components listed in its own license file.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-bun/blob/v0.1.2/LICENSE). Bun is under the MIT license, with the bundled components listed in its own license file.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-bun](https://github.com/conn3xorg/circuit-bun). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-bun/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-bun](https://github.com/conn3xorg/circuit-bun). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-bun/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-bun/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-bun/tree/v0.1.2/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).

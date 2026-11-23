@@ -3,7 +3,7 @@ title: Podman
 description: "Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/podman/grade.svg)](https://conn3x.org/circuits/podman/grade)
 
@@ -20,7 +20,7 @@ variable "grafana_password" {
 }
 
 module "podman" {
-  source = "github.com/conn3xorg/circuit-podman?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-podman?ref=v0.1.3"
 
   hosts                = { apps = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -58,14 +58,14 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.3/examples/local).
 
 ## What it does
 
 On each host, in order:
 
 1. Installs the `podman` package from the distribution's repositories.
-2. When `registries` is set, writes `/etc/containers/registries.conf.d/50-conn3x.conf` with `unqualified-search-registries`, so short names like `nginx:1.29-alpine` resolve against it. Emptying `registries` deletes the file again.
+2. When `registries` is set, writes `/etc/containers/registries.conf.d/50-conn3x.conf` with `unqualified-search-registries`, so short names like `nginx:1.30-alpine` resolve against it. Emptying `registries` deletes the file again.
 3. For each container, writes its secrets to `/etc/containers/env/NAME.env` with mode `0600`. A container without secrets gets an empty file.
 4. Writes `/etc/containers/systemd/NAME.container`, a Quadlet unit with the image, ports, volumes, environment and any `extra` lines, plus `Restart=always` and `WantedBy=default.target`.
 5. When a container's unit or env file changed, runs `systemctl daemon-reload` and restarts `NAME.service`. The first apply starts it.
@@ -78,9 +78,9 @@ Every container gets `ContainerName=NAME`, so `podman ps`, `podman logs NAME` an
 
 ### Images and auto-update
 
-Use fully qualified images, such as `docker.io/library/nginx:1.29-alpine`, and you won't need `registries` at all. Every image needs a tag or a digest. The plan fails on a bare `nginx` or `docker.io/library/nginx`, so an image never drifts as `:latest` without you choosing it.
+Use fully qualified images, such as `docker.io/library/nginx:1.30-alpine`, and you won't need `registries` at all. Every image needs a tag or a digest. The plan fails on a bare `nginx` or `docker.io/library/nginx`, so an image never drifts as `:latest` without you choosing it.
 
-With `auto_update = true`, the unit gets `AutoUpdate=registry`. Podman then checks the registry for a newer image under the same tag when `podman auto-update` runs, and restarts the container if it pulled one. That only makes sense with a moving tag such as `1.29-alpine`. Auto-update needs a fully qualified image, such as `docker.io/library/nginx:1.29-alpine`, so the plan fails on a short name with `auto_update`. Set `auto_update_timer = true` to have the timer run it daily, or run `podman auto-update` yourself.
+With `auto_update = true`, the unit gets `AutoUpdate=registry`. Podman then checks the registry for a newer image under the same tag when `podman auto-update` runs, and restarts the container if it pulled one. That only makes sense with a moving tag such as `1.29-alpine`. Auto-update needs a fully qualified image, such as `docker.io/library/nginx:1.30-alpine`, so the plan fails on a short name with `auto_update`. Set `auto_update_timer = true` to have the timer run it daily, or run `podman auto-update` yourself.
 
 ### Secrets
 
@@ -129,16 +129,16 @@ Requires Conn3x v0.6.5 or later and systemd on each host, with outbound HTTPS to
 
 ## Tested on
 
-Rocky Linux 10 (Podman 5.8), Fedora 45 (Podman 6.1), Ubuntu 24.04 (Podman 4.9) and Debian 13 (Podman 5.4). CI applies [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the example container answers on its published port with the name from its env file.
+Rocky Linux 10 (Podman 5.8), Fedora 45 (Podman 6.1), Ubuntu 24.04 (Podman 4.9) and Debian 13 (Podman 5.4). CI applies [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.3/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the example container answers on its published port with the name from its env file.
 
 The CI containers run with SELinux off. On a Rocky Linux 10 droplet with SELinux enforcing, the example was applied by hand alongside an nginx container serving a host directory mounted with `:Z`. Both answered, the second plan had no changes, and the audit log had no denials. The same held on Fedora 44 and AlmaLinux 10 droplets with SELinux enforcing, and both containers came back on their own after a reboot. Without `:Z`, the same directory was unreadable from inside the container.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.1.2/LICENSE). Podman itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.1.3/LICENSE). Podman itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-podman/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.1.3/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).

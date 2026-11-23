@@ -1,12 +1,12 @@
 {
   "name": "conn3x-ui",
-  "version": "v0.1.7",
+  "version": "v0.1.10",
   "hostObjects": true,
   "inputs": [
     {
       "name": "conn3x_ui_version",
       "type": "string",
-      "default": "0.3.0",
+      "default": "0.4.1",
       "description": "conn3x-ui release to install, without the leading v. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
@@ -16,8 +16,8 @@
       "name": "conn3x_ui_checksums",
       "type": "map(string)",
       "default": {
-        "amd64": "3475d9c51fed001ffc678868457dd328254f4576c372d909d08cb35ce8b2c3e6",
-        "arm64": "a824c148c0a1dfb720447460f2940c8e4fc4d6a73148d8362ca05b38d02f06ea"
+        "amd64": "4a012a9ffe35f1a0b717bd569f85c39a3e235bbfb9d923b549627bb880c1827c",
+        "arm64": "535b5b30f4559340b8ad05c3c730ce92231a9862c71c204380d3ad6e0f0616a8"
       },
       "description": "SHA-256 of the conn3x-ui release archive for each architecture, from the release's checksums.txt. Change these with conn3x_ui_version. Null means the default.",
       "sensitive": false,
@@ -27,7 +27,7 @@
     {
       "name": "conn3x_version",
       "type": "string",
-      "default": "0.26.0",
+      "default": "0.27.0",
       "description": "Conn3x release the UI runs plans and applies with, without the leading v. A project can name another binary. Null means the default.",
       "sensitive": false,
       "ephemeral": false,
@@ -37,8 +37,8 @@
       "name": "conn3x_checksums",
       "type": "map(string)",
       "default": {
-        "amd64": "ffd9bc17ef5ada3e5877411f897835be0c555aadadcae64d3f32fcdcc6be9cc4",
-        "arm64": "13d1964821d666917d6741adce87e89bd0f376f033f86b51016412cb4a7d6c82"
+        "amd64": "83aae731b9a2c2708e62f7f61d9a477fe0b0fd6c3cc3d7491b893774d0c90a93",
+        "arm64": "b86b66900be2b5425afcb4472f8f0a0b3e18dcbcee893ca92cea15918746a1bd"
       },
       "description": "SHA-256 of the conn3x release archive for each architecture, from the release's checksums.txt. Change these with conn3x_version. Null means the default.",
       "sensitive": false,
