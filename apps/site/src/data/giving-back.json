@@ -1,6 +1,30 @@
 {
   "items": [
     {
+      "date": "2026-11-23",
+      "repo": "Infisical/infisical",
+      "summary": "Checking that the new lock covers every place that changes a secret import's position, so two imports made at once can't collide.",
+      "url": "https://github.com/Infisical/infisical/pull/9813#pullrequestreview-6016164242"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "prometheus/node_exporter",
+      "summary": "Checking in the kernel's DRBD code that received bytes are counted in KiB like the rest, so the fix's factor of 1024 is right.",
+      "url": "https://github.com/prometheus/node_exporter/pull/3918#pullrequestreview-6016149049"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "osquery/osquery",
+      "summary": "Pointing out that a codegen fix stops the build on a misspelled column option, though its description says it only warns and carries on.",
+      "url": "https://github.com/osquery/osquery/pull/9347#pullrequestreview-6016145584"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "osquery/osquery",
+      "summary": "Confirming the prefix checks classify every descriptor the kernel writes, and suggesting the named-pipe check stat the open descriptor so it also works for processes in containers.",
+      "url": "https://github.com/osquery/osquery/pull/9346#pullrequestreview-6016121026"
+    },
+    {
       "date": "2026-11-22",
       "repo": "withastro/astro",
       "summary": "Showing that a cache test's final HIT holds only because its mocked clock never moves, and suggesting one that checks the stale-while-revalidate refresh itself.",
