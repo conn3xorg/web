@@ -3,7 +3,7 @@ title: Pi-hole
 description: "Pi-hole ad blocking for your whole network from the official image under Podman, with local DNS records and blocklists."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-pihole at v0.1.5. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-pihole at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/pihole/grade.svg)](https://conn3x.org/circuits/pihole/grade)
 
@@ -20,7 +20,7 @@ variable "pihole_password" {
 }
 
 module "pihole" {
-  source = "github.com/conn3xorg/circuit-pihole?ref=v0.1.5"
+  source = "github.com/conn3xorg/circuit-pihole?ref=v0.2.0"
 
   hosts                = { dns = "192.168.1.2" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -49,7 +49,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.5/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.2.0/examples/local).
 
 ### Don't run an open resolver
 
@@ -125,7 +125,7 @@ Blocklists the circuit adds carry the comment `Managed by Conn3x`. Lists you add
 
 ## Requirements
 
-Requires Conn3x v0.6.5 or later and systemd on each host. The image is built for amd64 and arm64, and for 32-bit ARM, i386 and riscv64, which haven't been tried. Each host needs to reach its package mirror, Docker Hub, GitHub and the blocklists' servers. `conn3x init` fetches circuit-podman from GitHub.
+Requires Conn3x v0.30.0 or later and systemd on each host. The image is built for amd64 and arm64, and for 32-bit ARM, i386 and riscv64, which haven't been tried. Each host needs to reach its package mirror, Docker Hub, GitHub and the blocklists' servers. `conn3x init` fetches circuit-podman from GitHub.
 
 Pi-hole's own sizing applies: 1 GB of memory and a couple of GB of disk are plenty for a home network.
 
@@ -135,7 +135,7 @@ A Raspberry Pi is the classic home for Pi-hole. Raspberry Pi OS is Debian with R
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.5/examples/local) to each on amd64, checks that the second plan has no changes, then asks Pi-hole over `dig` for `doubleclick.net`, which StevenBlack's list blocks, and expects `0.0.0.0`; for `example.com`, which has to resolve normally; and for `nas.home.arpa`, which has to come back as the example's `192.168.1.20`. It checks the extra blocklist made it into gravity with domains in it, and that the API accepts the example's password and turns down a wrong one.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, then asks Pi-hole over `dig` for `doubleclick.net`, which StevenBlack's list blocks, and expects `0.0.0.0`; for `example.com`, which has to resolve normally; and for `nas.home.arpa`, which has to come back as the example's `192.168.1.20`. It checks the extra blocklist made it into gravity with domains in it, and that the API accepts the example's password and turns down a wrong one.
 
 The same checks passed by hand on Ubuntu 24.04 and Debian 13 droplets with 1 GB of memory, both running `systemd-resolved` with its stub on: the stub went, the hosts kept their own DNS, and Pi-hole took port 53. They ran with `listening_mode = "BIND"`, `interface = "lo"` and `web_port = "127.0.0.1:8080"`; from outside, port 53 timed out and the web port didn't answer. After a reboot Pi-hole came back, the checks passed again and the plan had no changes. Emptying `blocklists` removed the extra list and left the default one, and putting it back added it again, each with a clean plan after.
 
@@ -143,10 +143,10 @@ Upgrading from one `pihole_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-pihole/blob/v0.1.5/LICENSE). Pi-hole itself is under the EUPL.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-pihole/blob/v0.2.0/LICENSE). Pi-hole itself is under the EUPL.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-pihole](https://github.com/conn3xorg/circuit-pihole). This page covers [v0.1.5](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.5); the repository's [tags](https://github.com/conn3xorg/circuit-pihole/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.1.5/examples/local).
+- Repository: [conn3xorg/circuit-pihole](https://github.com/conn3xorg/circuit-pihole). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-pihole/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-pihole/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-pihole/tree/v0.2.0/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Podman](/circuits/podman), [AdGuard Home](/circuits/adguardhome), [Unbound](/circuits/unbound), [BIND](/circuits/bind).
