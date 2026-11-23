@@ -89,7 +89,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Docker](/circuits/docker) | Installs Docker Engine from Docker's repository and runs your Compose stacks from files in your configuration. | v0.3.0 |
-| [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.1.3 |
+| [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.2.0 |
 | [k3s](/circuits/k3s) | A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support. | v0.1.8 |
 | [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.2.4 |
 | [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.3.0 |
@@ -234,7 +234,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Matrix Synapse](/circuits/matrix) | Synapse Matrix homeserver under Podman, behind your reverse proxy, with host-generated secrets and SQLite or Postgres. | v0.1.2 |
-| [Jellyfin](/circuits/jellyfin) | Jellyfin media server: official apt repo or Podman image, read-only media, GPU groups, optional admin that skips the setup wizard. | v0.2.0 |
+| [Jellyfin](/circuits/jellyfin) | Jellyfin media server: official apt repo or Podman image, read-only media, GPU groups, optional admin that skips the setup wizard. | v0.3.0 |
 
 ### Detection and response
 
