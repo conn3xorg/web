@@ -1,6 +1,108 @@
 {
   "items": [
     {
+      "date": "2026-11-23",
+      "repo": "Infisical/infisical",
+      "summary": "Checking that the new lock covers every place that changes a secret import's position, so two imports made at once can't collide.",
+      "url": "https://github.com/Infisical/infisical/pull/9813#pullrequestreview-6016164242"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "prometheus/node_exporter",
+      "summary": "Checking in the kernel's DRBD code that received bytes are counted in KiB like the rest, so the fix's factor of 1024 is right.",
+      "url": "https://github.com/prometheus/node_exporter/pull/3918#pullrequestreview-6016149049"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "osquery/osquery",
+      "summary": "Pointing out that a codegen fix stops the build on a misspelled column option, though its description says it only warns and carries on.",
+      "url": "https://github.com/osquery/osquery/pull/9347#pullrequestreview-6016145584"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "osquery/osquery",
+      "summary": "Confirming the prefix checks classify every descriptor the kernel writes, and suggesting the named-pipe check stat the open descriptor so it also works for processes in containers.",
+      "url": "https://github.com/osquery/osquery/pull/9346#pullrequestreview-6016121026"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "withastro/astro",
+      "summary": "Showing that a cache test's final HIT holds only because its mocked clock never moves, and suggesting one that checks the stale-while-revalidate refresh itself.",
+      "url": "https://github.com/withastro/astro/pull/18799#pullrequestreview-6011802485"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "BerriAI/litellm",
+      "summary": "Checking that the Gemini schema fix's test really fails without it, though the function it calls edits its input in place.",
+      "url": "https://github.com/BerriAI/litellm/pull/53523#pullrequestreview-6010970180"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "osquery/osquery",
+      "summary": "Pointing out that a DMG trailer's checksum size looks like a count of bits, so osquery reads 32 bytes for a 4-byte CRC32.",
+      "url": "https://github.com/osquery/osquery/pull/9337#pullrequestreview-6010956892"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "osquery/osquery",
+      "summary": "Showing that the fix keeping a stale file hash from being served still misses rewrites inside one second, and doesn't protect Windows, where st_ctime is the creation time.",
+      "url": "https://github.com/osquery/osquery/pull/9345#pullrequestreview-6010717734"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "Infisical/infisical",
+      "summary": "Noting that skipping SUPABASE_ secrets turns a loud sync failure into a silent skip, and suggesting the sync say which it skipped.",
+      "url": "https://github.com/Infisical/infisical/pull/9794#pullrequestreview-6010560595"
+    },
+    {
+      "date": "2026-11-22",
+      "repo": "withastro/astro",
+      "summary": "Confirming the Node adapter fix stops pages getting another page's security policy, and asking whether non-ASCII paths still get none.",
+      "url": "https://github.com/withastro/astro/pull/18790#pullrequestreview-6010557895"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "withastro/roadmap",
+      "summary": "Proposing that the Fonts API's optimized sans-serif fallback also match Arimo and Roboto: it matches only Arial, so Android phones and Linux get no size-matched fallback.",
+      "url": "https://github.com/withastro/roadmap/discussions/1471"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "BerriAI/litellm",
+      "summary": "Following up on the MCP credential fix: asking whether clearing the credential on the client could strip it from a later tool call if the client is reused.",
+      "url": "https://github.com/BerriAI/litellm/pull/53310#issuecomment-7064200696"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "BerriAI/litellm",
+      "summary": "Showing that a missing MCP credential already passed tool listing, so the fix really admits a bare \"Bearer\" header, and asking whether that header should go upstream at all.",
+      "url": "https://github.com/BerriAI/litellm/pull/53310#pullrequestreview-6003079906"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "osquery/osquery",
+      "summary": "Confirming the fix for a file descriptor closed twice under BPF events, which could cut an extension's socket, and noting that the duplicate shares its read position.",
+      "url": "https://github.com/osquery/osquery/pull/9344#pullrequestreview-6002863909"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "microsoft/presidio",
+      "summary": "Checking that a context word glued to an entity with a colon, as in Phone:617-555-0134, now counts in both context enhancers without one window growing past the other.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2520#pullrequestreview-6002830798"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "Infisical/infisical",
+      "summary": "Confirming the UUID checks on every group route match the schema, and pointing out the project-scoped group routes that still take any string.",
+      "url": "https://github.com/Infisical/infisical/pull/9775#pullrequestreview-6002825390"
+    },
+    {
+      "date": "2026-11-21",
+      "repo": "osquery/osquery",
+      "summary": "Finding that the new size cap on YARA scans can miss files of 2 GB or more on Windows, where stat holds a 32-bit size, and suggesting a check on the open file instead.",
+      "url": "https://github.com/osquery/osquery/pull/9342#pullrequestreview-6002820043"
+    },
+    {
       "date": "2026-11-20",
       "repo": "prometheus/prometheus",
       "summary": "Comparing two fixes for the same bug, the rule backfiller importing alerting rules as series, and linking each to the other so the maintainers can pick one.",

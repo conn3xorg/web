@@ -67,7 +67,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.2.2 |
 | [SQLite](/circuits/sqlite) | The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode. | v0.1.4 |
 | [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.2.1 |
-| [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.0 |
+| [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.1.1 |
 | [InfluxDB 3 Core](/circuits/influxdb) | InfluxDB 3 Core from InfluxData's signed repo, on loopback, with your own admin token from the first start. | v0.1.0 |
 
 ### Monitoring
@@ -190,7 +190,7 @@ These configure a network device through its OpenTofu provider instead of a host
 
 | Circuit | What it does | Version |
 | --- | --- | --- |
-| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.9 |
+| [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.10 |
 | [Proxmox VE](/circuits/proxmox) | Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included. | v0.1.2 |
 | [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.1.2 |
 | [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.3 |

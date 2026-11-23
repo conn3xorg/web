@@ -3,7 +3,7 @@ title: Oracle AI Database Free
 description: "Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-oracle-free at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-oracle-free at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/oracle-free/grade.svg)](https://conn3x.org/circuits/oracle-free/grade)
 
@@ -23,7 +23,7 @@ variable "oracle_password" {
 }
 
 module "oracle_free" {
-  source = "github.com/conn3xorg/circuit-oracle-free?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-oracle-free?ref=v0.1.1"
 
   hosts                = { db = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -46,7 +46,7 @@ The first apply downloads about 1.5 GB from Oracle and takes a few minutes to cr
 
 Connect from the host with the `connect_strings` output, such as `sqlplus system@//127.0.0.1:1521/FREEPDB1`, with `sqlplus` from the `oracle_home` output's `bin`.
 
-The circuit reads each host's release and architecture before it plans, so the hosts must exist already. To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.0/examples/local).
+The circuit reads each host's release and architecture before it plans, so the hosts must exist already. To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1/examples/local).
 
 ## What it does
 
@@ -74,7 +74,7 @@ Oracle builds Database Free for these, and the circuit stops at the plan on any 
 
 - **Other editions.** Database Free only.
 - **Other distributions.** Oracle's RPM targets Oracle Linux and RHEL. Rocky Linux runs it unchanged, and it's the only one this circuit installs on.
-- **Upgrades.** Only 23.26.3-1 has been tested. Setting `oracle_free_version` to a newer release makes the circuit install that RPM with `dnf`, but it doesn't patch the database with datapatch; Oracle's guide covers that.
+- **Upgrades.** CI tests a fresh install of 23.26.4-1, not an upgrade. Setting `oracle_free_version` to a newer release, or moving to v0.1.1 from v0.1.0 (23.26.3-1), makes the circuit install that RPM with `dnf`, but it doesn't patch the database with datapatch; Oracle's guide covers that.
 - **Users, schemas and other settings.** The circuit manages the three administrative passwords and nothing else in the database. The character set and data file location stay at the defaults in `/etc/sysconfig/oracle-free-26ai.conf`, AL32UTF8 and `/opt/oracle/oradata`, and the listener is on 1521.
 - **Firewall.** The circuit opens no ports. The listener takes connections on every address on 1521, and the [firewall circuit](/circuits/firewall) can open or close it.
 - **Removal.** Taking the module out leaves Oracle installed and the database in place. `/etc/init.d/oracle-free-26ai delete` removes the database, and `dnf remove oracle-ai-database-free-26ai` the software.
@@ -91,8 +91,8 @@ Oracle builds Database Free for these, and the circuit stops at the plan on any 
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
 | `accept_oracle_license` | bool | Required | `true` accepts the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html). Anything else fails the plan. |
 | `admin_password` | string, ephemeral, sensitive | Required | Password for `SYS`, `SYSTEM` and `PDBADMIN`. 8 to 30 characters: letters, digits, `_` and `#`, starting with a letter, with an uppercase letter, a lowercase letter and a digit. Oracle's configure script refuses most other punctuation. |
-| `oracle_free_version` | string | `"23.26.3-1"` | Release of the `oracle-ai-database-free-26ai` RPM. Change `oracle_free_sha256` with it. |
-| `oracle_free_sha256` | map(string) | The SHA-256s of 23.26.3-1 | SHA-256 of each build of the RPM, keyed `el9.x86_64`, `el9.aarch64` and `el10.x86_64`, from Oracle's download page. |
+| `oracle_free_version` | string | `"23.26.4-1"` | Release of the `oracle-ai-database-free-26ai` RPM. Change `oracle_free_sha256` with it. |
+| `oracle_free_sha256` | map(string) | The SHA-256s of 23.26.4-1 | SHA-256 of each build of the RPM, keyed `el9.x86_64`, `el9.aarch64` and `el10.x86_64`, from Oracle's download page. |
 
 ## Outputs
 
@@ -107,16 +107,16 @@ Requires Conn3x v0.7.0 or later, Rocky Linux 9 or 10 with systemd, outbound HTTP
 
 ## Tested on
 
-Rocky Linux 9 and 10, with Oracle AI Database Free 23.26.3. CI applies [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.0/examples/local) to a Rocky Linux 10 container and a Rocky Linux 9 one on amd64, checks that the second plan has no changes and that the password isn't in the state, logs in to `FREEPDB1` as `SYSTEM` over the listener, writes a row and reads it back, checks a wrong password is refused, restarts the host, reads the row again and plans again with no changes. CI also checks that a plan with `accept_oracle_license = false` stops with the licence message. The same checks passed by hand in an arm64 Rocky Linux 9 container, along with a change to `admin_password`, after which `SYS`, `SYSTEM` and `PDBADMIN` all logged in with the new one.
+Rocky Linux 9 and 10, with Oracle AI Database Free 23.26.4. CI applies [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1/examples/local) to a Rocky Linux 10 container and a Rocky Linux 9 one on amd64, checks that the second plan has no changes and that the password isn't in the state, logs in to `FREEPDB1` as `SYSTEM` over the listener, writes a row and reads it back, checks a wrong password is refused, restarts the host, reads the row again and plans again with no changes. CI also checks that a plan with `accept_oracle_license = false` stops with the licence message. The same checks passed by hand in an arm64 Rocky Linux 9 container, along with a change to `admin_password`, after which `SYS`, `SYSTEM` and `PDBADMIN` all logged in with the new one.
 
 On a Rocky Linux 9 droplet and a Rocky Linux 10 droplet, each with 2 vCPUs, 4 GB of memory and SELinux enforcing, the apply passed, the second plan had no changes, a row written as `SYSTEM` read back and a wrong password was refused. Both came back after a reboot with the database open and the row there, the plan had no changes, and the audit log had no denials. The database took about 8 GB of disk.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-oracle-free/blob/v0.1.0/LICENSE). Oracle AI Database Free itself is under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html), and this circuit doesn't include any of it: each host downloads it from Oracle.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-oracle-free/blob/v0.1.1/LICENSE). Oracle AI Database Free itself is under the [Oracle Free Use Terms and Conditions](https://www.oracle.com/downloads/licenses/oracle-free-license.html), and this circuit doesn't include any of it: each host downloads it from Oracle.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-oracle-free](https://github.com/conn3xorg/circuit-oracle-free). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-oracle-free/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-oracle-free](https://github.com/conn3xorg/circuit-oracle-free). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-oracle-free/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-oracle-free/tree/v0.1.1/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [PostgreSQL](/circuits/postgres), [MariaDB](/circuits/mariadb), [MySQL](/circuits/mysql), [SQL Server](/circuits/mssql), [CouchDB](/circuits/couchdb), [Valkey](/circuits/valkey), [OpenSearch](/circuits/opensearch), [SQLite](/circuits/sqlite), [Cassandra](/circuits/cassandra), [InfluxDB 3 Core](/circuits/influxdb).

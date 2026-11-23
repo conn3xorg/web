@@ -33,7 +33,7 @@ Conn3x puts both halves in one configuration. The server's address goes straight
 | Spotting hand edits | `tofu plan` for the cloud, `--check --diff` for the servers | `conn3x drift`, which exits `2` when either has moved |
 | Ad-hoc commands | `ansible all -a "uptime"` | [`conn3x run -i inventory.ini all -a uptime`](/reference/cli/run), against the same inventory |
 | Windows | Ansible's Windows support is long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
-| Network devices | Ansible collections for many vendors' gear | [Arista EOS, Juniper Junos and VyOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
+| Network devices | Ansible collections for many vendors' gear | [Arista EOS, Juniper Junos, VyOS and Cisco IOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | Ecosystem | The Terraform and OpenTofu registries, plus Ansible Galaxy | The same registries, plus [128 official circuits](/circuits) |
 | Maturity | Ansible and Terraform have been in production use for more than a decade, and OpenTofu carries Terraform's codebase forward | Before 1.0, at v0.10.0 |
 
@@ -427,7 +427,7 @@ We'd rather you pick the right tool than ours. Stay with the pair, or keep part 
 - You lean on their ecosystems. The Terraform and OpenTofu registries and Ansible Galaxy hold years of providers, modules, roles and collections. Conn3x uses every OpenTofu provider and module, but its server-side modules and circuits are a much smaller set than Ansible's collections, and a role you depend on has no automatic equivalent.
 - Your team already knows them. Both tools have long track records, wide hiring pools, books, courses and answers for nearly every error message. Two tools your team understands can beat one tool they'd have to learn, especially for a setup that already works.
 - You live in ad-hoc mode. `conn3x run` does the one-off `systemctl restart nginx` across a group from the same inventory, but if most of your Ansible is `ansible web -m ...` during incidents, Ansible's ad-hoc modules are still broader.
-- You configure network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their own CLIs and APIs. Conn3x has three experimental network circuits, and talking to devices over their CLI is only planned.
+- You configure network gear. Ansible's network collections cover switches, routers and firewalls from many vendors, over their own CLIs and APIs. Conn3x has three experimental network circuits and seventeen experimental modules that talk to Arista EOS, Juniper Junos, VyOS and Cisco IOS over their own CLI, so it covers far fewer devices.
 - You manage Windows at scale. Ansible's Windows support has been in use for years. Windows in Conn3x is a preview, though since v0.19.0 all 25 of its modules are out of experimental, so their arguments hold between releases.
 - You need a UI, RBAC and scheduling built in. AWX and Red Hat Ansible Automation Platform give you job templates, credentials, access control and a web UI. HCP Terraform and other platforms do the same for Terraform runs. Conn3x is a CLI: CI or cron runs it.
 - You can't take on a pre-1.0 tool. Conn3x is at v0.10.0. Stable parts are tested on every change, but "stable" before 1.0 means tested, not frozen, and a release can change how you write something. [Maturity labels](/reference/maturity) says what each label promises.
@@ -437,7 +437,7 @@ None of that has to be all or nothing. Because Conn3x runs your existing configu
 ## What Conn3x can't do yet
 
 - Windows Server is in preview, with experimental modules. A domain can be built, joined, given more controllers and filled with OUs, groups and users. Since v0.11.0 that includes a child domain, and group members from other domains in the forest, both tested on Azure. Members from across a forest trust haven't been tested.
-- Network devices means Arista EOS, Juniper Junos and VyOS for now: thirteen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch and a VyOS container, and not yet on hardware. Classic Cisco IOS is next.
+- Network devices means Arista EOS, Juniper Junos, VyOS and Cisco IOS for now: seventeen experimental modules over the device's own CLI, tested on cEOS-lab, vJunos-switch, a VyOS container, and IOS XE 17.18 and classic IOS 15.9 in Cisco Modeling Labs, and not yet on hardware.
 - macOS hosts are planned, not shipped.
 - There's no web UI. There are no dynamic inventory plugins either. `hosts` is an expression: read a static INI or YAML inventory with [`provider::conn3x::inventory`](/reference/circuits/hosts), or build it from resources and data sources.
 - Adopting a running server works for 29 Linux modules, the database, storage and container steps among them, and 21 Windows ones, Active Directory included; [Adopt servers](/guides/adopt-servers) lists them.
