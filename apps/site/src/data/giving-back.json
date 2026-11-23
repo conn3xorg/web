@@ -2,6 +2,18 @@
   "items": [
     {
       "date": "2026-11-23",
+      "repo": "prometheus/node_exporter",
+      "summary": "Pointing out that a cgo flag for one macOS collector compiles four others as Objective-C too, and suggesting a separate .m file instead.",
+      "url": "https://github.com/prometheus/node_exporter/pull/3919#pullrequestreview-6016217807"
+    },
+    {
+      "date": "2026-11-23",
+      "repo": "withastro/astro",
+      "summary": "Checking every flag the dev command reads against what the background server is given, to confirm --force was the only one lost.",
+      "url": "https://github.com/withastro/astro/pull/18809#pullrequestreview-6016175655"
+    },
+    {
+      "date": "2026-11-23",
       "repo": "Infisical/infisical",
       "summary": "Checking that the new lock covers every place that changes a secret import's position, so two imports made at once can't collide.",
       "url": "https://github.com/Infisical/infisical/pull/9813#pullrequestreview-6016164242"
