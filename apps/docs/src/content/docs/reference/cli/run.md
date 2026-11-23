@@ -57,7 +57,12 @@ web2 | ok
 
 ## Hosts
 
-`-i` names an Ansible inventory, INI or YAML. Conn3x reads it as [`provider::conn3x::inventory`](/reference/circuits/hosts#from-an-ansible-inventory) does: each host's address from `ansible_host`, and `ansible_port`, `ansible_user` and `ansible_ssh_private_key_file` where they're set, with the `group_vars/` and `host_vars/` directories beside it.
+`-i` names an Ansible inventory, INI or YAML. Conn3x reads it as [`provider::conn3x::inventory`](/reference/circuits/hosts#from-an-ansible-inventory) does: each host's address from `ansible_host`, and `ansible_port`, `ansible_user` and `ansible_ssh_private_key_file` where they're set, with the `group_vars/` and `host_vars/` directories beside it. Since v0.28.0 it also reads the older names, `ansible_ssh_host`, `ansible_ssh_port`, `ansible_ssh_user` and `ansible_private_key_file`, which generated inventories still use. When a host sets both names of a pair, the one Ansible's ssh plugin reads last wins: `ansible_ssh_host` over `ansible_host`, for example.
+
+Since v0.28.0, `ansible_connection` picks how a host is reached, as in Ansible:
+- `local` (or `ansible.builtin.local`) runs on this machine, as you, with no SSH. It can't become root, so a `local` host with `ansible_become`, or a run with `-become`, is refused before anything runs.
+- `docker` and `podman` (or `community.docker.docker` and `containers.podman.podman`) run in the container through the engine's exec. The container's name comes from `ansible_docker_host` or `ansible_podman_host`, then `ansible_host`, then the host's inventory name. Become carries over.
+- `ssh`, `smart`, or no `ansible_connection` at all, means SSH, as before. Any other value stops the run with a message naming it.
 
 Since v0.27.0, `ansible_become` runs that host's commands as root, as `-become` does for every host. It takes Ansible's true values, such as `true`, `yes` and `1`. Become goes to root with sudo only, so an `ansible_become_user` other than `root`, or an `ansible_become_method` other than `sudo`, stops the run before anything runs.
 
@@ -98,6 +103,8 @@ A group's own hosts come before its children's. A name in brackets that isn't a 
 Without `-m`, `-a` is a command, run through the host's shell, and its output is printed under the host's line. A command always runs, so it always reports `changed`, or `failed` when it exits nonzero.
 
 With `-m`, it's any module a step can use, such as `service`, `package`, `file` or `windows_service`. `-a` holds its arguments as `NAME=VALUE`, split as a shell would split them, so quote a value with spaces. Values are read as in [`conn3x generate step`](/reference/cli/generate-step): as written for a string argument, and as HCL otherwise, such as `uid=1000` or `groups=["ops"]`. `-m file` also takes `src=PATH`, a text file on this machine to send as the content, as Ansible's `-m copy` does.
+
+`-m facts` reads each host's facts, the ones a [`conn3x_host`](/reference/host-facts) data source reads, as `ansible -m setup` does, and changes nothing: `web1 | os_family=redhat os_id=rocky os_version=10.0 arch=x86_64 cpus=2 memory_mb=3952 ipv4=10.0.0.5`. `-a 'filter=os_*,arch'` keeps the facts matching those globs. With `-json`, each host's object has them as `facts`, numbers as numbers. `-m setup` says to use `-m facts`. Since v0.28.0.
 
 A module does exactly what it does in a step. Conn3x reads the host as a refresh would and plans again from what it found. If that plan changes nothing, the host is `ok` and nothing runs. Otherwise the module applies and the host is `changed`. A module's own checks and refusals still apply. A `command` with `creates`, `removes` or `unless` is skipped the same way.
 
@@ -235,6 +242,7 @@ run "deploy" {
 | `-batch-size` | Run on this many hosts at a time, or a percentage such as `20%`, rounded up, starting the next batch once a batch is done. Since v0.19.0. |
 | `-max-failures` | With `-batch-size`, how many hosts may fail before no more batches start. Defaults to 0. The hosts never reached say `skipped`, and the exit code is 2. |
 | `-json` | Print one JSON object per host, with `host`, `status`, `error`, `stdout` and `stderr`, for scripts. |
+| `-list-hosts` | Print the hosts the pattern matches, as `ansible --list-hosts` does, and connect to none of them: `  hosts (2):` and a name per line, or with `-json` an array of names. With `-plan`, each run's hosts. A pattern that matches nothing prints `hosts (0)`. Since v0.28.0. |
 
 Each host is checked against known_hosts, as a plan checks it: an unknown host key fails that host. Nothing is written to state or to the working directory.
 
