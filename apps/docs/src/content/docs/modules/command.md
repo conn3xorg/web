@@ -54,6 +54,19 @@ step "registry_login" {
   }
 }
 ```
+Give the command, and its `unless`, variables of their own:
+
+```hcl
+step "install" {
+  command {
+    command = "make install"
+    creates = "/usr/local/bin/app"
+    environment = {
+      PREFIX = "/usr/local"
+    }
+  }
+}
+```
 
 ## Arguments
 
@@ -61,6 +74,7 @@ step "registry_login" {
 | --- | --- | --- | --- |
 | `command` | string | Yes | Shell command, run with /bin/sh. |
 | `creates` | string | No | Skip the command while this path exists. |
+| `environment` | map of string | No | Variables exported before command and unless run, such as { PREFIX = "/usr/local" }. Kept in state and shown in plans like command, so put secrets in stdin_wo instead. |
 | `removes` | string | No | Skip the command while this path is missing. |
 | `stdin_wo` | string | No | Text the command reads on standard input, kept out of state: state records only stdin_hmac, and the text is blanked from output and errors. Use it for secrets, which a command line would show in the host's process list. |
 | `triggers` | dynamic | No | Any value; the command runs again whenever it changes. |
@@ -104,8 +118,14 @@ Deleting a `command` step changes nothing on the host. To undo what a command di
 
 ## From Ansible
 
-`conn3x convert ansible` turns `command` and `shell` tasks into `command` steps, carrying over `creates` and `removes`. `chdir` becomes `cd <dir> && ` in front of the command, and `executable` is dropped. Conn3x tests `creates` and `removes` as plain paths, so one with a glob such as `*` stays a TODO, as does a free-form command with `chdir=` or `creates=` written inline. A task with neither `creates` nor `removes` stays a TODO, since Ansible runs it on every play: add a guard or `triggers` so Conn3x knows when it's done.
+`conn3x convert ansible` turns `command` and `shell` tasks into `command` steps, carrying over `creates` and `removes`. A task's `environment:` mapping becomes the step's `environment`; on another module it stays a TODO. `chdir` becomes `cd <dir> && ` in front of the command. A `shell` task's `executable`, such as `/bin/bash`, runs the command as Ansible's `shell` does, as `'/bin/bash' -c '<command>'`, since a `command` step runs `/bin/sh`, which is dash on Debian and Ubuntu. A `command` task's `executable` is dropped, as Ansible ignores it there. `stdin` becomes `stdin_wo`, with the newline Ansible adds unless `stdin_add_newline` is `false`. It's kept out of state, and `stdin_hmac` plans a change when the text changes. Conn3x tests `creates` and `removes` as plain paths, so one with a glob such as `*` stays a TODO, as does a free-form command with `chdir=` or `creates=` written inline. A task with neither `creates` nor `removes` stays a TODO, since Ansible runs it on every play: add a guard or `triggers` so Conn3x knows when it's done.
+
+`community.general.apache2_module` becomes a `command` step too, as circuit-apache writes it: `a2enmod -q NAME` with `unless = "test -e /etc/apache2/mods-enabled/NAME.load"`, or `a2dismod -q NAME` (with `-f` for `force`) when `state: absent`. Like Ansible's module, it works only on Debian and Ubuntu. A loop, a name that isn't a plain module name, and `ignore_configcheck` stay TODOs.
 
 Ansible's `command` module runs a program with plain arguments, and a `command` step runs its text through `/bin/sh`. So a `command` task with `;`, `|`, `$`, `*`, `>`, a backslash or other characters a shell reads stays a TODO: `echo one ; echo two` prints one line in Ansible and would run two commands in a step. A `shell` task already means the shell, and converts as it is.
+
+Ansible's list form, `argv`, converts as well: `command: {argv: [/usr/bin/touch, /tmp/x]}` becomes `command = "'/usr/bin/touch' '/tmp/x'"`, each argument quoted so the step's shell hands the program the words Ansible did. A templated argument is filled in the same way `cmd` is. An `argv` that isn't a list of plain values, an empty one, or one beside `cmd`, which Ansible refuses, stays a TODO.
+
+The two modules part company on expansion: `shell` joins a list with `shlex.quote` and expands nothing, which quoting matches exactly, but `command` passes every argument through `expanduser` and `expandvars` first. So an argument starting with `~`, or holding `$NAME` or `${NAME}`, stays a TODO with a reason that names it, since a quoted word would give the program the text instead of the value. Add `expand_argument_vars: false` to have `command` mean exactly what quoting does, and the task converts. A `$` that starts no variable, as in `awk '{print $1}'`, is left as it is by Ansible too, so it converts.
 
 A play that sets `become_user`, or `remote_user` without `become`, or that has `ansible.cfg`, `group_vars`, `host_vars` or a `vars_files` file beside it setting who its tasks run as, sends these tasks to review with the reason, because a command does what its user can do. A circuit runs as root under `become` and otherwise as its login user.

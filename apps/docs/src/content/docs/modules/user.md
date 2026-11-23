@@ -62,11 +62,22 @@ step "team" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `append` | bool | No | true makes groups the ones the user must be in, adding any it's missing with usermod -a, and leaves the other groups it's in alone. Defaults to false, where groups is the complete list. |
+| `comment` | string | No | The account's comment, or GECOS, field, such as a full name or "Deploy user", set with -c. It can't hold a colon or a line break. |
+| `create_home` | bool | No | false creates the user without a home directory, with useradd -M, as a service account usually is. Defaults to true. Like system, it only matters when the user is created, and a home directory that's already there is left alone. |
+| `expires` | string | No | The account's last day, as YYYY-MM-DD in UTC, set with usermod -e; "" for no expiry. Unset leaves it alone. After that day the account can't log in at all, by password or key. Needs root, like password_wo. |
 | `group` | string | No | Primary group. |
-| `groups` | set of string | No | Supplementary groups: the complete list. |
+| `groups` | set of string | No | Supplementary groups: the complete list, unless append is true. |
 | `home` | string | No | Home directory. Created with the user. |
+| `locked` | bool | No | true locks the account's password with usermod -L, false unlocks it with usermod -U, as Ansible's password_lock does. Unset leaves the lock alone. Locking stops password logins only: an SSH key still works. An account with no password can't be unlocked. Needs root, like password_wo. |
 | `name` | string | Yes | Login name. |
 | `on_remove` | string | No | "forget" (default) leaves the account, "delete" removes it and keeps its home directory. |
+| `password_hash_wo` | string | No | Write-only: the account's password as a crypt hash, as /etc/shadow holds it, such as one from openssl passwd -6 or mkpasswd. Set as it is with chpasswd -e and never kept in state. Use it instead of password_wo when you only have the hash, as Ansible's password does. Needs root, like password_wo. |
+| `password_max_days` | number | No | Days a password can be kept before it must be changed, set with chage -M, such as 365 for CIS; -1 for no maximum. Unlike PASS_MAX_DAYS in /etc/login.defs, it applies to this account as it is now, not only to passwords set later. Unset leaves it alone. Needs root, like password_wo. |
+| `password_min_days` | number | No | Days a new password must be kept before it can be changed, set with chage -m; -1 for no minimum. Unset leaves it alone. Needs root, like password_wo. |
+| `password_on_create` | bool | No | Set password_wo only when the step creates the user, as Ansible's update_password: on_create does, and never change or check it after. Needs password_wo. |
+| `password_warn_days` | number | No | Days before a password expires that its user is warned, set with chage -W; -1 for no warning. Unset leaves it alone. Needs root, like password_wo. |
+| `password_wo` | string | No | Write-only: the account's password, never kept in state. Conn3x makes the $6$ (SHA-512) hash /etc/shadow holds and sets it with chpasswd -e, so the password never reaches the host's process list; a new value plans a change through password_hmac, and so does a password changed on the host. Needs root: log in as root, or set become. Unset leaves the password alone. |
 | `shell` | string | No | Login shell. |
 | `system` | bool | No | Create as a system account. |
 | `uid` | number | No | User ID. |
@@ -77,6 +88,7 @@ Conn3x sets these; reference them as `conn3x_user.<circuit>__<step>["<host>"].<n
 
 | Name | Type | Description |
 | --- | --- | --- |
+| `password_hmac` | string | An HMAC of the hash the host should hold for password_wo, keyed outside state. A refresh records the one it finds, so a password changed on the host plans a change. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
 
 A step lowers to the `conn3x_user` resource, one instance per host, and connects with its circuit's `ssh` block.
@@ -87,11 +99,21 @@ A step lowers to the `conn3x_user` resource, one instance per host, and connects
 
 **What's managed.** Conn3x checks and sets only the attributes you give. Leave out `uid`, `group`, `groups`, `home` or `shell`, and Conn3x records what the host has and leaves it alone.
 
-**Creating.** A new user is created with `useradd -m`, which also creates its home directory. `system = true` adds `-r` for a system account, and only matters when the account is created.
+**Creating.** A new user is created with `useradd -m`, which also creates its home directory. `system = true` adds `-r` for a system account, and only matters when the account is created. `create_home = false` creates it with `useradd -M` instead, without a home directory, as a service account usually is. It also only matters at creation: a home directory that's already there is left alone, and changing it later changes nothing on the host.
+
+**Comment.** `comment` is the account's comment, or GECOS, field: a full name or a description such as "Deploy user". It's read from `/etc/passwd`, so one changed by hand plans a change back, and it's set with `useradd -c` or `usermod -c`. It can't hold a colon or a line break, since `/etc/passwd` splits its fields on them. The whole field is compared, as Ansible compares it. So a user Debian's `adduser` made, whose field is `Deploy user,,,` (room, phones and so on left empty), plans one change against `comment = "Deploy user"`, and `usermod -c` drops the commas. Leave it out and the field is left alone.
 
 **Changing.** When an existing account differs, Conn3x runs `usermod` with the attributes you set. Changing `home` this way updates the account but doesn't move the old directory's files.
 
-**Groups.** `groups` is the complete list of supplementary groups, not an addition: Conn3x removes the user from any group you leave out. The groups have to exist already, so create them with [`group`](/modules/group) steps first; steps run in the order written.
+**Groups.** `groups` is the complete list of supplementary groups, not an addition: Conn3x removes the user from any group you leave out. With `append = true`, it's the groups the user must be in instead: Conn3x adds any it's missing with `usermod -a`, leaves the other groups the user is in alone, and plans a change only when one of yours is missing. Then state records only your groups. The groups have to exist already, so create them with [`group`](/modules/group) steps first; steps run in the order written.
+
+**Passwords.** `password_wo` is write-only: it never reaches the plan or state, which keep only `password_hmac`, an HMAC keyed outside state, as for [`windows_user`](/modules/windows_user). Conn3x makes the `$6$` SHA-512 hash `/etc/shadow` holds and sets it with `chpasswd -e` on standard input, so the password never appears in the host's process list. The hash's salt comes from the HMAC key, the host and the user name: the same password always gives the same hash for one account, so a refresh can compare, and different hashes for every other account, so one `/etc/shadow` doesn't show who else shares a password. Every refresh reads the account's hash, so a password changed on the host plans a change, and the next apply puts it back. A locked account stays locked: the `!` that `passwd -l` and `usermod -L` put in front of the hash is left out of the comparison, so a locked account with the right password is in sync, and a new password is written behind the `!`. The step only locks or unlocks when you set `locked`. With `password_on_create = true`, the password is set only when the step creates the user, and never checked or changed after, as Ansible's `update_password: on_create` does. Reading `/etc/shadow` and running `chpasswd` need root, so a step with `password_wo` must log in as root or set `become` in its `ssh` block. Leave `password_wo` out and the password is left alone, and no longer read.
+
+**Locking and expiry.** `locked = true` locks the password with `usermod -L`, which puts a `!` in front of its hash, and `locked = false` unlocks it with `usermod -U`, as Ansible's `password_lock` does. Locking stops password logins only: a user with an SSH key can still log in. A new account with no password counts as locked, and Conn3x refuses to unlock it, since that would leave an account anyone could log in to without a password: set `password_wo` or `password_hash_wo` with it. `expires` is the account's last day, as `YYYY-MM-DD` in UTC, and `""` means it never expires. After that day the account can't log in at all, by password or key. Every refresh reads both from `/etc/shadow`, so a lock or expiry changed by hand plans a change back. Leave either out and it's left alone and not read. Both need root, like the password: log in as root, or set `become` in the `ssh` block.
+
+**Password aging.** `password_max_days` is how many days a password can be kept before it must be changed, set with `chage -M`. `password_min_days` is how many days a new one must be kept before it can be changed (`chage -m`), and `password_warn_days` is how many days before expiry its user is warned (`chage -W`). `-1` means no limit for each, and leaves that field of `/etc/shadow` empty. Unlike `PASS_MAX_DAYS` in `/etc/login.defs`, which only reaches passwords set after it, these apply to the account as it is now, which is what a control such as CIS's "passwords expire after 365 days" checks. Every refresh reads the ones you set, so a `chage` by hand plans a change back. Leave one out and it's left alone and not read. They need root, like the password.
+
+**A hash instead.** When you only have the hash, as an Ansible playbook's `password` is, give it as `password_hash_wo`, a crypt hash such as `openssl passwd -6` or `mkpasswd` prints. It's set as it is, and state keeps only its HMAC, so a password changed by hand plans a change back, as with `password_wo`. Set one of the two, not both. A value that isn't a crypt hash is refused, so a password given there by mistake is never set. `password_on_create` works with it too.
 
 **Names.** User and group names start with a lowercase letter or `_`, followed by up to 31 lowercase letters, digits, `-` or `_`. `home` and `shell` must be absolute paths. Conn3x checks these before connecting to the host.
 
@@ -101,4 +123,4 @@ When you delete a `user` step, `on_remove` decides what happens on the host. The
 
 ## From Ansible
 
-`conn3x convert ansible` turns `user` tasks into `user` steps, carrying over `uid`, `group`, `groups`, `home`, `shell` and `system`. Conn3x always creates a home directory for a new user, so a task with `create_home: no` stays a TODO. So does one with `append: true`, because `groups` in Conn3x is the full list, and so does one with `state: absent`, or a `uid` that isn't a whole number.
+`conn3x convert ansible` turns `user` tasks into `user` steps, carrying over `uid`, `group`, `groups`, `home`, `shell`, `comment`, `system`, and `create_home: false` (or its older name, `createhome`). `append: true` becomes `append = true`. A task with `state: absent` stays a TODO, as does one with a `uid` that isn't a whole number. `password_lock` becomes `locked`, and `expires`, seconds since 1970, becomes the date it falls on in UTC, as Ansible compares it; a negative one becomes `""`. An `expires` that isn't a number stays a TODO. `password_expire_min`, `password_expire_max` and `password_expire_warn` become `password_min_days`, `password_max_days` and `password_warn_days`, with `-1` kept as no limit. A task with `password` converts with a TODO to set `password_hash_wo`, since Ansible's is already a hash. The hash isn't copied into the circuit. With `update_password: on_create`, the TODO also says to add `password_on_create = true`.

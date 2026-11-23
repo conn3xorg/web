@@ -44,14 +44,38 @@ step "app_healthy" {
 }
 ```
 
+Wait for a lock file to go away before an upgrade:
+
+```hcl
+step "unlocked" {
+  wait_for {
+    path  = "/var/lib/dpkg/lock-frontend"
+    state = "absent"
+  }
+}
+```
+
+Wait for a line in a log:
+
+```hcl
+step "app_started" {
+  wait_for {
+    path     = "/var/log/app.log"
+    contains = "^Started"
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
 | `body_contains` | string | No | Text the answer's body must hold for url, such as "ok". The first MiB is read. |
+| `contains` | string | No | A regular expression the file at path must match before the wait is over, such as "Started" for a log line. ^ and $ match at each line. The last MiB of the file is read, once a second. |
 | `path` | string | One of | Path to wait for. Set one of path, port and url. |
 | `port` | number | One of | TCP port to wait for a listener on. Set one of path, port and url. |
 | `skip_tls_verify` | bool | No | true accepts any certificate for an https:// url, such as a self-signed one on a new host. Defaults to false. |
+| `state` | string | No | "present" (default) waits for path to exist or port to listen. "absent" waits the other way: for path to be gone, such as a lock file, or for nothing to listen on port, such as before an upgrade. |
 | `status_codes` | list of number | No | The answers that count for url. Defaults to [200]. Redirects are followed first. |
 | `timeout` | string | No | How long to wait. Defaults to "5m". |
 | `url` | string | One of | An http:// or https:// URL to GET until it answers with one of status_codes, such as http://127.0.0.1:8080/healthz. The request is the host's own: it goes through the SSH connection and leaves from the host, so 127.0.0.1 is the host, and it needs no curl there. Set one of path, port and url. |
@@ -71,13 +95,17 @@ A step lowers to the `conn3x_wait_for` resource, one instance per host, and conn
 
 **Waiting.** Conn3x checks on the host once a second until the path exists or something listens on the port, and fails the step if that takes longer than `timeout`. `timeout` takes a duration such as `"90s"` or `"10m"`, and defaults to `"5m"`.
 
+**Going away.** With `state = "absent"`, the wait runs the other way: until the path is gone, or until nothing listens on the port. Ansible's `stopped` and `absent` are both this.
+
+**File contents.** With `contains`, the path has to exist and match that regular expression. Conn3x reads the last MiB of the file once a second, so a line near the end of a busy log is found, and one more than a MiB back isn't. `^` and `$` match at the start and end of each line. The syntax is Go's, the same as `replace`'s `regexp`.
+
 **Ports.** A port counts as ready when any process listens on it over TCP, on IPv4 or IPv6, on any address. Conn3x reads `/proc/net/tcp` and `/proc/net/tcp6`, so the host needs neither `ss` nor `netstat`.
 
 **URLs.** Conn3x sends a `GET` to `url` once a second until the answer's status is in `status_codes`, `200` unless you say otherwise, and, with `body_contains`, its body holds that text. Redirects are followed first. The request is the host's, not this machine's: it goes through the SSH connection as a forwarded TCP connection that sshd opens on the host, so `127.0.0.1` is the host's loopback, a name resolves through the host's DNS, and the host needs no `curl` or `wget`. The host's sshd has to allow TCP forwarding, which it does by default; with `AllowTcpForwarding no`, the step fails with sshd's refusal instead of waiting. `https://` checks the certificate against this machine's trusted roots unless `skip_tls_verify` is true. A timeout says what the last answer was, such as `answered 503 Service Unavailable, not 200`. A proxy set on this machine isn't used.
 
 **Reading.** Every plan checks again. If the path is gone, nothing listens on the port any more, or the URL stops answering as it should, the plan shows the step out of sync and the next apply waits again.
 
-**Validation.** Set exactly one of `path`, `port` and `url`. `path` must be absolute, `port` must be between 1 and 65535, and `url` must start with `http://` or `https://` and name a host. A URL with a user or password in it is refused, since it would land in state. Changing `url` or its settings changes the step in place, and the next apply waits on the new ones.
+**Validation.** Set exactly one of `path`, `port` and `url`. `path` must be absolute, `port` must be between 1 and 65535, and `state` is `"present"` (the default) or `"absent"`, and `"absent"` goes only with `path` or `port`, without `contains`. `contains` goes only with `path`, and `url` must start with `http://` or `https://` and name a host. A URL with a user or password in it is refused, since it would land in state. Changing `url` or its settings changes the step in place, and the next apply waits on the new ones.
 
 ## Removal
 
@@ -85,4 +113,4 @@ Deleting a `wait_for` step does nothing on the host.
 
 ## From Ansible
 
-`conn3x convert ansible` turns `wait_for` tasks on the host itself into `wait_for` steps, carrying over `path` and `port`, and turning `timeout` in seconds into a duration such as `"300s"`. `delay` is dropped. A task that waits for another host, or for a state other than `started` or `present`, stays a TODO, as does a `port` that isn't a whole number.
+`conn3x convert ansible` turns `wait_for` tasks on the host itself into `wait_for` steps, carrying over `path` and `port`, `search_regex` with `path` as `contains`, and turning `timeout` in seconds into a duration such as `"300s"`. `delay` is dropped. `state: stopped` and `state: absent` become `state = "absent"`. A task that waits for another host, or with `state: drained`, which waits for a port's open connections to finish, stays a TODO, as does a `port` that isn't a whole number. `search_regex` on a `port`, which reads what the socket sends, stays a TODO, and so does a pattern that might match differently in Go than in Python, as for `replace`.

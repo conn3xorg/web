@@ -91,3 +91,7 @@ A step lowers to the `conn3x_xml_value` resource, one instance per host, and con
 ## Removal
 
 Deleting an `xml_value` step leaves the value. With `on_remove = "delete"`, it takes the attribute or the element out.
+
+## From Ansible
+
+`conn3x convert ansible` turns `community.general.xml` tasks that set one element's text, or one `attribute`, into `xml_value` steps: `attribute` becomes `/@name` on the end of `xpath`. `state: absent` converts too, with the `xpath` as it is. Ansible sets every element its XPath matches, and this step needs exactly one, so the converted step carries a note, and an apply that finds several says how to pick one. A task stays a TODO, with the reason, when its XPath uses more than this step reads, such as `//` or a function, or when it sets `namespaces`, `add_children`, `set_children` or `content`, turns on `pretty_print`, `count` or `print_match`, or sets no `value`.
