@@ -3,7 +3,7 @@ title: TruffleHog
 description: "A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-trufflehog at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-trufflehog at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/trufflehog/grade.svg)](https://conn3x.org/circuits/trufflehog/grade)
 
@@ -15,7 +15,7 @@ It only looks. Nothing is moved, rotated or deleted, and the scan runs in a syst
 
 ```hcl
 module "trufflehog" {
-  source = "github.com/conn3xorg/circuit-trufflehog?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-trufflehog?ref=v0.2.0"
 
   hosts                = { web = "203.0.113.10", db = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -48,7 +48,7 @@ URI verified 1
 
 Leave `targets` out and you get TruffleHog installed at `/usr/local/bin/trufflehog` with no timer, for running by hand or from your own jobs.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.2.0/examples/local).
 
 ## Choosing what to scan
 
@@ -180,20 +180,20 @@ The scan runs with `--no-update`, so TruffleHog never replaces itself.
 
 ## Requirements
 
-Requires Conn3x v0.7.0 or later and systemd on each host, on x86_64 or aarch64. Hosts need to reach GitHub for the release, and, with `verify` on, the services whose secrets they find.
+Requires Conn3x v0.29.0 or later and systemd on each host, on x86_64 or aarch64. Hosts need to reach GitHub for the release, and, with `verify` on, the services whose secrets they find.
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with TruffleHog 3.99.8. [examples/local](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.1.0/examples/local) was applied to each in a container on arm64, and CI does the same on amd64: it checks that the second plan has no changes, plants the placeholder Slack webhook from Slack's documentation under `/opt`, scans `/etc`, `/home`, `/root`, `/opt` and `/srv` through `conn3x-trufflehog.service` with `verify` off, and checks that the findings name the webhook and its file, leave out the excluded SSH host keys, and that the scan changed no files outside its results directory, the logs and systemd's state. It then restarts the container, checks the timer is back, and scans again. With no `targets`, the apply installed TruffleHog alone and the second plan had no changes.
+Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45, with TruffleHog 3.99.8. [examples/local](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.2.0/examples/local) was applied to each in a container on arm64, and CI does the same on amd64: it checks that the second plan has no changes, plants the placeholder Slack webhook from Slack's documentation under `/opt`, scans `/etc`, `/home`, `/root`, `/opt` and `/srv` through `conn3x-trufflehog.service` with `verify` off, and checks that the findings name the webhook and its file, leave out the excluded SSH host keys, and that the scan changed no files outside its results directory, the logs and systemd's state. It then restarts the container, checks the timer is back, and scans again. With no `targets`, the apply installed TruffleHog alone and the second plan had no changes.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, the circuit was applied with `run_now` and the same check passed. There the scan read `/etc/shadow` and the other root-only files without a single permission error, through the one capability the sandbox leaves it. A scan of those five directories took about 15 seconds of CPU and peaked at 700 MB of memory. The Rocky droplet's own findings were a private key, the self-signed certificate Cockpit makes when something first connects to port 9090, and a pattern match in `/etc/bluetooth/main.conf` that isn't a secret at all. After a reboot the timer was active, the plan had no changes and another scan ran.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-trufflehog/blob/v0.1.0/LICENSE). TruffleHog is AGPL-3.0, and this circuit downloads it unchanged from its GitHub release.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-trufflehog/blob/v0.2.0/LICENSE). TruffleHog is AGPL-3.0, and this circuit downloads it unchanged from its GitHub release.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-trufflehog](https://github.com/conn3xorg/circuit-trufflehog). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-trufflehog/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-trufflehog](https://github.com/conn3xorg/circuit-trufflehog). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-trufflehog/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-trufflehog/tree/v0.2.0/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [Firewall](/circuits/firewall), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto).
