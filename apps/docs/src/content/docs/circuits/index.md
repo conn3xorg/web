@@ -64,7 +64,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [SQL Server](/circuits/mssql) | SQL Server 2025 from Microsoft's repos on Ubuntu 22.04/24.04 and EL 9/10, x86-64. Free editions by default, sa password never in state. | v0.2.1 |
 | [CouchDB](/circuits/couchdb) | Apache CouchDB single node from Apache's repos: admin password kept out of state, CORS, and a preset for Obsidian's LiveSync plugin | v0.2.0 |
 | [Valkey](/circuits/valkey) | Valkey, the open Redis fork, from your distribution with a write-only password, memory limits and RDB or AOF persistence. | v0.4.0 |
-| [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.3.0 |
+| [OpenSearch](/circuits/opensearch) | Self-hosted single-node OpenSearch 3.x from the official repositories, with the security plugin on and your own TLS certificates. | v0.3.1 |
 | [SQLite](/circuits/sqlite) | The sqlite3 command line tool from your distribution's packages, with optional empty databases created with an owner and mode. | v0.1.4 |
 | [Cassandra](/circuits/cassandra) | Apache Cassandra 5.0 from Apache's checked release tarball, on Temurin 17, with password login on from the first apply. | v0.3.0 |
 | [Oracle AI Database Free](/circuits/oracle-free) | Oracle AI Database Free on Rocky Linux, from Oracle's RPM, under its own systemd unit, with the licence accepted up front. | v0.2.0 |
@@ -92,9 +92,9 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Podman](/circuits/podman) | Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file. | v0.2.2 |
 | [k3s](/circuits/k3s) | A k3s Kubernetes cluster from servers and agents, with embedded etcd for HA and Raspberry Pi OS support. | v0.1.8 |
 | [kubeadm](/circuits/kubeadm) | An upstream Kubernetes cluster with kubeadm: containerd, pkgs.k8s.io, HA control planes and a pod network. | v0.2.4 |
-| [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.3.0 |
+| [MicroShift](/circuits/microshift) | Turns one Rocky Linux 10 box into a single-node MicroShift cluster, with every unsigned package pinned by checksum. | v0.3.1 |
 | [Rancher](/circuits/rancher) | Install Rancher Manager on a k3s cluster with Helm and cert-manager, at pinned versions, with the bootstrap password kept out of state. | v0.1.4 |
-| [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.3 |
+| [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.4 |
 | [Nomad](/circuits/nomad) | A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state. | v0.1.2 |
 | [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.5 |
 | [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.3 |
@@ -168,7 +168,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [OpenLDAP](/circuits/openldap) | OpenLDAP slapd with cn=config set up for you: base DN, schemas, OUs, LDIF entries, TLS, no anonymous binds. | v0.3.0 |
 | [FreeIPA](/circuits/freeipa) | FreeIPA server on Rocky or Fedora, with clients on Debian, Ubuntu, Fedora and Rocky. Sets FQDNs, installs unattended, enrols over SSSD. | v0.2.1 |
 | [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.3.0 |
-| [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.3.0 |
+| [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.3.1 |
 | [Infisical](/circuits/infisical) | Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host. | v0.1.1 |
 | [authentik](/circuits/authentik) | Self-host authentik: single sign-on over OIDC and SAML, with users, sessions and audit trail on your own hosts. | v0.1.2 |
 | [Passbolt CE](/circuits/passbolt) | Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host. | v0.1.0 |
@@ -199,7 +199,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.3.0 |
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
-| [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.0 |
+| [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.1 |
 | [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.4 |
 | [Mini homelab](/circuits/mini-homelab) | Homepage and Uptime Kuma on one server, on loopback behind an SSH tunnel: the small circuit the private AI box tutorial builds. | v0.1.1 |
 
@@ -213,7 +213,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.3 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.3 |
 | [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.2.0 |
-| [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.2 |
+| [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.3 |
 | [Perl](/circuits/perl) | Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm. | v0.2.0 |
 | [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.2 |
 | [Selenium Grid](/circuits/selenium) | Selenium Grid under Podman, official images pinned by digest, on loopback by default. | v0.1.2 |

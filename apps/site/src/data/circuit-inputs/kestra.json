@@ -1,13 +1,13 @@
 {
   "name": "kestra",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "kestra_version",
       "type": "string",
-      "default": "v2.0.9-slim",
-      "description": "Tag of the Kestra image, such as \"v2.0.9-slim\", Kestra with its core tasks only, or \"v2.0.9\", with every plugin. Change image_digest with it.",
+      "default": "v2.0.13-slim",
+      "description": "Tag of the Kestra image, such as \"v2.0.13-slim\", Kestra with its core tasks only, or \"v2.0.13\", with every plugin. Change image_digest with it.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
@@ -15,8 +15,8 @@
     {
       "name": "image_digest",
       "type": "string",
-      "default": "sha256:3ee725f92e7aba3d8f11242a6b2a773702e0315ba472d4049a5e56441e9aed84",
-      "description": "Digest of the image for kestra_version, such as \"sha256:3ee7...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
+      "default": "sha256:6f4a6223108c3d94172a1d13997dbf8fbbd11d4cbc02e4e028b4445bb6a2f57b",
+      "description": "Digest of the image for kestra_version, such as \"sha256:6f4a...\". Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
