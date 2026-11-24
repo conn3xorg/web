@@ -32,7 +32,7 @@ Out of scope: someone who controls the machine you run Conn3x on, or who can cha
 
 ## How the design follows secure design principles
 
-- **Secure by default.** Host key checks can't be turned off. Old SSH algorithms are off unless one host opts in. The experimental agent is off. State encryption isn't on by default, because OpenTofu's isn't, but every plan warns until you turn it on.
+- **Secure by default.** Host key checks can't be turned off. Old SSH algorithms are off unless one host opts in. The experimental agent is off. State encryption isn't on by default, because OpenTofu's isn't, but `conn3x init` warns until you turn it on.
 - **Least privilege.** Commands run as the login user unless you set `become`. A root write through a path another user controls drops to that user, or stops.
 - **Fail closed.** A changed host key, a path several users can change, or a value a step can't handle stops the run instead of guessing. A network device change that cuts Conn3x off rolls itself back.
 - **Complete mediation.** The paths-as-root check runs on every write, walking the path as written, so a link or `..` can't hide where it ends.

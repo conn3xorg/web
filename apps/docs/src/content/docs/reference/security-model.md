@@ -27,7 +27,7 @@ Conn3x changes servers as root, so it's worth knowing exactly what it trusts and
 
 ## Secrets and state
 
-- **State holds what Conn3x read.** Like any OpenTofu state, it records your resources and what each step read from its host, which can include file contents and command output. Turn on [state encryption](https://opentofu.org/docs/language/state/encryption/), and store state where only the people who apply can read it; Conn3x warns at every plan while it's off.
+- **State holds what Conn3x read.** Like any OpenTofu state, it records your resources and what each step read from its host, which can include file contents and command output. Turn on [state encryption](https://opentofu.org/docs/language/state/encryption/), and store state where only the people who apply can read it; `conn3x init` warns while it's off.
 - **Write-only arguments keep secrets out of state.** A password written with `content_wo`, or another `*_wo` argument, reaches the host but not the plan or the state, which keeps an HMAC to notice changes. See [Secrets](/reference/circuits/secrets).
 - **Secrets can come from outside.** SOPS files through `ephemeral "conn3x_secrets"`, and private keys from ephemeral values, never touch state either.
 
