@@ -137,7 +137,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | --- | --- | --- |
 | [Baseline](/circuits/baseline) | A sensible start for any server: time zone, chrony, sysctl settings and SSH that only takes keys. | v0.2.0 |
 | [Hardening](/circuits/hardening) | SSH and kernel hardening for a fresh server: modern SSH crypto, hardening sysctls, no core dumps, every control switchable. | v0.3.0 |
-| [Firewall](/circuits/firewall) | A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on. | v0.3.0 |
+| [Firewall](/circuits/firewall) | A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on. | v0.4.0 |
 | [fail2ban](/circuits/fail2ban) | Bans addresses that keep failing SSH logins, through nftables, with room for jails of your own. | v0.3.1 |
 | [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.4.0 |
 | [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.3 |
