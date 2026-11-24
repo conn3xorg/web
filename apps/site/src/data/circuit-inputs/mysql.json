@@ -1,6 +1,6 @@
 {
   "name": "mysql",
-  "version": "v0.4.0",
+  "version": "v0.5.2",
   "hostObjects": true,
   "inputs": [
     {
