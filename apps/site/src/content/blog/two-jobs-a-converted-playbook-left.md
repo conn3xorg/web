@@ -181,7 +181,7 @@ Before you apply any change to an `auth` or `account` rule, open a second root s
 
 Both steps run end to end on Rocky Linux 10 and Ubuntu 24.04, in Podman containers. For `iptables_rule`, the test puts a rule on, deletes it by hand, watches the plan catch it and the apply restore it, then checks the saved file. A container can't reboot, so persistence is tested by what's in the saved file, not by a real reboot. For `pam_rule`, a test user signs in with a password through the edited stack before and after each change, with `pamtester`. Those password checks ran on rootful Podman; CI's rootless Podman can't verify passwords there, so CI skips just those checks and runs the rest. A host with SELinux enforcing hasn't been tried with `pam_rule` yet.
 
-So try both on a lab host first, the way you would any new firewall or PAM change.
+Both steps are [experimental](https://docs.conn3x.org/reference/maturity) for now, which means their arguments can still change between releases. So try both on a lab host first, the way you would any new firewall or PAM change.
 
 ## Try it
 
