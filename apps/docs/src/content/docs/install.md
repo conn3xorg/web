@@ -17,7 +17,7 @@ Homebrew clears the macOS quarantine flag for you, and `brew upgrade` picks up n
 
 ## Download a release
 
-Pick the archive for your system. Replace `0.30.0` with the version you want.
+Pick the archive for your system. Replace `0.30.0` with the version you want. Before the `install` line, [check the download](#check-the-download): it takes a minute, and it's how you know the archive is the one the release workflow built.
 
 ```sh
 VERSION=0.30.0
