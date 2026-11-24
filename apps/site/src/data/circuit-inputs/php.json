@@ -1,6 +1,6 @@
 {
   "name": "php",
-  "version": "v0.3.0",
+  "version": "v0.3.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -51,7 +51,7 @@
     {
       "name": "composer_version",
       "type": "string",
-      "default": "2.11.0",
+      "default": "2.11.3",
       "description": "Composer release to install. Change composer_sha256 with it.",
       "sensitive": false,
       "ephemeral": false,
@@ -60,7 +60,7 @@
     {
       "name": "composer_sha256",
       "type": "string",
-      "default": "9674f12a2a181100d889ebfd0b4510805b3e94cea57869b14b383753d602599b",
+      "default": "04f8b003da4e3a2459056591fbfebd02b4dc3e5adeb158616b90cf55a65113ec",
       "description": "SHA-256 of composer.phar for composer_version, as published at https://getcomposer.org/download/VERSION/composer.phar.sha256sum.",
       "sensitive": false,
       "ephemeral": false,
