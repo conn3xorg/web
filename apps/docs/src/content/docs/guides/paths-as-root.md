@@ -43,6 +43,8 @@ Packages often give a service its directory through a group: Debian ships `/var/
 | Any group with an ID of 1000 or above | Stops with an error |
 | Anyone, through a write ACL on the directory | Stops with an error |
 
+On Rocky Linux, AlmaLinux, RHEL and Fedora, `root:root` itself counts as two or more accounts: `sync`, `shutdown`, `halt` and `operator` have gid 0 as their primary group. So a group-writable `root:root` directory (mode `0775` or `0770`) stops a step there, while the same directory passes on Debian and Ubuntu, which have no such accounts. The refusal comes when the plan reads the host, before any step can change the mode, so fix it on the host with `chmod g-w <dir>`, or have the software stop widening it. GitLab's `gitlab-ctl reconfigure`, for one, sets `/etc/gitlab` to `0775` unless `manage_storage_directories['manage_etc'] = false`, which [circuit-gitlab](/circuits/gitlab) sets.
+
 When the step runs as the service account:
 
 - A file with no `owner` belongs to the service account. Before v0.12.0 it belonged to root.
