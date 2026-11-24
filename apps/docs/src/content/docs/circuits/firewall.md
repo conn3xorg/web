@@ -3,7 +3,7 @@ title: Firewall
 description: "A default-deny ufw or firewalld firewall, picked per host, that opens SSH before it turns on."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-firewall at v0.3.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-firewall at v0.4.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/firewall/grade.svg)](https://conn3x.org/circuits/firewall/grade)
 
@@ -15,7 +15,7 @@ The part that usually goes wrong by hand is the order. Turn ufw on before SSH is
 
 ```hcl
 module "firewall" {
-  source = "github.com/conn3xorg/circuit-firewall?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-firewall?ref=v0.4.0"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -42,7 +42,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.3.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.4.0/examples/local).
 
 ### SSH on another port, or behind a port forward
 
@@ -65,9 +65,13 @@ On Debian and Ubuntu, in order:
 On the Red Hat family, in order:
 
 1. Installs `firewalld`.
-2. If SSH runs on a port other than 22, opens it with `firewall-offline-cmd` before firewalld starts, so starting it can't cut the connection.
-3. Starts firewalld now and at boot. Its default zone denies incoming traffic except what it allows, which includes SSH on port 22.
-4. Opens SSH and each port in `allow`, in the running firewall and permanently. A port with `from` becomes a rich rule that accepts it from that address or network only.
+2. If SSH runs on a port other than 22, opens it in `default_zone` with `firewall-offline-cmd` before firewalld starts, so starting it can't cut the connection.
+3. Starts firewalld now and at boot.
+4. Opens SSH in `default_zone`, in the running firewall and permanently.
+5. Makes `default_zone` firewalld's default zone, now and permanently. SSH is already open there, so the switch can't cut the connection.
+6. Opens each port in `allow` in that zone. A port with `from` becomes a rich rule that accepts it from that address or network only.
+
+The rules go into `default_zone`, which is `public` unless you set it. `public` denies incoming traffic except what it allows. Not every image starts there: Google Cloud's Rocky Linux 10 image ships with a default zone of `trusted`, which accepts everything, so opening ports in it would change nothing. Setting the default zone is what makes the deny true on such a host. With `default_zone = null` the circuit leaves the host's default zone alone and adds its rules there, which is only safe if you know that zone isn't `trusted`.
 
 Before the circuit runs, the `conn3x_host` data source reads each host's family over SSH and splits the hosts between the two.
 
@@ -81,6 +85,7 @@ Docker publishes container ports through its own firewall rules, which bypass bo
 | --- | --- | --- | --- |
 | `hosts` | any | Required | Hosts to configure, by name. Each value is an address, such as `"203.0.113.10"`, or a host object such as `{ address = "203.0.113.10", host_key = "ssh-ed25519 AAAA..." }`. A host object can also set `user`, `port`, `private_key_file`, `jump_hosts` and `os`, the distribution's ID, such as `ubuntu` or `rocky`, which a host created in the same plan needs. The two forms can be mixed. |
 | `allow` | list(object) | `[]` | Ports to open, each with a protocol, such as `{ port = "443/tcp" }`, or `{ port = "5432/tcp", from = "10.0.0.0/8" }` to open it to one address or network. A range is written `6000:6007/tcp`. |
+| `default_zone` | string | `"public"` | firewalld zone to make the default and put the rules in. When null, the host's default zone is kept, which lets everything in if it's `trusted`. firewalld only: ufw has no zones, and its default is set to deny regardless. |
 | `ssh_allow` | list(string) | `null` | Ports sshd listens on, such as `["22/tcp"]`. When null, the ports Conn3x logs in on. Can't be empty. |
 | `ssh_user` | string | `"root"` | User to log in as. |
 | `ssh_port` | number | `22` | SSH port. |
@@ -98,16 +103,16 @@ Requires Conn3x v0.6.5 or later, which applies several ufw rules on one host wit
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.3.0/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the firewall is on with every rule in place. From outside the host, it then connects to listeners on allowed and closed ports: the allowed ones answer, and a closed port and a port open only to another network don't, before and after restarting the firewall.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.4.0/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the firewall is on with every rule in place. From outside the host, it then connects to listeners on allowed and closed ports: the allowed ones answer, and a closed port and a port open only to another network don't, before and after restarting the firewall.
 
 It was also applied by hand, with circuit-docker, circuit-monitoring and four other circuits, to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing. On both, port 80 answered from outside, port 9100 didn't, and a rule with `from` let only that network in: the Docker bridge reached node_exporter on 9100. A container port published on 8081, which no rule allowed, still answered from outside on both, as above. After a reboot the firewall came back with every rule and the plan had no changes. A separate run created an Ubuntu 24.04 droplet and applied this circuit to it in one `conn3x apply`, with `os = "ubuntu"`, and the second plan had no changes. The same checks passed on Fedora 44, with SELinux enforcing, and Debian 13 droplets, before and after a reboot.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-firewall/blob/v0.3.0/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-firewall/blob/v0.4.0/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-firewall](https://github.com/conn3xorg/circuit-firewall). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-firewall/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-firewall/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.3.0/examples/local).
+- Repository: [conn3xorg/circuit-firewall](https://github.com/conn3xorg/circuit-firewall). This page covers [v0.4.0](https://github.com/conn3xorg/circuit-firewall/tree/v0.4.0); the repository's [tags](https://github.com/conn3xorg/circuit-firewall/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-firewall/tree/v0.4.0/examples/local).
 - Related circuits: [Baseline](/circuits/baseline), [Hardening](/circuits/hardening), [fail2ban](/circuits/fail2ban), [Automatic updates](/circuits/auto-updates), [OpenSCAP](/circuits/openscap), [auditd](/circuits/auditd), [Trivy](/circuits/trivy), [CISO Assistant](/circuits/ciso-assistant), [ZAP](/circuits/zap), [checkov](/circuits/checkov), [cosign](/circuits/cosign), [in-toto](/circuits/in-toto), [TruffleHog](/circuits/trufflehog).
