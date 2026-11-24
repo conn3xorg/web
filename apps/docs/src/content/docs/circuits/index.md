@@ -50,7 +50,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Apache httpd](/circuits/apache) | Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload. | v0.3.0 |
 | [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.4.0 |
 | [HAProxy](/circuits/haproxy) | HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live. | v0.2.0 |
-| [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.2.0 |
+| [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.2.1 |
 | [certbot](/circuits/certbot) | Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer. | v0.2.1 |
 | [IIS](/circuits/iis) | Experimental. Turns Windows Server 2022 or 2025 into an IIS web server: a site, its own app pool and the firewall port open. | v0.1.0 |
 
@@ -208,7 +208,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [Java](/circuits/java) | OpenJDK or Eclipse Temurin 21 or 25 on Debian, Ubuntu, Fedora and Rocky, set as the default java with JAVA_HOME exported. | v0.2.0 |
-| [PHP-FPM](/circuits/php) | PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer. | v0.3.0 |
+| [PHP-FPM](/circuits/php) | PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer. | v0.3.1 |
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.2.0 |
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.3 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.3 |
