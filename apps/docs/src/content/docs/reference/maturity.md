@@ -49,6 +49,8 @@ Experimental is about each module inside it. An experimental module is new, and 
 | The [`supervisor_program` step](/modules/supervisor_program) | Experimental | New in v0.28.0. Tested on every change on Ubuntu 24.04; groups and `server_url` are unit-tested only. |
 | The [`patch`](/modules/patch) and [`pack`](/modules/pack) steps | Experimental | New in v0.29.0. Tested on every change on Rocky Linux 10 and Debian 13. |
 | The [`compose_project` step](/modules/compose_project) | Experimental | New in v0.29.0. Tested on every change with Podman and podman-compose on Rocky Linux 10; Docker's output is read from unit fixtures only. |
+| The [`iptables_rule` step](/modules/iptables_rule) | Experimental | New in v0.31.0. Tested on every change on Rocky Linux 10 and Ubuntu 24.04, `persist` included. |
+| The [`pam_rule` step](/modules/pam_rule) | Experimental | New in v0.31.0. Tested on every change on Ubuntu 24.04 and Rocky Linux 10. A password login through the edited stack was checked locally; CI checks it only where its containers can verify a password. |
 | [`repository`](/modules/repository) and [`package_sources`](/modules/package_sources) on SUSE | Experimental | New in v0.28.0. Tested on every change on openSUSE Leap 15.6, not on SUSE Linux Enterprise. |
 | The host agent | Experimental | Off by default. Conn3x runs every command over plain SSH unless you turn it on. |
 | The [Circuit Builder](https://conn3x.org/build), for hosts you already have | Stable | CI validates every circuit it offers, alone and in a set of realistic builds. |
