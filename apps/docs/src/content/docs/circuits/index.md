@@ -128,7 +128,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [RouterOS baseline](/circuits/routeros-baseline) | Gives a MikroTik RouterOS 7 router its name, NTP, DNS, services, users, VLANs and SNMPv3 over the REST API. | v0.1.0 |
-| [OPNsense VLANs](/circuits/opnsense-vlans) | Builds trusted, IoT and guest VLANs on OPNsense, with Kea DHCP, firewall rules and local names in Unbound. | v0.1.0 |
+| [OPNsense VLANs](/circuits/opnsense-vlans) | Builds trusted, IoT and guest VLANs on OPNsense, with Kea DHCP, firewall rules and local names in Unbound. | v0.2.0 |
 | [Proxmox VE network](/circuits/proxmox-network) | Manages a Proxmox VE node's bridges, VLAN interfaces, SDN zones and VNets through the Proxmox API. | v0.1.0 |
 
 ### Security and compliance
@@ -193,7 +193,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Conn3x web UI](/circuits/conn3x-ui) | Runs the Conn3x web UI from pinned, checksummed releases under a locked-down systemd unit, with its credentials key made on the host. | v0.1.12 |
 | [Proxmox VE](/circuits/proxmox) | Turns a Debian 13 host into a Proxmox VE 9 node, following Proxmox's own install guide, reboot included. | v0.1.2 |
 | [Forgejo](/circuits/forgejo) | Your own Git forge: Forgejo from its signed release, on SQLite or PostgreSQL, with an admin user and git over your host's SSH. | v0.2.0 |
-| [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.1.3 |
+| [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.2.0 |
 | [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.4.0 |
 | [n8n](/circuits/n8n) | Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply. | v0.1.3 |
 | [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.3.0 |
