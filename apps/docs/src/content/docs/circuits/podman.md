@@ -3,7 +3,7 @@ title: Podman
 description: "Installs Podman and runs your containers as systemd services through Quadlet, with secrets kept in a root-only file."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.2.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-podman at v0.2.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/podman/grade.svg)](https://conn3x.org/circuits/podman/grade)
 
@@ -20,7 +20,7 @@ variable "grafana_password" {
 }
 
 module "podman" {
-  source = "github.com/conn3xorg/circuit-podman?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-podman?ref=v0.2.2"
 
   hosts                = { apps = "192.168.1.30" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -58,7 +58,7 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.2.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.2.2/examples/local).
 
 ## What it does
 
@@ -74,7 +74,11 @@ On each host, in order:
 
 Quadlet turns each `.container` file into `NAME.service` when systemd reloads. Generated units can't be enabled with `systemctl enable`; the `[Install]` section is what starts them at boot.
 
-Every container gets `ContainerName=NAME`, so `podman ps`, `podman logs NAME` and `podman exec NAME` use the name you gave it. Ports are published on all addresses unless you say otherwise, as in `"127.0.0.1:8080:80"`. Volumes take Podman's `-v` syntax: a named volume such as `grafana:/var/lib/grafana` is created on first start, but a host path such as `/srv/media:/media` must already exist. On Rocky Linux and Fedora, where SELinux enforces, a host path needs `:Z` (private to the container) or `:z` (shared), as in `/srv/media:/media:z`, or the container can't read it; CI doesn't test host-path volumes.
+Every container gets `ContainerName=NAME`, so `podman ps`, `podman logs NAME` and `podman exec NAME` use the name you gave it.
+
+Ports are published on all addresses unless you say otherwise, as in `"127.0.0.1:8080:80"`.
+
+Volumes take Podman's `-v` syntax: a named volume such as `grafana:/var/lib/grafana` is created on first start, but a host path such as `/srv/media:/media` must already exist. On Rocky Linux and Fedora, where SELinux enforces, a host path needs `:Z` (private to the container) or `:z` (shared), as in `/srv/media:/media:z`, or the container can't read it; CI doesn't test host-path volumes.
 
 ### Images and auto-update
 
@@ -101,6 +105,16 @@ systemctl daemon-reload
 - Rootless containers. Units go in `/etc/containers/systemd` and run as root.
 - Pods, networks, volumes or builds as Quadlet units of their own. Add `Network=` or `Pod=` lines through `extra` and create those units yourself.
 - Firewall ports. Podman adds its own forwarding rules for published ports. Use the [firewall circuit](/circuits/firewall) for the host's own rules.
+
+## When things go wrong
+
+Look at the service first: `systemctl status NAME.service` shows how systemd sees the container, `journalctl -u NAME.service` has its logs and `podman logs NAME` has the process's own output. Then `conn3x plan`: on a healthy host it says `No changes.`, and anything it shows is what the circuit still wants to change.
+
+- **The plan fails before touching the host.** A validation message names the input to fix: an image without a tag or digest, an `auto_update` image that isn't fully qualified, an environment or secret name that isn't a valid shell name, a secret for a container that isn't in `containers`, or a registry that isn't a host name.
+- **The container keeps restarting or never comes up.** Its logs say why. A host path in `volumes` that doesn't exist on the host keeps the container from starting: create the directory, then `systemctl restart NAME.service`.
+- **The container can't read a host directory on Rocky Linux or Fedora.** SELinux is enforcing: add `:Z` (or `:z` if other containers share the directory), as in `/srv/media:/media:Z`.
+- **A container's restart fails while a package upgrade runs.** A libc6 or systemd upgrade makes systemd re-execute itself mid-apply, which used to fail the restart step. Ref v0.2.0 or later retries across the re-exec, so upgrade the module's `ref`.
+- **The plan wants to redo something you changed by hand.** That's the circuit putting its own version back. Stop a container with `systemctl stop NAME.service` and the next apply starts it again; edit a file it manages under `/etc/containers` and the next apply rewrites it.
 
 ## Inputs
 
@@ -129,16 +143,16 @@ Requires Conn3x v0.29.0 or later and systemd on each host, with outbound HTTPS t
 
 ## Tested on
 
-Rocky Linux 10 (Podman 5.8), Fedora 45 (Podman 6.1), Ubuntu 24.04 (Podman 4.9) and Debian 13 (Podman 5.4). CI applies [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.2.0/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the example container answers on its published port with the name from its env file.
+Rocky Linux 10 (Podman 5.8), Fedora 45 (Podman 6.1), Ubuntu 24.04 (Podman 4.9) and Debian 13 (Podman 5.4). CI applies [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.2.2/examples/local) to each on amd64, checks that the second plan has no changes, and checks that the example container answers on its published port with the name from its env file.
 
 The CI containers run with SELinux off. On a Rocky Linux 10 droplet with SELinux enforcing, the example was applied by hand alongside an nginx container serving a host directory mounted with `:Z`. Both answered, the second plan had no changes, and the audit log had no denials. The same held on Fedora 44 and AlmaLinux 10 droplets with SELinux enforcing, and both containers came back on their own after a reboot. Without `:Z`, the same directory was unreadable from inside the container.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.2.0/LICENSE). Podman itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-podman/blob/v0.2.2/LICENSE). Podman itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-podman/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.2.0/examples/local).
+- Repository: [conn3xorg/circuit-podman](https://github.com/conn3xorg/circuit-podman). This page covers [v0.2.2](https://github.com/conn3xorg/circuit-podman/tree/v0.2.2); the repository's [tags](https://github.com/conn3xorg/circuit-podman/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-podman/tree/v0.2.2/examples/local).
 - Related circuits: [Firewall](/circuits/firewall), [Docker](/circuits/docker), [k3s](/circuits/k3s), [kubeadm](/circuits/kubeadm), [MicroShift](/circuits/microshift), [Rancher](/circuits/rancher), [containerd](/circuits/containerd), [Nomad](/circuits/nomad), [Helm](/circuits/helm), [Istio](/circuits/istio), [Flux](/circuits/flux), [Dockge](/circuits/dockge), [Portainer CE](/circuits/portainer).
