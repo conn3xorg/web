@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { authors, issueBody, ISSUE_TITLE, merge, newPeople, syncIssue } from "../apps/site/src/lib/contributors.js";
+import { authors, coAuthors, issueBody, ISSUE_TITLE, merge, newPeople, syncIssue } from "../apps/site/src/lib/contributors.js";
 
 const user = (login, type = "User") => ({ login, type, avatar_url: `https://avatars.example/${login}` });
 
@@ -110,4 +110,17 @@ test("the workflow can read code and write issues, and nothing else", () => {
   assert.deepEqual(yml.match(/^ +[a-z-]+: (read|write)$/gm).map((l) => l.trim()), ["contents: read", "issues: write"]);
   assert.match(yml, /^permissions: \{\}$/m);
   for (const uses of yml.match(/uses: \S+/g)) assert.match(uses, /@[0-9a-f]{40}$/);
+});
+
+test("co-authors on merged commits count, by their noreply login only", () => {
+  const commit = (message) => ({ commit: { message } });
+  const found = coAuthors([
+    commit("fix: x\n\nCarried from #430.\n\nSigned-off-by: J <j@x>\nCo-authored-by: srijavuppala <68093811+srijavuppala@users.noreply.github.com>"),
+    commit("feat: y\n\nCo-Authored-By: Someone <someone@example.com>\nco-authored-by: Amy <7+amy@users.noreply.github.com>"),
+    commit("chore: z\n\nCo-authored-by: Claude <noreply@anthropic.com>\nCo-authored-by: evil <9+$(x)@users.noreply.github.com>"),
+    {},
+  ]);
+  assert.deepEqual(found.map((p) => p.login), ["srijavuppala", "amy"]);
+  assert.equal(found[0].avatar, "https://avatars.githubusercontent.com/u/68093811?v=4");
+  assert.deepEqual(merge([found, [{ login: "claude", type: "User" }]]).map((p) => p.login), ["amy", "srijavuppala"]);
 });

@@ -32,6 +32,23 @@ export function authors(items) {
     .map((u) => ({ login: u.login, type: u.type, avatar: `https://avatars.githubusercontent.com/u/${u.id}?v=4` }));
 }
 
+// A Co-authored-by trailer on a merged commit counts too: work carried into
+// someone else's pull request keeps its author that way. Only GitHub's
+// noreply address names a login, as ID+login@users.noreply.github.com;
+// other addresses can't be matched to an account, so they're skipped.
+const COAUTHOR = /^co-authored-by:[^<\n]*<(\d+)\+([^@>\s]+)@users\.noreply\.github\.com>/gim;
+
+/** The co-authors named in commit search results. */
+export function coAuthors(items) {
+  const found = [];
+  for (const i of items) {
+    for (const [, id, login] of (i.commit?.message ?? "").matchAll(COAUTHOR)) {
+      if (LOGIN.test(login)) found.push({ login, type: "User", avatar: `https://avatars.githubusercontent.com/u/${id}?v=4` });
+    }
+  }
+  return found;
+}
+
 // One entry per person across every repository, bots dropped, A to Z.
 export function merge(lists) {
   const people = new Map();
@@ -44,24 +61,30 @@ export function merge(lists) {
 // jamesconwaydev is already listed. Leaving out his PRs and Dependabot's keeps
 // the search well under its limit of 1000 results.
 const QUERY = `org:${ORG} is:pr is:merged -author:jamesconwaydev -author:app/dependabot`;
+const COAUTHOR_QUERY = `org:${ORG} co-authored-by`;
+
+// One search, every page; stops rather than miss anyone past the 1000 limit.
+async function searchAll(kind, query, pick) {
+  const headers = { accept: "application/vnd.github+json" };
+  const found = [];
+  for (let page = 1; ; page++) {
+    const url = `https://api.github.com/search/${kind}?q=${encodeURIComponent(query)}&per_page=100&page=${page}`;
+    const res = await fetch(url, { headers, signal: AbortSignal.timeout(30_000) });
+    if (!res.ok) throw new Error(`search ${kind}: ${res.status}`);
+    const { items, total_count: total, incomplete_results: incomplete } = await res.json();
+    // Past either of these someone could be missed without anyone knowing.
+    if (incomplete || total > 1000) throw new Error(`search ${kind} can't see everyone: ${total} results, incomplete ${incomplete}`);
+    found.push(...pick(items));
+    if (items.length < 100) return found;
+  }
+}
 
 export async function fetchContributors() {
   // No token: the workflow's GITHUB_TOKEN is scoped to this repository, and
   // search with it only finds PRs here, so a circuit's contributors were
-  // missed. The org's repositories are public, and three pages fit well
+  // missed. The org's repositories are public, and a few pages fit well
   // inside the unauthenticated search limit.
-  const headers = { accept: "application/vnd.github+json" };
-  const found = [];
-  for (let page = 1; ; page++) {
-    const url = `https://api.github.com/search/issues?q=${encodeURIComponent(QUERY)}&per_page=100&page=${page}`;
-    const res = await fetch(url, { headers, signal: AbortSignal.timeout(30_000) });
-    if (!res.ok) throw new Error(`search: ${res.status}`);
-    const { items, total_count: total, incomplete_results: incomplete } = await res.json();
-    // Past either of these someone could be missed without anyone knowing.
-    if (incomplete || total > 1000) throw new Error(`search can't see everyone: ${total} results, incomplete ${incomplete}`);
-    found.push(...authors(items));
-    if (items.length < 100) return found;
-  }
+  return [...(await searchAll("issues", QUERY, authors)), ...(await searchAll("commits", COAUTHOR_QUERY, coAuthors))];
 }
 
 /** People in the search results who aren't listed yet, bots and AI tools dropped. */
@@ -74,7 +97,7 @@ export const ISSUE_TITLE = "New contributors missing from the community page";
 const ISSUE_AUTHOR = "github-actions[bot]";
 
 // Profile links, not @mentions: nobody should get a notification for this.
-export const issueBody = (people) => `The Contributors workflow found merged pull requests from people who aren't on the community page yet:
+export const issueBody = (people) => `The Contributors workflow found merged pull requests or co-authored commits from people who aren't on the community page yet:
 
 ${people.map((p) => `- [${p.login}](https://github.com/${p.login})`).join("\n")}
 
