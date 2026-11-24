@@ -1,6 +1,6 @@
 {
   "name": "microshift",
-  "version": "v0.3.0",
+  "version": "v0.3.1",
   "hostObjects": true,
   "inputs": [
     {
@@ -20,16 +20,16 @@
       "type": "map(object({\n    url    = string\n    sha256 = string\n  }))",
       "default": {
         "cri-o": {
-          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-o-1.33.13-10.rhaos4.20.gitbc1a8cc.el9.x86_64.rpm",
-          "sha256": "282775f501846540ad868531dff634d186baaf02cc170aac4d92302620b7baad"
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-o-1.33.13-13.rhaos4.20.gitf4420e5.el9.x86_64.rpm",
+          "sha256": "e3711403ec8ee7a40c6a019974a5b189af24b1bc3bca6f6cc9a471e7159c5dd8"
         },
         "cri-tools": {
           "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/cri-tools-1.33.0-7.el9.x86_64.rpm",
           "sha256": "c75d5181ba107874f3748451d9648b3922eeab4911a47ee921edac125909e967"
         },
         "openshift-clients": {
-          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/openshift-clients-4.20.0-202610221619.p2.gef515cf.assembly.stream.el9.x86_64.rpm",
-          "sha256": "f45a43a0b62a31ff5d7594637b562ed4f98404379e2df523f0d933c34573d8f8"
+          "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/openshift-clients-4.20.0-202611180026.p2.gef515cf.assembly.stream.el9.x86_64.rpm",
+          "sha256": "2b7c0d1c9e5d0cbb7329db05bcdccdf9f53295feb7bb41f23c6d8e438eb4c97e"
         },
         "runc": {
           "url": "https://mirror.openshift.com/pub/openshift-v4/x86_64/dependencies/rpms/4.20-el9-beta/runc-1.2.9-4.rhaos4.20.el9.x86_64.rpm",

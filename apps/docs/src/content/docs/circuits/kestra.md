@@ -3,7 +3,7 @@ title: Kestra
 description: "The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kestra at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kestra at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/kestra/grade.svg)](https://conn3x.org/circuits/kestra/grade)
 
@@ -29,7 +29,7 @@ variable "github_token" {
 }
 
 module "kestra" {
-  source = "github.com/conn3xorg/circuit-kestra?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-kestra?ref=v0.1.1"
 
   hosts                = { orchestrator = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +52,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the secrets too, sinc
 
 A flow reads the secret with `{{ secret('GITHUB_TOKEN') }}`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1/examples/local).
 
 ### Behind a reverse proxy
 
@@ -81,7 +81,7 @@ H2 suits one person trying things out. Kestra's own advice is PostgreSQL for any
 
 ```hcl
 module "kestra" {
-  source = "github.com/conn3xorg/circuit-kestra?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-kestra?ref=v0.1.1"
 
   hosts                = { orchestrator = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -109,7 +109,7 @@ Kestra ships as a Docker image and as a JAR. The image carries the Java runtime 
 
 The standalone server opens three ports: the web server on 8080, a management port on 8081, and since 2.0, a gRPC port on 50051 that its workers connect to. Kestra has no setting to bind that last one to one address, and its own authentication is off by default. On the host's network it would listen on every address. So the container stays on Podman's bridge network, and only the web server is published, on `listen_address`. The other two can't be reached from outside the container.
 
-The circuit uses the `-slim` image by default: Kestra with its core tasks, such as logging, HTTP requests, subflows, schedules and webhooks, at about 250 MB. The image without the suffix, such as `v2.0.9`, has every plugin, at several gigabytes. Set `kestra_version` and `image_digest` to that one if your flows need plugins, or install the ones you need with `kestra plugins install`.
+The circuit uses the `-slim` image by default: Kestra with its core tasks, such as logging, HTTP requests, subflows, schedules and webhooks, at about 250 MB. The image without the suffix, such as `v2.0.13`, has every plugin, at several gigabytes. Set `kestra_version` and `image_digest` to that one if your flows need plugins, or install the ones you need with `kestra plugins install`.
 
 ## What it does
 
@@ -162,8 +162,8 @@ Kestra's script tasks, such as Python or Shell scripts, start a Docker container
 | `postgres` | object | `null` | PostgreSQL to keep Kestra's data in: `host`, and optionally `port` (`5432`), `database` (`"kestra"`) and `username` (`"kestra"`). When null, H2 in `/var/lib/kestra/db`. |
 | `postgres_password` | string, sensitive, ephemeral | `null` | Password of the PostgreSQL user. Needed with `postgres`. Ephemeral and sensitive. |
 | `environment` | map(string), sensitive, ephemeral | `{}` | More environment variables for Kestra. Kestra reads any setting from a variable named after it, such as `KESTRA_TASKS_TMPDIR_PATH`. Ephemeral and sensitive. `SECRET_` and `CONN3X_` names aren't allowed here. |
-| `kestra_version` | string | `"v2.0.9-slim"` | Tag of Kestra's image. Change `image_digest` with it. |
-| `image_digest` | string | `"sha256:3ee725f9..."` | Digest of the image for `kestra_version`. Podman pulls by the digest. Find it on [Docker Hub](https://hub.docker.com/r/kestra/kestra/tags) or with `skopeo inspect docker://docker.io/kestra/kestra:TAG`. |
+| `kestra_version` | string | `"v2.0.13-slim"` | Tag of Kestra's image. Change `image_digest` with it. |
+| `image_digest` | string | `"sha256:6f4a6223..."` | Digest of the image for `kestra_version`. Podman pulls by the digest. Find it on [Docker Hub](https://hub.docker.com/r/kestra/kestra/tags) or with `skopeo inspect docker://docker.io/kestra/kestra:TAG`. |
 | `image_repository` | string | `"docker.io/kestra/kestra"` | Where to pull the image from, such as a mirror of Docker Hub. |
 | `listen_address` | string | `"127.0.0.1"` | Host address the web server is published on. `"0.0.0.0"` publishes it on every address. |
 | `port` | number | `8080` | Host port the web server is published on. |
@@ -183,18 +183,18 @@ Requires Conn3x v0.7.0 or later and systemd on each host. The image is built for
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.0/examples/local) to each on amd64, with H2, an admin and a secret, first at v2.0.8-slim and then upgrading to the default, and checks the next plan has no changes and the secrets aren't in state. [check.sh](https://github.com/conn3xorg/circuit-kestra/blob/v0.1.0/examples/local/check.sh) then signs in as the admin, checks a wrong password and no password are refused, saves a flow through the API and runs it. The flow fails unless `secret('CI_GREETING')` is the value the example passed in, so a pass shows the secret made it through. CI restarts the host, checks the flow and its earlier run are still there, runs it again, and plans clean once more.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1/examples/local) to each on amd64, with H2, an admin and a secret, first at v2.0.8-slim and then upgrading to the default, and checks the next plan has no changes and the secrets aren't in state. [check.sh](https://github.com/conn3xorg/circuit-kestra/blob/v0.1.1/examples/local/check.sh) then signs in as the admin, checks a wrong password and no password are refused, saves a flow through the API and runs it. The flow fails unless `secret('CI_GREETING')` is the value the example passed in, so a pass shows the secret made it through. CI restarts the host, checks the flow and its earlier run are still there, runs it again, and plans clean once more.
 
 The same runs passed by hand on arm64 in rootful Podman on a Mac. By hand on DigitalOcean droplets with 4 GB of memory, Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing: the apply, the clean plan and check.sh passed, ports 8080, 8081 and 50051 didn't answer on the public address, and neither password nor secret was in state. After a reboot Kestra came back on its own, the flow and its run were still there, and the plan was clean. Changing `admin_password` restarted Kestra, the new password signed in and the old one was refused. The Rocky audit log had no denials. PostgreSQL hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kestra/blob/v0.1.0/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kestra/blob/v0.1.1/LICENSE).
 
 Kestra's open-source edition is under the Apache License 2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-kestra](https://github.com/conn3xorg/circuit-kestra). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-kestra/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-kestra](https://github.com/conn3xorg/circuit-kestra). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-kestra/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Conn3x web UI](/circuits/conn3x-ui), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Lempa homelab](/circuits/lempa-homelab), [Mini homelab](/circuits/mini-homelab).
