@@ -181,7 +181,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Ollama](/circuits/ollama) | Runs local LLMs with Ollama from the official release, with the models you name pulled and kept. | v0.1.4 |
 | [Qdrant](/circuits/qdrant) | Runs the Qdrant vector database from its official release under systemd, on loopback until you open it, with an optional API key. | v0.1.2 |
 | [Open WebUI](/circuits/openwebui) | Open WebUI in Podman: private chat for Ollama or a gateway, first admin from code, sign-up closed, per-user model access, no telemetry | v0.1.1 |
-| [LiteLLM](/circuits/litellm) | Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-team keys, budgets, Presidio guardrails and Langfuse tracing. | v0.2.2 |
+| [LiteLLM](/circuits/litellm) | Self-host LiteLLM Proxy: one OpenAI-compatible gateway with per-team keys, budgets, Presidio guardrails and Langfuse tracing. | v0.2.3 |
 | [Presidio](/circuits/presidio) | Presidio's PII analyzer and anonymizer on loopback in Podman, to scrub prompts and documents before a model sees them. | v0.1.1 |
 | [Langfuse](/circuits/langfuse) | Langfuse LLM observability on one host: prompts, costs and evals traced into ClickHouse, keys generated on the host, sign-up off. | v0.1.1 |
 | [Agent box](/circuits/agentbox) | Remote dev box for coding agents: key-only user, git, tmux, ripgrep, Node.js LTS, agent CLIs via npm. Works with Orca or plain SSH. | v0.2.0 |
