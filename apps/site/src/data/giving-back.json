@@ -1,6 +1,48 @@
 {
   "items": [
     {
+      "date": "2026-11-24",
+      "repo": "tailscale/tailscale",
+      "summary": "Reading illumos's ping source to confirm the new call's timeout and exit codes, and flagging one environment variable that would make it ping forever.",
+      "url": "https://github.com/tailscale/tailscale/pull/22608#pullrequestreview-6035671469"
+    },
+    {
+      "date": "2026-11-24",
+      "repo": "osquery/osquery",
+      "summary": "Checking the new bounds in the Windows prefetch parser, and finding that its directory list may start each entry after the first two bytes late.",
+      "url": "https://github.com/osquery/osquery/pull/9348#pullrequestreview-6035663287"
+    },
+    {
+      "date": "2026-11-24",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Matching a stricter Italian VAT number check against python-stdnum, and recomputing every test number's check digit by hand.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2533#pullrequestreview-6035646379"
+    },
+    {
+      "date": "2026-11-24",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Testing the new URL pattern on ports, comma lists and encoded passwords, and naming the credential URLs it still misses.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2552#pullrequestreview-6035637444"
+    },
+    {
+      "date": "2026-11-24",
+      "repo": "prometheus/prometheus",
+      "summary": "Pointing out that a failed promtool debug run leaves a broken debug.tar.gz behind, and that the red Windows job came from another test.",
+      "url": "https://github.com/prometheus/prometheus/pull/20546#pullrequestreview-6035625473"
+    },
+    {
+      "date": "2026-11-24",
+      "repo": "prometheus/prometheus",
+      "summary": "Confirming a new label-name check in histogram_quantiles matches its sibling functions, and suggesting one more test case.",
+      "url": "https://github.com/prometheus/prometheus/pull/20545#pullrequestreview-6035614531"
+    },
+    {
+      "date": "2026-11-24",
+      "repo": "prometheus/prometheus",
+      "summary": "Reviewing the follow-up to our own earlier suggestion: remote read now errors on frames with more than one series instead of dropping them.",
+      "url": "https://github.com/prometheus/prometheus/pull/20557#pullrequestreview-6035604201"
+    },
+    {
       "date": "2026-11-23",
       "repo": "prometheus/node_exporter",
       "summary": "Pointing out that a cgo flag for one macOS collector compiles four others as Objective-C too, and suggesting a separate .m file instead.",
