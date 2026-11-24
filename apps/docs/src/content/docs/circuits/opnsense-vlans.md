@@ -3,7 +3,7 @@ title: OPNsense VLANs
 description: "Builds trusted, IoT and guest VLANs on OPNsense, with Kea DHCP, firewall rules and local names in Unbound."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-opnsense-vlans at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-opnsense-vlans at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/opnsense-vlans/grade.svg)](https://conn3x.org/circuits/opnsense-vlans/grade)
 
@@ -41,7 +41,7 @@ provider "opnsense" {
 }
 
 module "vlans" {
-  source = "github.com/conn3xorg/circuit-opnsense-vlans?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-opnsense-vlans?ref=v0.2.0"
 
   vlans = {
     trusted = {
@@ -93,11 +93,13 @@ After that it's one apply per change. Adding a VLAN later means the same four st
 1. Creates each VLAN on its parent interface, as device `vlan0.<tag>` unless you set `device`.
 2. For each VLAN with `interface` set, adds firewall rules on that interface, by `policy`:
    - `trusted` (the default): anything from the VLAN's network.
-   - `internet_only`: DNS (TCP and UDP 53) to the firewall's address on the VLAN, then a block on everything in `private_networks`, then anything else. That alias holds RFC 1918, CGNAT and link-local ranges by default, so the firewall's other addresses are blocked too.
+   - `internet_only`: DNS (TCP and UDP 53) to the firewall's address on the VLAN, then a block on the firewall itself (every address it has, WAN included) and everything in `private_networks`, then anything else. `private_networks` holds RFC 1918, CGNAT and link-local ranges by default. Each one gets its own block rule with the network written in, not a firewall alias, so the block is there the moment the rules load. (OPNsense fills an alias after loading the rules, and in v0.1.0 an alias left empty let these VLANs reach the GUI.)
 3. For each VLAN with `interface` and `dhcp` set, adds a Kea DHCPv4 subnet for the VLAN's network with your pools, the firewall's address as router and DNS server, and an optional domain name.
 4. Adds an Unbound host override for each name in `host_overrides`.
 
 The rules start at sequence 10000 (`rule_sequence`), ten apart per VLAN in name order, so they stay clear of rules you add by hand lower down.
+
+Upgrading from v0.1.0 deletes the `private_networks` alias and swaps each VLAN's single block rule for the per-network ones. For the few seconds that apply takes, an `internet_only` VLAN can be open to private networks, so run it when that doesn't matter.
 
 It doesn't do NAT, WAN settings, outbound rules, VPNs, or DHCP reservations. The provider has resources for several of those (WireGuard, IPsec, port forwards, Kea reservations), and they sit fine next to this circuit.
 
@@ -127,7 +129,7 @@ This circuit pins [browningluke/opnsense](https://github.com/browningluke/terraf
 
 ## Tested on
 
-OPNsense 26.7 (the nano image), virtual, not hardware. CI downloads the image from `pkg.opnsense.org`, checks it against the SHA-256 in OPNsense's checksum file, builds it into a local image with [vrnetlab](https://github.com/srl-labs/vrnetlab) at a pinned commit, and boots it under KVM in [containerlab](https://containerlab.dev) on a hosted Ubuntu 24.04 runner, with an Alpine container on its `vtnet2`. The image is never pushed or uploaded anywhere. [examples/local](https://github.com/conn3xorg/circuit-opnsense-vlans/tree/v0.1.0/examples/local) is the same lab, and its `assign.sh` does the GUI steps above by script.
+OPNsense 26.7 (the nano image), virtual, not hardware. CI downloads the image from `pkg.opnsense.org`, checks it against the SHA-256 in OPNsense's checksum file, builds it into a local image with [vrnetlab](https://github.com/srl-labs/vrnetlab) at a pinned commit, and boots it under KVM in [containerlab](https://containerlab.dev) on a hosted Ubuntu 24.04 runner, with an Alpine container on its `vtnet2`. The image is never pushed or uploaded anywhere. [examples/local](https://github.com/conn3xorg/circuit-opnsense-vlans/tree/v0.2.0/examples/local) is the same lab, and its `assign.sh` does the GUI steps above by script.
 
 In CI the example is applied first with the provider's previous release, 0.25.0, then with the pinned 0.26.0, with a clean plan after. Then the VLANs are assigned, the second apply adds the rules and DHCP, and the plan after that is clean too. Then, from the client container, on each of the three VLANs, tagged:
 
@@ -141,10 +143,10 @@ Real NICs and switches weren't tested; neither was traffic out to the internet, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-opnsense-vlans/blob/v0.1.0/LICENSE). OPNsense is BSD-2-Clause.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-opnsense-vlans/blob/v0.2.0/LICENSE). OPNsense is BSD-2-Clause.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-opnsense-vlans](https://github.com/conn3xorg/circuit-opnsense-vlans). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-opnsense-vlans/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-opnsense-vlans/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-opnsense-vlans/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-opnsense-vlans](https://github.com/conn3xorg/circuit-opnsense-vlans). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-opnsense-vlans/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-opnsense-vlans/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-opnsense-vlans/tree/v0.2.0/examples/local).
 - Related circuits: [RouterOS baseline](/circuits/routeros-baseline), [Proxmox VE network](/circuits/proxmox-network).
