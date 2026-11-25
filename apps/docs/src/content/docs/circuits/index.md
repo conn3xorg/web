@@ -97,7 +97,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [containerd](/circuits/containerd) | Install pinned containerd, runc and CNI plugins from upstream releases, with systemd unit and config.toml. | v0.1.4 |
 | [Nomad](/circuits/nomad) | A HashiCorp Nomad cluster from a pinned release, with an odd server count, gossip encryption and ACLs on, and no secrets in state. | v0.1.2 |
 | [Helm](/circuits/helm) | A pinned, checksum-verified Helm, with optional chart releases kept as you configured them. | v0.1.5 |
-| [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.3 |
+| [Istio](/circuits/istio) | A pinned, checksum-verified Istio on k3s, with sidecar injection and a check for Traefik's ports. | v0.1.4 |
 | [Flux](/circuits/flux) | Flux CD on a k3s cluster at a pinned version, synced from a Git repository you name, with credentials kept out of state. | v0.1.2 |
 | [Dockge](/circuits/dockge) | Dockge under Podman: write, deploy and update compose stacks from the browser, with no Docker engine. | v0.1.0 |
 | [Portainer CE](/circuits/portainer) | Portainer CE and its agent under Podman, HTTPS on loopback, the admin set before anyone else can claim it. | v0.1.1 |
