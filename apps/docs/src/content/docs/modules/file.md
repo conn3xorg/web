@@ -49,6 +49,18 @@ step "db_password" {
 
 In a real configuration, set `content_wo` from a variable with `ephemeral = true`, as [Secrets in files](/concepts#secrets-in-files) shows. To read the content from a file next to your configuration, use `content = file("${path.module}/files/app.conf")`.
 
+Put a package's sample config in place, then let later steps edit it. `source_path` copies a file that's already on the host, and the next plan shows a change if either file changes:
+
+```hcl
+step "app_conf" {
+  file {
+    path        = "/etc/app/app.conf"
+    source_path = "/usr/share/doc/app/app.conf.sample"
+    mode        = "0640"
+  }
+}
+```
+
 Check a sudoers drop-in with `visudo` before it goes live, so a typo can't lock you out of `sudo`:
 
 ```hcl
@@ -93,14 +105,15 @@ step "old_config" {
 | `backup` | bool | No | true copies the file, before a change replaces it, beside itself with .conn3x-, the time in UTC, a number and a ~ after its name, such as nginx.conf.conn3x-20261118T130501Z.4127~, keeping its mode and owner. The ~ keeps cron.d, logrotate.d and the like from loading the copy. Old copies stay until you remove them. Can't be used with content_wo, since each copy would keep the secret it replaced. |
 | `backup_keep` | number | No | With backup, keeps only this many of the newest copies, removing older ones each time a new one is made. Unset keeps them all. |
 | `confirm_after` | string | No | For a change that could lock Conn3x out, such as sshd_config: before writing, the host keeps a copy and schedules its own revert after this long, such as "60s"; after writing and running reload, Conn3x logs in again over a new connection and cancels it. If that login doesn't come, the host puts the old file back by itself, even if Conn3x has gone away. Needs systemd. |
-| `content` | string | One of | Exact content of the file. Set this or content_wo, unless state is "absent". |
-| `content_wo` | string | One of | Exact content of the file, kept out of state: state records only content_hmac. Use it for secrets. Set this or content, unless state is "absent". |
+| `content` | string | One of | Exact content of the file. Set this or content_wo, or source_path, unless state is "absent". |
+| `content_wo` | string | One of | Exact content of the file, kept out of state: state records only content_hmac. Use it for secrets. Set this or content, or source_path, unless state is "absent". |
 | `group` | string | No | Owning group. Left as is when unset. |
 | `mode` | string | No | Octal permissions. Defaults to "0644", or "0600" with content_wo. |
 | `on_remove` | string | No | What happens on the host when this resource is removed: "forget" (default) leaves the file, "delete" removes it. |
 | `owner` | string | No | Owning user. Left as is when unset. |
 | `path` | string | Yes | Absolute path of the file on the host. |
 | `reload` | string | No | With confirm_after: a command that makes the new file take effect, such as "systemctl reload sshd", run after writing and again after a revert. A reload that fails reverts at once. |
+| `source_path` | string | One of | Absolute path of a file on the same host to copy to path, such as a sample config a package ships. Set this or content, or content_wo, unless state is "absent". Every plan hashes both files on the host, and neither file's content goes into the plan or state. |
 | `state` | string | No | "present" (default) or "absent", which removes the file and keeps it gone. |
 | `validate` | string | No | A command that checks new content before it replaces the file, such as "visudo -cf %s". %s stands for the temporary file. Runs only when the content changes, and is kept out of state. |
 
@@ -114,15 +127,18 @@ Conn3x sets these; reference them as `conn3x_file.<circuit>__<step>["<host>"].<n
 | `content_hmac` | string | HMAC-SHA256 of content_wo, keyed by CONN3X_HMAC_KEY or ~/.config/conn3x/hmac.key. Null when content is used. |
 | `in_sync` | bool | With state "absent", whether the file is already gone. Null otherwise. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
-| `sha256` | string | SHA-256 of the content, hex encoded. |
+| `sha256` | string | SHA-256 of the content, hex encoded. Sensitive when content is. |
+| `source_sha256` | string | With source_path, SHA-256 of the source file when it was last read, hex encoded. Null when it was missing, or without source_path. |
 
 A step lowers to the `conn3x_file` resource, one instance per host, and connects with its circuit's `ssh` block.
 
 ## How it works
 
-**Reading.** Every plan reads the file on the host: whether it exists, its mode, its owner and group, and its content. The plan shows a line-by-line diff of the content, so you review the exact change before it's made. With `content_wo`, state and the plan hold only `content_hmac`, and the diff shows that changing instead.
+**Reading.** Every plan reads the file on the host: whether it exists, its mode, its owner and group, and its content. The plan shows a line-by-line diff of the content, so you review the exact change before it's made. With `content_wo`, state and the plan hold only `content_hmac`, and the diff shows that changing instead. When `content` comes from a `sensitive = true` variable, the plan hides `sha256` along with it, since a plain hash of a short secret can be reversed with a dictionary. State still holds `content` itself, so keep secrets in `content_wo`.
 
 The login user has to be able to read the file. If it can't, the plan stops with an error that names the user, such as `/etc/app.conf exists but can't be read by deploy`. Set `become = true` in the circuit's [`ssh` block](/reference/circuits/ssh#become) so Conn3x reads it through `sudo`, or give the file a mode the login user can read.
+
+**Copying on the host.** With `source_path`, the content comes from a file on the same host, not from your configuration. Every plan hashes both files there with SHA-256, and only the hashes travel: `sha256` holds the copy's and `source_sha256` the source's, and the plan and state never hold either file's content. The step is in sync when the two match and the mode and ownership are what you set. A hand edit of the copy, or a new source, such as one a package upgrade brought, shows as a change to `sha256`, and apply copies the source again. A source that's missing at plan shows as a copy too, since an earlier step in the same apply may create it. If it's still missing at apply, the step fails with `source_path /usr/share/doc/app/app.conf.sample doesn't exist on the host` and the file is left as it was. A source that's a directory, a FIFO, a device or anything else that isn't a regular file is an error at plan and at apply. A link at `source_path` is followed, and a step working as root checks it the way it checks `path`. Writing, `validate`, `backup` and `confirm_after` work as they do for `content`, and the default mode is `"0644"`: the copy doesn't take the source's mode.
 
 **Writing.** If the parent directory doesn't exist, Conn3x creates it first. Conn3x writes the content to a temporary file in the same directory, sets its mode and ownership, flushes it to disk, and renames it over the old file. The directory is flushed afterwards too, so a power cut leaves the old file or the new one, never an empty one. On SELinux hosts the file is relabelled for its path with `restorecon`.
 
@@ -134,7 +150,7 @@ The login user has to be able to read the file. If it can't, the plan stops with
 
 **Mode.** The default mode is `"0644"`, or `"0600"` for `content_wo`.
 
-**Absent.** With `state = "absent"`, every plan checks only whether the file exists, without reading it. If it does, the plan shows the step out of sync and apply removes it. If it doesn't, the plan shows no change, and a file that comes back later is removed again by the next apply. `content`, `content_wo`, `mode`, `owner` and `group` can't be set alongside it. A directory or anything else that isn't a regular file at the path is an error, and is left in place.
+**Absent.** With `state = "absent"`, every plan checks only whether the file exists, without reading it. If it does, the plan shows the step out of sync and apply removes it. If it doesn't, the plan shows no change, and a file that comes back later is removed again by the next apply. `content`, `content_wo`, `source_path`, `mode`, `owner` and `group` can't be set alongside it. A directory or anything else that isn't a regular file at the path is an error, and is left in place.
 
 **Hand edits.** If someone edits the file on the host, the next plan shows the difference and `conn3x drift` reports it.
 
@@ -146,7 +162,7 @@ When you delete a `file` step, `on_remove` decides what happens on the host. The
 
 ## From Ansible
 
-`conn3x convert ansible` turns `copy` tasks with `content` or `src` into `file` steps, reading `src` from your playbook's `files/` directory. `copy` with `remote_src` stays a TODO, and so does `force: no`, since Ansible then writes the file only when it's missing. A task without `mode` gets a TODO note on its step: Ansible leaves the mode of a file that's already there, and a `file` step sets `0644`, so set `mode` where the file should stay tighter. A `validate` carries over, minus any quotes around `%s`. Ansible runs it without a shell, so a `validate` with pipes, redirects, `$`, globs, a second line or other shell syntax stays a TODO, because Conn3x would run those through `sh`.
+`conn3x convert ansible` turns `copy` tasks with `content` or `src` into `file` steps, reading `src` from your playbook's `files/` directory. With `remote_src: true`, an absolute `src` becomes `source_path`, and `mode`, `owner`, `group`, `backup` and `validate` carry over as they do for any `copy`. A `src` ending in `/`, or a task with `directory_mode`, copies a directory recursively, which a `file` step can't, so it stays a TODO. So does `mode: preserve`, since a `file` step sets one mode, and a relative `src`. `force: no` stays a TODO too, since Ansible then writes the file only when it's missing. A task without `mode` gets a TODO note on its step: Ansible leaves the mode of a file that's already there, and a `file` step sets `0644`, so set `mode` where the file should stay tighter. A `validate` carries over, minus any quotes around `%s`. Ansible runs it without a shell, so a `validate` with pipes, redirects, `$`, globs, a second line or other shell syntax stays a TODO, because Conn3x would run those through `sh`.
 
 `file` tasks with `state: absent` become `file` steps with `state = "absent"`. Ansible removes whatever is at the path, even a directory and everything in it, while a `file` step removes a file and stops with an error at anything else, so the step carries a note saying so. If the path holds a directory or a link, change the step to [`directory`](/modules/directory) or [`link`](/modules/link). Other arguments alongside `state: absent` send the task to review.
 
