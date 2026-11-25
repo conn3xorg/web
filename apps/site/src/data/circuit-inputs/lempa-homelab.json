@@ -1,6 +1,6 @@
 {
   "name": "lempa-homelab",
-  "version": "v0.1.4",
+  "version": "v0.1.5",
   "hostObjects": true,
   "inputs": [
     {
