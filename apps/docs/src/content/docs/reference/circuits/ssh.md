@@ -272,7 +272,7 @@ provider "postgresql" {
 - `remote` is what to reach, as the host sees it: `127.0.0.1:5432` for a database on its loopback, or `10.0.2.7:6379` for a cache beside it.
 - The `ssh` block is the same as anywhere else, so jump hosts, host keys and keys all work as they do for steps.
 - `local_host` is always `127.0.0.1`, and `local_port` is a free port, chosen each run, so nothing else on the machine has to give one up.
-- It's ephemeral: none of it lands in state or in a saved plan, and the tunnel closes when the run is done with it.
+- It's ephemeral: none of it lands in state or in a saved plan, and the tunnel closes when the run is done with it. Pass `local_host` and `local_port` to a provider block, a provisioner or another ephemeral resource. An ordinary resource argument refuses them, because a port chosen for one run would be stored in state.
 - As with `ssh -L`, any user on the machine can connect to the port while the run lasts, and reach `remote` as the SSH user. On a shared CI runner, keep that in mind.
 
 A provider that uses it opens the tunnel at plan and again at apply, so the host has to answer at both. If the same configuration creates the host, apply that first, with `-target`, or from a configuration of its own.
