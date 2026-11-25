@@ -170,7 +170,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Keycloak](/circuits/keycloak) | Keycloak for single sign-on, OIDC and SAML on your own hosts, on OpenJDK with dev-file or PostgreSQL storage. | v0.3.0 |
 | [OpenBao](/circuits/openbao) | OpenBao from the official release on raft storage, with auto-unseal and self-initialisation, on loopback until you give it TLS. | v0.3.1 |
 | [Infisical](/circuits/infisical) | Runs Infisical, the open-source secrets manager, from its official image under Podman, with PostgreSQL and Valkey, keys made on the host. | v0.1.1 |
-| [authentik](/circuits/authentik) | Self-host authentik: single sign-on over OIDC and SAML, with users, sessions and audit trail on your own hosts. | v0.1.2 |
+| [authentik](/circuits/authentik) | Self-host authentik: single sign-on over OIDC and SAML, with users, sessions and audit trail on your own hosts. | v0.1.3 |
 | [Passbolt CE](/circuits/passbolt) | Passbolt CE, the team password manager, under Podman with its own MariaDB and every secret made on the host. | v0.1.0 |
 | [Teleport](/circuits/teleport) | A Teleport Community Edition cluster: auth and proxy on one host, SSH nodes joining over a reverse tunnel. | v0.2.0 |
 
@@ -200,7 +200,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
 | [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.1 |
-| [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.5 |
+| [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.6 |
 | [Mini homelab](/circuits/mini-homelab) | Homepage and Uptime Kuma on one server, on loopback behind an SSH tunnel: the small circuit the private AI box tutorial builds. | v0.1.1 |
 
 ### Build and runtimes
