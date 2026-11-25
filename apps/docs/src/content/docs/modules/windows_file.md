@@ -31,6 +31,17 @@ step "api_key" {
 }
 ```
 
+Put the sample config an installer left in place. `source_path` copies a file that's already on the host, and the next plan shows a change if either file changes:
+
+```hcl
+step "app_conf" {
+  windows_file {
+    path        = "C:\\app\\app.conf"
+    source_path = "C:\\app\\app.conf.sample"
+  }
+}
+```
+
 Name who gets access yourself:
 
 ```hcl
@@ -59,10 +70,11 @@ step "readable_by_the_app" {
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `content` | string | One of | Exact content, up to 2 MiB. Set this or content_wo. |
-| `content_wo` | string | One of | Exact content, kept out of state: state records only content_hmac. Use it for secrets. Unless acl is set, only SYSTEM and Administrators can read the file. |
+| `content` | string | One of | Exact content, up to 2 MiB. Set this or content_wo, or source_path. |
+| `content_wo` | string | One of | Exact content, kept out of state: state records only content_hmac. Use it for secrets. Unless acl is set, only SYSTEM and Administrators can read the file. Set this or content, or source_path. |
 | `on_remove` | string | No | What happens on the host when this resource is removed: "forget" (default) leaves the file, "delete" removes it. |
 | `path` | string | Yes | Full path on a local drive, such as C:\app\config.json. Its folder must already exist. |
+| `source_path` | string | One of | Full path of a file on the same host to copy to path, such as a sample config an installer leaves. Set this or content, or content_wo. Every plan hashes both files on the host, and neither file's content goes into the plan or state. |
 
 ## Read-only attributes
 
@@ -73,13 +85,16 @@ Conn3x sets these; reference them as `conn3x_windows_file.<circuit>__<step>["<ho
 | `content_hmac` | string | HMAC-SHA256 over the path and the SHA-256 of content_wo, keyed by CONN3X_HMAC_KEY or ~/.config/conn3x/hmac.key. Null when content is used. |
 | `in_sync` | bool | Whether the file's rules matched at the last refresh. |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
-| `sha256` | string | SHA-256 of the file, hex encoded. Null with content_wo. |
+| `sha256` | string | SHA-256 of the file, hex encoded. Null with content_wo, and sensitive when content is. |
+| `source_sha256` | string | With source_path, SHA-256 of the source file when it was last read, hex encoded. Null when it was missing, or without source_path. |
 
 A step lowers to the `conn3x_windows_file` resource, one instance per host, and connects with its circuit's `ssh` block.
 
 ## How it works
 
 **Writing.** Conn3x makes a temp file beside the target with its access rules already on it, writes the content, then renames it over the target in one step. It does all of that, and a delete, through open handles: each folder is opened from the one above it, and the file from its folder, so no name is looked up a second time. A target that's already there with looser rules can't expose a new secret.
+
+**Copying on the host.** With `source_path`, the content comes from a file on the same host, not from your configuration. Every plan hashes both files there with `Get-FileHash -Algorithm SHA256`, and only the hashes travel: `sha256` holds the copy's and `source_sha256` the source's, and the plan and state never hold either file's content. The step is in sync when the two match and the rules are what you set. A hand edit of the copy, or a new source, such as one an upgrade brought, shows as a change to `sha256`, and apply copies the source again. A source that's missing at plan shows as a copy too, since an earlier step in the same apply may create it. If it's still missing at apply, the step fails with `source_path C:\app\app.conf.sample doesn't exist on the host` and nothing is written. A source that's a folder, a link or a junction, or has one on the way, is an error at plan and at apply: Conn3x opens the source the way it opens the target, from its folder, and holds it so nothing can write to it during the copy. The copy takes the target's rules as `content` does, never the source's. There's no 2 MiB limit, since the content never leaves the host.
 
 **What state keeps.** `content_hmac` is a keyed HMAC over the path and the content's hash, which is what lets a refresh compare it with the hash the host reports. Unlike a `password_hmac` it isn't stretched or tied to the host, so keep the HMAC key away from the state: someone holding both could test guesses at a short secret.
 
@@ -93,8 +108,12 @@ A step lowers to the `conn3x_windows_file` resource, one instance per host, and 
 
 **Secrets.** `content_wo` travels on stdin. Refresh compares a keyed hash of the file's SHA-256 with state, so drift still shows and the content never leaves the host again. Errors have the value blanked.
 
-**Size.** Content is limited to 2 MiB.
+**Size.** `content` and `content_wo` are limited to 2 MiB.
 
 ## Removal
 
 By default, deleting a `windows_file` step leaves the file. With `on_remove = "delete"` it deletes the file, or a link standing in its place, but never what a link points to.
+
+## From Ansible
+
+`conn3x convert ansible` turns `win_copy` tasks with `content` into `windows_file` steps, and reads `src` from your playbook's `files/` directory. With `remote_src: true`, a `src` that's a full path on a local drive, such as `C:\app\app.conf.sample`, becomes `source_path`. A `src` ending in `\` or `/` copies a folder recursively, which a `windows_file` step can't, so it stays a TODO, and so does any other `src` with `remote_src`. `force: no` stays a TODO too, since Ansible then writes the file only when it's missing.
