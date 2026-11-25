@@ -57,7 +57,7 @@ For a name and a real certificate, put a proxy in front, such as [circuit-caddy]
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.0"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.1"
 
   hosts                = { apps = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"

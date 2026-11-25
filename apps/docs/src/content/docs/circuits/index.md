@@ -48,7 +48,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | --- | --- | --- |
 | [nginx](/circuits/nginx) | Installs nginx, writes your site, keeps it running, opens the firewall, and can serve HTTPS with a self-signed certificate. | v0.3.0 |
 | [Apache httpd](/circuits/apache) | Apache httpd on Debian, Ubuntu, Rocky and Fedora: virtual hosts, reverse proxy and TLS, config-tested before every reload. | v0.3.0 |
-| [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.4.0 |
+| [Caddy](/circuits/caddy) | Runs Caddy as a web server or reverse proxy, with the Caddyfile built from a map of sites and checked before it goes live. | v0.4.1 |
 | [HAProxy](/circuits/haproxy) | HAProxy load balancing from a map of frontends and backends, with the config checked by haproxy -c before it goes live. | v0.2.0 |
 | [Traefik](/circuits/traefik) | Traefik 3 routing HTTPS to your backends from a map of sites, with Let's Encrypt certificates and no restart when a site changes. | v0.2.1 |
 | [certbot](/circuits/certbot) | Let's Encrypt certificates with certbot for nginx, HAProxy and the rest, renewed by the distro's own timer. | v0.2.1 |
