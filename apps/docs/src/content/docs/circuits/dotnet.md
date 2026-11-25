@@ -3,11 +3,11 @@ title: .NET
 description: "One exact .NET SDK with ASP.NET Core from Microsoft's tarballs, checked against its checksum, with telemetry off by default."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-dotnet at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-dotnet at v0.1.2. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/dotnet/grade.svg)](https://conn3x.org/circuits/dotnet/grade)
 
-A Conn3x circuit that puts one exact .NET SDK on all your hosts, ASP.NET Core included. The tarball comes from Microsoft's build server and is checked against its SHA-256, so Debian, which doesn't package .NET, gets the same 10.0.403 as everything else. That's the current long-term support channel, 10.0.
+A Conn3x circuit that puts one exact .NET SDK on all your hosts, ASP.NET Core included. The tarball comes from Microsoft's build server and is checked against its SHA-256, so Debian, which doesn't package .NET, gets the same 10.0.404 as everything else. That's the current long-term support channel, 10.0.
 
 It also turns the CLI's telemetry off. Left alone, the `dotnet` command sends Microsoft usage data; here `/usr/local/bin/dotnet` is a small script that sets `DOTNET_CLI_TELEMETRY_OPTOUT=1` and runs the real one, so the setting holds in cron, systemd and SSH commands as well as login shells. To opt in, set `telemetry = true`. [Microsoft documents what it collects](https://learn.microsoft.com/dotnet/core/tools/telemetry).
 
@@ -15,7 +15,7 @@ It also turns the CLI's telemetry off. Left alone, the `dotnet` command sends Mi
 
 ```hcl
 module "dotnet" {
-  source = "github.com/conn3xorg/circuit-dotnet?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-dotnet?ref=v0.1.2"
 
   hosts                = { app1 = "203.0.113.10", app2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -35,20 +35,20 @@ hosts = {
 }
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.2/examples/local).
 
 ### Changing the release
 
 `sdk_version` and `checksums` move together, with one extra step. Microsoft publishes SHA-512 in each channel's [releases.json](https://builds.dotnet.microsoft.com/dotnet/release-metadata/10.0/releases.json), and Conn3x's download step takes SHA-256. So check the tarball against Microsoft's SHA-512, then take its SHA-256 yourself, as the defaults here were:
 
 ```sh
-curl -sSfLO https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.403/dotnet-sdk-10.0.403-linux-x64.tar.gz
-sha512sum dotnet-sdk-10.0.403-linux-x64.tar.gz   # compare with releases.json
-sha256sum dotnet-sdk-10.0.403-linux-x64.tar.gz   # goes in checksums
+curl -sSfLO https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.404/dotnet-sdk-10.0.404-linux-x64.tar.gz
+sha512sum dotnet-sdk-10.0.404-linux-x64.tar.gz   # compare with releases.json
+sha256sum dotnet-sdk-10.0.404-linux-x64.tar.gz   # goes in checksums
 ```
 
 ```hcl
-sdk_version = "10.0.403"
+sdk_version = "10.0.404"
 checksums = {
   x64   = "<SHA-256 of the linux-x64 tarball>"
   arm64 = "<SHA-256 of the linux-arm64 tarball>"
@@ -86,15 +86,15 @@ Before the circuit runs, the `conn3x_host` data source reads each host's archite
 | `ssh_private_key_file` | string | `null` | Path to a private key. When null, Conn3x uses the SSH agent. |
 | `ssh_known_hosts_file` | string | `null` | known_hosts file to check host keys against. When null, `~/.ssh/known_hosts`. Not used for a host object with `host_key`. |
 | `ssh_become` | bool | `false` | Run commands as root through sudo. Set it when `ssh_user` isn't root. |
-| `sdk_version` | string | `"10.0.403"` | SDK release to install. Change `checksums` with it. |
-| `checksums` | map(string) | The tarballs of 10.0.403 | SHA-256 of the `x64` and `arm64` tarballs. See [changing the release](#changing-the-release). |
+| `sdk_version` | string | `"10.0.404"` | SDK release to install. Change `checksums` with it. |
+| `checksums` | map(string) | The tarballs of 10.0.404 | SHA-256 of the `x64` and `arm64` tarballs. See [changing the release](#changing-the-release). |
 | `telemetry` | bool | `false` | Let the CLI send Microsoft its usage telemetry. |
 
 ## Outputs
 
 | Name | Description |
 | --- | --- |
-| `dotnet_root` | Directory of the installed SDK on each host, by host name, such as `{ app1 = "/opt/dotnet/10.0.403" }`. |
+| `dotnet_root` | Directory of the installed SDK on each host, by host name, such as `{ app1 = "/opt/dotnet/10.0.404" }`. |
 
 ## Requirements
 
@@ -102,7 +102,7 @@ Requires Conn3x v0.6.10 or later, a package mirror each host can reach, and outb
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1/examples/local) was applied to each on arm64, and the second plan had no changes. `dotnet new web` then built a minimal ASP.NET Core app, whose own launcher started and answered `Hello World!` over HTTP. CI runs the same checks on amd64.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.2/examples/local) was applied to each on arm64, and the second plan had no changes. `dotnet new web` then built a minimal ASP.NET Core app, whose own launcher started and answered `Hello World!` over HTTP. CI runs the same checks on amd64.
 
 On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, both `s-1vcpu-1gb`, amd64, each shared with the other circuits of this batch: the same checks passed, and after a reboot the plan had no changes and they still passed.
 
@@ -110,10 +110,10 @@ On an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELinux enforcing, 
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-dotnet/blob/v0.1.1/LICENSE). The .NET SDK tarball is under the MIT license, per its own `LICENSE.txt`, with bundled components listed in `ThirdPartyNotices.txt`.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-dotnet/blob/v0.1.2/LICENSE). The .NET SDK tarball is under the MIT license, per its own `LICENSE.txt`, with bundled components listed in `ThirdPartyNotices.txt`.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-dotnet](https://github.com/conn3xorg/circuit-dotnet). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-dotnet/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-dotnet](https://github.com/conn3xorg/circuit-dotnet). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-dotnet/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-dotnet/tree/v0.1.2/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).
