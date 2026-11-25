@@ -1,12 +1,12 @@
 {
   "name": "openvox",
-  "version": "v0.2.0",
+  "version": "v0.2.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "openvox_version",
       "type": "string",
-      "default": "9.2.1",
+      "default": "9.5.0",
       "description": "openvox-agent release to install, from https://github.com/OpenVoxProject/openvox/releases. Change it with checksums.",
       "sensitive": false,
       "ephemeral": false,
@@ -16,12 +16,12 @@
       "name": "checksums",
       "type": "map(string)",
       "default": {
-        "ubuntu/24.04/x86_64": "83225030da8f2c94a649318f7f02ca9ddc01919446ae5ec04dcb1e9d1343f58e",
-        "ubuntu/24.04/aarch64": "1f600b2b194ad4fb199b13228fdfbfe29dde1e5e0b2dfba42b578c06c6b6a907",
-        "debian/13/x86_64": "352e3cdc724579d62c059e9f76dc6e6f3067516de1428bea178d57a27cfc7280",
-        "debian/13/aarch64": "42edff78021628009976aba513dd1158979610d4a3a6fe972c1ae55d6903d056",
-        "el/10/x86_64": "c55617f8c34f482e373b9037456879063c5cfafa9c3f18b7372d6bd23af129ca",
-        "el/10/aarch64": "d5ca6be65f2043b28bbe7bb8f1621c461250554e35a36165c8319c265f5933fb"
+        "ubuntu/24.04/x86_64": "26df4067e5602879fbd73351ac74d2ed4f1fe221d1d1b58c3b9abd474c530b43",
+        "ubuntu/24.04/aarch64": "774c906ef2d28e71027fb52bc5852822fc31fbbd10243889651c5cf7edae3321",
+        "debian/13/x86_64": "428ec7627066cb061b0ceaa7813f815afb16fe10db93bb28f2394769eddf1891",
+        "debian/13/aarch64": "c9ffcea9e17de8fb6e9e95391c0aa6bb41f84c80d06d6851f0b63b2a6e0a240b",
+        "el/10/x86_64": "fa51d244b8cbd28878c2a04fb80615f79ae59f82d310d46af3064a04514e54a5",
+        "el/10/aarch64": "12b10d246d71f201a2200f516f43efb7cc9b8fc9469233779fbd4cde9dce1d97"
       },
       "description": "SHA-256 of the package for each platform, by \"PLATFORM/VERSION/ARCH\". Change these with openvox_version.",
       "sensitive": false,
