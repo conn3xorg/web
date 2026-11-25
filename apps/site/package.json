@@ -10,16 +10,16 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "astro": "7.4.11",
-    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.4.13",
+    "@astrojs/sitemap": "3.7.6",
     "@astrojs/rss": "4.0.19"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
     "@emnapi/runtime": "1.11.3",
     "@lhci/cli": "0.16.1",
-    "@playwright/test": "1.65.0",
+    "@playwright/test": "1.65.1",
     "typescript": "6.0.3",
-    "wrangler": "4.160.1"
+    "wrangler": "4.164.0"
   }
 }

@@ -17,6 +17,9 @@ export default defineConfig({
   site: "https://docs.conn3x.org",
   output: "static",
   trailingSlash: "never",
+  // Starlight 0.43 stopped forcing :where() selectors; keep them, so our
+  // overrides win as they did before.
+  scopedStyleStrategy: "where",
   build: {
     format: "file",
     // Inline, so a page's first paint doesn't wait on a stylesheet round
