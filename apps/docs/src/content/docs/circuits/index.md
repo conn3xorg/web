@@ -226,7 +226,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Kotlin](/circuits/kotlin) | One exact Kotlin compiler from JetBrains' releases, checked against its checksum, on a Java you provide. | v0.1.1 |
 | [.NET](/circuits/dotnet) | One exact .NET SDK with ASP.NET Core from Microsoft's tarballs, checked against its checksum, with telemetry off by default. | v0.1.1 |
 | [C toolchain](/circuits/c-toolchain) | gcc, g++, make, gdb and nasm from your distribution's packages, for C, C++ and assembly. Versions differ per distribution. | v0.2.1 |
-| [Semaphore UI](/circuits/semaphore) | Semaphore UI under Podman: run Ansible, OpenTofu and Terraform from a web page, on SQLite or PostgreSQL. | v0.1.0 |
+| [Semaphore UI](/circuits/semaphore) | Semaphore UI under Podman: run Ansible, OpenTofu and Terraform from a web page, on SQLite or PostgreSQL. | v0.1.1 |
 | [Renovate](/circuits/renovate) | Self-hosted Renovate on a systemd timer against the repositories you list, its token kept out of state. | v0.1.0 |
 
 ### Communication and media
