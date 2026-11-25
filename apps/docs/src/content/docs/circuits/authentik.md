@@ -3,7 +3,7 @@ title: authentik
 description: "Self-host authentik: single sign-on over OIDC and SAML, with users, sessions and audit trail on your own hosts."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-authentik at v0.1.2. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-authentik at v0.1.3. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/authentik/grade.svg)](https://conn3x.org/circuits/authentik/grade)
 
@@ -50,7 +50,7 @@ module "postgres" {
 }
 
 module "authentik" {
-  source = "github.com/conn3xorg/circuit-authentik?ref=v0.1.2"
+  source = "github.com/conn3xorg/circuit-authentik?ref=v0.1.3"
 
   depends_on = [module.postgres]
 
@@ -78,11 +78,11 @@ A second `conn3x plan` says `No changes.` Every plan needs the same values, sinc
 
 authentik listens on `127.0.0.1:9000` for HTTP and `127.0.0.1:9443` for HTTPS with a self-signed certificate. Put a reverse proxy in front for TLS, such as [circuit-caddy](/circuits/caddy) with `reverse_proxy 127.0.0.1:9000`, and set `public_url` to the address people type. Then sign in as `akadmin`.
 
-The apply finishes once the server opens its port, and the worker is still applying authentik's default flows and making its certificate at that point. Give it a minute or two before you sign in, or longer on a small host. To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-authentik/tree/v0.1.2/examples/local).
+The apply finishes once the server opens its port, and the worker is still applying authentik's default flows and making its certificate at that point. Give it a minute or two before you sign in, or longer on a small host. To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-authentik/tree/v0.1.3/examples/local).
 
 ### What was exercised, and what's only inherited
 
-Identity servers are easy to oversell, so here's exactly where the line falls. [`examples/local/check.py`](https://github.com/conn3xorg/circuit-authentik/blob/v0.1.2/examples/local/check.py) runs on every test host and in CI.
+Identity servers are easy to oversell, so here's exactly where the line falls. [`examples/local/check.py`](https://github.com/conn3xorg/circuit-authentik/blob/v0.1.3/examples/local/check.py) runs on every test host and in CI.
 
 | Feature | Status | What that means |
 | --- | --- | --- |
@@ -168,8 +168,8 @@ A change to any input restarts the containers it touches.
 | `port` | number | `9000` | HTTP port. Not 9001, 9300 or 9301, which the circuit's other listeners use. |
 | `https_port` | number | `9443` | HTTPS port. The same three are off limits. |
 | `min_memory_mb` | number | `1600` | Memory, in MiB, a host needs before the circuit configures it. |
-| `authentik_version` | string | `"2026.8.5"` | Tag of `ghcr.io/goauthentik/server`. Change `image_digest` with it. |
-| `image_digest` | string | `"sha256:602227a8..."` | Digest of the image for `authentik_version`, the multi-architecture index. Find it with `skopeo inspect docker://ghcr.io/goauthentik/server:TAG`. |
+| `authentik_version` | string | `"2026.8.7"` | Tag of `ghcr.io/goauthentik/server`. Change `image_digest` with it. |
+| `image_digest` | string | `"sha256:1675a017..."` | Digest of the image for `authentik_version`, the multi-architecture index. Find it with `skopeo inspect docker://ghcr.io/goauthentik/server:TAG`. |
 | `environment` | map(string), sensitive, ephemeral | `{}` | More of authentik's [environment variables](https://docs.goauthentik.io/install-config/configuration/) for both containers, such as `AUTHENTIK_EMAIL__HOST`. Ephemeral and sensitive. The variables the circuit sets itself aren't allowed. |
 
 ## Outputs
@@ -186,7 +186,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host, with 2 CPU cores and 2
 
 ## Tested on
 
-Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each a 2 vCPU, 2 GB DigitalOcean droplet on amd64 with circuit-postgres on the same host. On each, the second plan was clean and [`check.py`](https://github.com/conn3xorg/circuit-authentik/blob/v0.1.2/examples/local/check.py) passed. Both were rebooted: the services came back on their own, the same check passed, and the plan was clean. From outside the droplets, ports 9000, 9443, 9300 and 5432 didn't answer. Neither the bootstrap values nor the generated secret key appeared in `terraform.tfstate`. On Ubuntu, setting both bootstrap values to null took them out of the env file, the next plan was clean, and the token and password still worked. Neither droplet had an out-of-memory kill. Rocky's audit log had no SELinux denials.
+Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each a 2 vCPU, 2 GB DigitalOcean droplet on amd64 with circuit-postgres on the same host. On each, the second plan was clean and [`check.py`](https://github.com/conn3xorg/circuit-authentik/blob/v0.1.3/examples/local/check.py) passed. Both were rebooted: the services came back on their own, the same check passed, and the plan was clean. From outside the droplets, ports 9000, 9443, 9300 and 5432 didn't answer. Neither the bootstrap values nor the generated secret key appeared in `terraform.tfstate`. On Ubuntu, setting both bootstrap values to null took them out of the env file, the next plan was clean, and the token and password still worked. Neither droplet had an out-of-memory kill. Rocky's audit log had no SELinux denials.
 
 Ubuntu 24.04, Debian 13, Rocky Linux 10 and Fedora 45 ran in local containers from Conn3x's test images, with the same check and the same look through the state, plus a restart of both services followed by the check again. The CI workflow does the same on those four, on amd64.
 
@@ -194,10 +194,10 @@ Upgrading from one `authentik_version` to the next hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-authentik/blob/v0.1.2/LICENSE). authentik itself is under the MIT license, apart from its `authentik/enterprise` directory, which has its own licence, and its `website` directory, under CC BY-SA 4.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-authentik/blob/v0.1.3/LICENSE). authentik itself is under the MIT license, apart from its `authentik/enterprise` directory, which has its own licence, and its `website` directory, under CC BY-SA 4.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-authentik](https://github.com/conn3xorg/circuit-authentik). This page covers [v0.1.2](https://github.com/conn3xorg/circuit-authentik/tree/v0.1.2); the repository's [tags](https://github.com/conn3xorg/circuit-authentik/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-authentik/tree/v0.1.2/examples/local).
+- Repository: [conn3xorg/circuit-authentik](https://github.com/conn3xorg/circuit-authentik). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-authentik/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-authentik/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-authentik/tree/v0.1.3/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Users](/circuits/users), [Active Directory](/circuits/active-directory), [LLDAP](/circuits/lldap), [OpenLDAP](/circuits/openldap), [FreeIPA](/circuits/freeipa), [Keycloak](/circuits/keycloak), [OpenBao](/circuits/openbao), [Infisical](/circuits/infisical), [Passbolt CE](/circuits/passbolt), [Teleport](/circuits/teleport).
