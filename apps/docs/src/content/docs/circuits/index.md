@@ -220,7 +220,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
 | [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.2.1 |
 | [Rust](/circuits/rust) | One exact Rust toolchain from static.rust-lang.org on every distribution, checksum-verified and system-wide, without rustup. | v0.1.1 |
-| [Go](/circuits/go) | One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions. | v0.1.1 |
+| [Go](/circuits/go) | One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions. | v0.1.2 |
 | [Python](/circuits/python) | Your distribution's Python with working venvs, and optional environments holding pinned packages. | v0.1.4 |
 | [Ruby](/circuits/ruby) | Your distribution's Ruby, with optional gems at pinned versions. | v0.1.2 |
 | [Kotlin](/circuits/kotlin) | One exact Kotlin compiler from JetBrains' releases, checked against its checksum, on a Java you provide. | v0.1.1 |
