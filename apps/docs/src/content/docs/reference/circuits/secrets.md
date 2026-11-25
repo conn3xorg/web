@@ -128,7 +128,7 @@ circuit "app" {
 }
 ```
 
-`values` is a map of the file's values: top-level keys as written, nested ones joined with dots, such as `db.password`, and list items by index, such as `hosts.0`. Because the resource is ephemeral, its values never reach state or a plan file, and OpenTofu stops you using one anywhere that would keep it. They go into write-only arguments such as `content_wo`, into ephemeral variables, and into the provider block's [`private_keys`](/reference/circuits/ssh#keys-from-a-secret-store).
+`values` is a map of the file's values: top-level keys as written, nested ones joined with dots, such as `db.password`, and list items by index, such as `hosts.0`. Because the resource is ephemeral, its values never reach state or a plan file, and OpenTofu stops you using one anywhere that would keep it. Before v0.33.0 it didn't: a value passed to an ordinary argument was saved in the plan and in state (see [GHSA-pvv7-6hq6-m2pf](https://github.com/conn3xorg/conn3x/security/advisories/GHSA-pvv7-6hq6-m2pf)). They go into write-only arguments such as `content_wo`, into ephemeral variables, and into the provider block's [`private_keys`](/reference/circuits/ssh#keys-from-a-secret-store).
 
 **Keys.** Conn3x finds your age key where sops does: `SOPS_AGE_KEY`, the file `SOPS_AGE_KEY_FILE` names, or `sops/age/keys.txt` in your config directory. In CI, put the key in the pipeline's secret store as `SOPS_AGE_KEY`. To share the file with a teammate, add their age public key to `.sops.yaml` and run `sops updatekeys`. That's sops's own workflow, and Conn3x doesn't change it.
 

@@ -275,7 +275,7 @@ step "ntp" {
 
 ### Encrypted layers
 
-Since v0.19.0, `ephemeral "conn3x_hostdata"` reads the same hierarchy with the same rule, first layer wins, and decrypts the layers that are encrypted with SOPS and age, such as a `common.sops.yaml` holding each environment's database password. It's ephemeral, so its values never reach plan or state. Use them in write-only arguments, such as `content_wo` and `password_wo`.
+Since v0.19.0, `ephemeral "conn3x_hostdata"` reads the same hierarchy with the same rule, first layer wins, and decrypts the layers that are encrypted with SOPS and age, such as a `common.sops.yaml` holding each environment's database password. It's ephemeral, so its values never reach plan or state. Use them in write-only arguments, such as `content_wo` and `password_wo`. Every value it gives is ephemeral, including ones from layers that aren't encrypted, so OpenTofu refuses them in an ordinary argument such as `content`. For values that aren't secret, use `provider::conn3x::hostdata`, which reads the same hierarchy into plain values.
 
 ```hcl
 ephemeral "conn3x_hostdata" "web1" {
