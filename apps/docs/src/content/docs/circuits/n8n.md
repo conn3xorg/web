@@ -3,7 +3,7 @@ title: n8n
 description: "Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-n8n at v0.1.3. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-n8n at v0.1.4. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/n8n/grade.svg)](https://conn3x.org/circuits/n8n/grade)
 
@@ -25,7 +25,7 @@ variable "owner_password" {
 }
 
 module "n8n" {
-  source = "github.com/conn3xorg/circuit-n8n?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-n8n?ref=v0.1.4"
 
   hosts                = { automation = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -45,7 +45,7 @@ conn3x apply
 
 A second `conn3x plan` says `No changes.` Every plan needs the password too, since Conn3x checks the file it's kept in on the host against it. n8n wants 8 to 64 characters, with at least one digit and one uppercase letter, and the circuit checks that before it connects to anything.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.3/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.4/examples/local).
 
 ### Behind a reverse proxy
 
@@ -101,7 +101,7 @@ module "postgres" {
 }
 
 module "n8n" {
-  source = "github.com/conn3xorg/circuit-n8n?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-n8n?ref=v0.1.4"
 
   depends_on = [module.postgres]
 
@@ -199,8 +199,8 @@ Find the key in the old instance's `N8N_ENCRYPTION_KEY`, or in the `encryptionKe
 | `postgres_password` | string, sensitive, ephemeral | `null` | Password of the PostgreSQL user. Needed with `postgres`. Ephemeral and sensitive, like `owner_password`. |
 | `executions_prune` | bool | `true` | Delete old execution data. Sets `EXECUTIONS_DATA_PRUNE`. |
 | `executions_max_age` | number | `336` | Hours to keep finished executions before pruning deletes them. Sets `EXECUTIONS_DATA_MAX_AGE`. |
-| `n8n_version` | string | `"2.45.6"` | Tag of n8n's image. Change `image_digest` with it. |
-| `image_digest` | string | `"sha256:45edf896..."` | Digest of the image for `n8n_version`. Podman pulls by the digest. Find it on [Docker Hub](https://hub.docker.com/r/n8nio/n8n/tags) or with `skopeo inspect docker://docker.n8n.io/n8nio/n8n:TAG`. |
+| `n8n_version` | string | `"2.49.6"` | Tag of n8n's image. Change `image_digest` with it. |
+| `image_digest` | string | `"sha256:a1a9955a..."` | Digest of the image for `n8n_version`. Podman pulls by the digest. Find it on [Docker Hub](https://hub.docker.com/r/n8nio/n8n/tags) or with `skopeo inspect docker://docker.n8n.io/n8nio/n8n:TAG`. |
 | `image_repository` | string | `"ghcr.io/n8n-io/n8n"` | Where to pull the image from. `"docker.n8n.io/n8nio/n8n"` (Docker Hub) serves the same digests. |
 | `listen_address` | string | `"127.0.0.1"` | Address n8n listens on. `"0.0.0.0"` listens on every address. |
 | `port` | number | `5678` | Port n8n listens on. |
@@ -222,7 +222,7 @@ Requires Conn3x v0.6.9 or later and systemd on each host. The image is built for
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.3/examples/local) to each on amd64, with SQLite and an owner, and checks that the second plan has no changes. It then checks `/healthz` answers `ok`, signs in as the owner through n8n's REST API and checks a wrong password is refused. It imports a workflow with a webhook trigger using `n8n import:workflow` in the container, publishes it with `n8n publish:workflow`, and restarts n8n. After the restart the owner signs in again, the webhook answers on `/webhook/ci-check`, and a third plan has no changes. CI pulls from `ghcr.io/n8n-io/n8n`, because GitHub's runners share Docker Hub's anonymous pull limit.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.4/examples/local) to each on amd64, with SQLite and an owner, and checks that the second plan has no changes. It then checks `/healthz` answers `ok`, signs in as the owner through n8n's REST API and checks a wrong password is refused. It imports a workflow with a webhook trigger using `n8n import:workflow` in the container, publishes it with `n8n publish:workflow`, and restarts n8n. After the restart the owner signs in again, the webhook answers on `/webhook/ci-check`, and a third plan has no changes. CI pulls from `ghcr.io/n8n-io/n8n`, because GitHub's runners share Docker Hub's anonymous pull limit.
 
 By hand, on DigitalOcean droplets with 2 GB of memory: an Ubuntu 24.04 droplet ran n8n on PostgreSQL from circuit-postgres, behind circuit-caddy with a Let's Encrypt certificate for an sslip.io name. The owner signed in over HTTPS with a secure cookie, the webhook answered through Caddy, and port 5678 didn't answer from outside. A Rocky Linux 10 droplet with SELinux enforcing ran the SQLite setup. Both passed the CI checks, came back on their own after a reboot with the owner and the webhook still working, and planned clean again; the Rocky audit log had no denials. Neither the generated key nor any password was in state.
 
@@ -230,12 +230,12 @@ On those droplets, pulls from Docker Hub hit its anonymous limit, which DigitalO
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-n8n/blob/v0.1.3/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-n8n/blob/v0.1.4/LICENSE).
 
 n8n itself is not open source in the OSI sense. It's [fair-code](https://faircode.io), under n8n's [Sustainable Use License](https://github.com/n8n-io/n8n/blob/master/LICENSE.md): you may use and change it for your own internal business purposes, or for non-commercial or personal use, and running it on your own hosts for your team is exactly that. What it doesn't cover is making n8n a product for others: hosting it for customers to connect their own accounts and build workflows, or charging for a copy. That needs a commercial agreement with n8n. Files with `.ee.` in their names are under the separate n8n Enterprise License. If you're unsure whether your use fits, [n8n's licence page](https://docs.n8n.io/n8n-community-license) has worked examples.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-n8n](https://github.com/conn3xorg/circuit-n8n). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-n8n/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.3/examples/local).
+- Repository: [conn3xorg/circuit-n8n](https://github.com/conn3xorg/circuit-n8n). This page covers [v0.1.4](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.4); the repository's [tags](https://github.com/conn3xorg/circuit-n8n/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-n8n/tree/v0.1.4/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Conn3x web UI](/circuits/conn3x-ui), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab), [Mini homelab](/circuits/mini-homelab).
