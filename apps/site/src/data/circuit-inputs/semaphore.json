@@ -1,13 +1,13 @@
 {
   "name": "semaphore",
-  "version": "v0.1.0",
+  "version": "v0.1.1",
   "hostObjects": true,
   "inputs": [
     {
       "name": "semaphore_version",
       "type": "string",
-      "default": "v2.19.17",
-      "description": "Tag of the docker.io/semaphoreui/semaphore image, such as \"v2.19.17\". Change image_digest with it.",
+      "default": "v2.20.23",
+      "description": "Tag of the docker.io/semaphoreui/semaphore image, such as \"v2.20.23\". Change image_digest with it.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
@@ -15,7 +15,7 @@
     {
       "name": "image_digest",
       "type": "string",
-      "default": "sha256:008dacd9f1adbd92e8a048f1786ae1dd9bed2a352aca2eb30b9837de5706e7f7",
+      "default": "sha256:00e6733dbca9a2bddf77e048f34f9002027c8a6f549a8cde18d13101e84a19c3",
       "description": "Digest of docker.io/semaphoreui/semaphore for semaphore_version. Podman pulls by the digest, so a tag that moves upstream can't change what runs.",
       "sensitive": false,
       "ephemeral": false,
