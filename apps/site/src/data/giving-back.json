@@ -1,6 +1,48 @@
 {
   "items": [
     {
+      "date": "2026-11-25",
+      "repo": "prometheus/alertmanager",
+      "summary": "Confirming a one-line fix to how matcher lists split on commas, and showing which new test already passed before it.",
+      "url": "https://github.com/prometheus/alertmanager/pull/5769#pullrequestreview-6051942057"
+    },
+    {
+      "date": "2026-11-25",
+      "repo": "withastro/astro",
+      "summary": "Checking that a session set after logout gets a fresh ID and cookie, not the one just destroyed.",
+      "url": "https://github.com/withastro/astro/pull/18819#pullrequestreview-6051937497"
+    },
+    {
+      "date": "2026-11-25",
+      "repo": "osquery/osquery",
+      "summary": "Recomputing every timestamp in a fix for certificate dates that drifted by the host's time zone on Linux.",
+      "url": "https://github.com/osquery/osquery/pull/9349#pullrequestreview-6051930110"
+    },
+    {
+      "date": "2026-11-25",
+      "repo": "linux-audit/audit-userspace",
+      "summary": "Checking that aulast's failed-login report now filters by user and terminal the same way its normal report does.",
+      "url": "https://github.com/linux-audit/audit-userspace/pull/571#pullrequestreview-6051922184"
+    },
+    {
+      "date": "2026-11-25",
+      "repo": "linux-audit/audit-userspace",
+      "summary": "Tracing the one path in aulast where a new login session could vanish from its list, to size a small fix.",
+      "url": "https://github.com/linux-audit/audit-userspace/pull/566#pullrequestreview-6051922038"
+    },
+    {
+      "date": "2026-11-25",
+      "repo": "aquasecurity/trivy",
+      "summary": "Showing that a slice-aliasing bug in Trivy's version check already fires on ordinary scans, thanks to how Go's JSON decoder sizes slices.",
+      "url": "https://github.com/aquasecurity/trivy/pull/11710#pullrequestreview-6051912098"
+    },
+    {
+      "date": "2026-11-25",
+      "repo": "aquasecurity/trivy",
+      "summary": "Checking a Go build-flag parsing fix against the linker's own code, and finding a false version match the old parser also produced.",
+      "url": "https://github.com/aquasecurity/trivy/pull/11727#pullrequestreview-6051905246"
+    },
+    {
       "date": "2026-11-24",
       "repo": "tailscale/tailscale",
       "summary": "Reading illumos's ping source to confirm the new call's timeout and exit codes, and flagging one environment variable that would make it ping forever.",
