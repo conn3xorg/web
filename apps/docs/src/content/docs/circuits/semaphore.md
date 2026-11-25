@@ -3,7 +3,7 @@ title: Semaphore UI
 description: "Semaphore UI under Podman: run Ansible, OpenTofu and Terraform from a web page, on SQLite or PostgreSQL."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-semaphore at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-semaphore at v0.1.1. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/semaphore/grade.svg)](https://conn3x.org/circuits/semaphore/grade)
 
@@ -23,7 +23,7 @@ variable "semaphore_password" {
 }
 
 module "semaphore" {
-  source = "github.com/conn3xorg/circuit-semaphore?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-semaphore?ref=v0.1.1"
 
   hosts                = { ops = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -45,7 +45,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the password too, sin
 
 Semaphore reads the admin and the database settings on its first start only. Changing `admin` or `admin_password` later doesn't change the account; do that in Semaphore.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.1/examples/local).
 
 ### Behind a reverse proxy
 
@@ -89,7 +89,7 @@ module "postgres" {
 }
 
 module "semaphore" {
-  source = "github.com/conn3xorg/circuit-semaphore?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-semaphore?ref=v0.1.1"
 
   depends_on = [module.postgres]
 
@@ -131,7 +131,7 @@ Semaphore runs in the container as UID 1001, and Podman hands `config` and `data
 
 ### Upgrades
 
-Change `semaphore_version` and `image_digest` together. `conn3x plan` shows the new image in the unit, the apply restarts Semaphore on it, and Semaphore migrates its database as it starts. CI applies v2.19.16 first, runs a task, then upgrades to v2.19.17 and runs another. Semaphore publishes release candidates and betas under the same image name; pin a release.
+Change `semaphore_version` and `image_digest` together. `conn3x plan` shows the new image in the unit, the apply restarts Semaphore on it, and Semaphore migrates its database as it starts. CI applies v2.19.17 first, runs a task, then upgrades to v2.20.23 and runs another. Semaphore publishes release candidates and betas under the same image name; pin a release.
 
 ### What it doesn't do
 
@@ -160,8 +160,8 @@ Change `semaphore_version` and `image_digest` together. `conn3x plan` shows the 
 | `listen_address` | string | `"127.0.0.1"` | Address Semaphore listens on. |
 | `port` | number | `3000` | Port Semaphore listens on. |
 | `environment` | map(string), sensitive, ephemeral | `{}` | More of Semaphore's [environment variables](https://docs.semaphoreui.com/administration-guide/configuration), such as `SEMAPHORE_EMAIL_ALERT` or `SEMAPHORE_EMAIL_PASSWORD`. Ephemeral and sensitive: they go into the root-only env file and never the plan or state. The database, admin, listen and URL variables aren't allowed here. |
-| `semaphore_version` | string | `"v2.19.17"` | Tag of Semaphore's image. Change `image_digest` with it. |
-| `image_digest` | string | `"sha256:008dacd9..."` | Digest of the image for `semaphore_version`. Find it on [Docker Hub](https://hub.docker.com/r/semaphoreui/semaphore/tags). |
+| `semaphore_version` | string | `"v2.20.23"` | Tag of Semaphore's image. Change `image_digest` with it. |
+| `image_digest` | string | `"sha256:00e6733d..."` | Digest of the image for `semaphore_version`. Find it on [Docker Hub](https://hub.docker.com/r/semaphoreui/semaphore/tags). |
 
 ## Outputs
 
@@ -178,18 +178,18 @@ Requires Conn3x v0.7.0 or later and systemd on each host. The image is built for
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.0/examples/local) to each on amd64, with SQLite, starting on v2.19.16 and then upgrading to v2.19.17, and checks that the next plan has no changes. Through an SSH tunnel, the check sees a wrong password refused, signs in as the admin, makes an API token, and sets up a project with a local repository, an inventory of localhost and a template. It runs the template as a task and finds the playbook's message in Ansible's output. It does that on both versions and after CI restarts the host. The admin password and the secrets Semaphore generated aren't in state.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.1/examples/local) to each on amd64, with SQLite, starting on v2.19.17 and then upgrading to v2.20.23, and checks that the next plan has no changes. Through an SSH tunnel, the check sees a wrong password refused, signs in as the admin, makes an API token, and sets up a project with a local repository, an inventory of localhost and a template. It runs the template as a task and finds the playbook's message in Ansible's output. It does that on both versions and after CI restarts the host. The admin password and the secrets Semaphore generated aren't in state.
 
 By hand, on two DigitalOcean droplets with 2 GB of memory, Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing, each running this circuit next to circuit-portainer and circuit-passbolt: the same upgrade from v2.19.16, the same checks, and a reboot after which Semaphore came back on its own, ran the task again and planned clean. The Rocky audit log had no SELinux denials, and no secret was in state. PostgreSQL hasn't been tried yet; every run used SQLite.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-semaphore/blob/v0.1.0/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-semaphore/blob/v0.1.1/LICENSE).
 
 Semaphore UI is under the [MIT licence](https://github.com/semaphoreui/semaphore/blob/develop/LICENSE).
 
 ## Source
 
-- Repository: [conn3xorg/circuit-semaphore](https://github.com/conn3xorg/circuit-semaphore). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-semaphore/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-semaphore](https://github.com/conn3xorg/circuit-semaphore). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-semaphore/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-semaphore/tree/v0.1.1/examples/local).
 - Related circuits: [PostgreSQL](/circuits/postgres), [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Renovate](/circuits/renovate).
