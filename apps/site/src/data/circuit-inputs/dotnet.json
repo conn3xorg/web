@@ -1,13 +1,13 @@
 {
   "name": "dotnet",
-  "version": "v0.1.1",
+  "version": "v0.1.2",
   "hostObjects": true,
   "inputs": [
     {
       "name": "sdk_version",
       "type": "string",
-      "default": "10.0.403",
-      "description": "The .NET SDK release to install, such as \"10.0.403\". Change checksums with it.",
+      "default": "10.0.404",
+      "description": "The .NET SDK release to install, such as \"10.0.404\". Change checksums with it.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
@@ -16,8 +16,8 @@
       "name": "checksums",
       "type": "map(string)",
       "default": {
-        "x64": "cd7224fe8e8ba57c15f1601439ff8785a1a72b54ae5c89dd5302a32dcfbddf18",
-        "arm64": "21fe1a0963984206bfaeb19968da07e7a61d30c9bc4621b7372a762a30c88679"
+        "x64": "c0610757a818fde4b960d27a0ac421f273068a05dc5ec7abafc01dbf84e9cb4d",
+        "arm64": "dcc820a4277ab6bb3f648c609d86f2a7912ba9a3d166545e7b95dff419c12f0f"
       },
       "description": "SHA-256 of the linux-x64 and linux-arm64 SDK tarballs. Microsoft publishes SHA-512, so check that first; the README shows how. Change these with sdk_version.",
       "sensitive": false,
