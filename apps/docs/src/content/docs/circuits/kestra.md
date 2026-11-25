@@ -60,7 +60,7 @@ Kestra speaks plain HTTP on `127.0.0.1:8080`. Put a proxy in front for TLS, such
 
 ```hcl
 module "caddy" {
-  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.0"
+  source = "github.com/conn3xorg/circuit-caddy?ref=v0.4.1"
 
   hosts                = { orchestrator = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
