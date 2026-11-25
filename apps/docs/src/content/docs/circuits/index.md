@@ -218,7 +218,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.2 |
 | [Selenium Grid](/circuits/selenium) | Selenium Grid under Podman, official images pinned by digest, on loopback by default. | v0.1.2 |
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
-| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.2.0 |
+| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.2.1 |
 | [Rust](/circuits/rust) | One exact Rust toolchain from static.rust-lang.org on every distribution, checksum-verified and system-wide, without rustup. | v0.1.1 |
 | [Go](/circuits/go) | One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions. | v0.1.2 |
 | [Python](/circuits/python) | Your distribution's Python with working venvs, and optional environments holding pinned packages. | v0.1.4 |
