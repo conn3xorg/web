@@ -57,14 +57,54 @@ step "gone" {
 }
 ```
 
+Install a vendor's `.deb` from a file on the host, downloaded and checked by the step before it:
+
+```hcl
+step "agent_deb" {
+  download {
+    url    = "https://downloads.example.com/agent/agent_1.4.0-1_amd64.deb"
+    dest   = "/opt/downloads/agent_1.4.0-1_amd64.deb"
+    sha256 = "0f343b0931126a20f133d67c2b018a3b1d2f1e4c9a5c6e8f4d0a1b2c3d4e5f60"
+  }
+}
+
+step "agent" {
+  package {
+    name   = "agent"
+    source = "/opt/downloads/agent_1.4.0-1_amd64.deb"
+  }
+}
+```
+
+Install from a repository that's off by default, such as CRB on Rocky Linux, or from Debian backports:
+
+```hcl
+step "nasm" {
+  package {
+    name                = "nasm"
+    enable_repositories = ["crb"]
+  }
+}
+
+step "tmux" {
+  package {
+    name           = "tmux"
+    target_release = "trixie-backports"
+  }
+}
+```
+
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
+| `enable_repositories` | list of string | No | Red Hat family only. IDs of dnf repositories that are off by default, such as crb, to turn on for this package's install and for finding its newest version, as dnf --enablerepo does. They stay off afterwards. |
 | `install_recommends` | bool | No | Whether an install also brings in what the package recommends: apt's recommended packages, or dnf's weak dependencies. false keeps a server lean. Unset keeps the host's own setting. It only changes how the package is installed, never what's already there. |
 | `name` | string | Yes | Package name. |
 | `on_remove` | string | No | What happens on the host when this resource is removed: "forget" (default) leaves the package, "delete" uninstalls it. |
+| `source` | string | No | Absolute path of a .deb or .rpm file on the host to install the package from, such as one a download step wrote. name is still the package's name, and apply checks the file is that package. The step is in sync when the installed version is the file's. Can't be set with version or state "latest". |
 | `state` | string | No | "present" (default), "latest" or "absent". |
+| `target_release` | string | No | Debian and Ubuntu only. The apt release to install from and read the newest version from, such as trixie-backports, as apt-get -t does. |
 | `version` | string | No | Version to install, with state "present". |
 
 ## Read-only attributes
@@ -76,6 +116,7 @@ Conn3x sets these; reference them as `conn3x_package.<circuit>__<step>["<host>"]
 | `installed_version` | string | Version installed on the host, or null when it isn't installed. |
 | `latest_version` | string | Newest available version, read when state is "latest". |
 | `revision` | string | Changes each time Conn3x changes this on the host. Handlers watch it. |
+| `source_version` | string | With source, the version of the file at source when it was last read. Null when it was missing, or without source. |
 
 A step lowers to the `conn3x_package` resource, one instance per host, and connects with its circuit's `ssh` block.
 
@@ -85,6 +126,10 @@ A step lowers to the `conn3x_package` resource, one instance per host, and conne
 
 **Versions.** `version` matches the start of the installed version, so `"1.26.3"` matches `1:1.26.3-2.el10`. Give the epoch or the release as well when you need an exact match.
 
+**From a file.** `source` installs the package from a `.deb` or `.rpm` already on the host, usually one a [`download`](/modules/download) step fetched and checked just before. `name` is still required: at plan the file may not be there yet, and Conn3x needs to know which package to look for. When the file is there, every plan reads its name and version with `dpkg-deb -f` or `rpm -qp`, and the step is in sync when the installed version is the file's, epoch and release included. A new file with another version, older or newer, plans a change once it's on the host. A file that has gone, such as one in `/tmp` after a reboot, leaves the installed package as it is. At apply, Conn3x checks the file is the package `name` says and fails if it isn't, then runs `apt-get install`, `dnf install`, or `dnf downgrade` for an older file, or `zypper install --oldpackage`, which fetch the package's dependencies from the repositories. The file's scripts run as root, so Conn3x refuses a file, or a directory on the way to it, that a user other than root could change; keep downloads in a directory of root's, such as `/opt/downloads`. `source` can't be set with `version` or `state = "latest"`, and `state = "absent"` removes the package by name, file or not. Alpine isn't supported.
+
+**Other repositories and releases.** On the Red Hat family, `enable_repositories` turns on dnf repositories that are off by default, such as `crb` or `highavailability`, for this package only: Conn3x adds `--enablerepo=ID` to the install and, with `state = "latest"`, to the `dnf repoquery` that finds the newest version. The repositories stay off afterwards, so `dnf repolist --disabled` still lists them. On Debian and Ubuntu, `target_release` installs from a release such as `trixie-backports`, with `apt-get install -t`, and `state = "latest"` reads the newest version with `apt-cache -t` too, so a backports package doesn't plan a downgrade to the main archive's. The release must be in the host's sources, which a [`repository`](/modules/repository) step can add; if its package lists haven't been fetched yet, Conn3x runs `apt-get update` once and tries again. A repository ID is letters, digits and `- _ . :`, and a release letters, digits and `. + ~ _ -`, so globs such as `epel*` are refused. `enable_repositories` on a Debian or Ubuntu host, or `target_release` on any other, fails before anything runs, naming the host: at plan for a step that's already applied, at apply for a new one, since Conn3x doesn't connect to a host until then. Both work with `source`, for the file's dependencies. A step sets one or the other, not both.
+
 **Applying.** Conn3x runs `dnf -y install`, `upgrade` or `remove`, `apt-get install` or `remove` non-interactively, keeping existing configuration files, `zypper install`, `update` or `remove`, or `apk add --no-cache` and `apk del`. On SUSE, a `version` such as `1.7.0` installs the newest release of it, with `--oldpackage`, so a pin below the installed version downgrades, as Ansible's `zypper` does. zypper's exit 102, installed but a reboot is wanted, counts as success, and on 103, zypper updated itself, the command runs once more. 106, a repository that couldn't be refreshed, and 107, a package's install script failing, fail the step. `install_recommends` sets `--recommends` or `--no-recommends`, and `package_hold` is a zypper lock. A [`repository`](/modules/repository) step adds a zypper repository and imports its key, so a `package` step after it can install from it. On Alpine, `--no-cache` fetches the package index each time, so a fresh host needs no `apk update` first. A `version` there is a pin such as `2.2.1` or `2.2.1-r0`, which apk keeps in `/etc/apk/world`, and `install_recommends` is refused, since apk has no recommended packages. `package_hold`, `repository` and `package_sources` don't manage Alpine: pin with `version`, and keep `/etc/apk/repositories` with a `line` step. When another apt, dnf or zypper holds the package manager's lock, such as a step from another circuit on the same host or unattended upgrades on a host that just booted, Conn3x waits up to five minutes for it. When `apt` can't find a package on a fresh host, Conn3x refreshes the package lists once and tries again. If a mirror fails that refresh, with a timeout or an error such as a 403, Conn3x runs `apt-get update` again up to five times in all, waiting 1, 2, 4 and then 8 seconds, as Ansible's `apt` does with its `update_cache_retries`.
 
 ## Removal
@@ -93,4 +138,4 @@ When you delete a `package` step, `on_remove` decides what happens on the host. 
 
 ## From Ansible
 
-`conn3x convert ansible` turns `ansible.builtin.package`, `dnf`, `dnf5`, `yum`, `apt`, `community.general.zypper` and `community.general.apk` tasks into `package` steps. `state: installed` and `removed` become `present` and `absent`, and `update_cache` is dropped, since Conn3x refreshes the package lists itself when a package isn't found. apt's `install_recommends` and dnf's and dnf5's `install_weak_deps` all become `install_recommends`, which sets apt's `APT::Install-Recommends` or dnf's `install_weak_deps` for the install. Ansible's zypper leaves recommended packages out unless `disable_recommends: false`, so a converted zypper step sets `install_recommends` to match. A zypper `type` other than `package`, such as a pattern or a patch, stays a TODO, and so does `state: dist-upgrade`.
+`conn3x convert ansible` turns `ansible.builtin.package`, `dnf`, `dnf5`, `yum`, `apt`, `community.general.zypper` and `community.general.apk` tasks into `package` steps. `state: installed` and `removed` become `present` and `absent`, and `update_cache` is dropped, since Conn3x refreshes the package lists itself when a package isn't found. apt's `install_recommends` and dnf's and dnf5's `install_weak_deps` all become `install_recommends`, which sets apt's `APT::Install-Recommends` or dnf's `install_weak_deps` for the install. Ansible's zypper leaves recommended packages out unless `disable_recommends: false`, so a converted zypper step sets `install_recommends` to match. A zypper `type` other than `package`, such as a pattern or a patch, stays a TODO, and so does `state: dist-upgrade`. apt's `deb: /path/to/file.deb`, and a `dnf`, `yum`, `package` or `zypper` name that's an `.rpm` path, become a step with `source`. The converter reads `name` from the file name when it follows the usual `NAME_VERSION_ARCH.deb` or `NAME-VERSION-RELEASE.ARCH.rpm` pattern and adds a TODO to check it; any other file name stays a TODO. A `.deb` or `.rpm` URL stays a TODO too, since Conn3x installs only what it can verify: download it with a `download` step and its `sha256`, then install it from that path. `dnf`, `dnf5` and `yum`'s `enablerepo` becomes `enable_repositories`, and apt's `default_release` becomes `target_release`. `disablerepo` stays a TODO: dropping it could install a package from a repository the play kept out.
