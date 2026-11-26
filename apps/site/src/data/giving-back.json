@@ -1,6 +1,48 @@
 {
   "items": [
     {
+      "date": "2026-11-26",
+      "repo": "Infisical/infisical",
+      "summary": "Showing that a JWT algorithm pin covers token renewal but not ordinary API requests, and why the new test needs crypto set up first.",
+      "url": "https://github.com/Infisical/infisical/pull/9918#pullrequestreview-6069580631"
+    },
+    {
+      "date": "2026-11-26",
+      "repo": "prometheus/prometheus",
+      "summary": "Confirming a promtool flag now describes the right files, and pointing at the generated docs page behind the red tests.",
+      "url": "https://github.com/prometheus/prometheus/pull/20577#pullrequestreview-6069586882"
+    },
+    {
+      "date": "2026-11-26",
+      "repo": "data-privacy-stack/presidio",
+      "summary": "Confirming the empty masking character bug, and finding the same gap one parameter down that still crashes.",
+      "url": "https://github.com/data-privacy-stack/presidio/pull/2556#pullrequestreview-6069591363"
+    },
+    {
+      "date": "2026-11-26",
+      "repo": "tailscale/tailscale",
+      "summary": "Finding the eight-character NextDNS IDs that still take the old path, and how the two open fixes fit together.",
+      "url": "https://github.com/tailscale/tailscale/pull/22625#pullrequestreview-6069599661"
+    },
+    {
+      "date": "2026-11-26",
+      "repo": "tailscale/tailscale",
+      "summary": "Showing that NextDNS's new profile IDs still get no DNS-over-HTTPS addresses, and that the reverse mapping still reads the ID from the IPv6 address.",
+      "url": "https://github.com/tailscale/tailscale/pull/22683#pullrequestreview-6069599794"
+    },
+    {
+      "date": "2026-11-26",
+      "repo": "osquery/osquery",
+      "summary": "Checking that removing a pack clears the files stored under its own source, and suggesting a test for the same name in two sources.",
+      "url": "https://github.com/osquery/osquery/pull/9350#pullrequestreview-6069607259"
+    },
+    {
+      "date": "2026-11-26",
+      "repo": "aquasecurity/trivy",
+      "summary": "Tracing both download paths in the install script, so a failed download names its URL, and suggesting curl print its own reason too.",
+      "url": "https://github.com/aquasecurity/trivy/pull/11734#pullrequestreview-6069619155"
+    },
+    {
       "date": "2026-11-25",
       "repo": "prometheus/alertmanager",
       "summary": "Confirming a one-line fix to how matcher lists split on commas, and showing which new test already passed before it.",
