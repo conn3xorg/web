@@ -1,13 +1,13 @@
 {
   "name": "grafana",
-  "version": "v0.2.0",
+  "version": "v0.2.2",
   "hostObjects": true,
   "inputs": [
     {
       "name": "grafana_version",
       "type": "string",
-      "default": "13.3.0",
-      "description": "Grafana OSS release to install, such as \"13.3.0\". Raising it upgrades Grafana in place.",
+      "default": "13.3.2",
+      "description": "Grafana OSS release to install, such as \"13.3.2\". Raising it upgrades Grafana in place.",
       "sensitive": false,
       "ephemeral": false,
       "required": false
