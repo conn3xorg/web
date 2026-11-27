@@ -37,7 +37,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos, VyOS and Cisco IOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
-| Maturity | In production use for more than a decade | Before 1.0, at v0.37.1 |
+| Maturity | In production use for more than a decade | Before 1.0, at v0.38.0 |
 
 ## The same playbook, both ways
 
@@ -245,7 +245,7 @@ The converter is [stable](/reference/maturity), and it marks what it can't prove
 - Jinja templates and filters. Rewrite them in `templatefile` syntax for a [template](/modules/template) step.
 - Magic variables such as `inventory_hostname`, and anything that isn't one of the play's `vars`.
 - Control flow: `when`, `register`, `with_*`, `until`, `ignore_errors`, and any `loop` other than a plain list.
-- Anything under `no_log`, with its values left out of the comment.
+- Anything under `no_log`, with its values left out of the comment, unless it's a role's task whose every value is a role default going into a write-only argument.
 - Commands that ran on every play, until you give them a `creates`, `removes` or `unless` guard, or `triggers`.
 - Modules it doesn't know, and arguments it doesn't know on modules it does.
 

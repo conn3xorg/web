@@ -139,7 +139,7 @@ This page gets new numbers with each release.
 Some tasks stay for review because the converted step would behave differently, not because nobody has got to them:
 
 - **`become` on a task.** In a circuit the `ssh` block decides who runs every step. Take it off the task, and log in as root or set `ssh_become`.
-- **`no_log`.** Converting the task would write its values into the circuit, where anyone reading the file sees them. Move the secret into a write-only argument.
+- **`no_log`.** Converting the task would write its values into the circuit, where anyone reading the file sees them. Since v0.38.0, a role's `no_log` task does convert when every value it passes comes straight from one of the role's defaults and goes into a write-only argument, such as `content_wo` on a `file` step or `password_wo` on `postgresql_role`. A literal secret, a Jinja expression, a loop or a `when` that reads the secret still keeps the task here, and the reason names what stopped it. None of the 18 `no_log` tasks in the 36 roles converts yet: most loop over users or template a name or path.
 - **`force: no` on `copy` or `template`.** Ansible writes the file only when it's missing. A Conn3x step makes the file match on every apply.
 - **A task tagged `never`.** Ansible runs it only when you ask for its tag. A step runs on every apply.
 - **Templates with Jinja statements**, `{% %}` or `{# #}`. Rewrite them in `templatefile` syntax (`${var}`, `%{ if }`).
