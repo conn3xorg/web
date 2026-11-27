@@ -67,13 +67,33 @@ step "reread" {
   }
 }
 ```
+Run a oneshot unit whenever its script changes, and fail the apply if the run fails:
+
+```hcl
+step "script" {
+  file {
+    path    = "/usr/local/bin/backup.sh"
+    mode    = "0755"
+    content = "#!/bin/sh\nrestic backup /srv\n"
+  }
+}
+
+step "backup_now" {
+  service_action {
+    name     = "backup"
+    action   = "start"
+    triggers = { script = conn3x_file.docs__script[each.key].revision }
+  }
+}
+```
 
 ## Arguments
 
 | Name | Type | Required | Description |
 | --- | --- | --- | --- |
-| `action` | string | No | "restart" (default), "reload", "try-restart", "try-reload" or "daemon-reload". A reload of a unit that isn't running starts it; the try- actions leave a stopped unit stopped. |
+| `action` | string | No | "restart" (default), "start", "reload", "try-restart", "try-reload" or "daemon-reload". start runs a oneshot unit, even one RemainAfterExit keeps active, and waits for it to finish. A reload of a unit that isn't running starts it; the try- actions leave a stopped unit stopped. |
 | `name` | string | No | Unit name. Required, except with action = "daemon-reload", which takes none. |
+| `reset_failed` | bool | No | With action = "restart" or "start": clear the unit's failed state and start limit first, so a unit that systemd refuses with "start request repeated too quickly" starts. |
 | `serial` | bool | No | Act on one host at a time, waiting for systemctl to return before the next. |
 | `triggers` | dynamic | No | Any value; the action runs again whenever it changes. |
 
@@ -91,9 +111,9 @@ A step lowers to the `conn3x_service_action` resource, one instance per host, an
 
 **When it runs.** The step runs its action when it's created, and again whenever `triggers` changes, which replaces it. A plan that changes nothing else leaves it alone. Refresh never finds drift: an action leaves nothing on the host to compare.
 
-**Applying.** `action = "restart"`, the default, runs `systemctl restart`. `"reload"` runs `systemctl reload`, and starts the unit instead when it isn't running, since a reload asks for the new configuration to be in use. `"try-restart"` and `"try-reload"` act only on a unit that's running, and leave a stopped one, or one that isn't installed, alone: they run `systemctl try-restart` and `systemctl try-reload-or-restart`, which restarts a unit that can't reload. If the unit file changed since systemd last loaded it, Conn3x runs `systemctl daemon-reload` first. `"daemon-reload"` runs only that, with no `name`, for a unit file or drop-in a unit picks up at its next start. `serial = true` acts on one host at a time.
+**Applying.** `action = "restart"`, the default, runs `systemctl restart`. `"start"` runs `systemctl start`, which leaves a running service alone. A oneshot unit runs every time, and the step waits until it finishes and fails if it fails: the way to run a scan or a converge whenever its script changes. One that `RemainAfterExit=yes` keeps active after its last run is restarted instead, since `systemctl start` would do nothing to it. `"reload"` runs `systemctl reload`, and starts the unit instead when it isn't running, since a reload asks for the new configuration to be in use. `"try-restart"` and `"try-reload"` act only on a unit that's running, and leave a stopped one, or one that isn't installed, alone: they run `systemctl try-restart` and `systemctl try-reload-or-restart`, which restarts a unit that can't reload. If the unit file changed since systemd last loaded it, Conn3x runs `systemctl daemon-reload` first. `"daemon-reload"` runs only that, with no `name`, for a unit file or drop-in a unit picks up at its next start. `reset_failed = true`, with `"restart"` or `"start"`, runs `systemctl reset-failed` first. Use it for a unit whose start limit a few applies in a row can reach, which systemd then refuses with "start request repeated too quickly". `serial = true` acts on one host at a time.
 
-**When systemd re-executes.** An upgrade of libc6 or systemd makes systemd re-execute itself, and while it does, `systemctl` can't reach it for a moment. A `service_action` step tries again for up to 30 seconds when that happens. A `command` step that runs `systemctl restart` fails instead, which is why [`conn3x lint`](/reference/cli/lint) warns about one (C3X103).
+**When systemd re-executes.** An upgrade of libc6 or systemd makes systemd re-execute itself, and while it does, `systemctl` can't reach it for a moment. A `service_action` step tries again for up to 30 seconds when that happens. A `start` of a oneshot unit that systemd had already finished when the connection dropped runs it once more, so keep what it runs safe to repeat. A `command` step that runs `systemctl restart` fails instead, which is why [`conn3x lint`](/reference/cli/lint) warns about one (C3X103).
 
 **Names.** A `name` without a dot gets `.service` added, so `"mysql"` means `mysql.service`.
 

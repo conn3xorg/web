@@ -45,6 +45,7 @@ step "app_ready" {
 | `port` | number | No | TCP port to wait for a listener on. Set exactly one of path, service and port. |
 | `service` | string | No | Name of a service to wait for until it is running. Set exactly one of path, service and port. |
 | `timeout` | string | No | How long to wait. Defaults to "5m". |
+| `triggers` | dynamic | No | Any value, such as the revision of a step that restarts the service; whenever it changes, the apply waits again, even if the check passed at plan time. |
 
 ## Read-only attributes
 
@@ -62,6 +63,8 @@ A step lowers to the `conn3x_windows_wait_for` resource, one instance per host, 
 **Waiting.** Conn3x checks every two seconds, and fails the step if it isn't ready after `timeout`, which defaults to `"5m"`. Each check starts PowerShell in a new session. If the host can't be reached yet, that counts as not ready.
 
 **Reading.** Every plan checks again. If the path is gone, the service stopped or nothing listens on the port any more, the plan shows the step out of sync and the next apply waits again.
+
+**Waiting again.** A check that passed at plan time isn't run again in the same apply. So a wait after a restart, which takes the port away only during the apply, needs `triggers`: set it to the restart step's revision, and the step waits again whenever that step runs.
 
 **Validation.** Set exactly one of `path`, `service` and `port`. `path` must be a drive-letter or UNC path.
 
