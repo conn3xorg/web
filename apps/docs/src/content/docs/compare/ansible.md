@@ -37,7 +37,7 @@ It costs you something too. State is one more thing to look after: somewhere to 
 | Windows | Long established | [Preview](/reference/maturity#preview-and-experimental-together), with experimental modules |
 | Network devices | Collections for many vendors' switches, routers and firewalls | [Arista EOS, Juniper Junos, VyOS and Cisco IOS](/network-devices) over their own CLI, and three circuits through community OpenTofu providers, all experimental |
 | UI and access control | AWX, and Red Hat Ansible Automation Platform | None. Conn3x is a CLI that CI or cron runs |
-| Maturity | In production use for more than a decade | Before 1.0, at v0.37.0 |
+| Maturity | In production use for more than a decade | Before 1.0, at v0.37.1 |
 
 ## The same playbook, both ways
 
