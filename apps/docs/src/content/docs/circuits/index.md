@@ -210,7 +210,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Java](/circuits/java) | OpenJDK or Eclipse Temurin 21 or 25 on Debian, Ubuntu, Fedora and Rocky, set as the default java with JAVA_HOME exported. | v0.2.0 |
 | [PHP-FPM](/circuits/php) | PHP-FPM with your extensions, php.ini settings and pools. Distro PHP or a newer one from Sury or Remi, plus Composer. | v0.3.1 |
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.3.0 |
-| [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.3 |
+| [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.2.0 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.3 |
 | [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.4.0 |
 | [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.3 |

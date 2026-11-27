@@ -3,7 +3,7 @@ title: GitHub Actions runner
 description: "GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-github-runner at v0.1.3. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-github-runner at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/github-runner/grade.svg)](https://conn3x.org/circuits/github-runner/grade)
 
@@ -15,7 +15,7 @@ You'd want one when GitHub's hosted runners can't reach what a job needs, such a
 
 ```hcl
 module "github_runner" {
-  source = "github.com/conn3xorg/circuit-github-runner?ref=v0.1.3"
+  source = "github.com/conn3xorg/circuit-github-runner?ref=v0.2.0"
 
   hosts                = { ci1 = "203.0.113.10", ci2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -71,7 +71,7 @@ runners = {
 
 `name` defaults to the host's key and the runner's key, such as `ci1-build`, and must be unique across the repository or organization. Set it only when `hosts` has one host: the same name on two hosts would make the second replace the first. `labels` are added to the ones every runner gets, `self-hosted`, `Linux` and `X64` or `ARM64`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-github-runner/tree/v0.1.3/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-github-runner/tree/v0.2.0/examples/local).
 
 ## Security
 
@@ -157,11 +157,11 @@ Or delete it from the runners page in GitHub, or with `gh api -X DELETE repos/ac
 
 ## Requirements
 
-Requires Conn3x v0.6.9 or later and systemd on each host, on x86_64 or aarch64. Each host needs to reach github.com and its package mirror, and a runner needs outbound HTTPS to GitHub to take jobs; it doesn't need any inbound port. GitHub's runner is built for glibc, so Alpine and other musl distributions are out.
+Requires Conn3x v0.30.0 or later and systemd on each host, on x86_64 or aarch64. Each host needs to reach github.com and its package mirror, and a runner needs outbound HTTPS to GitHub to take jobs; it doesn't need any inbound port. GitHub's runner is built for glibc, so Alpine and other musl distributions are out.
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13, Fedora 45 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-github-runner/tree/v0.1.3/examples/local) to each on amd64 without registering, since GitHub-hosted CI has no way to make a registration token without a stored personal access token. It checks the second plan has no changes, the tarball's checksum, that the runner starts as its own user with its libraries in place, and that the unit is installed and enabled.
+Ubuntu 24.04, Debian 13, Fedora 45 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-github-runner/tree/v0.2.0/examples/local) to each on amd64 without registering, since GitHub-hosted CI has no way to make a registration token without a stored personal access token. It checks the second plan has no changes, the tarball's checksum, that the runner starts as its own user with its libraries in place, and that the unit is installed and enabled.
 
 CI also restarts the container and runs the same checks, with the plan still empty. It applies with `register = true` and a made-up token, which GitHub refuses at `config.sh`: the token has to be in `/etc/github-runner/token` and nowhere in `terraform.tfstate`, and applying with `register = false` afterwards has to delete it. On a fresh container it installs runner 2.338.0, then applies the circuit's own pin over it, and checks the second plan is empty and the runner reports 2.338.2.
 
@@ -171,10 +171,10 @@ On DigitalOcean, an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELin
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-github-runner/blob/v0.1.3/LICENSE). GitHub's runner is MIT-licensed.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-github-runner/blob/v0.2.0/LICENSE). GitHub's runner is MIT-licensed.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-github-runner](https://github.com/conn3xorg/circuit-github-runner). This page covers [v0.1.3](https://github.com/conn3xorg/circuit-github-runner/tree/v0.1.3); the repository's [tags](https://github.com/conn3xorg/circuit-github-runner/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-github-runner/tree/v0.1.3/examples/local).
+- Repository: [conn3xorg/circuit-github-runner](https://github.com/conn3xorg/circuit-github-runner). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-github-runner/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-github-runner/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-github-runner/tree/v0.2.0/examples/local).
 - Related circuits: [Tailscale](/circuits/tailscale), [Users](/circuits/users), [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [OpenVox](/circuits/openvox), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).
