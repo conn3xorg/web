@@ -3,7 +3,7 @@ title: Homepage
 description: "The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-homepage at v0.1.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-homepage at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/homepage/grade.svg)](https://conn3x.org/circuits/homepage/grade)
 
@@ -23,7 +23,7 @@ variable "proxmox_password" {
 }
 
 module "homepage" {
-  source = "github.com/conn3xorg/circuit-homepage?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-homepage?ref=v0.2.0"
 
   hosts                = { home = "192.168.1.50" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -65,7 +65,7 @@ conn3x apply
 
 A second `conn3x plan` says `No changes.` Every plan needs the same `environment` values, since Conn3x checks the env file on the host against them.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.1.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.2.0/examples/local).
 
 ### The config files
 
@@ -85,7 +85,7 @@ The files the circuit doesn't write, such as `docker.yaml`, `kubernetes.yaml` an
 
 Homepage swaps `{{HOMEPAGE_VAR_NAME}}` anywhere in its config for the environment variable `HOMEPAGE_VAR_NAME`. Pass those in `environment`: they reach `/etc/containers/env/homepage.env`, mode `0600`, written from an ephemeral value, so they never reach the plan or state. The config files themselves hold only the placeholder.
 
-Put placeholders in widget settings, which Homepage uses on the server when it calls the app. One in a `description` or an `href` is filled in on the page, where anyone who can open Homepage can read it. The example in [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.1.0/examples/local) does exactly that, to show the substitution works, with a value that isn't secret.
+Put placeholders in widget settings, which Homepage uses on the server when it calls the app. One in a `description` or an `href` is filled in on the page, where anyone who can open Homepage can read it. The example in [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.2.0/examples/local) does exactly that, to show the substitution works, with a value that isn't secret.
 
 ### Behind a reverse proxy
 
@@ -166,20 +166,20 @@ On each host, in order:
 
 ## Requirements
 
-Requires Conn3x v0.7.0 or later, for the check before each file is replaced, and systemd on each host. The image is built for amd64 and arm64. Each host needs to reach its package mirror and `ghcr.io`. `conn3x init` fetches circuit-podman from GitHub.
+Requires Conn3x v0.37.0 or later, for a wait that runs again after each restart, and systemd on each host. The image is built for amd64 and arm64. Each host needs to reach its package mirror and `ghcr.io`. `conn3x init` fetches circuit-podman from GitHub.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, in local containers from Conn3x's test images on arm64. CI does the same on amd64. Each applies [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.1.0/examples/local) with Homepage v2.6.0 and plans again with no changes. [`check.mjs`](https://github.com/conn3xorg/circuit-homepage/blob/v0.1.0/examples/local/check.mjs) then loads the dashboard, checks a request with another `Host` header gets a 400, reads the services back from `/api/services` with the placeholder filled in from the env file, reads the bookmark given as YAML from `/api/bookmarks`, and has Homepage check two sites: itself, which has to answer 200, and a closed port, which mustn't. Then the upgrade to v2.7.0, a clean plan and the same check. The env file's value isn't in `terraform.tfstate` or under `.terraform`. A `services` that isn't a list stops the apply with the circuit's message, and the file on the host keeps its old content. Then the host container restarts, which boots systemd again, and the same check passes and the plan is clean.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13, in local containers from Conn3x's test images on arm64. CI does the same on amd64. Each applies [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.2.0/examples/local) with Homepage v2.6.0 and plans again with no changes. [`check.mjs`](https://github.com/conn3xorg/circuit-homepage/blob/v0.2.0/examples/local/check.mjs) then loads the dashboard, checks a request with another `Host` header gets a 400, reads the services back from `/api/services` with the placeholder filled in from the env file, reads the bookmark given as YAML from `/api/bookmarks`, and has Homepage check two sites: itself, which has to answer 200, and a closed port, which mustn't. Then the upgrade to v2.7.0, a clean plan and the same check. The env file's value isn't in `terraform.tfstate` or under `.terraform`. A `services` that isn't a list stops the apply with the circuit's message, and the file on the host keeps its old content. Then the host container restarts, which boots systemd again, and the same check passes and the plan is clean.
 
 By hand, on two DigitalOcean droplets with 1 GB of memory, on amd64: Ubuntu 24.04, and Rocky Linux 10 with SELinux enforcing. Each ran this circuit alongside circuit-homepage and circuit-dockge. On each, the second plan was clean and the same check passed; port 3000 didn't answer from outside; after a reboot Homepage came back on its own, the check passed again and the plan was clean. Neither droplet had an out-of-memory kill, with about 250 MiB still available with all three running, and Rocky's audit log had no SELinux denials.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-homepage/blob/v0.1.0/LICENSE). Homepage itself is under the GNU General Public License v3.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-homepage/blob/v0.2.0/LICENSE). Homepage itself is under the GNU General Public License v3.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-homepage](https://github.com/conn3xorg/circuit-homepage). This page covers [v0.1.0](https://github.com/conn3xorg/circuit-homepage/tree/v0.1.0); the repository's [tags](https://github.com/conn3xorg/circuit-homepage/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.1.0/examples/local).
+- Repository: [conn3xorg/circuit-homepage](https://github.com/conn3xorg/circuit-homepage). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-homepage/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-homepage/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-homepage/tree/v0.2.0/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [Podman](/circuits/podman), [Conn3x web UI](/circuits/conn3x-ui), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Home Assistant](/circuits/homeassistant), [Kestra](/circuits/kestra), [Lempa homelab](/circuits/lempa-homelab), [Mini homelab](/circuits/mini-homelab).

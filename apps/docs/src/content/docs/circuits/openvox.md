@@ -3,7 +3,7 @@ title: OpenVox
 description: "Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openvox at v0.3.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-openvox at v0.4.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/openvox/grade.svg)](https://conn3x.org/circuits/openvox/grade)
 
@@ -25,7 +25,7 @@ OpenVox is not Puppet, and neither OpenVox nor this circuit is affiliated with P
 
 ```hcl
 module "openvox" {
-  source = "github.com/conn3xorg/circuit-openvox?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-openvox?ref=v0.4.0"
 
   hosts                = { web1 = "203.0.113.10", web2 = "203.0.113.11" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -39,7 +39,7 @@ Then run `conn3x init` and `conn3x apply`. A second `conn3x plan` says `No chang
 
 The manifest has to be at `manifest_path` before the first run. The circuit doesn't put it there, so a git clone, a package or an rsync all work. With nothing there yet, the apply fails at the last step; leave `manifest_path` out to install the agent first.
 
-To get it there with Conn3x, write it in a circuit of your own and read a value from it in `apply_trigger`. That makes the run wait for your file and happen again when it changes. [examples/local](https://github.com/conn3xorg/circuit-openvox/tree/v0.3.0/examples/local) does this, and it's also the quickest way to try the circuit on a throwaway container.
+To get it there with Conn3x, write it in a circuit of your own and read a value from it in `apply_trigger`. That makes the run wait for your file and happen again when it changes. [examples/local](https://github.com/conn3xorg/circuit-openvox/tree/v0.4.0/examples/local) does this, and it's also the quickest way to try the circuit on a throwaway container.
 
 ```hcl
 apply_trigger = conn3x_file.manifest__site["box"].sha256
@@ -105,13 +105,13 @@ OpenVox also publishes Ubuntu 22.04 and 26.04, Debian 12, and Enterprise Linux 8
 
 ## Requirements
 
-Requires Conn3x v0.36.0 or later and systemd on each host, on x86_64 or aarch64. Each host needs to reach `apt.voxpupuli.org` or `yum.voxpupuli.org`. Applying needs no inbound port.
+Requires Conn3x v0.37.0 or later and systemd on each host, on x86_64 or aarch64. Each host needs to reach `apt.voxpupuli.org` or `yum.voxpupuli.org`. Applying needs no inbound port.
 
 Coming from v0.2.1 or earlier, the first plan swaps the old `command` step for a `package` step: 1 to add, 1 to destroy. With the agent already at `openvox_version`, the apply installs nothing and runs nothing on the host. Every plan after that is clean.
 
 ## Tested on
 
-Ubuntu 24.04, Debian 13 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-openvox/tree/v0.3.0/examples/local) to each on amd64 and checks the second plan has no changes, then runs [check.sh](https://github.com/conn3xorg/circuit-openvox/blob/v0.3.0/examples/local/check.sh): the manifest made its file, the timer is on, `puppet.service` is off, and with the file deleted, one run puts it back and exits 2 and the next exits 0.
+Ubuntu 24.04, Debian 13 and Rocky Linux 10. CI applies [examples/local](https://github.com/conn3xorg/circuit-openvox/tree/v0.4.0/examples/local) to each on amd64 and checks the second plan has no changes, then runs [check.sh](https://github.com/conn3xorg/circuit-openvox/blob/v0.4.0/examples/local/check.sh): the manifest made its file, the timer is on, `puppet.service` is off, and with the file deleted, one run puts it back and exits 2 and the next exits 0.
 
 The same checks passed by hand in arm64 containers of all three. On a Fedora 45 container, the plan stopped with the unsupported-platform message.
 
@@ -121,10 +121,10 @@ On DigitalOcean, an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with SELin
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openvox/blob/v0.3.0/LICENSE). OpenVox is Apache-2.0, with its bundled components under their own licences.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-openvox/blob/v0.4.0/LICENSE). OpenVox is Apache-2.0, with its bundled components under their own licences.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-openvox](https://github.com/conn3xorg/circuit-openvox). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-openvox/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-openvox/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-openvox/tree/v0.3.0/examples/local).
+- Repository: [conn3xorg/circuit-openvox](https://github.com/conn3xorg/circuit-openvox). This page covers [v0.4.0](https://github.com/conn3xorg/circuit-openvox/tree/v0.4.0); the repository's [tags](https://github.com/conn3xorg/circuit-openvox/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-openvox/tree/v0.4.0/examples/local).
 - Related circuits: [Java](/circuits/java), [PHP-FPM](/circuits/php), [Jenkins](/circuits/jenkins), [GitHub Actions runner](/circuits/github-runner), [GitLab Runner](/circuits/gitlab-runner), [Cinc Client](/circuits/cinc), [Node.js](/circuits/nodejs), [Perl](/circuits/perl), [Bun](/circuits/bun), [Selenium Grid](/circuits/selenium), [k6](/circuits/k6), [Rust](/circuits/rust), [Go](/circuits/go), [Python](/circuits/python), [Ruby](/circuits/ruby), [Kotlin](/circuits/kotlin), [.NET](/circuits/dotnet), [C toolchain](/circuits/c-toolchain), [Semaphore UI](/circuits/semaphore), [Renovate](/circuits/renovate).
