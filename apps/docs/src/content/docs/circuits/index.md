@@ -196,7 +196,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [GitLab CE](/circuits/gitlab) | Single-node GitLab CE from GitLab's official packages: pinned release, write-only root password, reconfigure only when gitlab.rb changes. | v0.2.0 |
 | [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.4.0 |
 | [n8n](/circuits/n8n) | Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply. | v0.1.5 |
-| [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.3.0 |
+| [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.4.0 |
 | [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.2.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
 | [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.2.0 |
