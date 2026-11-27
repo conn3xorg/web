@@ -142,13 +142,13 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Automatic updates](/circuits/auto-updates) | Turns on automatic package updates with unattended-upgrades or dnf-automatic, with security-only updates and a reboot window. | v0.4.0 |
 | [OpenSCAP](/circuits/openscap) | OpenSCAP scans against CIS, STIG and other SCAP Security Guide profiles on a timer, with HTML reports and opt-in remediation. | v0.1.3 |
 | [auditd](/circuits/auditd) | Installs auditd and loads rules: presets like PCI DSS or the STIG, your own watches, and optional immutability | v0.2.1 |
-| [Trivy](/circuits/trivy) | Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host. | v0.2.0 |
+| [Trivy](/circuits/trivy) | Scan hosts for known vulnerabilities with a pinned Trivy on a systemd timer, read-only, with reports on the host. | v0.3.0 |
 | [CISO Assistant](/circuits/ciso-assistant) | Track compliance work with the CISO Assistant community app, in Podman on PostgreSQL. | v0.1.1 |
-| [ZAP](/circuits/zap) | OWASP ZAP baseline scans of URLs you list, on a systemd timer, reports on the host. | v0.1.3 |
+| [ZAP](/circuits/zap) | OWASP ZAP baseline scans of URLs you list, on a systemd timer, reports on the host. | v0.2.0 |
 | [checkov](/circuits/checkov) | A pinned checkov in its own venv, installed from a hash-checked lock, for scanning infrastructure code. | v0.2.1 |
 | [cosign](/circuits/cosign) | A pinned, checksum-verified cosign on your hosts, for checking signatures on images and files. | v0.1.0 |
 | [in-toto](/circuits/in-toto) | in-toto in its own venv, from hash-locked requirements, for verifying how software was built. | v0.1.1 |
-| [TruffleHog](/circuits/trufflehog) | A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer. | v0.2.0 |
+| [TruffleHog](/circuits/trufflehog) | A pinned, checksum-verified TruffleHog, with optional scans of chosen paths for leaked secrets on a systemd timer. | v0.3.0 |
 
 ### Storage and backup
 
@@ -197,7 +197,7 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Cockpit](/circuits/cockpit) | Cockpit, the web console for Linux servers, with your port, extra pages, TLS certificate and root login off. | v0.4.0 |
 | [n8n](/circuits/n8n) | Self-hosted n8n workflow automation in Podman: SQLite or PostgreSQL, host-generated encryption key, owner account set up on first apply. | v0.1.5 |
 | [Fleet](/circuits/fleet) | Fleet device management on osquery: enrol hosts and ask them live questions, from a pinned, checksum-verified release. | v0.3.0 |
-| [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.1.0 |
+| [Homepage](/circuits/homepage) | The Homepage dashboard under Podman: one page for everything you run, its config checked before it lands. | v0.2.0 |
 | [Home Assistant](/circuits/homeassistant) | Home Assistant Container under Podman, on the host's network for discovery, its web server on loopback. | v0.1.0 |
 | [Kestra](/circuits/kestra) | The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state. | v0.1.1 |
 | [Lempa homelab](/circuits/lempa-homelab) | Christian Lempa's 2025 homelab list from official circuits: Traefik, BIND, Homepage and monitoring on, every other category a switch away. | v0.1.7 |
@@ -212,13 +212,13 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.2.0 |
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.3 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.3 |
-| [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.3.0 |
+| [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.4.0 |
 | [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.3 |
 | [Perl](/circuits/perl) | Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm. | v0.2.0 |
 | [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.2 |
 | [Selenium Grid](/circuits/selenium) | Selenium Grid under Podman, official images pinned by digest, on loopback by default. | v0.1.2 |
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
-| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.3.0 |
+| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.4.0 |
 | [Rust](/circuits/rust) | One exact Rust toolchain from static.rust-lang.org on every distribution, checksum-verified and system-wide, without rustup. | v0.1.1 |
 | [Go](/circuits/go) | One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions. | v0.1.2 |
 | [Python](/circuits/python) | Your distribution's Python with working venvs, and optional environments holding pinned packages. | v0.1.4 |
