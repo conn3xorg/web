@@ -3,7 +3,7 @@ title: OpenTelemetry Collector
 description: "OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live"
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-otelcol at v0.3.0. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-otelcol at v0.4.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/otelcol/grade.svg)](https://conn3x.org/circuits/otelcol/grade)
 
@@ -21,7 +21,7 @@ variable "otlp_token" {
 }
 
 module "otelcol" {
-  source = "github.com/conn3xorg/circuit-otelcol?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-otelcol?ref=v0.4.0"
 
   hosts = {
     web1 = "203.0.113.10"
@@ -45,7 +45,7 @@ Leave out `otlp_endpoint` and the default config prints a line per batch to the 
 journalctl -u otelcol-contrib -f
 ```
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.3.0/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.4.0/examples/local).
 
 ### Your own config
 
@@ -53,7 +53,7 @@ To try it on a throwaway container first, see [examples/local](https://github.co
 
 ```hcl
 module "otelcol" {
-  source = "github.com/conn3xorg/circuit-otelcol?ref=v0.3.0"
+  source = "github.com/conn3xorg/circuit-otelcol?ref=v0.4.0"
 
   hosts       = { gw1 = "10.0.0.5" }
   environment = { HONEYCOMB_API_KEY = var.honeycomb_api_key }
@@ -104,7 +104,7 @@ On each host, in order:
 1. Stops and disables the other distribution's service, if it's there from an earlier apply, so the two don't fight over ports. Its package stays installed.
 2. Installs `curl` if it's missing.
 3. Downloads `DISTRIBUTION_VERSION_linux_ARCH.deb` or `.rpm` from the GitHub release into `/var/cache/conn3x-otelcol`. If the checksum doesn't match `checksums`, the apply fails and nothing is installed.
-4. Installs it with `apt-get` or `dnf`, unless that version is already installed. The package creates its own system user, enables the service, and starts it with upstream's example config, which the steps below replace.
+4. Installs it with `apt-get` or `dnf`, unless that version is already installed, and only if the file still has the SHA-256 the download checked. An older file downgrades it. On Debian and Ubuntu, `apt-get` keeps a config file you or the circuit changed when an upgrade ships a new one. The package creates its own system user, enables the service, and starts it with upstream's example config, which the steps below replace.
 5. Writes `environment` to `/etc/DISTRIBUTION/conn3x.env`, mode 0600, owned by root. Only an HMAC of the content is kept in state.
 6. Writes a systemd drop-in that reads that file and adds the collector to the `systemd-journal` group, so the journald receiver can read the whole journal, and reloads systemd when the drop-in changes.
 7. Writes the rendered config to `/etc/DISTRIBUTION/config.yaml.conn3x`.
@@ -175,11 +175,13 @@ The default config uses component names from 0.164.0, such as `host_metrics` and
 
 ## Requirements
 
-Requires Conn3x v0.29.0 or later, systemd on each host, and outbound HTTPS to github.com. Hosts must be x86_64 or arm64.
+Requires Conn3x v0.36.0 or later, systemd on each host, and outbound HTTPS to github.com. Hosts must be x86_64 or arm64.
+
+Coming from v0.3.0 or earlier, the first plan swaps the old `command` step for a `package` step: 2 to add, 2 to destroy. With the collector already at `otelcol_version`, the apply installs nothing and leaves `config.yaml` alone, but the collector restarts once, because the restart handler follows the new step. Every plan after that is clean.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.3.0/examples/local) to each on amd64, checks that the second plan has no changes, posts a log over OTLP to `127.0.0.1:4318` and finds it in the file exporter's output with a value from `environment`, and reads `system_cpu_` metrics from the Prometheus exporter on `127.0.0.1:8889`.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.4.0/examples/local) to each on amd64, checks that the second plan has no changes, posts a log over OTLP to `127.0.0.1:4318` and finds it in the file exporter's output with a value from `environment`, and reads `system_cpu_` metrics from the Prometheus exporter on `127.0.0.1:8889`.
 
 The example also passes `OTLP_TOKEN` in `environment`, standing in for an exporter's API key, and CI checks it reaches `conn3x.env` and nowhere in `terraform.tfstate`. CI then restarts the container and runs the same checks, with the plan still empty. On a fresh container it installs 0.163.2, then applies the circuit's own pin over it, and checks the second plan is empty, `otelcol-contrib --version` reports 0.164.0 and the checks pass.
 
@@ -189,10 +191,10 @@ It was also applied to an Ubuntu 24.04 droplet and a Rocky Linux 10 droplet with
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-otelcol/blob/v0.3.0/LICENSE). The OpenTelemetry Collector itself is Apache-2.0.
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-otelcol/blob/v0.4.0/LICENSE). The OpenTelemetry Collector itself is Apache-2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-otelcol](https://github.com/conn3xorg/circuit-otelcol). This page covers [v0.3.0](https://github.com/conn3xorg/circuit-otelcol/tree/v0.3.0); the repository's [tags](https://github.com/conn3xorg/circuit-otelcol/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.3.0/examples/local).
+- Repository: [conn3xorg/circuit-otelcol](https://github.com/conn3xorg/circuit-otelcol). This page covers [v0.4.0](https://github.com/conn3xorg/circuit-otelcol/tree/v0.4.0); the repository's [tags](https://github.com/conn3xorg/circuit-otelcol/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-otelcol/tree/v0.4.0/examples/local).
 - Related circuits: [Prometheus](/circuits/prometheus), [node_exporter](/circuits/node-exporter), [Firewall](/circuits/firewall), [Grafana](/circuits/grafana), [Monitoring stack](/circuits/monitoring), [Netdata](/circuits/netdata), [Zabbix](/circuits/zabbix), [Nagios Core](/circuits/nagios), [Uptime Kuma](/circuits/uptimekuma).

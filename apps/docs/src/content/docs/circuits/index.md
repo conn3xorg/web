@@ -79,7 +79,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.2 |
 | [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.6 |
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.2 |
-| [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.3.0 |
+| [OpenTelemetry Collector](/circuits/otelcol) | OpenTelemetry Collector from the official packages: host metrics, journald and OTLP out, with configs validated before they go live | v0.4.0 |
 | [Zabbix](/circuits/zabbix) | Zabbix 7.0 LTS server, frontend and agent 2 from Zabbix's repos, with PostgreSQL, API-set Admin password and optional per-agent PSK. | v0.2.0 |
 | [Nagios Core](/circuits/nagios) | Nagios Core with plugins, hosts and services from inputs, nagios -v before every reload, and a login-protected web interface on loopback. | v0.2.1 |
 | [Uptime Kuma](/circuits/uptimekuma) | Uptime Kuma under Podman: it watches your sites, ports and services and tells you the moment one stops answering. | v0.1.0 |
@@ -212,13 +212,13 @@ These configure a network device through its OpenTofu provider instead of a host
 | [Jenkins](/circuits/jenkins) | Jenkins LTS from the official repo on distro OpenJDK, with pinned plugins and Configuration as Code instead of the setup wizard. | v0.2.0 |
 | [GitHub Actions runner](/circuits/github-runner) | GitHub Actions self-hosted runners on Linux hosts: pinned release, dedicated user, one-time registration, a systemd service per runner. | v0.1.3 |
 | [GitLab Runner](/circuits/gitlab-runner) | GitLab Runner from GitLab's packages, shell or Docker executor, its glrt- token kept out of plan and state. | v0.1.3 |
-| [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.2.0 |
+| [Cinc Client](/circuits/cinc) | Run Chef cookbooks in local mode with Cinc Client, the free community build, with no Chef Server and a systemd timer if you want one. | v0.3.0 |
 | [Node.js](/circuits/nodejs) | One exact Node.js LTS from nodejs.org on every distribution, checked against its checksum, with global npm packages at pinned versions. | v0.1.3 |
 | [Perl](/circuits/perl) | Perl from each distribution's packages, with distribution modules and CPAN modules pinned through cpanm. | v0.2.0 |
 | [Bun](/circuits/bun) | Install one pinned Bun release, checksum-verified, on every Linux host. | v0.1.2 |
 | [Selenium Grid](/circuits/selenium) | Selenium Grid under Podman, official images pinned by digest, on loopback by default. | v0.1.2 |
 | [k6](/circuits/k6) | A pinned, checksum-verified k6 on your hosts, for load testing your services and APIs. | v0.1.0 |
-| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.2.1 |
+| [OpenVox](/circuits/openvox) | Run your Puppet manifests without a server, using the OpenVox agent in local mode on an optional systemd timer. | v0.3.0 |
 | [Rust](/circuits/rust) | One exact Rust toolchain from static.rust-lang.org on every distribution, checksum-verified and system-wide, without rustup. | v0.1.1 |
 | [Go](/circuits/go) | One exact Go release from go.dev on every distribution, checked against its checksum, with optional tools at pinned versions. | v0.1.2 |
 | [Python](/circuits/python) | Your distribution's Python with working venvs, and optional environments holding pinned packages. | v0.1.4 |
