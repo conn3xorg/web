@@ -3,7 +3,7 @@ title: Kestra
 description: "The Kestra workflow orchestrator under Podman, its admin password and flow secrets kept out of state."
 ---
 
-<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kestra at v0.1.1. -->
+<!-- Generated from the README, variables and outputs of conn3xorg/circuit-kestra at v0.2.0. -->
 
 [![Conn3x grade](https://conn3x.org/circuits/kestra/grade.svg)](https://conn3x.org/circuits/kestra/grade)
 
@@ -29,7 +29,7 @@ variable "github_token" {
 }
 
 module "kestra" {
-  source = "github.com/conn3xorg/circuit-kestra?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-kestra?ref=v0.2.0"
 
   hosts                = { orchestrator = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -52,7 +52,7 @@ A second `conn3x plan` says `No changes.` Every plan needs the secrets too, sinc
 
 A flow reads the secret with `{{ secret('GITHUB_TOKEN') }}`.
 
-To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1/examples/local).
+To try it on a throwaway container first, see [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.2.0/examples/local).
 
 ### Behind a reverse proxy
 
@@ -81,7 +81,7 @@ H2 suits one person trying things out. Kestra's own advice is PostgreSQL for any
 
 ```hcl
 module "kestra" {
-  source = "github.com/conn3xorg/circuit-kestra?ref=v0.1.1"
+  source = "github.com/conn3xorg/circuit-kestra?ref=v0.2.0"
 
   hosts                = { orchestrator = "192.168.1.60" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -179,22 +179,22 @@ Kestra's script tasks, such as Python or Shell scripts, start a Docker container
 
 ## Requirements
 
-Requires Conn3x v0.7.0 or later and systemd on each host. The image is built for amd64 and arm64. Each host needs to reach its package mirror and Docker Hub. `conn3x init` fetches circuit-podman from GitHub.
+Requires Conn3x v0.30.0 or later and systemd on each host. The image is built for amd64 and arm64. Each host needs to reach its package mirror and Docker Hub. `conn3x init` fetches circuit-podman from GitHub.
 
 ## Tested on
 
-Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1/examples/local) to each on amd64, with H2, an admin and a secret, first at v2.0.8-slim and then upgrading to the default, and checks the next plan has no changes and the secrets aren't in state. [check.sh](https://github.com/conn3xorg/circuit-kestra/blob/v0.1.1/examples/local/check.sh) then signs in as the admin, checks a wrong password and no password are refused, saves a flow through the API and runs it. The flow fails unless `secret('CI_GREETING')` is the value the example passed in, so a pass shows the secret made it through. CI restarts the host, checks the flow and its earlier run are still there, runs it again, and plans clean once more.
+Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13. CI applies [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.2.0/examples/local) to each on amd64, with H2, an admin and a secret, first at v2.0.8-slim and then upgrading to the default, and checks the next plan has no changes and the secrets aren't in state. [check.sh](https://github.com/conn3xorg/circuit-kestra/blob/v0.2.0/examples/local/check.sh) then signs in as the admin, checks a wrong password and no password are refused, saves a flow through the API and runs it. The flow fails unless `secret('CI_GREETING')` is the value the example passed in, so a pass shows the secret made it through. CI restarts the host, checks the flow and its earlier run are still there, runs it again, and plans clean once more.
 
 The same runs passed by hand on arm64 in rootful Podman on a Mac. By hand on DigitalOcean droplets with 4 GB of memory, Ubuntu 24.04 and Rocky Linux 10 with SELinux enforcing: the apply, the clean plan and check.sh passed, ports 8080, 8081 and 50051 didn't answer on the public address, and neither password nor secret was in state. After a reboot Kestra came back on its own, the flow and its run were still there, and the plan was clean. Changing `admin_password` restarted Kestra, the new password signed in and the old one was refused. The Rocky audit log had no denials. PostgreSQL hasn't been tried yet.
 
 ## License
 
-MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kestra/blob/v0.1.1/LICENSE).
+MPL-2.0. See [LICENSE](https://github.com/conn3xorg/circuit-kestra/blob/v0.2.0/LICENSE).
 
 Kestra's open-source edition is under the Apache License 2.0.
 
 ## Source
 
-- Repository: [conn3xorg/circuit-kestra](https://github.com/conn3xorg/circuit-kestra). This page covers [v0.1.1](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1); the repository's [tags](https://github.com/conn3xorg/circuit-kestra/tags) list every release.
-- Examples: [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.1.1/examples/local).
+- Repository: [conn3xorg/circuit-kestra](https://github.com/conn3xorg/circuit-kestra). This page covers [v0.2.0](https://github.com/conn3xorg/circuit-kestra/tree/v0.2.0); the repository's [tags](https://github.com/conn3xorg/circuit-kestra/tags) list every release.
+- Examples: [examples/local](https://github.com/conn3xorg/circuit-kestra/tree/v0.2.0/examples/local).
 - Related circuits: [Caddy](/circuits/caddy), [Podman](/circuits/podman), [restic](/circuits/restic), [Conn3x web UI](/circuits/conn3x-ui), [Proxmox VE](/circuits/proxmox), [Forgejo](/circuits/forgejo), [GitLab CE](/circuits/gitlab), [Cockpit](/circuits/cockpit), [n8n](/circuits/n8n), [Fleet](/circuits/fleet), [Homepage](/circuits/homepage), [Home Assistant](/circuits/homeassistant), [Lempa homelab](/circuits/lempa-homelab), [Mini homelab](/circuits/mini-homelab).
