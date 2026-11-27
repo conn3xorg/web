@@ -75,7 +75,7 @@ Written a circuit you'd use again? [Share a circuit](/guides/share-a-circuit) co
 | Circuit | What it does | Version |
 | --- | --- | --- |
 | [node_exporter](/circuits/node-exporter) | Runs Prometheus node_exporter at a pinned, checksummed version as its own system user. | v0.1.5 |
-| [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.2.0 |
+| [Prometheus](/circuits/prometheus) | Prometheus from the official release, scraping the targets you list, with each config checked by promtool and reloaded in place. | v0.3.0 |
 | [Grafana](/circuits/grafana) | Grafana OSS from Grafana Labs' repositories, with an admin password that stays applied and your datasources and dashboards provisioned. | v0.2.2 |
 | [Monitoring stack](/circuits/monitoring) | Prometheus, Grafana and cAdvisor as one Compose stack, scraping the targets you give it. | v0.2.6 |
 | [Netdata](/circuits/netdata) | Installs the Netdata Agent from Netdata's own repo: per-second metrics, telemetry off, localhost-only, optional parent/child streaming. | v0.1.2 |
