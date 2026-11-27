@@ -47,7 +47,7 @@ These are the reasons the fifteen roles hit most, in order:
 | `set_fact` | 9 |
 | A `with_items` loop it can't translate | 4 |
 
-A `when` on the host's OS family, distribution or major version converts, as does one on a true-or-false role default, a role default compared to text, a list's length, whether a package is installed, or a read-only probe's result, and any of those combined with `and`, `or` and `not`. The 73 left test things like a registered result from a task that changes the host (`.rc`, `.stat.exists`, `is changed`), `is defined`, or a filter such as `default`.
+A `when` on the host's OS family, distribution, major version, release codename or service manager converts, as does one on a true-or-false role default, a role default compared to text, a list's length, whether a package is installed, or a read-only probe's result, and any of those combined with `and`, `or` and `not`. The 73 left test things like a registered result from a task that changes the host (`.rc`, `.stat.exists`, `is changed`), `is defined`, or a filter such as `default`.
 
 ## What changed in v0.25.0
 
