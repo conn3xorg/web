@@ -24,6 +24,8 @@ It takes the same `ssh` block as a circuit, with `host` set to the server's addr
 | `os_family` | string | `"redhat"` or `"debian"`, or `"windows"` with `allow_windows`. |
 | `os_id` | string | The `ID` from os-release, such as `rocky` or `ubuntu`, or `"windows"`. |
 | `os_version` | string | The `VERSION_ID` from os-release, such as `10.0` or `24.04`. On Windows, the version, such as `10.0.26100`. |
+| `os_codename` | string | The release codename, such as `trixie` or `noble`: `VERSION_CODENAME` from os-release, or `UBUNTU_CODENAME` when that isn't set. Empty on Rocky Linux, Fedora and Windows. Since v0.36.0. |
+| `service_manager` | string | What starts services, read the way Ansible's `service_mgr` fact is: `systemd` on every Linux distribution Conn3x supports. Empty when it can't tell, and on Windows. Since v0.36.0. |
 | `arch` | string | Machine architecture, such as `x86_64` or `aarch64`. |
 | `cpus` | number | Number of CPUs. |
 | `memory_mb` | number | Total memory in MiB. |
