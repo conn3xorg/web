@@ -437,6 +437,8 @@ While a probe's answer is pending, Conn3x can't know whether the steps that read
 
 `skipped = (known after apply)` is how to read a gated step: it will run, or be skipped, at apply. Everything it would read from the host is `(known after apply)` too. The summary counts it, so "3 to change" can become "1 changed". The plan can overstate what happens, never understate it: nothing changes at apply that the plan didn't list.
 
+Every step being created or updated lists `only_if = (write-only attribute)`, whether it sets one or not, as OpenTofu lists every write-only argument such as `content_wo`. Only a gated step shows `skipped`.
+
 When the answer is already known at plan and is false, a step that never ran shows as `+ create` with `skipped = true`, and the apply reports it as added. Nothing happens on the host. That happens once per step. A gated step that ran and is still in line shows nothing, whatever the probe says.
 
 ### Steps that depend on what an earlier step found
@@ -525,6 +527,10 @@ step "mkswap" {
 ```
 
 For a restart or a reload, notify a handler instead. One difference from Ansible: a first apply creates every step, so `mkswap` runs once even on a host that already had its swap file, where Ansible would report "ok" and skip it.
+
+### From Ansible
+
+`conn3x convert ansible` uses all of this for `register`. A read-only task that registers a result after tasks that change the host, such as a `command` with `changed_when: false` and `failed_when: false`, or a `stat`, becomes a `probe`. A later `when` on that result becomes `only_if`. It reads the exit code, `stdout`, or whether a path exists, and keeps the parts on facts and defaults in `when`. `when: x is changed` on a `command` becomes `triggers` on the step's revision. A registered task before any change still becomes a data source read at plan. A late `command` probe without `failed_when: false` or `ignore_errors: true` stays for review, since Ansible stops the play when it fails and a probe doesn't.
 
 ## run_once
 
