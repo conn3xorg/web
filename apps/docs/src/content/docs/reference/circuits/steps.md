@@ -1,6 +1,6 @@
 ---
 title: Steps
-description: "The step block, the order steps run in, implicit and explicit dependencies, depends_on, for_each with item.key and item.value, instance keys for repeated steps, import for adopting what a host already has, and lifecycle: prevent_destroy, ignore_changes, create_before_destroy, replace_triggered_by and conditions."
+description: "The step block, the order steps run in, implicit and explicit dependencies, depends_on, for_each with item.key and item.value, instance keys for repeated steps, when and only_if, probes that read the host after earlier steps, import for adopting what a host already has, and lifecycle: prevent_destroy, ignore_changes, create_before_destroy, replace_triggered_by and conditions."
 ---
 
 A step applies one module, such as a package, a file or a service, to every host in the circuit.
@@ -375,6 +375,162 @@ A few rules:
 ```
 
 What happens on the host is the module's [`on_remove`](/reference/circuits/removal). With the default, `forget`, Conn3x stops managing the object and leaves it there. With `on_remove = "delete"`, it deletes it. So a file a step wrote stays put after `when` turns false, unless that step sets `on_remove = "delete"`. Turn `when` back to true and the next apply manages it again.
+
+## only_if
+
+:::note
+`only_if` and `probe` are in Conn3x since v0.39.0. Earlier releases reject them with "Unsupported argument in step" and "Unsupported block type".
+:::
+
+`only_if` runs a step only when a condition is true, as `when` does, except that the condition can wait for the apply. You need that when the answer comes from the host after an earlier step has changed it: Ansible's `register` followed by a `when` that reads it.
+
+```hcl
+step "build_php" {
+  only_if = data.conn3x_command.web__has_php[each.key].exit_code != 0
+  command {
+    command = "/usr/local/src/php/build.sh"
+  }
+}
+```
+
+- **True:** the step runs as usual.
+- **False:** the step does nothing on the host. A step that never ran, or that would change something if it ran, is recorded with `skipped = true` and manages nothing: refresh doesn't read it, removing it touches nothing, and its `revision` stays as it was, so a handler watching it doesn't fire. A step that ran before and is still in line stays as it is.
+- **True again later:** a skipped step runs as if for the first time.
+- **`each` and `item`** mean what they mean in the module's arguments, as in `when`.
+- **Not stored.** `only_if` is write-only. State keeps only the outcome, in `skipped`. Stored, the condition would show as a change on the next plan every time a probe's answer flipped after the step did its job, as "is it installed?" does after the install.
+- **Which steps:** every Linux and Windows step, in `rescue` and `always` too. Network device steps don't take it: their lines go to the device in one commit per circuit, and that commit can't leave out a step decided at apply. Handlers don't take it either.
+
+Use `when` whenever the condition is known at plan. A host where `when` is false has no instance of the step at all, and the plan says exactly what will happen. A step can have both: `when` for the part the plan knows, such as the OS family, and `only_if` for the part it doesn't.
+
+### probe
+
+A `probe` runs a command on every host in the circuit and gives you what it found:
+
+```hcl
+probe "has_php" {
+  command = "command -v php"
+}
+```
+
+It takes only `command`, and reaches each host through the circuit's `ssh` block. It lowers to `data "conn3x_command" "<circuit>__<name>"`, so a step reads it as `data.conn3x_command.web__has_php[each.key]`, with `exit_code`, `stdout` and `stderr`. `stdout` and `stderr` are sensitive. A non-zero exit code isn't an error; it's the answer.
+
+**When it reads.** A probe depends on every step declared before it in the circuit. If none of them has changes pending, it reads at plan, like any data source. If one does, it reads during the apply, after those steps, so it sees the host they left. You don't write `depends_on` for this. A probe declared before every step always reads at plan.
+
+A probe must not change the host. Every plan runs it, and so does every refresh.
+
+### What the plan shows
+
+While a probe's answer is pending, Conn3x can't know whether the steps that read it will run. The plan lists them anyway, as "may change":
+
+```text
+  # data.conn3x_command.app__conf_there["web1"] will be read during apply
+  # (depends on a resource or a module with changes pending)
+
+  # conn3x_command.app__init["web1"] will be created
+  + resource "conn3x_command" "app__init" {
+      + command   = "/opt/app/bin/init"
+      + only_if   = (write-only attribute)
+      + skipped   = (known after apply)
+      + stdout    = (sensitive value)
+      ...
+```
+
+`skipped = (known after apply)` is how to read a gated step: it will run, or be skipped, at apply. Everything it would read from the host is `(known after apply)` too. The summary counts it, so "3 to change" can become "1 changed". The plan can overstate what happens, never understate it: nothing changes at apply that the plan didn't list.
+
+Every step being created or updated lists `only_if = (write-only attribute)`, whether it sets one or not, as OpenTofu lists every write-only argument such as `content_wo`. Only a gated step shows `skipped`.
+
+When the answer is already known at plan and is false, a step that never ran shows as `+ create` with `skipped = true`, and the apply reports it as added. Nothing happens on the host. That happens once per step. A gated step that ran and is still in line shows nothing, whatever the probe says.
+
+### Steps that depend on what an earlier step found
+
+Here an earlier step changes the host, a probe reads after it, and two later steps branch on the answer:
+
+```hcl
+circuit "app" {
+  hosts = { web1 = "203.0.113.10" }
+  ssh {
+    user = "root"
+  }
+
+  step "conf" {
+    file {
+      path    = "/etc/app.conf"
+      content = "listen = 8080\n"
+    }
+  }
+
+  probe "conf_there" {
+    command = "test -f /etc/app.conf"
+  }
+
+  step "init" {
+    only_if = data.conn3x_command.app__conf_there[each.key].exit_code == 0
+    command {
+      command = "/opt/app/bin/init"
+      creates = "/var/lib/app/.initialized"
+    }
+  }
+
+  step "fallback" {
+    only_if = data.conn3x_command.app__conf_there[each.key].exit_code != 0
+    notify  = [handler.restart]
+    file {
+      path    = "/etc/app.fallback"
+      content = "no config\n"
+    }
+  }
+
+  handler "restart" {
+    service {
+      name = "app"
+    }
+  }
+}
+```
+
+On a host without `/etc/app.conf`:
+
+1. The plan shows the probe as read during apply, since `conf` has a change pending, and `init` and `fallback` as may-change.
+2. The apply writes `/etc/app.conf`, then reads the probe, which now exits 0. `init` runs. `fallback` is skipped, so `restart` doesn't restart anything.
+3. The next plan says "No changes". `conf` has nothing pending, so the probe reads at plan, and both gated steps are as the last apply left them.
+
+Change `conf` to `state = "absent"` and the probe's answer flips on that apply: `fallback` runs and `restart` restarts the service. `init` doesn't run again; see below.
+
+### A command that already ran
+
+A gated `command` step that ran once doesn't run again because its `only_if` is true again. It runs when a command step always runs: when it's created, when its guards stop holding, or when `command` or `triggers` changes. If it should run again once what it did is undone, give it a guard that sees that, such as `creates`.
+
+### Handlers and triggers
+
+A handler notified by a gated step works as for any step. While the step's outcome is pending, the plan shows the handler as `must be replaced`, as it would for a step with any pending change. At apply, if the step ran, the handler acts. If the step was skipped and nothing else it watches changed, the handler is replaced in state and does nothing on the host.
+
+A step whose own `triggers` read a gated step's `revision` doesn't know that, and runs again whenever the plan couldn't tell whether the gated step would run. To react to a gated step, notify a handler.
+
+### When a step changed
+
+For Ansible's `when: x is changed`, you don't need `only_if` or a probe. Put the step's `revision`, which changes exactly when Conn3x changes that step on the host, in the later step's `triggers`:
+
+```hcl
+step "swapfile" {
+  command {
+    command = "fallocate -l 2G /swapfile && chmod 600 /swapfile"
+    creates = "/swapfile"
+  }
+}
+
+step "mkswap" {
+  command {
+    command  = "mkswap /swapfile && swapon /swapfile"
+    triggers = [conn3x_command.web__swapfile[each.key].revision]
+  }
+}
+```
+
+For a restart or a reload, notify a handler instead. One difference from Ansible: a first apply creates every step, so `mkswap` runs once even on a host that already had its swap file, where Ansible would report "ok" and skip it.
+
+### From Ansible
+
+`conn3x convert ansible` uses all of this for `register`. A read-only task that registers a result after tasks that change the host, such as a `command` with `changed_when: false` and `failed_when: false`, or a `stat`, becomes a `probe`. A later `when` on that result becomes `only_if`. It reads the exit code, `stdout`, or whether a path exists, and keeps the parts on facts and defaults in `when`. `when: x is changed` on a `command` becomes `triggers` on the step's revision. A registered task before any change still becomes a data source read at plan. A late `command` probe without `failed_when: false` or `ignore_errors: true` stays for review, since Ansible stops the play when it fails and a probe doesn't.
 
 ## run_once
 
